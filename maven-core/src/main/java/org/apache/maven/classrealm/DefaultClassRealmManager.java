@@ -120,7 +120,9 @@ public class DefaultClassRealmManager
             {
                 try
                 {
-                    ClassRealm classRealm = world.newRealm( realmId, PARENT_CLASSLOADER );
+                    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                    ClassRealm classRealm = world.newRealm( realmId, contextClassLoader == null
+                                    ? PARENT_CLASSLOADER : contextClassLoader );
 
                     if ( logger.isDebugEnabled() )
                     {
