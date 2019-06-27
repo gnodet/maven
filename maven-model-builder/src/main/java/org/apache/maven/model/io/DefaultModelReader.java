@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.inject.Named;
@@ -176,7 +177,7 @@ public class DefaultModelReader
         {
             if ( source != null )
             {
-                final Set<String> locations = new TreeSet<>();
+                final SortedSet<String> locations = new TreeSet<>();
                 class Transformer extends AbstractTransformer implements MavenXpp3ReaderEx.ContentTransformer
                 {
                     private Transformer( Set<String> locations )
@@ -209,7 +210,7 @@ public class DefaultModelReader
             }
             else
             {
-                final Set<String> locations = new TreeSet<>();
+                final SortedSet<String> locations = new TreeSet<>();
                 class Transformer extends AbstractTransformer implements MavenXpp3Reader.ContentTransformer
                 {
                     private Transformer( Set<String> locations )

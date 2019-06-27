@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.Build;
@@ -234,32 +234,102 @@ public class ModelMerger
         {
             return;
         }
-        Set<String> sourceLocs = source.getInterpolationLocations();
-        if ( sourceLocs == null )
+        SortedSet<String> sourceLocs = source.getInterpolationLocations();
+        if ( sourceLocs == null || sourceLocs.isEmpty() )
         {
             return;
         }
-        Set<String> targetLocs = target.getInterpolationLocations();
+        SortedSet<String> targetLocs = target.getInterpolationLocations();
         if ( targetLocs == null )
         {
-            targetLocs = new HashSet<>();
+            targetLocs = new TreeSet<>();
             target.setInterpolationLocations( targetLocs );
         }
         String targetCur = targetPath.peekLast();
         String targetLoc = targetCur != null ? targetCur + "/" + tgt : tgt;
         String sourceCur = sourcePath.peekLast();
         String sourceLoc = sourceCur != null ? sourceCur + "/" + src : src;
-        for ( String entry : sourceLocs )
+        if ( sourceLoc.equals( targetLoc ) )
         {
-            if ( entry.startsWith( sourceLoc ) )
+            targetLocs.addAll( startsWith( sourceLocs, sourceLoc ) );
+        }
+        else
+        {
+            for ( String entry : startsWith( sourceLocs, sourceLoc ) )
             {
                 targetLocs.add( entry.replace( sourceLoc, targetLoc ) );
             }
         }
     }
 
-    protected void move( Map<Object, Object> context, String path,
-                         Map<Integer, Integer> tgtInd, Map<Integer, Integer> srcInd )
+    protected SortedSet<String> startsWith( SortedSet<String> set, String key )
+    {
+        StringBuilder sb = new StringBuilder( key );
+        sb.setCharAt( sb.length() - 1, (char) ( sb.charAt( sb.length() - 1 ) + 1 ) );
+        String end = sb.toString();
+        return set.subSet( key, end );
+    }
+
+    /**
+     * Interface used to compute object keys
+     * @param <T> the object type
+     */
+    protected interface KeyComputer<T>
+    {
+        Object key( T t );
+    }
+
+    /**
+     * Compute key for Plugin
+     */
+    public class PluginKeyComputer implements KeyComputer<Plugin>
+    {
+        @Override
+        public Object key( Plugin plugin )
+        {
+            return getPluginKey( plugin );
+        }
+    }
+
+    /**
+     * Compute key for ReportPlugin
+     */
+    public class ReportPluginKeyComputer implements KeyComputer<ReportPlugin>
+    {
+        @Override
+        public Object key( ReportPlugin reportPlugin )
+        {
+            return getReportPluginKey( reportPlugin );
+        }
+    }
+
+    /**
+     * Compute key for Dependency
+     */
+    public class DependencyKeyComputer implements KeyComputer<Dependency>
+    {
+        @Override
+        public Object key( Dependency dependency )
+        {
+            return getDependencyKey( dependency );
+        }
+    }
+
+    /**
+     * Compute key for PluginExecution
+     */
+    public class PluginExecutionKeyComputer implements KeyComputer<PluginExecution>
+    {
+        @Override
+        public Object key( PluginExecution execution )
+        {
+            return getPluginExecutionKey( execution );
+        }
+    }
+
+    protected <T> void move( Map<Object, Object> context, String path,
+                             List<T> result, List<T> tgt, List<T> src,
+                             KeyComputer<T> keyComputer )
     {
         ModelBase target = (ModelBase) context.get( "org.apache.maven.model.target" );
         ModelBase source = (ModelBase) context.get( "org.apache.maven.model.source" );
@@ -269,51 +339,75 @@ public class ModelMerger
         {
             return;
         }
-        Set<String> dstLocs = target.getInterpolationLocations();
+        SortedSet<String> dstLocs = target.getInterpolationLocations();
         if ( dstLocs == null )
         {
-            dstLocs = new HashSet<>();
+            dstLocs = new TreeSet<>();
             target.setInterpolationLocations( dstLocs );
         }
-        Set<String> srcLocs = source.getInterpolationLocations();
-        Set<String> tgtLocs = new HashSet<>( target.getInterpolationLocations() );
+        SortedSet<String> srcLocs = source.getInterpolationLocations();
+        SortedSet<String> tgtLocs = new TreeSet<>( dstLocs );
 
         String sourceCur = sourcePath.peekLast();
         String sourceLoc = sourceCur != null ? sourceCur + "/" + path : path;
         String targetCur = targetPath.peekLast();
         String targetLoc = targetCur != null ? targetCur + "/" + path : path;
 
-        for ( String entry : tgtLocs )
+        startsWith( dstLocs, targetLoc + "[" ).clear();
+
+        Map<Object, Integer> rstInd = new HashMap<>();
+        for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
         {
-            if ( entry.startsWith( targetLoc + "[" ) )
-            {
-                dstLocs.remove( entry );
-            }
+            Object key = keyComputer.key( result.get( dstIdx ) );
+            rstInd.put( key, dstIdx );
         }
+
         if ( srcLocs != null )
         {
+            Map<Integer, Integer> srcInd = new HashMap<>();
+            for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
+            {
+                srcInd.put( srcIdx, rstInd.get( keyComputer.key( src.get( srcIdx ) ) ) );
+            }
             for ( Map.Entry<Integer, Integer> e : srcInd.entrySet() )
             {
                 String srcLoc = sourceLoc + "[" + e.getKey() + "]";
-                for ( String entry : srcLocs )
+                SortedSet<String> srcSet = startsWith( srcLocs, srcLoc );
+                if ( sourceLoc.equals( targetLoc ) && e.getKey().equals( e.getValue() ) )
                 {
-                    if ( entry.startsWith( srcLoc ) )
+                    dstLocs.addAll( srcSet );
+                }
+                else
+                {
+                    String dstLoc = targetLoc + "[" + e.getValue() + "]";
+                    for ( String entry : srcSet )
                     {
-                        dstLocs.add( entry.replace( srcLoc, targetLoc + "[" + e.getValue() + "]" ) );
+                        dstLocs.add( dstLoc + entry.substring( srcLoc.length() ) );
                     }
                 }
             }
         }
         if ( tgtLocs != null )
         {
+            Map<Integer, Integer> tgtInd = new HashMap<>();
+            for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
+            {
+                tgtInd.put( tgtIdx, rstInd.get( keyComputer.key( tgt.get( tgtIdx ) ) ) );
+            }
             for ( Map.Entry<Integer, Integer> e : tgtInd.entrySet() )
             {
                 String tgtLoc = targetLoc + "[" + e.getKey() + "]";
-                for ( String entry : tgtLocs )
+                SortedSet<String> tgtSet = startsWith( tgtLocs, tgtLoc );
+                if ( e.getKey().equals( e.getValue() ) )
                 {
-                    if ( entry.startsWith( tgtLoc ) )
+                    dstLocs.addAll( tgtSet );
+                }
+                else
+                {
+                    String dstLoc = targetLoc + "[" + e.getValue() + "]";
+                    for ( String entry : tgtSet )
                     {
-                        dstLocs.add( entry.replace( tgtLoc, targetLoc + "[" + e.getValue() + "]" ) );
+                        dstLocs.add( dstLoc + entry.substring( tgtLoc.length() ) );
                     }
                 }
             }
@@ -1792,11 +1886,12 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
-                    move( context, "dependencies", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
-            target.setDependencies( new ArrayList<>( merged.values() ) );
+            List<Dependency> result = new ArrayList<>( merged.values() );
+            target.setDependencies( result );
+            move( context, "dependencies", result, tgt, src, new DependencyKeyComputer() );
         }
     }
 

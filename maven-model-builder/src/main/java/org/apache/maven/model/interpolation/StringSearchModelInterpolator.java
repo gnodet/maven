@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Named;
@@ -79,8 +79,8 @@ public class StringSearchModelInterpolator
     protected void interpolateObject( Object obj, Model model, File projectDir, ModelBuildingRequest config,
                                       ModelProblemCollector problems )
     {
-        try
-        {
+//        try
+//        {
             List<? extends ValueSource> valueSources = createValueSources( model, projectDir, config, problems );
             List<? extends InterpolationPostProcessor> postProcessors =
                 createPostProcessors( model, projectDir, config );
@@ -138,12 +138,12 @@ public class StringSearchModelInterpolator
             {
                 e.printStackTrace();
             }
-            */
         }
         finally
         {
             getInterpolator().clearAnswers();
         }
+            */
     }
 
     @Override
@@ -170,9 +170,9 @@ public class StringSearchModelInterpolator
         private final ModelProblemCollector problems;
 
         InterpolatedModelAction( Model target, List<? extends ValueSource> valueSources,
-                                        List<? extends InterpolationPostProcessor> postProcessors,
-                                        StringSearchModelInterpolator modelInterpolator,
-                                        ModelProblemCollector problems )
+                                 List<? extends InterpolationPostProcessor> postProcessors,
+                                 StringSearchModelInterpolator modelInterpolator,
+                                 ModelProblemCollector problems )
         {
             this.project = target;
             this.modelInterpolator = modelInterpolator;
@@ -231,7 +231,8 @@ public class StringSearchModelInterpolator
                                 Object next = ( ( Xpp3Dom ) current ).getChild( s );
                                 if ( next == null )
                                 {
-                                    System.err.println( "Retrieved null for " + s + " in " + location );
+                                    // This can sometimes happen when some config was merged
+                                    // System.err.println( "Retrieved null for " + s + " in " + location );
                                     break;
                                 }
                                 current = next;
@@ -289,7 +290,8 @@ public class StringSearchModelInterpolator
                                 Object next = field.get( current );
                                 if ( next == null )
                                 {
-                                    System.err.println( "Retrieved null for " + s + " in " + location );
+                                    // This can sometimes happen when some config was merged
+                                    // System.err.println( "Retrieved null for " + s + " in " + location );
                                     break;
                                 }
                                 current = next;
@@ -310,7 +312,8 @@ public class StringSearchModelInterpolator
                                     Object next = getIndexedValue( current, index );
                                     if ( next == null )
                                     {
-                                        System.err.println( "Retrieved null for " + s + " in " + location );
+                                        // This can sometimes happen when some config was merged
+                                        // System.err.println( "Retrieved null for " + s + " in " + location );
                                         break;
                                     }
                                     current = next;
@@ -339,7 +342,7 @@ public class StringSearchModelInterpolator
             catch ( Exception e )
             {
                 throw new RuntimeException(
-                        "Unable to set field " + field.getName() + " in expression " + location );
+                        "Unable to set field " + field.getName() + " in expression " + location, e );
             }
         }
 
@@ -380,29 +383,41 @@ public class StringSearchModelInterpolator
         private void setMapElement( Map current, String index )
         {
             String orgv = (String) current.get( index );
-            String newv = interpolate( orgv );
-            current.put( index, newv );
+            if ( orgv != null )
+            {
+                String newv = interpolate( orgv );
+                current.put( index, newv );
+            }
         }
 
         private void setListElement( List current, int idx )
         {
             String orgv = (String) current.get( idx );
-            String newv = interpolate( orgv );
-            current.set( idx, newv );
+            if ( orgv != null )
+            {
+                String newv = interpolate( orgv );
+                current.set( idx, newv );
+            }
         }
 
         private void setXmlElementValue( Xpp3Dom current )
         {
             String orgv = current.getValue();
-            String newv = interpolate( orgv );
-            current.setValue( newv );
+            if ( orgv != null )
+            {
+                String newv = interpolate( orgv );
+                current.setValue( newv );
+            }
         }
 
         private void setXmlAttribute( Xpp3Dom current, String attr )
         {
             String orgv = current.getAttribute( attr );
-            String newv = interpolate( orgv );
-            current.setAttribute( attr, newv );
+            if ( orgv != null )
+            {
+                String newv = interpolate( orgv );
+                current.setAttribute( attr, newv );
+            }
         }
 
         private int getNextTokenEnd( String location, int cur )
@@ -545,7 +560,7 @@ public class StringSearchModelInterpolator
                 {
                     return false;
                 }
-                if ( Set.class.equals( fieldType ) && "interpolationLocations".equals( field.getName() ) )
+                if ( SortedSet.class.equals( fieldType ) && "interpolationLocations".equals( field.getName() ) )
                 {
                     return false;
                 }

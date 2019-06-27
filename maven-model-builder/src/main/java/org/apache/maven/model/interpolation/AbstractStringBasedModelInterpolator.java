@@ -93,14 +93,14 @@ public abstract class AbstractStringBasedModelInterpolator
     @Inject
     private UrlNormalizer urlNormalizer;
 
-    private Interpolator interpolator;
+//    private Interpolator interpolator;
 
-    private RecursionInterceptor recursionInterceptor;
+//    private RecursionInterceptor recursionInterceptor;
 
     public AbstractStringBasedModelInterpolator()
     {
-        interpolator = createInterpolator();
-        recursionInterceptor = new PrefixAwareRecursionInterceptor( PROJECT_PREFIXES );
+//        interpolator = createInterpolator();
+//        recursionInterceptor = new PrefixAwareRecursionInterceptor( PROJECT_PREFIXES );
     }
 
     public AbstractStringBasedModelInterpolator setPathTranslator( PathTranslator pathTranslator )
@@ -232,8 +232,9 @@ public abstract class AbstractStringBasedModelInterpolator
         }
 
         String result = src;
-        synchronized ( this )
-        {
+//        synchronized ( this )
+//        {
+            Interpolator interpolator = createInterpolator();
 
             for ( ValueSource vs : valueSources )
             {
@@ -245,10 +246,11 @@ public abstract class AbstractStringBasedModelInterpolator
                 interpolator.addPostProcessor( postProcessor );
             }
 
-            try
-            {
+//            try
+//            {
                 try
                 {
+                    RecursionInterceptor recursionInterceptor = new PrefixAwareRecursionInterceptor( PROJECT_PREFIXES );
                     result = interpolator.interpolate( result, recursionInterceptor );
                 }
                 catch ( InterpolationException e )
@@ -257,40 +259,40 @@ public abstract class AbstractStringBasedModelInterpolator
                         .setMessage( e.getMessage() ).setException( e ) );
                 }
 
-                interpolator.clearFeedback();
-            }
-            finally
-            {
-                for ( ValueSource vs : valueSources )
-                {
-                    interpolator.removeValuesSource( vs );
-                }
-
-                for ( InterpolationPostProcessor postProcessor : postProcessors )
-                {
-                    interpolator.removePostProcessor( postProcessor );
-                }
-            }
-        }
+//                interpolator.clearFeedback();
+//            }
+//            finally
+//            {
+//                for ( ValueSource vs : valueSources )
+//                {
+//                    interpolator.removeValuesSource( vs );
+//                }
+//
+//                for ( InterpolationPostProcessor postProcessor : postProcessors )
+//                {
+//                    interpolator.removePostProcessor( postProcessor );
+//                }
+//            }
+//        }
 
         return result;
     }
 
-    protected RecursionInterceptor getRecursionInterceptor()
-    {
-        return recursionInterceptor;
-    }
-
-    protected void setRecursionInterceptor( RecursionInterceptor recursionInterceptor )
-    {
-        this.recursionInterceptor = recursionInterceptor;
-    }
-
+//    protected RecursionInterceptor getRecursionInterceptor()
+//    {
+//        return recursionInterceptor;
+//    }
+//
+//    protected void setRecursionInterceptor( RecursionInterceptor recursionInterceptor )
+//    {
+//        this.recursionInterceptor = recursionInterceptor;
+//    }
+//
     protected abstract Interpolator createInterpolator();
 
-    protected final Interpolator getInterpolator()
-    {
-        return interpolator;
-    }
+//    protected final Interpolator getInterpolator()
+//    {
+//        return interpolator;
+//    }
 
 }

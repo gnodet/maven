@@ -571,19 +571,19 @@
           <code>
             <![CDATA[
 
-    java.util.Set<String> interpolationLocations;
+    java.util.SortedSet<String> interpolationLocations;
 
     /**
      * Returns a map containing all locations that need some interpolations.
      */
-    public java.util.Set<String> getInterpolationLocations() {
+    public java.util.SortedSet<String> getInterpolationLocations() {
         return interpolationLocations;
     }
 
     /**
      * Sets the map containing all locations that need some interpolations.
      */
-    public void setInterpolationLocations(java.util.Set<String> interpolationLocations) {
+    public void setInterpolationLocations(java.util.SortedSet<String> interpolationLocations) {
         this.interpolationLocations = interpolationLocations;
     }
 

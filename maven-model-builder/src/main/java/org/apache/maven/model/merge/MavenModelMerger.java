@@ -20,12 +20,10 @@ package org.apache.maven.model.merge;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.apache.maven.model.BuildBase;
@@ -630,28 +628,7 @@ public class MavenModelMerger
 
             List<PluginExecution> result = new ArrayList<>( merged.values() );
             target.setExecutions( result );
-
-            Map<Integer, Integer> tgtInd = new HashMap<>();
-            Map<Integer, Integer> srcInd = new HashMap<>();
-            for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
-            {
-                Object key = getPluginExecutionKey( result.get( dstIdx ) );
-                for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
-                {
-                    if ( Objects.equals( getPluginExecutionKey( src.get( srcIdx ) ), key ) )
-                    {
-                        srcInd.put( srcIdx, dstIdx );
-                    }
-                }
-                for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
-                {
-                    if ( Objects.equals( getPluginExecutionKey( tgt.get( tgtIdx ) ), key ) )
-                    {
-                        tgtInd.put( tgtIdx, dstIdx );
-                    }
-                }
-            }
-            move( context, "executions", tgtInd, srcInd );
+            move( context, "executions", result, tgt, src, new PluginExecutionKeyComputer() );
         }
     }
 

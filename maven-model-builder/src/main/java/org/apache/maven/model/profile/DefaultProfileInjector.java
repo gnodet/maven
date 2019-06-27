@@ -179,7 +179,7 @@ public class DefaultProfileInjector
                         }
                     }
                 }
-                move( context, "plugins", tgtInd, srcInd );
+                move( context, "plugins", result, tgt, src, new PluginKeyComputer() );
             }
         }
 
