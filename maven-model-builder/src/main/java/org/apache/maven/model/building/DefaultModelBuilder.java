@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -316,6 +317,12 @@ public class DefaultModelBuilder
             // profile injection
             for ( Profile activeProfile : activePomProfiles )
             {
+//                int index = rawModel.getProfiles().indexOf( activeProfile );
+//                if ( index >= 0 )
+//                {
+//                    move( tmpModel.getInterpolationLocations(), rawModel.getInterpolationLocations(),
+//                            "project", "project.profiles[" + index + "]" );
+//                }
                 profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
             }
 
@@ -428,6 +435,17 @@ public class DefaultModelBuilder
         }
 
         return result;
+    }
+
+    private void move( Set<String> target, Set<String> source, String targetPrefix, String sourcePrefix )
+    {
+        for ( String loc : source )
+        {
+            if ( loc.startsWith( sourcePrefix ) )
+            {
+                target.add( loc.replace( sourcePrefix, targetPrefix ) );
+            }
+        }
     }
 
     @Override

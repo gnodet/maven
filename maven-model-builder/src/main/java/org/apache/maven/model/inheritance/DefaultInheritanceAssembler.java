@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.inject.Named;
@@ -224,6 +225,7 @@ public class DefaultInheritanceAssembler
             target.setLocation( "properties",
                                 InputLocation.merge( target.getLocation( "properties" ),
                                                      source.getLocation( "properties" ), sourceDominant ) );
+            move( context, "properties" );
         }
 
         private void putAll( Map<Object, Object> s, Map<Object, Object> t, Object excludeKey )
@@ -300,6 +302,28 @@ public class DefaultInheritanceAssembler
                 result.addAll( pending );
 
                 target.setPlugins( result );
+
+                Map<Integer, Integer> tgtInd = new HashMap<>();
+                Map<Integer, Integer> srcInd = new HashMap<>();
+                for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
+                {
+                    Object key = getPluginKey( result.get( dstIdx ) );
+                    for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
+                    {
+                        if ( Objects.equals( getPluginKey( src.get( srcIdx ) ), key ) )
+                        {
+                            srcInd.put( srcIdx, dstIdx );
+                        }
+                    }
+                    for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
+                    {
+                        if ( Objects.equals( getPluginKey( tgt.get( tgtIdx ) ), key ) )
+                        {
+                            tgtInd.put( tgtIdx, dstIdx );
+                        }
+                    }
+                }
+                move( context, "plugins", tgtInd, srcInd );
             }
         }
 
@@ -355,7 +379,30 @@ public class DefaultInheritanceAssembler
                     merged.put( key, element );
                 }
 
-                target.setPlugins( new ArrayList<>( merged.values() ) );
+                List<ReportPlugin> result = new ArrayList<>( merged.values() );
+                target.setPlugins( result );
+
+                Map<Integer, Integer> tgtInd = new HashMap<>();
+                Map<Integer, Integer> srcInd = new HashMap<>();
+                for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
+                {
+                    Object key = getReportPluginKey( result.get( dstIdx ) );
+                    for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
+                    {
+                        if ( Objects.equals( getReportPluginKey( src.get( srcIdx ) ), key ) )
+                        {
+                            srcInd.put( srcIdx, dstIdx );
+                        }
+                    }
+                    for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
+                    {
+                        if ( Objects.equals( getReportPluginKey( tgt.get( tgtIdx ) ), key ) )
+                        {
+                            tgtInd.put( tgtIdx, dstIdx );
+                        }
+                    }
+                }
+                move( context, "plugins", tgtInd, srcInd );
             }
         }
     }

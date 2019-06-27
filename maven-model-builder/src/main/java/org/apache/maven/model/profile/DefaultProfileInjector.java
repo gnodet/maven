@@ -19,17 +19,19 @@ package org.apache.maven.model.profile;
  * under the License.
  */
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.Build;
-import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.ModelBase;
 import org.apache.maven.model.Plugin;
@@ -71,7 +73,7 @@ public class DefaultProfileInjector
                 {
                     model.setBuild( new Build() );
                 }
-                merger.mergeBuildBase( model.getBuild(), profile.getBuild() );
+                merger.mergeBuildBase( model, profile );
             }
         }
     }
@@ -85,12 +87,24 @@ public class DefaultProfileInjector
 
         public void mergeModelBase( ModelBase target, ModelBase source )
         {
-            mergeModelBase( target, source, true, Collections.emptyMap() );
+            Map<Object, Object> context = new HashMap<>();
+            context.put( "org.apache.maven.model.target", target );
+            context.put( "org.apache.maven.model.source", source );
+            context.put( "org.apache.maven.model.target.path", new ArrayDeque<>( Arrays.asList( "project" ) ) );
+            context.put( "org.apache.maven.model.source.path", new ArrayDeque<>( Arrays.asList( "profile" ) ) );
+
+            mergeModelBase( target, source, true, context );
         }
 
-        public void mergeBuildBase( BuildBase target, BuildBase source )
+        public void mergeBuildBase( Model target, Profile source )
         {
-            mergeBuildBase( target, source, true, Collections.emptyMap() );
+            Map<Object, Object> context = new HashMap<>();
+            context.put( "org.apache.maven.model.target", target );
+            context.put( "org.apache.maven.model.source", source );
+            context.put( "org.apache.maven.model.target.path", new ArrayDeque<>( Arrays.asList( "project/build" ) ) );
+            context.put( "org.apache.maven.model.source.path", new ArrayDeque<>( Arrays.asList( "profile/build" ) ) );
+
+            mergeBuildBase( target.getBuild(), source.getBuild(), true, context );
         }
 
         @Override
@@ -144,6 +158,28 @@ public class DefaultProfileInjector
                 result.addAll( pending );
 
                 target.setPlugins( result );
+
+                Map<Integer, Integer> tgtInd = new HashMap<>();
+                Map<Integer, Integer> srcInd = new HashMap<>();
+                for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
+                {
+                    Object key = getPluginKey( result.get( dstIdx ) );
+                    for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
+                    {
+                        if ( Objects.equals( getPluginKey( src.get( srcIdx ) ), key ) )
+                        {
+                            srcInd.put( srcIdx, dstIdx );
+                        }
+                    }
+                    for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
+                    {
+                        if ( Objects.equals( getPluginKey( tgt.get( tgtIdx ) ), key ) )
+                        {
+                            tgtInd.put( tgtIdx, dstIdx );
+                        }
+                    }
+                }
+                move( context, "plugins", tgtInd, srcInd );
             }
         }
 

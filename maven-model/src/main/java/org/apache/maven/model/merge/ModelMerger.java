@@ -19,13 +19,18 @@ package org.apache.maven.model.merge;
  * under the License.
  */
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.Build;
@@ -117,12 +122,18 @@ public class ModelMerger
         {
             context.putAll( hints );
         }
+        context.put( "org.apache.maven.model.target", target );
+        context.put( "org.apache.maven.model.source", source );
+        context.put( "org.apache.maven.model.target.path", new ArrayDeque<>() );
+        context.put( "org.apache.maven.model.source.path", new ArrayDeque<>() );
 
         mergeModel( target, source, sourceDominant, context );
     }
 
     protected void mergeModel( Model target, Model source, boolean sourceDominant, Map<Object, Object> context )
     {
+        push( context, "project" );
+
         mergeModelBase( target, source, sourceDominant, context );
 
         mergeModel_ChildProjectUrlInheritAppendPath( target, source, sourceDominant, context );
@@ -147,6 +158,180 @@ public class ModelMerger
         mergeModel_Prerequisites( target, source, sourceDominant, context );
         mergeModel_Build( target, source, sourceDominant, context );
         mergeModel_Profiles( target, source, sourceDominant, context );
+
+        pop( context );
+    }
+
+    protected void push( Map<Object, Object> context, String path )
+    {
+        Deque<String> targetPath = (Deque<String>) context.get( "org.apache.maven.model.target.path" );
+        if ( targetPath != null )
+        {
+            String targetCur = targetPath.peekLast();
+            String targetLoc = targetCur != null ? path.charAt( 0 ) == '['
+                    ? targetCur + path : targetCur + "/" + path : path;
+            targetPath.addLast( targetLoc );
+        }
+        Deque<String> sourcePath = (Deque<String>) context.get( "org.apache.maven.model.source.path" );
+        if ( sourcePath != null )
+        {
+            String sourceCur = sourcePath.peekLast();
+            String sourceLoc = sourceCur != null ? path.charAt( 0 ) == '['
+                    ? sourceCur + path : sourceCur + "/" + path : path;
+            sourcePath.addLast( sourceLoc );
+        }
+    }
+
+    protected void pop( Map<Object, Object> context )
+    {
+        Deque<String> targetPath = (Deque<String>) context.get( "org.apache.maven.model.target.path" );
+        if ( targetPath != null )
+        {
+            targetPath.removeLast();
+        }
+        Deque<String> sourcePath = (Deque<String>) context.get( "org.apache.maven.model.source.path" );
+        if ( sourcePath != null )
+        {
+            sourcePath.removeLast();
+        }
+    }
+
+    protected void setif( Map<Object, Object> context, String path, String value )
+    {
+        ModelBase target = (Model) context.get( "org.apache.maven.model.target" );
+        Deque<String> targetPath = (Deque<String>) context.get( "org.apache.maven.model.target.path" );
+        if ( target == null || targetPath == null )
+        {
+            return;
+        }
+        String targetCur = targetPath.peekLast();
+        String targetLoc = targetCur != null ? targetCur + "/" + path : path;
+        if ( value.contains( "${" ) )
+        {
+            target.getInterpolationLocations().add( targetLoc );
+        }
+
+    }
+
+    protected void move( Map<Object, Object> context, String path )
+    {
+        move( context, path, path );
+    }
+
+    protected void move( Map<Object, Object> context, String path, int dstIdx, int srcIdx )
+    {
+        move( context, path + "[" + dstIdx + "]", path + "[" + srcIdx + "]" );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected void move( Map<Object, Object> context, String tgt, String src )
+    {
+        ModelBase target = (ModelBase) context.get( "org.apache.maven.model.target" );
+        ModelBase source = (ModelBase) context.get( "org.apache.maven.model.source" );
+        Deque<String> targetPath = (Deque) context.get( "org.apache.maven.model.target.path" );
+        Deque<String> sourcePath = (Deque) context.get( "org.apache.maven.model.source.path" );
+        if ( target == null || source == null || targetPath == null || sourcePath == null )
+        {
+            return;
+        }
+        Set<String> sourceLocs = source.getInterpolationLocations();
+        if ( sourceLocs == null )
+        {
+            return;
+        }
+        Set<String> targetLocs = target.getInterpolationLocations();
+        if ( targetLocs == null )
+        {
+            targetLocs = new HashSet<>();
+            target.setInterpolationLocations( targetLocs );
+        }
+        String targetCur = targetPath.peekLast();
+        String targetLoc = targetCur != null ? targetCur + "/" + tgt : tgt;
+        String sourceCur = sourcePath.peekLast();
+        String sourceLoc = sourceCur != null ? sourceCur + "/" + src : src;
+        for ( String entry : sourceLocs )
+        {
+            if ( entry.startsWith( sourceLoc ) )
+            {
+                targetLocs.add( entry.replace( sourceLoc, targetLoc ) );
+            }
+        }
+    }
+
+    protected void move( Map<Object, Object> context, String path,
+                         Map<Integer, Integer> tgtInd, Map<Integer, Integer> srcInd )
+    {
+        ModelBase target = (ModelBase) context.get( "org.apache.maven.model.target" );
+        ModelBase source = (ModelBase) context.get( "org.apache.maven.model.source" );
+        Deque<String> targetPath = (Deque<String>) context.get( "org.apache.maven.model.target.path" );
+        Deque<String> sourcePath = (Deque<String>) context.get( "org.apache.maven.model.source.path" );
+        if ( target == null || source == null || targetPath == null || sourcePath == null )
+        {
+            return;
+        }
+        Set<String> dstLocs = target.getInterpolationLocations();
+        if ( dstLocs == null )
+        {
+            dstLocs = new HashSet<>();
+            target.setInterpolationLocations( dstLocs );
+        }
+        Set<String> srcLocs = source.getInterpolationLocations();
+        Set<String> tgtLocs = new HashSet<>( target.getInterpolationLocations() );
+
+        String sourceCur = sourcePath.peekLast();
+        String sourceLoc = sourceCur != null ? sourceCur + "/" + path : path;
+        String targetCur = targetPath.peekLast();
+        String targetLoc = targetCur != null ? targetCur + "/" + path : path;
+
+        for ( String entry : tgtLocs )
+        {
+            if ( entry.startsWith( targetLoc + "[" ) )
+            {
+                dstLocs.remove( entry );
+            }
+        }
+        if ( srcLocs != null )
+        {
+            for ( Map.Entry<Integer, Integer> e : srcInd.entrySet() )
+            {
+                String srcLoc = sourceLoc + "[" + e.getKey() + "]";
+                for ( String entry : srcLocs )
+                {
+                    if ( entry.startsWith( srcLoc ) )
+                    {
+                        dstLocs.add( entry.replace( srcLoc, targetLoc + "[" + e.getValue() + "]" ) );
+                    }
+                }
+            }
+        }
+        if ( tgtLocs != null )
+        {
+            for ( Map.Entry<Integer, Integer> e : tgtInd.entrySet() )
+            {
+                String tgtLoc = targetLoc + "[" + e.getKey() + "]";
+                for ( String entry : tgtLocs )
+                {
+                    if ( entry.startsWith( tgtLoc ) )
+                    {
+                        dstLocs.add( entry.replace( tgtLoc, targetLoc + "[" + e.getValue() + "]" ) );
+                    }
+                }
+            }
+        }
+    }
+
+    private <T> int indexOf( Collection<T> col, T item )
+    {
+        int i = 0;
+        for ( T t : col )
+        {
+            if ( t == item )
+            {
+                return i;
+            }
+            i++;
+        }
+        throw new IllegalStateException();
     }
 
     protected void mergeModel_ModelVersion( Model target, Model source, boolean sourceDominant,
@@ -159,6 +344,7 @@ public class ModelMerger
             {
                 target.setModelVersion( src );
                 target.setLocation( "modelVersion", source.getLocation( "modelVersion" ) );
+                move( context, "modelVersion" );
             }
         }
     }
@@ -175,7 +361,9 @@ public class ModelMerger
                 tgt.setRelativePath( null );
                 target.setParent( tgt );
             }
+            push( context, "parent" );
             mergeParent( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -189,6 +377,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -203,6 +392,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -218,6 +408,7 @@ public class ModelMerger
                 target.setChildProjectUrlInheritAppendPath( src );
                 target.setLocation( "child.project.url.inherit.append.path",
                                     source.getLocation( "child.project.url.inherit.append.path" ) );
+                move( context, "childProjectUrlInheritAppendPath" );
             }
         }
     }
@@ -232,6 +423,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -246,6 +438,7 @@ public class ModelMerger
             {
                 target.setPackaging( src );
                 target.setLocation( "packaging", source.getLocation( "packaging" ) );
+                move( context, "packaging" );
             }
         }
     }
@@ -259,6 +452,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -273,6 +467,7 @@ public class ModelMerger
             {
                 target.setDescription( src );
                 target.setLocation( "description", source.getLocation( "description" ) );
+                move( context, "description" );
             }
         }
     }
@@ -286,6 +481,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -300,6 +496,7 @@ public class ModelMerger
             {
                 target.setInceptionYear( src );
                 target.setLocation( "inceptionYear", source.getLocation( "inceptionYear" ) );
+                move( context, "inceptionYear" );
             }
         }
     }
@@ -316,7 +513,9 @@ public class ModelMerger
                 tgt = new Organization();
                 target.setOrganization( tgt );
             }
+            push( context, "organization" );
             mergeOrganization( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -341,6 +540,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "licenses", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -369,6 +569,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "mailingLists", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -397,6 +598,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "developers", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -425,6 +627,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "contributors", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -444,7 +647,9 @@ public class ModelMerger
                 tgt = new IssueManagement();
                 target.setIssueManagement( tgt );
             }
+            push( context, "issueManagement" );
             mergeIssueManagement( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -460,7 +665,9 @@ public class ModelMerger
                 tgt.setTag( null );
                 target.setScm( tgt );
             }
+            push( context, "scm" );
             mergeScm( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -476,7 +683,9 @@ public class ModelMerger
                 tgt = new CiManagement();
                 target.setCiManagement( tgt );
             }
+            push( context, "ciManagement" );
             mergeCiManagement( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -493,7 +702,9 @@ public class ModelMerger
                 tgt.setMaven( null );
                 target.setPrerequisites( tgt );
             }
+            push( context, "prerequisites" );
             mergePrerequisites( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -508,7 +719,9 @@ public class ModelMerger
                 tgt = new Build();
                 target.setBuild( tgt );
             }
+            push( context, "build" );
             mergeBuild( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -533,6 +746,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "profiles", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -588,6 +802,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "dependencies", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -616,6 +831,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "repositories", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -644,6 +860,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "pluginRepositories", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -663,7 +880,9 @@ public class ModelMerger
                 tgt = new DistributionManagement();
                 target.setDistributionManagement( tgt );
             }
+            push( context, "distributionManagement" );
             mergeDistributionManagement( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -679,7 +898,9 @@ public class ModelMerger
                 tgt = new Reporting();
                 target.setReporting( tgt );
             }
+            push( context, "reporting" );
             mergeReporting( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -695,7 +916,9 @@ public class ModelMerger
                 tgt = new DependencyManagement();
                 target.setDependencyManagement( tgt );
             }
+            push( context, "dependencyManagement" );
             mergeDependencyManagement( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -716,6 +939,7 @@ public class ModelMerger
         target.setProperties( merged );
         target.setLocation( "properties", InputLocation.merge( target.getLocation( "properties" ),
                                                                source.getLocation( "properties" ), sourceDominant ) );
+        move( context, "properties" );
     }
 
     protected void mergeDistributionManagement( DistributionManagement target, DistributionManagement source,
@@ -741,7 +965,9 @@ public class ModelMerger
                 tgt = new DeploymentRepository();
                 target.setRepository( tgt );
             }
+            push( context, "repository" );
             mergeDeploymentRepository( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -759,7 +985,9 @@ public class ModelMerger
                 tgt = new DeploymentRepository();
                 target.setSnapshotRepository( tgt );
             }
+            push( context, "snapshotRepository" );
             mergeDeploymentRepository( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -775,7 +1003,9 @@ public class ModelMerger
                 tgt = new Site();
                 target.setSite( tgt );
             }
+            push( context, "site" );
             mergeSite( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -789,6 +1019,7 @@ public class ModelMerger
             {
                 target.setStatus( src );
                 target.setLocation( "status", source.getLocation( "status" ) );
+                move( context, "status" );
             }
         }
     }
@@ -804,6 +1035,7 @@ public class ModelMerger
             {
                 target.setDownloadUrl( src );
                 target.setLocation( "downloadUrl", source.getLocation( "downloadUrl" ) );
+                move( context, "downloadUrl" );
             }
         }
     }
@@ -827,6 +1059,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -841,6 +1074,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -855,6 +1089,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -869,6 +1104,7 @@ public class ModelMerger
             {
                 target.setMessage( src );
                 target.setLocation( "message", source.getLocation( "message" ) );
+                move( context, "message" );
             }
         }
     }
@@ -887,6 +1123,7 @@ public class ModelMerger
         {
             target.setUniqueVersion( source.isUniqueVersion() );
             target.setLocation( "uniqueVersion", source.getLocation( "uniqueVersion" ) );
+            move( context, "uniqueVersion" );
         }
     }
 
@@ -909,6 +1146,7 @@ public class ModelMerger
                 target.setChildSiteUrlInheritAppendPath( src );
                 target.setLocation( "child.site.url.inherit.append.path",
                                     source.getLocation( "child.site.url.inherit.append.path" ) );
+                move( context, "childSiteUrlInheritAppendPath" );
             }
         }
     }
@@ -922,6 +1160,7 @@ public class ModelMerger
             {
                 target.setId( src );
                 target.setLocation( "id", source.getLocation( "id" ) );
+                move( context, "id" );
             }
         }
     }
@@ -935,6 +1174,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -948,6 +1188,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -972,7 +1213,9 @@ public class ModelMerger
                 tgt = new RepositoryPolicy();
                 target.setReleases( tgt );
             }
+            push( context, "releases" );
             mergeRepositoryPolicy( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -988,7 +1231,9 @@ public class ModelMerger
                 tgt = new RepositoryPolicy();
                 target.setSnapshots( tgt );
             }
+            push( context, "snapshots" );
             mergeRepositoryPolicy( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -1011,6 +1256,7 @@ public class ModelMerger
             {
                 target.setId( src );
                 target.setLocation( "id", source.getLocation( "id" ) );
+                move( context, "id" );
             }
         }
     }
@@ -1025,6 +1271,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -1039,6 +1286,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -1053,6 +1301,7 @@ public class ModelMerger
             {
                 target.setLayout( src );
                 target.setLocation( "layout", source.getLocation( "layout" ) );
+                move( context, "layout" );
             }
         }
     }
@@ -1075,6 +1324,7 @@ public class ModelMerger
             {
                 target.setEnabled( src );
                 target.setLocation( "enabled", source.getLocation( "enabled" ) );
+                move( context, "enabled" );
             }
         }
     }
@@ -1089,6 +1339,7 @@ public class ModelMerger
             {
                 target.setUpdatePolicy( src );
                 target.setLocation( "updatePolicy", source.getLocation( "updatePolicy" ) );
+                move( context, "updatePolicy" );
             }
         }
     }
@@ -1103,6 +1354,7 @@ public class ModelMerger
             {
                 target.setChecksumPolicy( src );
                 target.setLocation( "checksumPolicy", source.getLocation( "checksumPolicy" ) );
+                move( context, "checksumPolicy" );
             }
         }
     }
@@ -1131,6 +1383,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -1145,6 +1398,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -1159,6 +1413,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -1173,6 +1428,7 @@ public class ModelMerger
             {
                 target.setType( src );
                 target.setLocation( "type", source.getLocation( "type" ) );
+                move( context, "type" );
             }
         }
     }
@@ -1187,6 +1443,7 @@ public class ModelMerger
             {
                 target.setClassifier( src );
                 target.setLocation( "classifier", source.getLocation( "classifier" ) );
+                move( context, "classifier" );
             }
         }
     }
@@ -1201,6 +1458,7 @@ public class ModelMerger
             {
                 target.setScope( src );
                 target.setLocation( "scope", source.getLocation( "scope" ) );
+                move( context, "scope" );
             }
         }
     }
@@ -1215,6 +1473,7 @@ public class ModelMerger
             {
                 target.setSystemPath( src );
                 target.setLocation( "systemPath", source.getLocation( "systemPath" ) );
+                move( context, "systemPath" );
             }
         }
     }
@@ -1229,6 +1488,7 @@ public class ModelMerger
             {
                 target.setOptional( src );
                 target.setLocation( "optional", source.getLocation( "optional" ) );
+                move( context, "optional" );
             }
         }
     }
@@ -1255,6 +1515,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "exclusions", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -1315,6 +1576,7 @@ public class ModelMerger
             {
                 target.setOutputDirectory( src );
                 target.setLocation( "outputDirectory", source.getLocation( "outputDirectory" ) );
+                move( context, "outputDirectory" );
             }
         }
     }
@@ -1329,6 +1591,7 @@ public class ModelMerger
             {
                 target.setExcludeDefaults( src );
                 target.setLocation( "excludeDefaults", source.getLocation( "excludeDefaults" ) );
+                move( context, "excludeDefaults" );
             }
         }
     }
@@ -1355,6 +1618,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "plugins", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -1382,6 +1646,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -1396,6 +1661,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -1410,6 +1676,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -1435,6 +1702,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "reportSets", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -1460,6 +1728,7 @@ public class ModelMerger
             {
                 target.setId( src );
                 target.setLocation( "id", source.getLocation( "id" ) );
+                move( context, "id" );
             }
         }
     }
@@ -1523,6 +1792,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "dependencies", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -1548,6 +1818,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -1562,6 +1833,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -1576,6 +1848,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -1590,6 +1863,7 @@ public class ModelMerger
             {
                 target.setRelativePath( src );
                 target.setLocation( "relativePath", source.getLocation( "relativePath" ) );
+                move( context, "relativePath" );
             }
         }
     }
@@ -1611,6 +1885,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -1625,6 +1900,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -1647,6 +1923,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -1661,6 +1938,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -1675,6 +1953,7 @@ public class ModelMerger
             {
                 target.setDistribution( src );
                 target.setLocation( "distribution", source.getLocation( "distribution" ) );
+                move( context, "distribution" );
             }
         }
     }
@@ -1689,6 +1968,7 @@ public class ModelMerger
             {
                 target.setComments( src );
                 target.setLocation( "comments", source.getLocation( "comments" ) );
+                move( context, "comments" );
             }
         }
     }
@@ -1713,6 +1993,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -1727,6 +2008,7 @@ public class ModelMerger
             {
                 target.setSubscribe( src );
                 target.setLocation( "subscribe", source.getLocation( "subscribe" ) );
+                move( context, "subscribe" );
             }
         }
     }
@@ -1741,6 +2023,7 @@ public class ModelMerger
             {
                 target.setUnsubscribe( src );
                 target.setLocation( "unsubscribe", source.getLocation( "unsubscribe" ) );
+                move( context, "unsubscribe" );
             }
         }
     }
@@ -1755,6 +2038,7 @@ public class ModelMerger
             {
                 target.setPost( src );
                 target.setLocation( "post", source.getLocation( "post" ) );
+                move( context, "post" );
             }
         }
     }
@@ -1769,6 +2053,7 @@ public class ModelMerger
             {
                 target.setArchive( src );
                 target.setLocation( "archive", source.getLocation( "archive" ) );
+                move( context, "archive" );
             }
         }
     }
@@ -1783,6 +2068,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "otherArchives", tgt.size() + i, i );
+            }
             target.setOtherArchives( merged );
         }
     }
@@ -1804,6 +2093,7 @@ public class ModelMerger
             {
                 target.setId( src );
                 target.setLocation( "id", source.getLocation( "id" ) );
+                move( context, "id" );
             }
         }
     }
@@ -1831,6 +2121,7 @@ public class ModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
+                move( context, "name" );
             }
         }
     }
@@ -1845,6 +2136,7 @@ public class ModelMerger
             {
                 target.setEmail( src );
                 target.setLocation( "email", source.getLocation( "email" ) );
+                move( context, "email" );
             }
         }
     }
@@ -1859,6 +2151,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -1873,6 +2166,7 @@ public class ModelMerger
             {
                 target.setOrganization( src );
                 target.setLocation( "organization", source.getLocation( "organization" ) );
+                move( context, "organization" );
             }
         }
     }
@@ -1887,6 +2181,7 @@ public class ModelMerger
             {
                 target.setOrganizationUrl( src );
                 target.setLocation( "organizationUrl", source.getLocation( "organizationUrl" ) );
+                move( context, "organizationUrl" );
             }
         }
     }
@@ -1901,6 +2196,7 @@ public class ModelMerger
             {
                 target.setTimezone( src );
                 target.setLocation( "timezone", source.getLocation( "timezone" ) );
+                move( context, "timezone" );
             }
         }
     }
@@ -1915,6 +2211,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "roles", tgt.size() + i, i );
+            }
             target.setRoles( merged );
         }
     }
@@ -1922,6 +2222,7 @@ public class ModelMerger
     protected void mergeContributor_Properties( Contributor target, Contributor source, boolean sourceDominant,
                                                 Map<Object, Object> context )
     {
+        // TODO: ZZZ
         Properties merged = new Properties();
         if ( sourceDominant )
         {
@@ -1955,6 +2256,7 @@ public class ModelMerger
             {
                 target.setSystem( src );
                 target.setLocation( "system", source.getLocation( "system" ) );
+                move( context, "system" );
             }
         }
     }
@@ -1969,6 +2271,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -1995,6 +2298,7 @@ public class ModelMerger
                 target.setChildScmConnectionInheritAppendPath( src );
                 target.setLocation( "child.scm.connection.inherit.append.path",
                                     source.getLocation( "child.scm.connection.inherit.append.path" ) );
+                move( context, "childScmConnectionInheritAppendPath" );
             }
         }
     }
@@ -2011,6 +2315,7 @@ public class ModelMerger
                 target.setChildScmDeveloperConnectionInheritAppendPath( src );
                 target.setLocation( "child.scm.developerConnection.inherit.append.path",
                                     source.getLocation( "child.scm.developerConnection.inherit.append.path" ) );
+                move( context, "childScmDeveloperConnectionInheritAppendPath" );
             }
         }
     }
@@ -2026,6 +2331,7 @@ public class ModelMerger
                 target.setChildScmUrlInheritAppendPath( src );
                 target.setLocation( "child.scm.url.inherit.append.path",
                                     source.getLocation( "child.scm.url.inherit.append.path" ) );
+                move( context, "childScmUrlInheritAppendPath" );
             }
         }
     }
@@ -2039,6 +2345,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -2052,6 +2359,7 @@ public class ModelMerger
             {
                 target.setConnection( src );
                 target.setLocation( "connection", source.getLocation( "connection" ) );
+                move( context, "connection" );
             }
         }
     }
@@ -2066,6 +2374,7 @@ public class ModelMerger
             {
                 target.setDeveloperConnection( src );
                 target.setLocation( "developerConnection", source.getLocation( "developerConnection" ) );
+                move( context, "developerConnection" );
             }
         }
     }
@@ -2079,6 +2388,7 @@ public class ModelMerger
             {
                 target.setTag( src );
                 target.setLocation( "tag", source.getLocation( "tag" ) );
+                move( context, "tag" );
             }
         }
     }
@@ -2101,6 +2411,7 @@ public class ModelMerger
             {
                 target.setSystem( src );
                 target.setLocation( "system", source.getLocation( "system" ) );
+                move( context, "system" );
             }
         }
     }
@@ -2115,6 +2426,7 @@ public class ModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
+                move( context, "url" );
             }
         }
     }
@@ -2140,6 +2452,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "notifiers", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2168,6 +2481,7 @@ public class ModelMerger
             if ( sourceDominant || target.getType() == null )
             {
                 target.setType( src );
+                move( context, "type" );
             }
         }
     }
@@ -2181,6 +2495,7 @@ public class ModelMerger
             if ( sourceDominant || target.getAddress() == null )
             {
                 target.setAddress( src );
+                move( context, "address" );
             }
         }
     }
@@ -2188,6 +2503,7 @@ public class ModelMerger
     protected void mergeNotifier_Configuration( Notifier target, Notifier source, boolean sourceDominant,
                                                 Map<Object, Object> context )
     {
+        // TODO: ZZZ
         Properties merged = new Properties();
         if ( sourceDominant )
         {
@@ -2208,6 +2524,7 @@ public class ModelMerger
         if ( sourceDominant )
         {
             target.setSendOnError( source.isSendOnError() );
+            move( context, "sendOnError" );
         }
     }
 
@@ -2217,6 +2534,7 @@ public class ModelMerger
         if ( sourceDominant )
         {
             target.setSendOnFailure( source.isSendOnFailure() );
+            move( context, "sendOnFailure" );
         }
     }
 
@@ -2226,6 +2544,7 @@ public class ModelMerger
         if ( sourceDominant )
         {
             target.setSendOnSuccess( source.isSendOnSuccess() );
+            move( context, "sendOnSuccess" );
         }
     }
 
@@ -2235,6 +2554,7 @@ public class ModelMerger
         if ( sourceDominant )
         {
             target.setSendOnWarning( source.isSendOnWarning() );
+            move( context, "sendOnWarning" );
         }
     }
 
@@ -2254,6 +2574,7 @@ public class ModelMerger
             {
                 target.setMaven( src );
                 target.setLocation( "maven", source.getLocation( "maven" ) );
+                move( context, "maven" );
             }
         }
     }
@@ -2279,6 +2600,7 @@ public class ModelMerger
             {
                 target.setSourceDirectory( src );
                 target.setLocation( "sourceDirectory", source.getLocation( "sourceDirectory" ) );
+                move( context, "sourceDirectory" );
             }
         }
     }
@@ -2293,6 +2615,7 @@ public class ModelMerger
             {
                 target.setScriptSourceDirectory( src );
                 target.setLocation( "scriptSourceDirectory", source.getLocation( "scriptSourceDirectory" ) );
+                move( context, "scriptSourceDirectory" );
             }
         }
     }
@@ -2307,6 +2630,7 @@ public class ModelMerger
             {
                 target.setTestSourceDirectory( src );
                 target.setLocation( "testSourceDirectory", source.getLocation( "testSourceDirectory" ) );
+                move( context, "testSourceDirectory" );
             }
         }
     }
@@ -2321,6 +2645,7 @@ public class ModelMerger
             {
                 target.setOutputDirectory( src );
                 target.setLocation( "outputDirectory", source.getLocation( "outputDirectory" ) );
+                move( context, "outputDirectory" );
             }
         }
     }
@@ -2335,6 +2660,7 @@ public class ModelMerger
             {
                 target.setTestOutputDirectory( src );
                 target.setLocation( "testOutputDirectory", source.getLocation( "testOutputDirectory" ) );
+                move( context, "testOutputDirectory" );
             }
         }
     }
@@ -2360,6 +2686,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "extensions", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2385,6 +2712,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -2399,6 +2727,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -2413,6 +2742,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -2439,6 +2769,7 @@ public class ModelMerger
             {
                 target.setDefaultGoal( src );
                 target.setLocation( "defaultGoal", source.getLocation( "defaultGoal" ) );
+                move( context, "defaultGoal" );
             }
         }
     }
@@ -2453,6 +2784,7 @@ public class ModelMerger
             {
                 target.setDirectory( src );
                 target.setLocation( "directory", source.getLocation( "directory" ) );
+                move( context, "directory" );
             }
         }
     }
@@ -2467,6 +2799,7 @@ public class ModelMerger
             {
                 target.setFinalName( src );
                 target.setLocation( "finalName", source.getLocation( "finalName" ) );
+                move( context, "finalName" );
             }
         }
     }
@@ -2481,6 +2814,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "filters", tgt.size() + i, i );
+            }
             target.setFilters( merged );
         }
     }
@@ -2506,6 +2843,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "resources", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2534,6 +2872,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "testResources", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2560,7 +2899,9 @@ public class ModelMerger
                 tgt = new PluginManagement();
                 target.setPluginManagement( tgt );
             }
+            push( context, "pluginManagement" );
             mergePluginManagement( tgt, src, sourceDominant, context );
+            pop( context );
         }
     }
 
@@ -2591,6 +2932,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "plugins", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2625,6 +2967,7 @@ public class ModelMerger
             {
                 target.setGroupId( src );
                 target.setLocation( "groupId", source.getLocation( "groupId" ) );
+                move( context, "groupId" );
             }
         }
     }
@@ -2639,6 +2982,7 @@ public class ModelMerger
             {
                 target.setArtifactId( src );
                 target.setLocation( "artifactId", source.getLocation( "artifactId" ) );
+                move( context, "artifactId" );
             }
         }
     }
@@ -2653,6 +2997,7 @@ public class ModelMerger
             {
                 target.setVersion( src );
                 target.setLocation( "version", source.getLocation( "version" ) );
+                move( context, "version" );
             }
         }
     }
@@ -2667,6 +3012,7 @@ public class ModelMerger
             {
                 target.setExtensions( src );
                 target.setLocation( "extensions", source.getLocation( "extensions" ) );
+                move( context, "extensions" );
             }
         }
     }
@@ -2692,6 +3038,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "dependencies", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2722,6 +3069,7 @@ public class ModelMerger
                 if ( sourceDominant || !merged.containsKey( key ) )
                 {
                     merged.put( key, element );
+                    move( context, "executions", indexOf( merged.values(), element ), indexOf( src, element ) );
                 }
             }
 
@@ -2746,6 +3094,7 @@ public class ModelMerger
             {
                 target.setInherited( src );
                 target.setLocation( "inherited", source.getLocation( "inherited" ) );
+                move( context, "inherited" );
             }
         }
     }
@@ -2767,6 +3116,7 @@ public class ModelMerger
                 tgt = Xpp3Dom.mergeXpp3Dom( tgt, src );
             }
             target.setConfiguration( tgt );
+            move( context, "configuration" );
         }
     }
 
@@ -2789,6 +3139,7 @@ public class ModelMerger
             {
                 target.setId( src );
                 target.setLocation( "id", source.getLocation( "id" ) );
+                move( context, "id" );
             }
         }
     }
@@ -2803,6 +3154,7 @@ public class ModelMerger
             {
                 target.setPhase( src );
                 target.setLocation( "phase", source.getLocation( "phase" ) );
+                move( context, "phase" );
             }
         }
     }
@@ -2817,6 +3169,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "goals", tgt.size() + i, i );
+            }
             target.setGoals( merged );
         }
     }
@@ -2840,6 +3196,7 @@ public class ModelMerger
             {
                 target.setTargetPath( src );
                 target.setLocation( "targetPath", source.getLocation( "targetPath" ) );
+                move( context, "targetPath" );
             }
         }
     }
@@ -2854,6 +3211,7 @@ public class ModelMerger
             {
                 target.setFiltering( src );
                 target.setLocation( "filtering", source.getLocation( "filtering" ) );
+                move( context, "filtering" );
             }
         }
     }
@@ -2867,6 +3225,7 @@ public class ModelMerger
             if ( sourceDominant || target.getMergeId() == null )
             {
                 target.setMergeId( src );
+                move( context, "mergeId" );
             }
         }
     }
@@ -2887,6 +3246,7 @@ public class ModelMerger
             {
                 target.setDirectory( src );
                 target.setLocation( "directory", source.getLocation( "directory" ) );
+                move( context, "directory" );
             }
         }
     }
@@ -2908,6 +3268,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "includes", tgt.size() + i, i );
+            }
             target.setIncludes( merged );
         }
     }
@@ -2922,6 +3286,10 @@ public class ModelMerger
             List<String> merged = new ArrayList<>( tgt.size() + src.size() );
             merged.addAll( tgt );
             merged.addAll( src );
+            for ( int i = 0; i < src.size(); i++ )
+            {
+                move( context, "excludes", tgt.size() + i, i );
+            }
             target.setExcludes( merged );
         }
     }

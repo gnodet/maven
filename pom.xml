@@ -55,14 +55,14 @@ under the License.
     <junitVersion>4.12</junitVersion>
     <mockitoVersion>2.21.0</mockitoVersion>
     <plexusVersion>2.0.0</plexusVersion>
-    <plexusInterpolationVersion>1.25</plexusInterpolationVersion>
+    <plexusInterpolationVersion>1.26-SNAPSHOT</plexusInterpolationVersion>
     <plexusUtilsVersion>3.2.0</plexusUtilsVersion>
     <guiceVersion>4.2.1</guiceVersion>
     <sisuInjectVersion>0.3.3</sisuInjectVersion>
     <wagonVersion>3.3.3</wagonVersion>
     <securityDispatcherVersion>1.4</securityDispatcherVersion>
     <cipherVersion>1.7</cipherVersion>
-    <modelloVersion>1.11</modelloVersion>
+    <modelloVersion>1.12-SNAPSHOT</modelloVersion>
     <jxpathVersion>1.3</jxpathVersion>
     <resolverVersion>1.4.0</resolverVersion>
     <slf4jVersion>1.7.25</slf4jVersion>

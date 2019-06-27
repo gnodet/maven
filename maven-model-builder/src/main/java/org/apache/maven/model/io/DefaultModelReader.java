@@ -26,16 +26,20 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.InputSource;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3ReaderEx;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -98,6 +102,73 @@ public class DefaultModelReader
         return (InputSource) value;
     }
 
+    private static class AbstractTransformer
+    {
+
+        final Set<String> locations;
+
+        AbstractTransformer( Set<String> locations )
+        {
+            this.locations = locations;
+        }
+
+        public String transform( String source, String fieldName )
+        {
+            doTransform( source, fieldName );
+            return source;
+        }
+
+        private void doTransform( String source, String fieldName )
+        {
+            if ( source.contains( "${" ) )
+            {
+                locations.add( fieldName );
+            }
+        }
+
+        public Xpp3Dom transform( Xpp3Dom source, String fieldName )
+        {
+            doTransform( source, fieldName );
+            return source;
+        }
+
+        private void doTransform( Xpp3Dom source, String fieldName )
+        {
+            if ( source.getValue() != null )
+            {
+                doTransform( source.getValue(), fieldName );
+            }
+            for ( String attr : source.getAttributeNames() )
+            {
+                String value = source.getAttribute( attr );
+                doTransform( value, fieldName + "/@" + attr );
+            }
+            for ( Xpp3Dom child : source.getChildren() )
+            {
+                int idx = 0, nb = 0;
+                for ( Xpp3Dom c : source.getChildren() )
+                {
+                    if ( c.getName().equals( child.getName() ) )
+                    {
+                        if ( c == child )
+                        {
+                            idx = nb;
+                        }
+                        nb++;
+                    }
+                }
+                if ( nb > 1 )
+                {
+                    doTransform( child, fieldName + "/" + child.getName() + "[" + idx + "]" );
+                }
+                else
+                {
+                    doTransform( child, fieldName + "/" + child.getName() );
+                }
+            }
+        }
+    }
+
     private Model read( Reader reader, boolean strict, InputSource source )
         throws IOException
     {
@@ -105,11 +176,69 @@ public class DefaultModelReader
         {
             if ( source != null )
             {
-                return new MavenXpp3ReaderEx().read( reader, strict, source );
+                final Set<String> locations = new TreeSet<>();
+                class Transformer extends AbstractTransformer implements MavenXpp3ReaderEx.ContentTransformer
+                {
+                    private Transformer( Set<String> locations )
+                    {
+                        super( locations );
+                    }
+                }
+                Model model = new MavenXpp3ReaderEx( new Transformer( locations ) ).read( reader, strict, source );
+                for ( Profile profile : model.getProfiles() )
+                {
+                    profile.setInterpolationLocations( new TreeSet<String>() );
+                }
+                for ( String location : locations )
+                {
+                    if ( location.startsWith( "project/profiles[" ) )
+                    {
+                        for ( int idx = 0; idx < model.getProfiles().size(); idx++ )
+                        {
+                            String key = "project/profiles[" + idx + "]";
+                            if ( location.startsWith( key ) )
+                            {
+                                model.getProfiles().get( idx ).getInterpolationLocations()
+                                        .add( location.replace( key, "profile" ) );
+                            }
+                        }
+                    }
+                }
+                model.setInterpolationLocations( locations );
+                return model;
             }
             else
             {
-                return new MavenXpp3Reader().read( reader, strict );
+                final Set<String> locations = new TreeSet<>();
+                class Transformer extends AbstractTransformer implements MavenXpp3Reader.ContentTransformer
+                {
+                    private Transformer( Set<String> locations )
+                    {
+                        super( locations );
+                    }
+                }
+                Model model = new MavenXpp3Reader( new Transformer( locations ) ).read( reader, strict );
+                for ( Profile profile : model.getProfiles() )
+                {
+                    profile.setInterpolationLocations( new TreeSet<String>() );
+                }
+                for ( String location : locations )
+                {
+                    if ( location.startsWith( "project/profiles[" ) )
+                    {
+                        for ( int idx = 0; idx < model.getProfiles().size(); idx++ )
+                        {
+                            String key = "project/profiles[" + idx + "]";
+                            if ( location.startsWith( key ) )
+                            {
+                                model.getProfiles().get( idx ).getInterpolationLocations()
+                                        .add( location.replace( key, "profile" ) );
+                            }
+                        }
+                    }
+                }
+                model.setInterpolationLocations( locations );
+                return model;
             }
         }
         catch ( XmlPullParserException e )
