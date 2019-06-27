@@ -67,6 +67,9 @@ public class DefaultPluginManagementInjector
 
         public void mergeManagedBuildPlugins( Model model )
         {
+            init( model, model );
+            push( "build" );
+            pushSource( "pluginManagement" );
             Build build = model.getBuild();
             if ( build != null )
             {

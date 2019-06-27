@@ -19,14 +19,11 @@ package org.apache.maven.model.profile;
  * under the License.
  */
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -87,24 +84,15 @@ public class DefaultProfileInjector
 
         public void mergeModelBase( ModelBase target, ModelBase source )
         {
-            Map<Object, Object> context = new HashMap<>();
-            context.put( "org.apache.maven.model.target", target );
-            context.put( "org.apache.maven.model.source", source );
-            context.put( "org.apache.maven.model.target.path", new ArrayDeque<>( Arrays.asList( "project" ) ) );
-            context.put( "org.apache.maven.model.source.path", new ArrayDeque<>( Arrays.asList( "profile" ) ) );
-
-            mergeModelBase( target, source, true, context );
+            init( target, source );
+            mergeModelBase( target, source, true, Collections.emptyMap() );
         }
 
         public void mergeBuildBase( Model target, Profile source )
         {
-            Map<Object, Object> context = new HashMap<>();
-            context.put( "org.apache.maven.model.target", target );
-            context.put( "org.apache.maven.model.source", source );
-            context.put( "org.apache.maven.model.target.path", new ArrayDeque<>( Arrays.asList( "project/build" ) ) );
-            context.put( "org.apache.maven.model.source.path", new ArrayDeque<>( Arrays.asList( "profile/build" ) ) );
-
-            mergeBuildBase( target.getBuild(), source.getBuild(), true, context );
+            init( target, source );
+            push( "build" );
+            mergeBuildBase( target.getBuild(), source.getBuild(), true, Collections.emptyMap() );
         }
 
         @Override
@@ -159,27 +147,7 @@ public class DefaultProfileInjector
 
                 target.setPlugins( result );
 
-                Map<Integer, Integer> tgtInd = new HashMap<>();
-                Map<Integer, Integer> srcInd = new HashMap<>();
-                for ( int dstIdx = 0; dstIdx < result.size(); dstIdx++ )
-                {
-                    Object key = getPluginKey( result.get( dstIdx ) );
-                    for ( int srcIdx = 0; srcIdx < src.size(); srcIdx++ )
-                    {
-                        if ( Objects.equals( getPluginKey( src.get( srcIdx ) ), key ) )
-                        {
-                            srcInd.put( srcIdx, dstIdx );
-                        }
-                    }
-                    for ( int tgtIdx = 0; tgtIdx < tgt.size(); tgtIdx++ )
-                    {
-                        if ( Objects.equals( getPluginKey( tgt.get( tgtIdx ) ), key ) )
-                        {
-                            tgtInd.put( tgtIdx, dstIdx );
-                        }
-                    }
-                }
-                move( context, "plugins", result, tgt, src, new PluginKeyComputer() );
+                move( "plugins", result, tgt, src, new PluginKeyComputer() );
             }
         }
 

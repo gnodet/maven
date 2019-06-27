@@ -359,8 +359,7 @@
     private void cloneHook( Model copy )
     {
         copy.pomFile = pomFile;
-        copy.interpolationLocations = interpolationLocations != null
-            ? new java.util.TreeSet<String>( interpolationLocations ) : null;
+        copy.interpolations = interpolations != null ? interpolations.clone() : null;
     }
 
     /**
@@ -571,20 +570,22 @@
           <code>
             <![CDATA[
 
-    java.util.SortedSet<String> interpolationLocations;
+    Interpolations interpolations;
 
     /**
      * Returns a map containing all locations that need some interpolations.
      */
-    public java.util.SortedSet<String> getInterpolationLocations() {
-        return interpolationLocations;
+    public Interpolations getInterpolations()
+    {
+        return interpolations;
     }
 
     /**
      * Sets the map containing all locations that need some interpolations.
      */
-    public void setInterpolationLocations(java.util.SortedSet<String> interpolationLocations) {
-        this.interpolationLocations = interpolationLocations;
+    public void setInterpolations( Interpolations interpolations )
+    {
+        this.interpolations = interpolations;
     }
 
             ]]>
@@ -2652,8 +2653,7 @@
             <![CDATA[
     private void cloneHook( Profile copy )
     {
-        copy.interpolationLocations = interpolationLocations != null
-            ? new java.util.TreeSet<String>( interpolationLocations ) : null;
+        copy.interpolations = interpolations != null ? interpolations.clone() : null;
     }
             ]]>
           </code>

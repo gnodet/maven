@@ -224,7 +224,7 @@ public class DefaultInheritanceAssembler
             target.setLocation( "properties",
                                 InputLocation.merge( target.getLocation( "properties" ),
                                                      source.getLocation( "properties" ), sourceDominant ) );
-            move( context, "properties" );
+            move( "properties" );
         }
 
         private void putAll( Map<Object, Object> s, Map<Object, Object> t, Object excludeKey )
@@ -302,7 +302,7 @@ public class DefaultInheritanceAssembler
 
                 target.setPlugins( result );
 
-                move( context, "plugins", result, tgt, src, new PluginKeyComputer() );
+                move( "plugins", result, tgt, src, new PluginKeyComputer() );
             }
         }
 
@@ -361,7 +361,7 @@ public class DefaultInheritanceAssembler
                 List<ReportPlugin> result = new ArrayList<>( merged.values() );
                 target.setPlugins( result );
 
-                move( context, "plugins", result,  tgt, src, new ReportPluginKeyComputer() );
+                move( "plugins", result,  tgt, src, new ReportPluginKeyComputer() );
             }
         }
 

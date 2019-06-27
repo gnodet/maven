@@ -20,7 +20,9 @@ package org.apache.maven.model.interpolation;
  */
 
 import org.apache.maven.model.InputLocation;
+import org.apache.maven.model.Interpolations;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblem.Version;
@@ -89,7 +91,7 @@ public class StringSearchModelInterpolator
 //            Model prev = model.clone();
 
             PrivilegedAction<Object> action;
-            if ( obj == model && model.getInterpolationLocations() != null )
+            if ( obj == model && model.getInterpolations() != null )
             {
 //                new InterpolateObjectAction( prev, valueSources, postProcessors, this, problems ).run();
                 action = new InterpolatedModelAction( model, valueSources, postProcessors, this, problems );
@@ -181,10 +183,151 @@ public class StringSearchModelInterpolator
             this.problems = problems;
         }
 
+        protected void doRun( final Object current, Interpolations interpolations )
+        {
+            for ( Map.Entry<String, Interpolations> entry : interpolations.entrySet() )
+            {
+                String s = entry.getKey();
+                Interpolations v = entry.getValue();
+                String index = null;
+                int bracketIdx = s.indexOf( '[' );
+                if ( bracketIdx > 0 )
+                {
+                    index = s.substring( bracketIdx + 1, s.indexOf( ']' ) );
+                    s = s.substring( 0, bracketIdx );
+                }
+                if ( current instanceof  Xpp3Dom )
+                {
+                    if ( s.startsWith( "@" ) )
+                    {
+                        setXmlAttribute( (Xpp3Dom) current, s.substring( 1 ) );
+                        if ( !v.isEmpty() )
+                        {
+                            throw new IllegalStateException();
+                        }
+                    }
+                    else
+                    {
+                        if ( v != Interpolations.FLAG && index != null )
+                        {
+                            int idx = Integer.parseInt( index );
+                            int nb = -1;
+                            for ( Xpp3Dom child : ( ( Xpp3Dom ) current ).getChildren() )
+                            {
+                                if ( child.getName().equals( s ) )
+                                {
+                                    if ( ++nb == idx )
+                                    {
+                                        doRun( child, v );
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Xpp3Dom next = ( ( Xpp3Dom ) current ).getChild( s );
+                            if ( next == null )
+                            {
+                                // This can sometimes happen when some config was merged
+                                // System.err.println( "Retrieved null for " + s + " in " + location );
+                                break;
+                            }
+                            if ( v == Interpolations.FLAG )
+                            {
+                                setXmlElementValue( next );
+                            }
+                            else
+                            {
+                                doRun( next, v );
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Map<String, Field> cache = FIELDS_CACHE.get( current.getClass() );
+                    if ( cache == null )
+                    {
+                        cache = new HashMap<>();
+                        FIELDS_CACHE.put( current.getClass(), cache );
+                    }
+                    Field field = cache.get( s );
+                    if ( field == null )
+                    {
+                        Class<?> clazz = current.getClass();
+                        while ( field == null && clazz != null )
+                        {
+                            try
+                            {
+                                field = clazz.getDeclaredField( s );
+                            }
+                            catch ( NoSuchFieldException e )
+                            {
+                                clazz = clazz.getSuperclass();
+                            }
+                        }
+                        if ( field == null )
+                        {
+                            throw new RuntimeException( "Unable to find field " + s );
+                        }
+                        field.setAccessible( true );
+                        cache.put( s, field );
+                    }
+                    if ( v != Interpolations.FLAG || index != null )
+                    {
+                        Object next;
+                        try
+                        {
+                            next = field.get( current );
+                        }
+                        catch ( Exception e )
+                        {
+                            throw new RuntimeException( "Unable to get field " + s, e );
+                        }
+                        if ( next == null )
+                        {
+                            // This can sometimes happen when some config was merged
+                            // System.err.println( "Retrieved null for " + s + " in " + location );
+                            break;
+                        }
+                        if ( index != null )
+                        {
+                            if ( v == Interpolations.FLAG )
+                            {
+                                setIndexedValue( next, index );
+                            }
+                            else
+                            {
+                                next = getIndexedValue( next, index );
+                                if ( next == null )
+                                {
+                                    // This can sometimes happen when some config was merged
+                                    // System.err.println( "Retrieved null for " + s + " in " + location );
+                                    break;
+                                }
+                                doRun( next, v );
+                            }
+                        }
+                        else
+                        {
+                            doRun( next, v );
+                        }
+                    }
+                    else
+                    {
+                        setFieldValue( current, field );
+                    }
+                }
+            }
+        }
+
         @Override
         public Object run()
         {
-            for ( String location : project.getInterpolationLocations() )
+            doRun( this, project.getInterpolations() );
+            /*
+            for ( String location : project.getInterpolations() )
             {
                 Object current = this;
                 int cur = 0;
@@ -328,10 +471,11 @@ public class StringSearchModelInterpolator
                     }
                 }
             }
+            */
             return null;
         }
 
-        private void setFieldValue( String location, Object current, Field field )
+        private void setFieldValue( Object current, Field field )
         {
             try
             {
@@ -341,8 +485,7 @@ public class StringSearchModelInterpolator
             }
             catch ( Exception e )
             {
-                throw new RuntimeException(
-                        "Unable to set field " + field.getName() + " in expression " + location, e );
+                throw new RuntimeException( "Unable to set field " + field.getName(), e );
             }
         }
 
@@ -356,7 +499,7 @@ public class StringSearchModelInterpolator
             {
                 current = ( (Map) current ).get( index );
             }
-            else
+            else if ( current != null )
             {
                 throw new IllegalStateException();
             }
@@ -392,11 +535,15 @@ public class StringSearchModelInterpolator
 
         private void setListElement( List current, int idx )
         {
-            String orgv = (String) current.get( idx );
-            if ( orgv != null )
+            Object orgv = current.get( idx );
+            if ( orgv instanceof String )
             {
-                String newv = interpolate( orgv );
+                String newv = interpolate( (String) orgv );
                 current.set( idx, newv );
+            }
+            else if ( !( orgv instanceof Profile ) )
+            {
+                throw new IllegalStateException();
             }
         }
 

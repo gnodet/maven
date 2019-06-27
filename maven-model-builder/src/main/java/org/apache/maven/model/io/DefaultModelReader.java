@@ -26,16 +26,13 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.InputSource;
+import org.apache.maven.model.Interpolations;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3ReaderEx;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -106,11 +103,15 @@ public class DefaultModelReader
     private static class AbstractTransformer
     {
 
-        final Set<String> locations;
+        final Interpolations interpolations = new Interpolations();
 
-        AbstractTransformer( Set<String> locations )
+        AbstractTransformer()
         {
-            this.locations = locations;
+        }
+
+        public Interpolations getInterpolations()
+        {
+            return interpolations;
         }
 
         public String transform( String source, String fieldName )
@@ -123,7 +124,13 @@ public class DefaultModelReader
         {
             if ( source.contains( "${" ) )
             {
-                locations.add( fieldName );
+                String[] paths = fieldName.split( "/" );
+                Interpolations cur = interpolations;
+                for ( int i = 0; i < paths.length - 1; i++ )
+                {
+                    cur = cur.create( paths[ i ] );
+                }
+                cur.put( paths[ paths.length - 1], Interpolations.FLAG );
             }
         }
 
@@ -177,74 +184,40 @@ public class DefaultModelReader
         {
             if ( source != null )
             {
-                final SortedSet<String> locations = new TreeSet<>();
                 class Transformer extends AbstractTransformer implements MavenXpp3ReaderEx.ContentTransformer
                 {
-                    private Transformer( Set<String> locations )
-                    {
-                        super( locations );
-                    }
                 }
-                Model model = new MavenXpp3ReaderEx( new Transformer( locations ) ).read( reader, strict, source );
-                for ( Profile profile : model.getProfiles() )
-                {
-                    profile.setInterpolationLocations( new TreeSet<String>() );
-                }
-                for ( String location : locations )
-                {
-                    if ( location.startsWith( "project/profiles[" ) )
-                    {
-                        for ( int idx = 0; idx < model.getProfiles().size(); idx++ )
-                        {
-                            String key = "project/profiles[" + idx + "]";
-                            if ( location.startsWith( key ) )
-                            {
-                                model.getProfiles().get( idx ).getInterpolationLocations()
-                                        .add( location.replace( key, "profile" ) );
-                            }
-                        }
-                    }
-                }
-                model.setInterpolationLocations( locations );
+                Transformer transformer = new Transformer();
+                Model model = new MavenXpp3ReaderEx( transformer ).read( reader, strict, source );
+                doSetInterpolations( model, transformer.getInterpolations() );
                 return model;
             }
             else
             {
-                final SortedSet<String> locations = new TreeSet<>();
                 class Transformer extends AbstractTransformer implements MavenXpp3Reader.ContentTransformer
                 {
-                    private Transformer( Set<String> locations )
-                    {
-                        super( locations );
-                    }
                 }
-                Model model = new MavenXpp3Reader( new Transformer( locations ) ).read( reader, strict );
-                for ( Profile profile : model.getProfiles() )
-                {
-                    profile.setInterpolationLocations( new TreeSet<String>() );
-                }
-                for ( String location : locations )
-                {
-                    if ( location.startsWith( "project/profiles[" ) )
-                    {
-                        for ( int idx = 0; idx < model.getProfiles().size(); idx++ )
-                        {
-                            String key = "project/profiles[" + idx + "]";
-                            if ( location.startsWith( key ) )
-                            {
-                                model.getProfiles().get( idx ).getInterpolationLocations()
-                                        .add( location.replace( key, "profile" ) );
-                            }
-                        }
-                    }
-                }
-                model.setInterpolationLocations( locations );
+                Transformer transformer = new Transformer();
+                Model model = new MavenXpp3Reader( transformer ).read( reader, strict );
+                doSetInterpolations( model, transformer.getInterpolations() );
                 return model;
             }
         }
         catch ( XmlPullParserException e )
         {
             throw new ModelParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
+        }
+    }
+
+    private void doSetInterpolations( Model model, Interpolations interpolations )
+    {
+        model.setInterpolations( interpolations );
+        for ( int i = 0; i < model.getProfiles().size(); i++ )
+        {
+            Interpolations newP = new Interpolations();
+            newP.put( "profile", model.getInterpolations()
+                    .create( "project" ).create( "profiles[" + i + "]" ) );
+            model.getProfiles().get( i ).setInterpolations( newP );
         }
     }
 
