@@ -86,7 +86,6 @@ public class MavenModelMerger
             {
                 target.setName( src );
                 target.setLocation( "name", source.getLocation( "name" ) );
-                move( "name" );
             }
         }
     }
@@ -101,13 +100,11 @@ public class MavenModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                move( "url" );
             }
             else if ( target.getUrl() == null )
             {
                 target.setUrl( extrapolateChildUrl( src, source.isChildProjectUrlInheritAppendPath(), context ) );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                setif( "url", target.getUrl() );
             }
         }
     }
@@ -129,9 +126,7 @@ public class MavenModelMerger
                 tgt = new Organization();
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setOrganization( tgt );
-                push( "organization" );
                 mergeOrganization( tgt, src, sourceDominant, context );
-                pop();
             }
         }
     }
@@ -149,9 +144,7 @@ public class MavenModelMerger
                 tgt = new IssueManagement();
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setIssueManagement( tgt );
-                push( "issueManagement" );
                 mergeIssueManagement( tgt, src, sourceDominant, context );
-                pop();
             }
         }
     }
@@ -169,9 +162,7 @@ public class MavenModelMerger
                 tgt = new CiManagement();
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setCiManagement( tgt );
-                push( "ciManagement" );
                 mergeCiManagement( tgt, src, sourceDominant, context );
-                pop();
             }
         }
     }
@@ -211,10 +202,6 @@ public class MavenModelMerger
         if ( target.getLicenses().isEmpty() )
         {
             target.setLicenses( new ArrayList<>( source.getLicenses() ) );
-            for ( int i = 0; i < source.getLicenses().size(); i++ )
-            {
-                move( "licenses", i, i );
-            }
         }
     }
 
@@ -225,10 +212,6 @@ public class MavenModelMerger
         if ( target.getDevelopers().isEmpty() )
         {
             target.setDevelopers( new ArrayList<>( source.getDevelopers() ) );
-            for ( int i = 0; i < source.getDevelopers().size(); i++ )
-            {
-                move( "developers", i, i );
-            }
         }
     }
 
@@ -239,10 +222,6 @@ public class MavenModelMerger
         if ( target.getContributors().isEmpty() )
         {
             target.setContributors( new ArrayList<>( source.getContributors() ) );
-            for ( int i = 0; i < source.getContributors().size(); i++ )
-            {
-                move( "contributors", i, i );
-            }
         }
     }
 
@@ -253,10 +232,6 @@ public class MavenModelMerger
         if ( target.getMailingLists().isEmpty() )
         {
             target.setMailingLists( new ArrayList<>( source.getMailingLists() ) );
-            for ( int i = 0; i < source.getMailingLists().size(); i++ )
-            {
-                move( "mailingLists", i, i );
-            }
         }
     }
 
@@ -440,9 +415,7 @@ public class MavenModelMerger
                 tgt = new DeploymentRepository();
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setRepository( tgt );
-                push( "repository" );
                 mergeDeploymentRepository( tgt, src, sourceDominant, context );
-                pop();
             }
         }
     }
@@ -462,9 +435,7 @@ public class MavenModelMerger
                 tgt = new DeploymentRepository();
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setSnapshotRepository( tgt );
-                push( "snapshotRepository" );
                 mergeDeploymentRepository( tgt, src, sourceDominant, context );
-                pop();
             }
         }
     }
@@ -485,9 +456,7 @@ public class MavenModelMerger
                 }
                 tgt.setLocation( "", src.getLocation( "" ) );
                 target.setSite( tgt );
-                push( "site" );
                 mergeSite( tgt, src, sourceDominant, context );
-                pop();
             }
             mergeSite_ChildSiteUrlInheritAppendPath( tgt, src, sourceDominant, context );
         }
@@ -517,13 +486,11 @@ public class MavenModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                move( "url" );
             }
             else if ( target.getUrl() == null )
             {
                 target.setUrl( extrapolateChildUrl( src, source.isChildSiteUrlInheritAppendPath(), context ) );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                setif( "url", target.getUrl() );
             }
         }
     }
@@ -538,13 +505,11 @@ public class MavenModelMerger
             {
                 target.setUrl( src );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                move( "url" );
             }
             else if ( target.getUrl() == null )
             {
                 target.setUrl( extrapolateChildUrl( src, source.isChildScmUrlInheritAppendPath(), context ) );
                 target.setLocation( "url", source.getLocation( "url" ) );
-                setif( "url", target.getUrl() );
             }
         }
     }
@@ -559,14 +524,12 @@ public class MavenModelMerger
             {
                 target.setConnection( src );
                 target.setLocation( "connection", source.getLocation( "connection" ) );
-                move( "connection" );
             }
             else if ( target.getConnection() == null )
             {
                 target.setConnection( extrapolateChildUrl( src, source.isChildScmConnectionInheritAppendPath(),
                                                            context ) );
                 target.setLocation( "connection", source.getLocation( "connection" ) );
-                setif( "connection", target.getConnection() );
             }
         }
     }
@@ -582,14 +545,12 @@ public class MavenModelMerger
             {
                 target.setDeveloperConnection( src );
                 target.setLocation( "developerConnection", source.getLocation( "developerConnection" ) );
-                move( "developerConnection" );
             }
             else if ( target.getDeveloperConnection() == null )
             {
                 String e = extrapolateChildUrl( src, source.isChildScmDeveloperConnectionInheritAppendPath(), context );
                 target.setDeveloperConnection( e );
                 target.setLocation( "developerConnection", source.getLocation( "developerConnection" ) );
-                setif( "developerConnection", target.getDeveloperConnection() );
             }
         }
     }
@@ -628,7 +589,6 @@ public class MavenModelMerger
 
             List<PluginExecution> result = new ArrayList<>( merged.values() );
             target.setExecutions( result );
-            move( "executions", result, tgt, src, new PluginExecutionKeyComputer() );
         }
     }
 

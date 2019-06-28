@@ -31,13 +31,11 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.InputSource;
-import org.apache.maven.model.Interpolations;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3ReaderEx;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -100,83 +98,6 @@ public class DefaultModelReader
         return (InputSource) value;
     }
 
-    private static class AbstractTransformer
-    {
-
-        final Interpolations interpolations = new Interpolations();
-
-        AbstractTransformer()
-        {
-        }
-
-        public Interpolations getInterpolations()
-        {
-            return interpolations;
-        }
-
-        public String transform( String source, String fieldName )
-        {
-            doTransform( source, fieldName );
-            return source;
-        }
-
-        private void doTransform( String source, String fieldName )
-        {
-            if ( source.contains( "${" ) )
-            {
-                String[] paths = fieldName.split( "/" );
-                Interpolations cur = interpolations;
-                for ( int i = 0; i < paths.length - 1; i++ )
-                {
-                    cur = cur.create( paths[ i ] );
-                }
-                cur.put( paths[ paths.length - 1], Interpolations.FLAG );
-            }
-        }
-
-        public Xpp3Dom transform( Xpp3Dom source, String fieldName )
-        {
-            doTransform( source, fieldName );
-            return source;
-        }
-
-        private void doTransform( Xpp3Dom source, String fieldName )
-        {
-            if ( source.getValue() != null )
-            {
-                doTransform( source.getValue(), fieldName );
-            }
-            for ( String attr : source.getAttributeNames() )
-            {
-                String value = source.getAttribute( attr );
-                doTransform( value, fieldName + "/@" + attr );
-            }
-            for ( Xpp3Dom child : source.getChildren() )
-            {
-                int idx = 0, nb = 0;
-                for ( Xpp3Dom c : source.getChildren() )
-                {
-                    if ( c.getName().equals( child.getName() ) )
-                    {
-                        if ( c == child )
-                        {
-                            idx = nb;
-                        }
-                        nb++;
-                    }
-                }
-                if ( nb > 1 )
-                {
-                    doTransform( child, fieldName + "/" + child.getName() + "[" + idx + "]" );
-                }
-                else
-                {
-                    doTransform( child, fieldName + "/" + child.getName() );
-                }
-            }
-        }
-    }
-
     private Model read( Reader reader, boolean strict, InputSource source )
         throws IOException
     {
@@ -184,40 +105,16 @@ public class DefaultModelReader
         {
             if ( source != null )
             {
-                class Transformer extends AbstractTransformer implements MavenXpp3ReaderEx.ContentTransformer
-                {
-                }
-                Transformer transformer = new Transformer();
-                Model model = new MavenXpp3ReaderEx( transformer ).read( reader, strict, source );
-                doSetInterpolations( model, transformer.getInterpolations() );
-                return model;
+                return new MavenXpp3ReaderEx().read( reader, strict, source );
             }
             else
             {
-                class Transformer extends AbstractTransformer implements MavenXpp3Reader.ContentTransformer
-                {
-                }
-                Transformer transformer = new Transformer();
-                Model model = new MavenXpp3Reader( transformer ).read( reader, strict );
-                doSetInterpolations( model, transformer.getInterpolations() );
-                return model;
+                return new MavenXpp3Reader().read( reader, strict );
             }
         }
         catch ( XmlPullParserException e )
         {
             throw new ModelParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
-        }
-    }
-
-    private void doSetInterpolations( Model model, Interpolations interpolations )
-    {
-        model.setInterpolations( interpolations );
-        for ( int i = 0; i < model.getProfiles().size(); i++ )
-        {
-            Interpolations newP = new Interpolations();
-            newP.put( "profile", model.getInterpolations()
-                    .create( "project" ).create( "profiles[" + i + "]" ) );
-            model.getProfiles().get( i ).setInterpolations( newP );
         }
     }
 

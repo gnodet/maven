@@ -29,7 +29,6 @@ import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;
 import org.codehaus.plexus.interpolation.InterpolationException;
 import org.codehaus.plexus.interpolation.InterpolationPostProcessor;
-import org.codehaus.plexus.interpolation.Interpolator;
 import org.codehaus.plexus.interpolation.StringSearchInterpolator;
 import org.codehaus.plexus.interpolation.ValueSource;
 
@@ -123,15 +122,6 @@ public class StringSearchModelInterpolator
         action = new InterpolateObjectAction( obj, valueSources, postProcessors, innerInterpolator, problems );
         AccessController.doPrivileged( action );
 
-    }
-
-    @Override
-    protected Interpolator createInterpolator()
-    {
-        StringSearchInterpolator interpolator = new StringSearchInterpolator();
-        interpolator.setCacheAnswers( true );
-
-        return interpolator;
     }
 
     private static final class InterpolateObjectAction

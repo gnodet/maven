@@ -359,7 +359,6 @@
     private void cloneHook( Model copy )
     {
         copy.pomFile = pomFile;
-        copy.interpolations = interpolations != null ? interpolations.clone() : null;
     }
 
     /**
@@ -564,34 +563,6 @@
           </association>
         </field>
       </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>4.0.0+</version>
-          <code>
-            <![CDATA[
-
-    Interpolations interpolations;
-
-    /**
-     * Returns a map containing all locations that need some interpolations.
-     */
-    public Interpolations getInterpolations()
-    {
-        return interpolations;
-    }
-
-    /**
-     * Sets the map containing all locations that need some interpolations.
-     */
-    public void setInterpolations( Interpolations interpolations )
-    {
-        this.interpolations = interpolations;
-    }
-
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
     </class>
     <class java.clone="deep">
       <name>PluginContainer</name>
@@ -2578,7 +2549,7 @@
       </codeSegments>
     </class>
     <!-- Profile support -->
-    <class java.clone.hook="cloneHook">
+    <class>
       <name>Profile</name>
       <superClass>ModelBase</superClass>
       <version>4.0.0+</version>
@@ -2643,17 +2614,6 @@
     public String toString()
     {
         return "Profile {id: " + getId() + ", source: " + getSource() + "}";
-    }
-            ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>4.0.0+</version>
-          <code>
-            <![CDATA[
-    private void cloneHook( Profile copy )
-    {
-        copy.interpolations = interpolations != null ? interpolations.clone() : null;
     }
             ]]>
           </code>

@@ -84,14 +84,11 @@ public class DefaultProfileInjector
 
         public void mergeModelBase( ModelBase target, ModelBase source )
         {
-            init( target, source );
             mergeModelBase( target, source, true, Collections.emptyMap() );
         }
 
         public void mergeBuildBase( Model target, Profile source )
         {
-            init( target, source );
-            push( "build" );
             mergeBuildBase( target.getBuild(), source.getBuild(), true, Collections.emptyMap() );
         }
 
@@ -146,8 +143,6 @@ public class DefaultProfileInjector
                 result.addAll( pending );
 
                 target.setPlugins( result );
-
-                move( "plugins", result, tgt, src, new PluginKeyComputer() );
             }
         }
 

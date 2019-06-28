@@ -317,12 +317,6 @@ public class DefaultModelBuilder
             // profile injection
             for ( Profile activeProfile : activePomProfiles )
             {
-//                int index = rawModel.getProfiles().indexOf( activeProfile );
-//                if ( index >= 0 )
-//                {
-//                    move( tmpModel.getInterpolationLocations(), rawModel.getInterpolationLocations(),
-//                            "project", "project.profiles[" + index + "]" );
-//                }
                 profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
             }
 
@@ -553,6 +547,7 @@ public class DefaultModelBuilder
                 throw new NullPointerException( "neither pomFile nor modelSource can be null" );
             }
         }
+//        System.out.println( modelSource.toString() );
 
         problems.setSource( modelSource.getLocation() );
         try
