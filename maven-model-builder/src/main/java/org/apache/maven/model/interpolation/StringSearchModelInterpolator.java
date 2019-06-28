@@ -22,17 +22,16 @@ package org.apache.maven.model.interpolation;
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Interpolations;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblem.Version;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;
+import org.codehaus.plexus.interpolation.InterpolationException;
 import org.codehaus.plexus.interpolation.InterpolationPostProcessor;
 import org.codehaus.plexus.interpolation.Interpolator;
 import org.codehaus.plexus.interpolation.StringSearchInterpolator;
 import org.codehaus.plexus.interpolation.ValueSource;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -46,7 +45,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Named;
@@ -68,6 +66,10 @@ public class StringSearchModelInterpolator
 
     private static final Map<Class<?>, Map<String, Field>> FIELDS_CACHE = new HashMap<>();
 
+    interface InnerInterpolator
+    {
+        String interpolate( String value );
+    }
 
     @Override
     public Model interpolateModel( Model model, File projectDir, ModelBuildingRequest config,
@@ -79,73 +81,48 @@ public class StringSearchModelInterpolator
     }
 
     protected void interpolateObject( Object obj, Model model, File projectDir, ModelBuildingRequest config,
-                                      ModelProblemCollector problems )
+                                      final ModelProblemCollector problems )
     {
-//        try
-//        {
-            List<? extends ValueSource> valueSources = createValueSources( model, projectDir, config, problems );
-            List<? extends InterpolationPostProcessor> postProcessors =
-                createPostProcessors( model, projectDir, config );
+        List<? extends ValueSource> valueSources = createValueSources( model, projectDir, config, problems );
+        List<? extends InterpolationPostProcessor> postProcessors =
+            createPostProcessors( model, projectDir, config );
 
-//            Model org = model.clone();
-//            Model prev = model.clone();
+        final StringSearchInterpolator interpolator = new StringSearchInterpolator();
+        interpolator.setCacheAnswers( true );
+        for ( ValueSource vs : valueSources )
+        {
+            interpolator.addValueSource( vs );
+        }
+        for ( InterpolationPostProcessor postProcessor : postProcessors )
+        {
+            interpolator.addPostProcessor( postProcessor );
+        }
 
-            PrivilegedAction<Object> action;
-            if ( obj == model && model.getInterpolations() != null )
+        InnerInterpolator innerInterpolator = new InnerInterpolator()
+        {
+            @Override
+            public String interpolate( String value )
             {
-//                new InterpolateObjectAction( prev, valueSources, postProcessors, this, problems ).run();
-                action = new InterpolatedModelAction( model, valueSources, postProcessors, this, problems );
-            }
-            else
-            {
-                action = new InterpolateObjectAction( obj, valueSources, postProcessors, this, problems );
-            }
-
-            AccessController.doPrivileged( action );
-
-            /*
-            try
-            {
-                if ( obj == model && model.getInterpolationLocations() != null )
+                if ( value != null && value.contains( "${" ) )
                 {
-                    StringWriter sw1 = new StringWriter();
-                    new MavenXpp3Writer().write( sw1, prev );
-                    StringWriter sw2 = new StringWriter();
-                    new MavenXpp3Writer().write( sw2, model );
-                    String s1 = sw1.toString();
-                    String s2 = sw2.toString();
-
-                    if ( !s1.equals( s2 ) )
+                    try
                     {
-                        char[] c1 = s1.toCharArray();
-                        char[] c2 = s2.toCharArray();
-                        for ( int i = 0; i < Math.min( c1.length, c2.length ); i++ )
-                        {
-                            if ( c1[i] != c2[i] )
-                            {
-                                System.out.println( "differ at " + i );
-                                System.out.println( s1.substring( Math.max( i - INT, 0 ),
-                                                                  Math.min( i + INT, s1.length() ) )
-                                                      .replace( "\n", "" ) );
-                                System.out.println( s2.substring( Math.max( i - INT, 0 ),
-                                                                  Math.min( i + INT, s2.length() ) )
-                                                      .replace( "\n", "" ) );
-                                break;
-                            }
-                        }
+                        value = interpolator.interpolate( value, createRecursionInterceptor() );
+                    }
+                    catch ( InterpolationException e )
+                    {
+                        problems.add( new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE )
+                                .setMessage( e.getMessage() ).setException( e ) );
                     }
                 }
+                return value;
             }
-            catch ( IOException e )
-            {
-                e.printStackTrace();
-            }
-        }
-        finally
-        {
-            getInterpolator().clearAnswers();
-        }
-            */
+        };
+
+        PrivilegedAction<Object> action;
+        action = new InterpolateObjectAction( obj, valueSources, postProcessors, innerInterpolator, problems );
+        AccessController.doPrivileged( action );
+
     }
 
     @Override
@@ -157,439 +134,13 @@ public class StringSearchModelInterpolator
         return interpolator;
     }
 
-    private static final class InterpolatedModelAction
-        implements PrivilegedAction<Object>
-    {
-
-        private final Model project;
-
-        private final StringSearchModelInterpolator modelInterpolator;
-
-        private final List<? extends ValueSource> valueSources;
-
-        private final List<? extends InterpolationPostProcessor> postProcessors;
-
-        private final ModelProblemCollector problems;
-
-        InterpolatedModelAction( Model target, List<? extends ValueSource> valueSources,
-                                 List<? extends InterpolationPostProcessor> postProcessors,
-                                 StringSearchModelInterpolator modelInterpolator,
-                                 ModelProblemCollector problems )
-        {
-            this.project = target;
-            this.modelInterpolator = modelInterpolator;
-            this.valueSources = valueSources;
-            this.postProcessors = postProcessors;
-            this.problems = problems;
-        }
-
-        protected void doRun( final Object current, Interpolations interpolations )
-        {
-            for ( Map.Entry<String, Interpolations> entry : interpolations.entrySet() )
-            {
-                String s = entry.getKey();
-                Interpolations v = entry.getValue();
-                String index = null;
-                int bracketIdx = s.indexOf( '[' );
-                if ( bracketIdx > 0 )
-                {
-                    index = s.substring( bracketIdx + 1, s.indexOf( ']' ) );
-                    s = s.substring( 0, bracketIdx );
-                }
-                if ( current instanceof  Xpp3Dom )
-                {
-                    if ( s.startsWith( "@" ) )
-                    {
-                        setXmlAttribute( (Xpp3Dom) current, s.substring( 1 ) );
-                        if ( !v.isEmpty() )
-                        {
-                            throw new IllegalStateException();
-                        }
-                    }
-                    else
-                    {
-                        if ( v != Interpolations.FLAG && index != null )
-                        {
-                            int idx = Integer.parseInt( index );
-                            int nb = -1;
-                            for ( Xpp3Dom child : ( ( Xpp3Dom ) current ).getChildren() )
-                            {
-                                if ( child.getName().equals( s ) )
-                                {
-                                    if ( ++nb == idx )
-                                    {
-                                        doRun( child, v );
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Xpp3Dom next = ( ( Xpp3Dom ) current ).getChild( s );
-                            if ( next == null )
-                            {
-                                // This can sometimes happen when some config was merged
-                                // System.err.println( "Retrieved null for " + s + " in " + location );
-                                break;
-                            }
-                            if ( v == Interpolations.FLAG )
-                            {
-                                setXmlElementValue( next );
-                            }
-                            else
-                            {
-                                doRun( next, v );
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Map<String, Field> cache = FIELDS_CACHE.get( current.getClass() );
-                    if ( cache == null )
-                    {
-                        cache = new HashMap<>();
-                        FIELDS_CACHE.put( current.getClass(), cache );
-                    }
-                    Field field = cache.get( s );
-                    if ( field == null )
-                    {
-                        Class<?> clazz = current.getClass();
-                        while ( field == null && clazz != null )
-                        {
-                            try
-                            {
-                                field = clazz.getDeclaredField( s );
-                            }
-                            catch ( NoSuchFieldException e )
-                            {
-                                clazz = clazz.getSuperclass();
-                            }
-                        }
-                        if ( field == null )
-                        {
-                            throw new RuntimeException( "Unable to find field " + s );
-                        }
-                        field.setAccessible( true );
-                        cache.put( s, field );
-                    }
-                    if ( v != Interpolations.FLAG || index != null )
-                    {
-                        Object next;
-                        try
-                        {
-                            next = field.get( current );
-                        }
-                        catch ( Exception e )
-                        {
-                            throw new RuntimeException( "Unable to get field " + s, e );
-                        }
-                        if ( next == null )
-                        {
-                            // This can sometimes happen when some config was merged
-                            // System.err.println( "Retrieved null for " + s + " in " + location );
-                            break;
-                        }
-                        if ( index != null )
-                        {
-                            if ( v == Interpolations.FLAG )
-                            {
-                                setIndexedValue( next, index );
-                            }
-                            else
-                            {
-                                next = getIndexedValue( next, index );
-                                if ( next == null )
-                                {
-                                    // This can sometimes happen when some config was merged
-                                    // System.err.println( "Retrieved null for " + s + " in " + location );
-                                    break;
-                                }
-                                doRun( next, v );
-                            }
-                        }
-                        else
-                        {
-                            doRun( next, v );
-                        }
-                    }
-                    else
-                    {
-                        setFieldValue( current, field );
-                    }
-                }
-            }
-        }
-
-        @Override
-        public Object run()
-        {
-            doRun( this, project.getInterpolations() );
-            /*
-            for ( String location : project.getInterpolations() )
-            {
-                Object current = this;
-                int cur = 0;
-                while ( cur < location.length() )
-                {
-                    int n = getNextTokenEnd( location, cur );
-                    String s = location.substring( cur, n );
-                    if ( current instanceof Xpp3Dom )
-                    {
-                        if ( s.startsWith( "@" ) )
-                        {
-                            setXmlAttribute( (Xpp3Dom) current, s.substring( 1 ) );
-                            cur = n + 1;
-                            if ( cur < location.length() )
-                            {
-                                throw new IllegalStateException();
-                            }
-                        }
-                        else
-                        {
-                            if ( n < location.length() && location.charAt( n ) == '[' )
-                            {
-                                String name = s;
-                                cur = n;
-                                n = location.indexOf( ']', cur );
-                                s = location.substring( cur + 1, n );
-                                int idx = Integer.parseInt( s );
-                                int nb = -1;
-                                for ( Xpp3Dom child : ( ( Xpp3Dom ) current ).getChildren() )
-                                {
-                                    if ( child.getName().equals( name ) )
-                                    {
-                                        if ( ++nb == idx )
-                                        {
-                                            current = child;
-                                            break;
-                                        }
-                                    }
-                                }
-                                cur = n + 2;
-                            }
-                            else
-                            {
-                                Object next = ( ( Xpp3Dom ) current ).getChild( s );
-                                if ( next == null )
-                                {
-                                    // This can sometimes happen when some config was merged
-                                    // System.err.println( "Retrieved null for " + s + " in " + location );
-                                    break;
-                                }
-                                current = next;
-                                cur = n + 1;
-                            }
-                            if ( cur >= location.length() )
-                            {
-                                setXmlElementValue( (Xpp3Dom) current );
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Map<String, Field> cache = FIELDS_CACHE.get( current.getClass() );
-                        if ( cache == null )
-                        {
-                            cache = new HashMap<>();
-                            FIELDS_CACHE.put( current.getClass(), cache );
-                        }
-                        Field field = cache.get( s );
-                        if ( field == null )
-                        {
-                            Class<?> clazz = current.getClass();
-                            while ( field == null && clazz != null )
-                            {
-                                try
-                                {
-                                    field = clazz.getDeclaredField( s );
-                                }
-                                catch ( NoSuchFieldException e )
-                                {
-                                    clazz = clazz.getSuperclass();
-                                }
-                            }
-                            if ( field == null )
-                            {
-                                throw new RuntimeException( "Unable to find field " + s
-                                        + " in expression " + location );
-                            }
-                            field.setAccessible( true );
-                            cache.put( s, field );
-                        }
-                        String index = null;
-                        if ( n < location.length() && location.charAt( n ) == '[' )
-                        {
-                            cur = n;
-                            n = location.indexOf( ']', cur );
-                            index = location.substring( cur + 1, n );
-                            n++;
-                        }
-                        if ( n < location.length() || index != null )
-                        {
-                            try
-                            {
-                                Object next = field.get( current );
-                                if ( next == null )
-                                {
-                                    // This can sometimes happen when some config was merged
-                                    // System.err.println( "Retrieved null for " + s + " in " + location );
-                                    break;
-                                }
-                                current = next;
-                            }
-                            catch ( Exception e )
-                            {
-                                throw new RuntimeException(
-                                        "Unable to get field " + s + " in expression " + location );
-                            }
-                            if ( index != null )
-                            {
-                                if ( n >= location.length() )
-                                {
-                                    setIndexedValue( current, index );
-                                }
-                                else
-                                {
-                                    Object next = getIndexedValue( current, index );
-                                    if ( next == null )
-                                    {
-                                        // This can sometimes happen when some config was merged
-                                        // System.err.println( "Retrieved null for " + s + " in " + location );
-                                        break;
-                                    }
-                                    current = next;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            setFieldValue( location, current, field );
-                        }
-                        cur = n + 1;
-                    }
-                }
-            }
-            */
-            return null;
-        }
-
-        private void setFieldValue( Object current, Field field )
-        {
-            try
-            {
-                String orgv = (String) field.get( current );
-                String newv = interpolate( orgv );
-                field.set( current, newv );
-            }
-            catch ( Exception e )
-            {
-                throw new RuntimeException( "Unable to set field " + field.getName(), e );
-            }
-        }
-
-        private Object getIndexedValue( Object current, String index )
-        {
-            if ( current instanceof List )
-            {
-                current = ( (List) current ).get( Integer.parseInt( index ) );
-            }
-            else if ( current instanceof Map )
-            {
-                current = ( (Map) current ).get( index );
-            }
-            else if ( current != null )
-            {
-                throw new IllegalStateException();
-            }
-            return current;
-        }
-
-        private void setIndexedValue( Object current, String index )
-        {
-            if ( current instanceof List )
-            {
-                int idx = Integer.parseInt( index );
-                setListElement( (List) current, idx );
-            }
-            else if ( current instanceof Map )
-            {
-                setMapElement( (Map) current, index );
-            }
-            else
-            {
-                throw new IllegalStateException();
-            }
-        }
-
-        private void setMapElement( Map current, String index )
-        {
-            String orgv = (String) current.get( index );
-            if ( orgv != null )
-            {
-                String newv = interpolate( orgv );
-                current.put( index, newv );
-            }
-        }
-
-        private void setListElement( List current, int idx )
-        {
-            Object orgv = current.get( idx );
-            if ( orgv instanceof String )
-            {
-                String newv = interpolate( (String) orgv );
-                current.set( idx, newv );
-            }
-            else if ( !( orgv instanceof Profile ) )
-            {
-                throw new IllegalStateException();
-            }
-        }
-
-        private void setXmlElementValue( Xpp3Dom current )
-        {
-            String orgv = current.getValue();
-            if ( orgv != null )
-            {
-                String newv = interpolate( orgv );
-                current.setValue( newv );
-            }
-        }
-
-        private void setXmlAttribute( Xpp3Dom current, String attr )
-        {
-            String orgv = current.getAttribute( attr );
-            if ( orgv != null )
-            {
-                String newv = interpolate( orgv );
-                current.setAttribute( attr, newv );
-            }
-        }
-
-        private int getNextTokenEnd( String location, int cur )
-        {
-            int dotIdx = location.indexOf( '/', cur );
-            int bktIdx = location.indexOf( '[', cur );
-            return Math.min( dotIdx >= 0
-                    ? dotIdx
-                    : location.length(), bktIdx >= 0 ? bktIdx : location.length() );
-        }
-
-        private String interpolate( String value )
-        {
-            return modelInterpolator.interpolateInternal( value, valueSources, postProcessors, problems );
-        }
-
-    }
-
     private static final class InterpolateObjectAction
         implements PrivilegedAction<Object>
     {
 
         private final LinkedList<Object> interpolationTargets;
 
-        private final StringSearchModelInterpolator modelInterpolator;
+        private final InnerInterpolator interpolator;
 
         private final List<? extends ValueSource> valueSources;
 
@@ -599,7 +150,7 @@ public class StringSearchModelInterpolator
 
         InterpolateObjectAction( Object target, List<? extends ValueSource> valueSources,
                                  List<? extends InterpolationPostProcessor> postProcessors,
-                                 StringSearchModelInterpolator modelInterpolator, ModelProblemCollector problems )
+                                 InnerInterpolator interpolator, ModelProblemCollector problems )
         {
             this.valueSources = valueSources;
             this.postProcessors = postProcessors;
@@ -607,7 +158,7 @@ public class StringSearchModelInterpolator
             this.interpolationTargets = new LinkedList<>();
             interpolationTargets.add( target );
 
-            this.modelInterpolator = modelInterpolator;
+            this.interpolator = interpolator;
 
             this.problems = problems;
         }
@@ -628,7 +179,7 @@ public class StringSearchModelInterpolator
 
         private String interpolate( String value )
         {
-            return modelInterpolator.interpolateInternal( value, valueSources, postProcessors, problems );
+            return interpolator.interpolate( value );
         }
 
         private void traverseObjectWithParents( Class<?> cls, Object target )
@@ -707,7 +258,7 @@ public class StringSearchModelInterpolator
                 {
                     return false;
                 }
-                if ( SortedSet.class.equals( fieldType ) && "interpolationLocations".equals( field.getName() ) )
+                if ( Interpolations.class.equals( fieldType ) && "interpolations".equals( field.getName() ) )
                 {
                     return false;
                 }
@@ -790,36 +341,25 @@ public class StringSearchModelInterpolator
 
             void interpolate( Object target, InterpolateObjectAction interpolateObjectAction )
             {
-//                synchronized ( field )
-//                {
-//                    boolean isAccessible = field.isAccessible();
-//                    field.setAccessible( true );
-                    try
-                    {
-                        doInterpolate( target, interpolateObjectAction );
-                    }
-                    catch ( IllegalArgumentException e )
-                    {
-                        interpolateObjectAction.problems.add(
-                            new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE ).setMessage(
-                                "Failed to interpolate field3: " + field + " on class: "
-                                    + field.getType().getName() ).setException(
-                                e ) ); // TODO Not entirely the same message
-                    }
-                    catch ( IllegalAccessException e )
-                    {
-                        interpolateObjectAction.problems.add(
-                            new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE ).setMessage(
-                                "Failed to interpolate field4: " + field + " on class: "
-                                    + field.getType().getName() ).setException( e ) );
-                    }
-//                    finally
-//                    {
-//                        field.setAccessible( isAccessible );
-//                    }
-//                }
-
-
+                try
+                {
+                    doInterpolate( target, interpolateObjectAction );
+                }
+                catch ( IllegalArgumentException e )
+                {
+                    interpolateObjectAction.problems.add(
+                        new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE ).setMessage(
+                            "Failed to interpolate field3: " + field + " on class: "
+                                + field.getType().getName() ).setException(
+                            e ) ); // TODO Not entirely the same message
+                }
+                catch ( IllegalAccessException e )
+                {
+                    interpolateObjectAction.problems.add(
+                        new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE ).setMessage(
+                            "Failed to interpolate field4: " + field + " on class: "
+                                + field.getType().getName() ).setException( e ) );
+                }
             }
 
             abstract void doInterpolate( Object target, InterpolateObjectAction ctx )
