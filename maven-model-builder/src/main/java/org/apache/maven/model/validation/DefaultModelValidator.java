@@ -82,6 +82,8 @@ public class DefaultModelValidator
 
     private static final String ILLEGAL_REPO_ID_CHARS = ILLEGAL_FS_CHARS;
 
+    private final Set<String> validIds = new HashSet<>();
+
     @Override
     public void validateRawModel( Model m, ModelBuildingRequest request, ModelProblemCollector problems )
     {
@@ -829,6 +831,10 @@ public class DefaultModelValidator
     private boolean validateId( String prefix, String fieldName, ModelProblemCollector problems, Severity severity,
                                 Version version, String id, String sourceHint, InputLocationTracker tracker )
     {
+        if ( validIds.contains( id ) )
+        {
+            return true;
+        }
         if ( !validateStringNotEmpty( prefix, fieldName, problems, severity, version, id, sourceHint, tracker ) )
         {
             return false;
@@ -841,6 +847,7 @@ public class DefaultModelValidator
                         "with value '" + id + "' does not match a valid id pattern.", tracker );
                 return false;
             }
+            validIds.add( id );
             return true;
         }
     }
