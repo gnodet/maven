@@ -403,9 +403,12 @@ public class DefaultModelBuilder
         if ( resultModel.getParent() != null )
         {
             final ModelData parentData = lineage.get( 1 );
-            final Model interpolatedParent = interpolateModel( parentData.getModel(), request, problems );
-            // parentData.setModel( interpolatedParent );
-            parentData.setVersion( interpolatedParent.getVersion() );
+            if ( parentData.getVersion() == null || parentData.getVersion().contains( "${" ) )
+            {
+                final Model interpolatedParent = interpolateModel( parentData.getModel(), request, problems );
+                // parentData.setModel( interpolatedParent );
+                parentData.setVersion( interpolatedParent.getVersion() );
+            }
         }
 
         // url normalization
