@@ -82,6 +82,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.aether.DefaultRepositoryCache;
 import org.eclipse.aether.transfer.TransferListener;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -973,6 +974,11 @@ public class MavenCli
         throws MavenExecutionRequestPopulationException
     {
         MavenExecutionRequest request = executionRequestPopulator.populateDefaults( cliRequest.request );
+
+        if ( cliRequest.request.getRepositoryCache() == null )
+        {
+            cliRequest.request.setRepositoryCache( new DefaultRepositoryCache() );
+        }
 
         eventSpyDispatcher.onEvent( request );
 
