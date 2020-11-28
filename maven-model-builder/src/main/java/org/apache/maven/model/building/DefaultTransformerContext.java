@@ -21,9 +21,13 @@ package org.apache.maven.model.building;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.maven.building.Source;
 import org.apache.maven.model.Model;
 
 /**
@@ -38,7 +42,9 @@ class DefaultTransformerContext implements TransformerContext
     final Map<Path, Model> modelByPath = new HashMap<>();
 
     final Map<GAKey, Model> modelByGA = new HashMap<>();
-    
+
+    final Map<GAKey, Set<Source>> mappedSources = new ConcurrentHashMap<>( 64 );
+
     @Override
     public String getUserProperty( String key )
     {
@@ -55,6 +61,25 @@ class DefaultTransformerContext implements TransformerContext
     public Model getRawModel( String groupId, String artifactId )
     {
         return modelByGA.get( new GAKey( groupId, artifactId ) );
+    }
+
+    public Source getSource( String groupId, String artifactId )
+    {
+        Set<Source> sources = mappedSources.get( new DefaultTransformerContext.GAKey( groupId, artifactId ) );
+        if ( sources == null )
+        {
+            return null;
+        }
+        return sources.stream().reduce( ( a, b ) ->
+        {
+            throw new IllegalStateException( "No unique Source for " + groupId + ':' + artifactId
+                    + ": " + a.getLocation() + " and " + b.getLocation() );
+        } ).orElse( null );
+    }
+
+    public void putSource( String groupId, String artifactId, Source source )
+    {
+        mappedSources.computeIfAbsent( new GAKey( groupId, artifactId ), k -> new HashSet<>() ).add( source );
     }
     
     static class GAKey

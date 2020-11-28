@@ -696,7 +696,12 @@ public class DefaultModelBuilder
         intoCache( request.getModelCache(), modelSource, ModelCacheTag.FILE, model );
         if ( modelSource instanceof FileModelSource )
         {
-            intoCache( request.getModelCache(), getGroupId( model ), model.getArtifactId(), modelSource );
+            if ( request.getTransformerContextBuilder() instanceof DefaultTransformerContextBuilder )
+            {
+                DefaultTransformerContextBuilder contextBuilder =
+                        (DefaultTransformerContextBuilder) request.getTransformerContextBuilder();
+                contextBuilder.context.putSource( getGroupId( model ), model.getArtifactId(), modelSource );
+            }
         }
 
         return model;
@@ -1543,14 +1548,6 @@ public class DefaultModelBuilder
         }
     }
 
-    private <T> void intoCache( ModelCache modelCache, String groupId, String artifactId, Source source )
-     {
-         if ( modelCache != null )
-         {
-             modelCache.put( groupId, artifactId, source );
-         }
-     }
-
     private <T> void intoCache( ModelCache modelCache, Source source, ModelCacheTag<T> tag, T data )
     {
         if ( modelCache != null )
@@ -1572,16 +1569,6 @@ public class DefaultModelBuilder
         }
         return null;
     }
-    
-    private static Source fromCache( ModelCache modelCache, String groupId, String artifactId )
-    {
-        if ( modelCache != null )
-        {
-            return modelCache.get( groupId, artifactId );
-        }
-        return null;
-    }
-
 
     private static <T> T fromCache( ModelCache modelCache, Source source, ModelCacheTag<T> tag )
     {
@@ -1845,7 +1832,7 @@ public class DefaultModelBuilder
 
                 private Model findRawModel( String groupId, String artifactId )
                 {
-                    Source source = fromCache( request.getModelCache(), groupId, artifactId );
+                    Source source = context.getSource( groupId, artifactId );
                     if ( source != null )
                     {
                         try
