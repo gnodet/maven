@@ -90,7 +90,7 @@ under the License.
     <module>maven-artifact</module>
     <module>maven-artifact-transfer-api</module>
     <module>maven-artifact-transfer-impl</module>
-    <module>maven-common-artifact-filters</module>
+    <module>maven-artifact-filters</module>
     <module>maven-resolver-provider</module>
     <module>maven-repository-metadata</module>
     <module>maven-slf4j-provider</module>
