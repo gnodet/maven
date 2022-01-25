@@ -55,31 +55,10 @@
       <artifactId>plexus-component-annotations</artifactId>
     </dependency>
 
-    <!-- Real dependenciesL we need them resolved at runtime-->
-    <!-- TODO: this is used by maven-3.0.x provider!!! Move sonatype filters into maven-3.0.x? -->
-    <!-- Sadly, this AGAIN pulls in all of maven, so leave them out: we control explicitly maven stuff -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact-filters</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-metadata</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
