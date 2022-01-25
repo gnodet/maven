@@ -37,7 +37,7 @@ import org.eclipse.aether.repository.RepositoryPolicy;
  * @author Robert Scholte
  *
  */
-class Maven31ArtifactRepositoryAdapter implements ArtifactRepository
+class DefaultArtifactRepositoryAdapter implements ArtifactRepository
 {
     
     private RemoteRepository remoteRepository;
@@ -45,7 +45,7 @@ class Maven31ArtifactRepositoryAdapter implements ArtifactRepository
     /**
      * @param remoteRepository {@link RemoteRepository}
      */
-    Maven31ArtifactRepositoryAdapter( RemoteRepository remoteRepository )
+    DefaultArtifactRepositoryAdapter( RemoteRepository remoteRepository )
     {
         this.remoteRepository = remoteRepository;
     }
@@ -273,7 +273,7 @@ class Maven31ArtifactRepositoryAdapter implements ArtifactRepository
             return false;
         }
         
-        Maven31ArtifactRepositoryAdapter other = (Maven31ArtifactRepositoryAdapter) obj;
+        DefaultArtifactRepositoryAdapter other = (DefaultArtifactRepositoryAdapter) obj;
         if ( remoteRepository == null )
         {
             if ( other.remoteRepository != null )

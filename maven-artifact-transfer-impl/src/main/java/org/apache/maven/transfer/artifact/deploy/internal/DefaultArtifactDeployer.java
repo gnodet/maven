@@ -27,7 +27,7 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployer;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployerException;
-import org.apache.maven.transfer.metadata.internal.Maven31MetadataBridge;
+import org.apache.maven.transfer.metadata.internal.DefaultMetadataBridge;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -47,13 +47,13 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31ArtifactDeployer
+public class DefaultArtifactDeployer
         implements ArtifactDeployer
 {
     private final RepositorySystem repositorySystem;
 
     @Inject
-    public Maven31ArtifactDeployer( RepositorySystem repositorySystem )
+    public DefaultArtifactDeployer( RepositorySystem repositorySystem )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
     }
@@ -119,7 +119,7 @@ public class Maven31ArtifactDeployer
                     org.apache.maven.transfer.metadata.ArtifactMetadata transferMetadata =
                             (org.apache.maven.transfer.metadata.ArtifactMetadata) metadata;
 
-                    request.addMetadata( new Maven31MetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
+                    request.addMetadata( new DefaultMetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
                 }
             }
         }

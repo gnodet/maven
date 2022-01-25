@@ -30,14 +30,14 @@ import org.apache.maven.transfer.graph.DependencyNode;
  * @author Pim Moerenhout
  *
  */
-class Maven31CollectResult implements CollectResult
+class DefaultCollectResult implements CollectResult
 {
     private final org.eclipse.aether.collection.CollectResult collectResult;
     
     /**
      * @param collectResult {@link CollectResult}
      */
-    Maven31CollectResult( org.eclipse.aether.collection.CollectResult collectResult )
+    DefaultCollectResult( org.eclipse.aether.collection.CollectResult collectResult )
     {
         this.collectResult = collectResult;
     }
@@ -50,7 +50,7 @@ class Maven31CollectResult implements CollectResult
     @Override
     public DependencyNode getRoot()
     {
-        return new Maven31DependencyNodeAdapter( collectResult.getRoot() );
+        return new DefaultDependencyNodeAdapter( collectResult.getRoot() );
     }
 
     @Override

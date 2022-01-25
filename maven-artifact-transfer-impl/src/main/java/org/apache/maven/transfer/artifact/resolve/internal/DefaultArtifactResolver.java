@@ -43,13 +43,13 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31ArtifactResolver
+public class DefaultArtifactResolver
         implements ArtifactResolver
 {
     private final RepositorySystem repositorySystem;
 
     @Inject
-    public Maven31ArtifactResolver( RepositorySystem repositorySystem )
+    public DefaultArtifactResolver( RepositorySystem repositorySystem )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
     }
@@ -92,7 +92,7 @@ public class Maven31ArtifactResolver
             ArtifactRequest request = new ArtifactRequest( descriptorResult.getArtifact(),
                     RepositoryUtils.toRepos( buildingRequest.getRemoteRepositories() ), null );
 
-            return new Maven31ArtifactResult(
+            return new DefaultArtifactResult(
                     repositorySystem.resolveArtifact( buildingRequest.getRepositorySession(), request ) );
         }
         catch ( ArtifactDescriptorException | ArtifactResolutionException e )

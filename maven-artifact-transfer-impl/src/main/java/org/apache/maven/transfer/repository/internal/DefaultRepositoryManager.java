@@ -48,13 +48,13 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31RepositoryManager
+public class DefaultRepositoryManager
         implements RepositoryManager
 {
     private final RepositorySystem repositorySystem;
 
     @Inject
-    public Maven31RepositoryManager( RepositorySystem repositorySystem )
+    public DefaultRepositoryManager( RepositorySystem repositorySystem )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
     }

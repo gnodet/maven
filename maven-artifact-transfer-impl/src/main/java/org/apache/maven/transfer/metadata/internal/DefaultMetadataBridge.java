@@ -31,11 +31,11 @@ import org.eclipse.aether.metadata.Metadata;
  * A MetadataBridge for Maven 3.1 
  * @author Robert Scholte
  */
-public class Maven31MetadataBridge extends AbstractMetadata implements Metadata
+public class DefaultMetadataBridge extends AbstractMetadata implements Metadata
 {
     private ArtifactMetadata metadata;
     
-    public Maven31MetadataBridge( ArtifactMetadata metadata )
+    public DefaultMetadataBridge( ArtifactMetadata metadata )
     {
         this.metadata = metadata;
     }

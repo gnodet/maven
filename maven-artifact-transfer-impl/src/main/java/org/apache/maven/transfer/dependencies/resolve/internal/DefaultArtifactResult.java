@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.artifact.resolve.internal;
+package org.apache.maven.transfer.dependencies.resolve.internal;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -28,7 +28,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
  * @author Robert Scholte
  * @since 3.0
  */
-class Maven31ArtifactResult
+class DefaultArtifactResult
     implements org.apache.maven.transfer.artifact.resolve.ArtifactResult
 {
     private final ArtifactResult artifactResult;
@@ -36,7 +36,7 @@ class Maven31ArtifactResult
     /**
      * @param artifactResult {@link ArtifactResult}
      */
-    Maven31ArtifactResult( ArtifactResult artifactResult )
+    DefaultArtifactResult( ArtifactResult artifactResult )
     {
         this.artifactResult = artifactResult;
     }

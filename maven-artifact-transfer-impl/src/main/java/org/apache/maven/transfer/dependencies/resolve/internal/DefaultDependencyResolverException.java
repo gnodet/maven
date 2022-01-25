@@ -30,11 +30,11 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
  * @author Robert Scholte
  *
  */
-class Maven31DependencyResolverException extends DependencyResolverException
+class DefaultDependencyResolverException extends DependencyResolverException
 {
     private DependencyResolutionException e;
 
-    Maven31DependencyResolverException( DependencyResolutionException e )
+    DefaultDependencyResolverException( DependencyResolutionException e )
     {
         super( e );
         this.e = e;

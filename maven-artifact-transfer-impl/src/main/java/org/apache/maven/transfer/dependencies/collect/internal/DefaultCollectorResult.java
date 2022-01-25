@@ -37,14 +37,14 @@ import org.eclipse.aether.repository.RemoteRepository;
  * @author Robert Scholte
  *
  */
-class Maven31CollectorResult implements CollectorResult
+class DefaultCollectorResult implements CollectorResult
 {
     private final CollectResult collectResult;
     
     /**
      * @param collectResult {@link CollectorResult}
      */
-    Maven31CollectorResult( CollectResult collectResult )
+    DefaultCollectorResult( CollectResult collectResult )
     {
         this.collectResult = collectResult;
     }
@@ -76,7 +76,7 @@ class Maven31CollectorResult implements CollectorResult
         
         for ( RemoteRepository aetherRepository : aetherRepositories )
         {
-            mavenRepositories.add( new Maven31ArtifactRepositoryAdapter( aetherRepository ) );
+            mavenRepositories.add( new DefaultArtifactRepositoryAdapter( aetherRepository ) );
         }
         
         return mavenRepositories;

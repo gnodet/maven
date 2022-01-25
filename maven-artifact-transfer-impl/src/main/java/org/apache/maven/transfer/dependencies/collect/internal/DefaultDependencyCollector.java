@@ -48,7 +48,7 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31DependencyCollector
+public class DefaultDependencyCollector
         implements DependencyCollector
 {
     private final RepositorySystem repositorySystem;
@@ -56,7 +56,7 @@ public class Maven31DependencyCollector
     private final ArtifactHandlerManager artifactHandlerManager;
 
     @Inject
-    public Maven31DependencyCollector( RepositorySystem repositorySystem,
+    public DefaultDependencyCollector( RepositorySystem repositorySystem,
                                        ArtifactHandlerManager artifactHandlerManager )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
@@ -149,7 +149,7 @@ public class Maven31DependencyCollector
 
         try
         {
-            return new Maven31CollectorResult(
+            return new DefaultCollectorResult(
                     repositorySystem.collectDependencies( buildingRequest.getRepositorySession(), request )
             );
         }

@@ -35,7 +35,7 @@ import org.eclipse.aether.repository.RemoteRepository;
  * @author Pim Moerenhout
  *
  */
-class Maven31DependencyNodeAdapter implements DependencyNode
+class DefaultDependencyNodeAdapter implements DependencyNode
 {
 
     private org.eclipse.aether.graph.DependencyNode dependencyNode;
@@ -43,7 +43,7 @@ class Maven31DependencyNodeAdapter implements DependencyNode
     /**
      * @param dependencyNode {@link org.eclipse.aether.graph.DependencyNode}
      */
-    Maven31DependencyNodeAdapter( org.eclipse.aether.graph.DependencyNode dependencyNode )
+    DefaultDependencyNodeAdapter( org.eclipse.aether.graph.DependencyNode dependencyNode )
     {
         this.dependencyNode = dependencyNode;
     }
@@ -61,7 +61,7 @@ class Maven31DependencyNodeAdapter implements DependencyNode
         List<DependencyNode> children = new ArrayList<>( aetherChildren.size() );
         for ( org.eclipse.aether.graph.DependencyNode aetherChild : aetherChildren )
         {
-            children.add( new Maven31DependencyNodeAdapter( aetherChild ) );
+            children.add( new DefaultDependencyNodeAdapter( aetherChild ) );
         }
         return children;
     }
@@ -74,7 +74,7 @@ class Maven31DependencyNodeAdapter implements DependencyNode
 
         for ( RemoteRepository aetherRepository : aetherRepositories )
         {
-            mavenRepositories.add( new Maven31ArtifactRepositoryAdapter( aetherRepository ) );
+            mavenRepositories.add( new DefaultArtifactRepositoryAdapter( aetherRepository ) );
         }
 
         return mavenRepositories;
@@ -99,7 +99,7 @@ class Maven31DependencyNodeAdapter implements DependencyNode
         {
             for ( org.eclipse.aether.graph.DependencyNode child : dependencyNode.getChildren() )
             {
-                DependencyNode node = new Maven31DependencyNodeAdapter( child );
+                DependencyNode node = new DefaultDependencyNodeAdapter( child );
                 if ( !node.accept( visitor ) )
                 {
                     break;
@@ -132,7 +132,7 @@ class Maven31DependencyNodeAdapter implements DependencyNode
             return false;
         }
 
-        Maven31DependencyNodeAdapter other = (Maven31DependencyNodeAdapter) obj;
+        DefaultDependencyNodeAdapter other = (DefaultDependencyNodeAdapter) obj;
         if ( dependencyNode == null )
         {
             if ( other.dependencyNode != null )

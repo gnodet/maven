@@ -26,7 +26,7 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.transfer.artifact.install.ArtifactInstaller;
 import org.apache.maven.transfer.artifact.install.ArtifactInstallerException;
-import org.apache.maven.transfer.metadata.internal.Maven31MetadataBridge;
+import org.apache.maven.transfer.metadata.internal.DefaultMetadataBridge;
 import org.apache.maven.transfer.repository.RepositoryManager;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
@@ -46,7 +46,7 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31ArtifactInstaller
+public class DefaultArtifactInstaller
         implements ArtifactInstaller
 {
     private final RepositorySystem repositorySystem;
@@ -54,7 +54,7 @@ public class Maven31ArtifactInstaller
     private final RepositoryManager repositoryManager;
 
     @Inject
-    public Maven31ArtifactInstaller( RepositorySystem repositorySystem,
+    public DefaultArtifactInstaller( RepositorySystem repositorySystem,
                                      RepositoryManager repositoryManager )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
@@ -108,7 +108,7 @@ public class Maven31ArtifactInstaller
                     org.apache.maven.transfer.metadata.ArtifactMetadata transferMetadata =
                             (org.apache.maven.transfer.metadata.ArtifactMetadata) metadata;
 
-                    request.addMetadata( new Maven31MetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
+                    request.addMetadata( new DefaultMetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
                 }
             }
         }

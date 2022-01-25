@@ -59,7 +59,7 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class Maven31DependencyResolver
+public class DefaultDependencyResolver
         implements DependencyResolver
 {
     private final RepositorySystem repositorySystem;
@@ -67,7 +67,7 @@ public class Maven31DependencyResolver
     private final ArtifactHandlerManager artifactHandlerManager;
 
     @Inject
-    public Maven31DependencyResolver( RepositorySystem repositorySystem,
+    public DefaultDependencyResolver( RepositorySystem repositorySystem,
                                       ArtifactHandlerManager artifactHandlerManager )
     {
         this.repositorySystem = Objects.requireNonNull( repositorySystem );
@@ -220,7 +220,7 @@ public class Maven31DependencyResolver
 
                     for ( ArtifactResult artifactResult : dependencyResults.getArtifactResults() )
                     {
-                        artResults.add( new Maven31ArtifactResult( artifactResult ) );
+                        artResults.add( new DefaultArtifactResult( artifactResult ) );
                     }
 
                     return artResults.iterator();
@@ -229,7 +229,7 @@ public class Maven31DependencyResolver
         }
         catch ( DependencyResolutionException e )
         {
-            throw new Maven31DependencyResolverException( e );
+            throw new DefaultDependencyResolverException( e );
         }
     }
 }
