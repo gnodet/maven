@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter.collection;
+package org.apache.maven.artifact.filter.collection;
 
 /* 
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -18,67 +18,79 @@ package org.apache.maven.shared.artifact.filter.collection;
  * specific language governing permissions and limitations
  * under the License.    
  */
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.filter.collection.ClassifierFilter;
+import org.apache.maven.artifact.filter.collection.TypeFilter;
 import org.apache.maven.plugin.testing.ArtifactStubFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test case for ClassifierFilter
+ * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
  */
-public class TestClassifierFilter
-        extends AbstractArtifactFeatureFilterTest
+public class TestTypeFilter
 {
+    Set<Artifact> artifacts;
 
     @Before
     public void setUp()
         throws Exception
     {
-        filterClass = ClassifierFilter.class;
         ArtifactStubFactory factory = new ArtifactStubFactory( null, false );
-        artifacts = factory.getClassifiedArtifacts();
-
+        artifacts = factory.getTypedArtifacts();
     }
 
     @Test
-    public void testParsing()
-        throws Exception
+    public void testTypeParsing()
     {
-        parsing();
+        TypeFilter filter = new TypeFilter( "war,jar", "sources,zip," );
+        List<String> includes = filter.getIncludes();
+        List<String> excludes = filter.getExcludes();
 
+        assertEquals( 2, includes.size() );
+        assertEquals( 2, excludes.size() );
+        assertEquals( "war", includes.get( 0 ) );
+        assertEquals( "jar", includes.get( 1 ) );
+        assertEquals( "sources", excludes.get( 0 ) );
+        assertEquals( "zip", excludes.get( 1 ) );
     }
 
     @Test
     public void testFiltering()
-        throws Exception
     {
-        Set<Artifact> result = filtering();
+        TypeFilter filter = new TypeFilter( "war,jar", "war,zip," );
+        Set<Artifact> result = filter.filter( artifacts );
+        assertEquals( 1, result.size() );
+
         for ( Artifact artifact : result )
         {
-            assertTrue( artifact.getClassifier().equals( "one" ) || artifact.getClassifier().equals( "two" ) );
+            assertEquals( "jar", artifact.getType() );
         }
     }
 
     @Test
     public void testFiltering2()
-        throws Exception
     {
-        Set<Artifact> result = filtering2();
+        TypeFilter filter = new TypeFilter( null, "war,jar," );
+        Set<Artifact> result = filter.filter( artifacts );
+        assertEquals( 3, result.size() );
+
         for ( Artifact artifact : result )
         {
-            assertTrue( artifact.getClassifier().equals( "two" ) || artifact.getClassifier().equals( "four" ) );
+            assertTrue( !artifact.getType().equals( "war" ) && !artifact.getType().equals( "jar" ) );
         }
     }
 
     @Test
     public void testFiltering3()
-        throws Exception
     {
-        filtering3();
+        TypeFilter filter = new TypeFilter( null, null );
+        Set<Artifact> result = filter.filter( artifacts );
+        assertEquals( 5, result.size() );
     }
 }

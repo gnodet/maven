@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter;
+package org.apache.maven.artifact.filter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

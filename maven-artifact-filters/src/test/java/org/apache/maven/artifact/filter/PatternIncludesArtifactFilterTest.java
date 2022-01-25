@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter;
+package org.apache.maven.artifact.filter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,7 +21,6 @@ package org.apache.maven.shared.artifact.filter;
 
 import java.util.List;
 
-import org.apache.maven.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 
 public class PatternIncludesArtifactFilterTest

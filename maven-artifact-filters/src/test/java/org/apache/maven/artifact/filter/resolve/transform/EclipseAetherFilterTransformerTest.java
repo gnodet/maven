@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter.resolve.transform;
+package org.apache.maven.artifact.filter.resolve.transform;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

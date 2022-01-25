@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter.collection;
+package org.apache.maven.artifact.filter.collection;
 
 /* 
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,9 +21,6 @@ package org.apache.maven.shared.artifact.filter.collection;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.filter.collection.ArtifactFilterException;
-import org.apache.maven.artifact.filter.collection.ArtifactsFilter;
-import org.apache.maven.artifact.filter.collection.GroupIdFilter;
 import org.apache.maven.plugin.testing.ArtifactStubFactory;
 import org.junit.Before;
 import org.junit.Test;

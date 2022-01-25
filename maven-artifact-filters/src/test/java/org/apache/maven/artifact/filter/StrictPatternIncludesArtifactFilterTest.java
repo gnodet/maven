@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter;
+package org.apache.maven.artifact.filter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,16 +21,13 @@ package org.apache.maven.shared.artifact.filter;
 
 import java.util.List;
 
-import org.apache.maven.artifact.filter.AbstractStrictPatternArtifactFilter;
-import org.apache.maven.artifact.filter.StrictPatternExcludesArtifactFilter;
-
 /**
- * Tests <code>StrictPatternExcludesArtifactFilter</code>.
+ * Tests <code>StrictPatternIncludesArtifactFilter</code>.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @see StrictPatternExcludesArtifactFilter
+ * @see StrictPatternIncludesArtifactFilter
  */
-public class StrictPatternExcludesArtifactFilterTest
+public class StrictPatternIncludesArtifactFilterTest
     extends AbstractStrictPatternArtifactFilterTest
 {
     /*
@@ -38,15 +35,6 @@ public class StrictPatternExcludesArtifactFilterTest
      */
     protected AbstractStrictPatternArtifactFilter createFilter(List<String> patterns )
     {
-        return new StrictPatternExcludesArtifactFilter( patterns );
-    }
-
-    /*
-     * @see org.apache.maven.shared.artifact.filter.AbstractStrictPatternArtifactFilterTest#assertFilter(boolean,
-     *      java.lang.String)
-     */
-    protected void assertFilter( boolean expected, String pattern )
-    {
-        super.assertFilter( !expected, pattern );
+        return new StrictPatternIncludesArtifactFilter( patterns );
     }
 }

@@ -1,4 +1,4 @@
-package org.apache.maven.shared.artifact.filter;
+package org.apache.maven.artifact.filter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
