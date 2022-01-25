@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.shared.artifact.filter.resolve.TransformableFilter;
+import org.apache.maven.artifact.filter.resolve.TransformableFilter;
 import org.apache.maven.transfer.artifact.resolve.ArtifactResult;
 import org.apache.maven.transfer.dependencies.DependableCoordinate;
 
