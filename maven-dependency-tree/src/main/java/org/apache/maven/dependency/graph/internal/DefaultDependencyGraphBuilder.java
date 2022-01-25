@@ -84,10 +84,8 @@ public class DefaultDependencyGraphBuilder
     {
         MavenProject project = buildingRequest.getProject();
 
-        RepositorySystemSession session =
-            (RepositorySystemSession) Invoker.invoke( buildingRequest, "getRepositorySession", exceptionHandler );
+        RepositorySystemSession session = buildingRequest.getRepositorySession();
 
-        
         if ( Boolean.TRUE != session.getConfigProperties().get( NODE_DATA_PREMANAGED_VERSION ) )
         {
             DefaultRepositorySystemSession newSession = new DefaultRepositorySystemSession( session );
@@ -97,15 +95,13 @@ public class DefaultDependencyGraphBuilder
 
         final DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
         request.setMavenProject( project );
-        Invoker.invoke( request, "setRepositorySession", RepositorySystemSession.class, session );
+        request.setRepositorySession( session );
         // only download the poms, not the artifacts
         DependencyFilter collectFilter = ( node, parents ) -> false;
-        Invoker.invoke( request, "setResolutionFilter", DependencyFilter.class, collectFilter );
+        request.setResolutionFilter( collectFilter );
 
         final DependencyResolutionResult result = resolveDependencies( request );
-        org.eclipse.aether.graph.DependencyNode graph =
-            (org.eclipse.aether.graph.DependencyNode) Invoker.invoke( DependencyResolutionResult.class, result,
-                                                                      "getDependencyGraph", exceptionHandler );
+        org.eclipse.aether.graph.DependencyNode graph = result.getDependencyGraph();
 
         return buildDependencyNode( null, graph, project.getArtifact(), filter );
     }
@@ -128,21 +124,12 @@ public class DefaultDependencyGraphBuilder
     {
         org.eclipse.aether.artifact.Artifact artifact = dep.getArtifact();
 
-        try
-        {
-            Artifact mavenArtifact = (Artifact) Invoker.invoke( RepositoryUtils.class, "toArtifact",
-                                              org.eclipse.aether.artifact.Artifact.class, artifact, exceptionHandler );
+        Artifact mavenArtifact = RepositoryUtils.toArtifact( artifact );
 
-            mavenArtifact.setScope( dep.getScope() );
-            mavenArtifact.setOptional( dep.isOptional() );
+        mavenArtifact.setScope( dep.getScope() );
+        mavenArtifact.setOptional( dep.isOptional() );
 
-            return mavenArtifact;
-        }
-        catch ( DependencyGraphBuilderException e )
-        {
-            // ReflectionException should not happen
-            throw new RuntimeException( e.getMessage(), e );
-        }
+        return mavenArtifact;
     }
 
     private DependencyNode buildDependencyNode( DependencyNode parent, org.eclipse.aether.graph.DependencyNode node,

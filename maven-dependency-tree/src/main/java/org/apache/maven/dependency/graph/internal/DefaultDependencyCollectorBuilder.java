@@ -95,8 +95,7 @@ public class DefaultDependencyCollectorBuilder
             List<ArtifactRepository> remoteArtifactRepositories = project.getRemoteArtifactRepositories();
 
             DefaultRepositorySystemSession repositorySession =
-                (DefaultRepositorySystemSession) Invoker.invoke( buildingRequest, "getRepositorySession",
-                                                                 exceptionHandler );
+                (DefaultRepositorySystemSession) buildingRequest.getRepositorySession();
 
             session = new DefaultRepositorySystemSession( repositorySession );
 
@@ -114,17 +113,10 @@ public class DefaultDependencyCollectorBuilder
             session.setConfigProperty( ConflictResolver.CONFIG_PROP_VERBOSE, true );
             session.setConfigProperty( DependencyManagerUtils.CONFIG_PROP_VERBOSE, true );
 
-            org.eclipse.aether.artifact.Artifact aetherArtifact =
-                (org.eclipse.aether.artifact.Artifact) Invoker.invoke( RepositoryUtils.class, "toArtifact",
-                                                                       Artifact.class, projectArtifact,
-                                                                       exceptionHandler );
+            org.eclipse.aether.artifact.Artifact aetherArtifact = RepositoryUtils.toArtifact( projectArtifact );
 
-            @SuppressWarnings( "unchecked" )
             List<org.eclipse.aether.repository.RemoteRepository> aetherRepos =
-                (List<org.eclipse.aether.repository.RemoteRepository>) Invoker.invoke( RepositoryUtils.class, "toRepos",
-                                                                                       List.class,
-                                                                                       remoteArtifactRepositories,
-                                                                                       exceptionHandler );
+                    RepositoryUtils.toRepos( remoteArtifactRepositories );
 
             CollectRequest collectRequest = new CollectRequest();
             collectRequest.setRootArtifact( aetherArtifact );
@@ -207,38 +199,23 @@ public class DefaultDependencyCollectorBuilder
         }
     }
 
-    // CHECKSTYLE_OFF: LineLength
-    private org.eclipse.aether.graph.Dependency toAetherDependency( org.eclipse.aether.artifact.ArtifactTypeRegistry stereotypes,
-                                                                    Dependency dependency )
-        throws DependencyCollectorBuilderException
+    private org.eclipse.aether.graph.Dependency toAetherDependency(
+                org.eclipse.aether.artifact.ArtifactTypeRegistry stereotypes,
+                Dependency dependency )
     {
-        return (org.eclipse.aether.graph.Dependency) Invoker.invoke( RepositoryUtils.class, "toDependency",
-                                                              Dependency.class,
-                                                              ArtifactTypeRegistry.class,
-                                                              dependency, stereotypes, exceptionHandler );
+        return RepositoryUtils.toDependency( dependency, stereotypes );
     }
-    // CHECKSTYLE_ON: LineLength
 
     private Artifact getDependencyArtifact( org.eclipse.aether.graph.Dependency dep )
     {
         org.eclipse.aether.artifact.Artifact artifact = dep.getArtifact();
 
-        try
-        {
-            Artifact mavenArtifact =
-                (Artifact) Invoker.invoke( RepositoryUtils.class, "toArtifact",
-                                           org.eclipse.aether.artifact.Artifact.class, artifact, exceptionHandler );
+        Artifact mavenArtifact = RepositoryUtils.toArtifact( artifact );
 
-            mavenArtifact.setScope( dep.getScope() );
-            mavenArtifact.setOptional( dep.isOptional() );
+        mavenArtifact.setScope( dep.getScope() );
+        mavenArtifact.setOptional( dep.isOptional() );
 
-            return mavenArtifact;
-        }
-        catch ( DependencyCollectorBuilderException e )
-        {
-            // ReflectionException should not happen
-            throw new RuntimeException( e.getMessage(), e );
-        }
+        return mavenArtifact;
     }
 
     private DependencyNode buildDependencyNode( DependencyNode parent, org.eclipse.aether.graph.DependencyNode node,
