@@ -19,11 +19,11 @@ package org.apache.maven.dependency.graph;
  * under the License.
  */
 
+import java.util.Collection;
+
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
-
-import java.util.Collection;
 
 /**
  * Maven project dependency graph builder API, neutral against Maven 2 or Maven 3.

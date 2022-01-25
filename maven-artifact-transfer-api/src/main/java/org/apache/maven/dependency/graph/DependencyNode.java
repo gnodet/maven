@@ -22,8 +22,8 @@ package org.apache.maven.dependency.graph;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Exclusion;
 import org.apache.maven.dependency.graph.traversal.DependencyNodeVisitor;
+import org.apache.maven.model.Exclusion;
 
 /**
  * Represents an artifact node within a Maven project's dependency graph. Notice there is no support for omitted nodes
