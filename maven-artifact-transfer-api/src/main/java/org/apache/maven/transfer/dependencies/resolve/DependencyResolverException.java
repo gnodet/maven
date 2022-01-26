@@ -45,9 +45,9 @@ public class DependencyResolverException
     }
 
     /**
-     * @return {@link DependencyResult}
+     * @return {@link DependencyResolverResult}
      */
-    public DependencyResult getResult()
+    public DependencyResolverResult getResult()
     {
         return null;
     }

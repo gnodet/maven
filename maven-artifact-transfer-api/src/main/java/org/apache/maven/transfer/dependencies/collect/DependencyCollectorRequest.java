@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.collection;
+package org.apache.maven.transfer.dependencies.collect;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.transfer.BaseRequest;
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Model;
+import org.apache.maven.transfer.dependencies.DependableCoordinate;
 
 /**
  * A request to collect the transitive dependencies and to build a dependency graph from them. There are three ways to
@@ -34,72 +37,113 @@ import org.apache.maven.artifact.Artifact;
  * retrieved from the artifact descriptor of the root dependency. And last, only direct dependencies can be specified in
  * which case the root node of the resulting graph has no associated dependency.
  *
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.model.Dependency)
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.transfer.dependencies.DependableCoordinate)
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.model.Model)
+ * @see DependencyCollector#collectDependencies(DependencyCollectorRequest)
  */
-public final class CollectRequest
+public class DependencyCollectorRequest extends BaseRequest<DependencyCollectorRequest>
 {
 
     private Artifact rootArtifact;
 
-    private Dependency root;
+    private Dependency rootDependency;
+
+    private DependableCoordinate rootCoordinate;
+
+    private Model rootModel;
 
     private List<Dependency> dependencies = Collections.emptyList();
 
     private List<Dependency> managedDependencies = Collections.emptyList();
 
-    private List<ArtifactRepository> repositories = Collections.emptyList();
 
     /**
      * Creates an uninitialized request.
      */
-    public CollectRequest()
+    public DependencyCollectorRequest()
     {
         // enables default constructor
     }
 
     /**
      * Creates a request with the specified properties.
-     * 
-     * @param root The root dependency whose transitive dependencies should be collected, may be {@code null}.
+     *
+     * @param session {@link RepositorySession}
+     * @param rootArtifact The root dependency whose transitive dependencies should be collected, may be {@code null}.
+     */
+    public DependencyCollectorRequest( RepositorySession session, Artifact rootArtifact )
+    {
+        setSession( session );
+        setRootArtifact( rootArtifact );
+    }
+
+    /**
+     * Creates a request with the specified properties.
+     *
+     * @param session the {@link RepositorySession} to use
+     * @param rootArtifact The root dependency whose transitive dependencies should be collected, may be {@code null}.
+     */
+    public DependencyCollectorRequest( RepositorySession session, DependableCoordinate rootCoordinate )
+    {
+        setSession( session );
+        setRootCoordinate( rootCoordinate );
+    }
+
+    /**
+     * Creates a request with the specified properties.
+     *
+     * @param session the {@link RepositorySession} to use
+     * @param rootDependency The root dependency whose transitive dependencies should be collected, may be {@code null}.
+     */
+    public DependencyCollectorRequest( RepositorySession session, Dependency rootDependency )
+    {
+        setSession( session );
+        setRootDependency( rootDependency );
+    }
+
+    /**
+     * Creates a request with the specified properties.
+     *
+     * @param session the {@link RepositorySession} to use
+     * @param rootModel The root dependency whose transitive dependencies should be collected, may be {@code null}.
      * @param repositories The repositories to use for the collection, may be {@code null}.
      */
-    public CollectRequest( Dependency root, List<ArtifactRepository> repositories )
+    public DependencyCollectorRequest( RepositorySession session, Model rootModel )
     {
-        setRoot( root );
-        setRepositories( repositories );
+        setSession( session );
+        setRootModel( rootModel );
     }
 
     /**
      * Creates a new request with the specified properties.
-     * 
-     * @param root The root dependency whose transitive dependencies should be collected, may be {@code null}.
+     *
+     * @param session the {@link RepositorySession} to use
+     * @param rootDependency The root dependency whose transitive dependencies should be collected, may be {@code null}.
      * @param dependencies The direct dependencies to merge with the direct dependencies from the root dependency's
      *            artifact descriptor.
-     * @param repositories The repositories to use for the collection, may be {@code null}.
      */
-    public CollectRequest( Dependency root, List<Dependency> dependencies, List<ArtifactRepository> repositories )
+    public DependencyCollectorRequest( RepositorySession session,
+                                       Dependency rootDependency,
+                                       List<Dependency> dependencies )
     {
-        setRoot( root );
+        setSession( session );
+        setRootDependency( rootDependency );
         setDependencies( dependencies );
-        setRepositories( repositories );
     }
 
     /**
      * Creates a new request with the specified properties.
-     * 
+     *
+     * @param session the {@link RepositorySession} to use
      * @param dependencies The direct dependencies of some imaginary root, may be {@code null}.
      * @param managedDependencies The dependency management information to apply to the transitive dependencies, may be
      *            {@code null}.
-     * @param repositories The repositories to use for the collection, may be {@code null}.
      */
-    public CollectRequest( List<Dependency> dependencies, List<Dependency> managedDependencies,
-                          List<ArtifactRepository> repositories )
+    public DependencyCollectorRequest( RepositorySession session,
+                                       List<Dependency> dependencies,
+                                       List<Dependency> managedDependencies )
     {
+        setSession( session );
         setDependencies( dependencies );
         setManagedDependencies( managedDependencies );
-        setRepositories( repositories );
     }
 
     /**
@@ -113,17 +157,17 @@ public final class CollectRequest
     }
 
     /**
-     * Sets the root artifact for the dependency graph. This must not be confused with {@link #setRoot(Dependency)}: The
-     * root <em>dependency</em>, like any other specified dependency, will be subject to dependency
-     * collection/resolution, i.e. should have an artifact descriptor and a corresponding artifact file. The root
-     * <em>artifact</em> on the other hand is only used as a label for the root node of the graph in case no root
-     * dependency was specified. As such, the configured root artifact is ignored if {@link #getRoot()} does not return
-     * {@code null}.
+     * Sets the root artifact for the dependency graph. This must not be confused with
+     * {@link #setRootDependency(Dependency)}: The root <em>dependency</em>, like any other specified dependency, will
+     * be subject to dependency collection/resolution, i.e. should have an artifact descriptor and a corresponding
+     * artifact file. The root <em>artifact</em> on the other hand is only used as a label for the root node of the
+     * graph in case no root dependency was specified. As such, the configured root artifact is ignored if
+     * {@link #getRootDependency()} does not return {@code null}.
      * 
      * @param rootArtifact The root artifact for the dependency graph, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest setRootArtifact(  Artifact rootArtifact )
+    public DependencyCollectorRequest setRootArtifact( Artifact rootArtifact )
     {
         this.rootArtifact = rootArtifact;
         return this;
@@ -134,20 +178,42 @@ public final class CollectRequest
      * 
      * @return The root dependency of the graph or {@code null} if none.
      */
-    public Dependency getRoot()
+    public Dependency getRootDependency()
     {
-        return root;
+        return rootDependency;
     }
 
     /**
      * Sets the root dependency of the graph.
      * 
-     * @param root The root dependency of the graph, may be {@code null}.
+     * @param rootDependency The root dependency of the graph, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest setRoot( Dependency root )
+    public DependencyCollectorRequest setRootDependency( Dependency rootDependency )
     {
-        this.root = root;
+        this.rootDependency = rootDependency;
+        return this;
+    }
+
+    public DependableCoordinate getRootCoordinate()
+    {
+        return rootCoordinate;
+    }
+
+    public DependencyCollectorRequest setRootCoordinate( DependableCoordinate rootCoordinate )
+    {
+        this.rootCoordinate = rootCoordinate;
+        return this;
+    }
+
+    public Model getRootModel()
+    {
+        return rootModel;
+    }
+
+    public DependencyCollectorRequest setRootModel( Model rootModel )
+    {
+        this.rootModel = rootModel;
         return this;
     }
 
@@ -169,7 +235,7 @@ public final class CollectRequest
      * @param dependencies The direct dependencies, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest setDependencies( List<Dependency> dependencies )
+    public DependencyCollectorRequest setDependencies( List<Dependency> dependencies )
     {
         if ( dependencies == null )
         {
@@ -188,7 +254,7 @@ public final class CollectRequest
      * @param dependency The dependency to add, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest addDependency( Dependency dependency )
+    public DependencyCollectorRequest addDependency( Dependency dependency )
     {
         if ( dependency != null )
         {
@@ -218,7 +284,7 @@ public final class CollectRequest
      * @param managedDependencies The dependency management, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest setManagedDependencies( List<Dependency> managedDependencies )
+    public DependencyCollectorRequest setManagedDependencies( List<Dependency> managedDependencies )
     {
         if ( managedDependencies == null )
         {
@@ -237,7 +303,7 @@ public final class CollectRequest
      * @param managedDependency The managed dependency to add, may be {@code null}.
      * @return This request for chaining, never {@code null}.
      */
-    public CollectRequest addManagedDependency( Dependency managedDependency )
+    public DependencyCollectorRequest addManagedDependency( Dependency managedDependency )
     {
         if ( managedDependency != null )
         {
@@ -250,58 +316,10 @@ public final class CollectRequest
         return this;
     }
 
-    /**
-     * Gets the repositories to use for the collection.
-     * 
-     * @return The repositories to use for the collection, never {@code null}.
-     */
-    public List<ArtifactRepository> getRepositories()
-    {
-        return repositories;
-    }
-
-    /**
-     * Sets the repositories to use for the collection.
-     * 
-     * @param repositories The repositories to use for the collection, may be {@code null}.
-     * @return This request for chaining, never {@code null}.
-     */
-    public CollectRequest setRepositories( List<ArtifactRepository> repositories )
-    {
-        if ( repositories == null )
-        {
-            this.repositories = Collections.emptyList();
-        }
-        else
-        {
-            this.repositories = repositories;
-        }
-        return this;
-    }
-
-    /**
-     * Adds the specified repository for collection.
-     * 
-     * @param repository The repository to collect dependency information from, may be {@code null}.
-     * @return This request for chaining, never {@code null}.
-     */
-    public CollectRequest addRepository( ArtifactRepository repository )
-    {
-        if ( repository != null )
-        {
-            if ( this.repositories.isEmpty() )
-            {
-                this.repositories = new ArrayList<>();
-            }
-            this.repositories.add( repository );
-        }
-        return this;
-    }
-
     @Override
     public String toString()
     {
-        return getRoot() + " -> " + getDependencies() + " < " + getRepositories();
+        return getRootDependency() + " -> " + getDependencies() + " < " + getRepositories();
     }
 
 }

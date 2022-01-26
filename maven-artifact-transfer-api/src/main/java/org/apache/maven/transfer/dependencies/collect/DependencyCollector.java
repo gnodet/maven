@@ -19,55 +19,91 @@ package org.apache.maven.transfer.dependencies.collect;
  * under the License.
  */
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.transfer.dependencies.DependableCoordinate;
 
 /**
- * Will only download the pom files when not available, never the artifact. 
- * 
- * @author Robert Scholte
+ * The DependencyCollector service can be used to collect dependencies
+ * for a given artifact and builds a graph of them.
+ * The dependencies collection mechanism will not download any artifacts,
+ * and only the pom files will be downloaded.
  *
+ * @author Robert Scholte
+ * @author Guillaume Nodet
  */
 public interface DependencyCollector
 {
 
     /**
-     * A dependency may have excludes 
-     * 
-     * @param buildingRequest {@link ProjectBuildingRequest}
-     * @param root {@link Dependency}
-     * @return {@link CollectorResult}
-     * @throws DependencyCollectorException in case of an error.
-     * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
-     *             parameter <code>root</code> is <code>null</code>.
+     * Collects the transitive dependencies and builds a dependency graph.
+     * Note that this operation is only concerned about determining the coordinates of the
+     * transitive dependencies and does not actually resolve the artifact files.
+     *
+     * @param request The dependency collection request, must not be {@code null}.
+     * @return The collection result, never {@code null}.
+     * @throws DependencyCollectorException If the dependency tree could not be built.
+     *
+     * @see DependencyCollector#collectDependencies(RepositorySession, Model)
+     * @see DependencyCollector#collectDependencies(RepositorySession, Dependency)
+     * @see DependencyCollector#collectDependencies(RepositorySession, DependableCoordinate)
      */
-    CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest, Dependency root )
-        throws DependencyCollectorException;
+    DependencyCollectorResult collectDependencies( DependencyCollectorRequest request )
+            throws DependencyCollectorException, IllegalArgumentException;
 
     /**
-     * @param buildingRequest {@link ProjectBuildingRequest}.
-     * @param root {@link DependableCoordinate}
-     * @return {@link CollectorResult}
-     * @throws DependencyCollectorException in case of an error which can be a component lookup error or
-     *  an error while trying to look up the dependencies.
-     * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
-     *             parameter <code>root</code> is <code>null</code>.
+     * Collects the transitive dependencies of some artifacts and builds a dependency graph. Note that this operation is
+     * only concerned about determining the coordinates of the transitive dependencies and does not actually resolve the
+     * artifact files.
+     *
+     * @param session The {@link RepositorySession}, must not be {@code null}.
+     * @param root The Maven Dependency, must not be {@code null}.
+     * @return The collection result, never {@code null}.
+     * @throws DependencyCollectorException If the dependency tree could not be built.
+     * @see #collectDependencies(DependencyCollectorRequest)
      */
-    CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest, DependableCoordinate root )
-                    throws DependencyCollectorException;
+    default DependencyCollectorResult collectDependencies( RepositorySession session,
+                                                           Dependency root )
+        throws DependencyCollectorException
+    {
+        return collectDependencies( new DependencyCollectorRequest( session, root ) );
+    }
 
     /**
-     * @param buildingRequest {@link ProjectBuildingRequest}.
-     * @param root {@link Model}
-     * @return {@link CollectorResult}
-     * @throws DependencyCollectorException in case of an error which can be a component lookup error or
-     *  an error while trying to look up the dependencies.
-     * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
-     *             parameter <code>root</code> is <code>null</code>.
+     * Collects the transitive dependencies of some artifacts and builds a dependency graph. Note that this operation is
+     * only concerned about determining the coordinates of the transitive dependencies and does not actually resolve the
+     * artifact files.
+     *
+     * @param session The {@link RepositorySession}, must not be {@code null}.
+     * @param root The Maven DependableCoordinate, must not be {@code null}.
+     * @return The collection result, never {@code null}.
+     * @throws DependencyCollectorException If the dependency tree could not be built.
+     * @see #collectDependencies(DependencyCollectorRequest)
      */
-    CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest, Model root )
-                    throws DependencyCollectorException;
+    default DependencyCollectorResult collectDependencies( RepositorySession session,
+                                                           DependableCoordinate root )
+        throws DependencyCollectorException
+    {
+        return collectDependencies( new DependencyCollectorRequest( session, root ) );
+    }
+
+    /**
+     * Collects the transitive dependencies of some artifacts and builds a dependency graph. Note that this operation is
+     * only concerned about determining the coordinates of the transitive dependencies and does not actually resolve the
+     * artifact files.
+     *
+     * @param session The {@link RepositorySession}, must not be {@code null}.
+     * @param root The Maven model, must not be {@code null}.
+     * @return The collection result, never {@code null}.
+     * @throws DependencyCollectorException If the dependency tree could not be built.
+     * @see #collectDependencies(DependencyCollectorRequest)
+     */
+    default DependencyCollectorResult collectDependencies( RepositorySession session,
+                                                           Model root )
+        throws DependencyCollectorException
+    {
+        return collectDependencies( new DependencyCollectorRequest( session, root ) );
+    }
 
 }

@@ -20,7 +20,9 @@ package org.apache.maven.transfer.repository;
  */
 
 import java.io.File;
+import java.nio.file.Path;
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.project.ProjectBuildingRequest;
@@ -54,13 +56,14 @@ public interface RepositoryManager
     String getPathForLocalMetadata( ProjectBuildingRequest buildingRequest, ArtifactMetadata metadata );
 
     /**
-     * Create a new {@code ProjectBuildingRequest} with an adjusted repository session.
+     * Create a new {@code RepositorySession} with an adjusted repository session.
+     * If the given path is <code>null</code>, the original session will be returned.
      * 
-     * @param request the project building request
-     * @param basedir the base directory of the local repository
-     * @return a new project building request
+     * @param session the project building request
+     * @param localRepository the base directory of the local repository
+     * @return a new repository session
      */
-    ProjectBuildingRequest setLocalRepositoryBasedir( ProjectBuildingRequest request, File basedir );
+    RepositorySession withLocalRepository( RepositorySession session, Path localRepository );
 
     /**
      * Get the localRepositryBasedir as specified in the repository session of the request

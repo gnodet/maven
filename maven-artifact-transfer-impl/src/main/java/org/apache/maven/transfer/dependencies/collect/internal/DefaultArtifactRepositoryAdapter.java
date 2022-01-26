@@ -39,7 +39,7 @@ import org.eclipse.aether.repository.RepositoryPolicy;
  */
 class DefaultArtifactRepositoryAdapter implements ArtifactRepository
 {
-    
+    private static final String LS = System.lineSeparator();
     private RemoteRepository remoteRepository;
 
     /**
@@ -235,21 +235,20 @@ class DefaultArtifactRepositoryAdapter implements ArtifactRepository
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "       id: " ).append( getId() ).append( "\n" );
-        sb.append( "      url: " ).append( getUrl() ).append( "\n" );
-        sb.append( "   layout: " ).append( "default" ).append( "\n" );
+        sb.append( "       id: " ).append( getId() ).append( LS );
+        sb.append( "      url: " ).append( getUrl() ).append( LS );
+        sb.append( "   layout: " ).append( "default" ).append( LS );
 
         RepositoryPolicy snapshotPolicy = remoteRepository.getPolicy( true ); 
         sb.append( "snapshots: [enabled => " ).append( snapshotPolicy.isEnabled() );
-        sb.append( ", update => " ).append( snapshotPolicy.getUpdatePolicy() ).append( "]\n" );
+        sb.append( ", update => " ).append( snapshotPolicy.getUpdatePolicy() ).append( "]" ).append( LS );
 
         RepositoryPolicy releasePolicy = remoteRepository.getPolicy( false ); 
         sb.append( " releases: [enabled => " ).append( releasePolicy.isEnabled() );
-        sb.append( ", update => " ).append( releasePolicy.getUpdatePolicy() ).append( "]\n" );
+        sb.append( ", update => " ).append( releasePolicy.getUpdatePolicy() ).append( "]" ).append( LS );
 
         return sb.toString();
     }
-    
     
     @Override
     public int hashCode()

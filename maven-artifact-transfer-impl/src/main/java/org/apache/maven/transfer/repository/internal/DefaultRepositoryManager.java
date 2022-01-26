@@ -20,11 +20,12 @@ package org.apache.maven.transfer.repository.internal;
  */
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
-import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.transfer.artifact.ArtifactCoordinate;
 import org.apache.maven.transfer.repository.RepositoryManager;
+import org.apache.maven.transfer.internal.DefaultRepositorySession;
 import org.eclipse.aether.DefaultRepositoryCache;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -41,6 +42,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -67,7 +69,7 @@ public class DefaultRepositoryManager
 
         // LRM.getPathForLocalArtifact() won't throw an Exception, so translate reflection error to RuntimeException
 
-        return buildingRequest.getRepositorySession().getLocalRepositoryManager().getPathForLocalArtifact(
+        return session( buildingRequest ).getLocalRepositoryManager().getPathForLocalArtifact(
                 aetherArtifact );
     }
 
@@ -77,7 +79,7 @@ public class DefaultRepositoryManager
     {
         Artifact aetherArtifact = toArtifact( coordinate );
 
-        return buildingRequest.getRepositorySession().getLocalRepositoryManager().getPathForLocalArtifact(
+        return session( buildingRequest ).getLocalRepositoryManager().getPathForLocalArtifact(
                 aetherArtifact );
     }
 
@@ -90,17 +92,19 @@ public class DefaultRepositoryManager
                 metadata.storedInArtifactVersionDirectory() ? metadata.getBaseVersion() : null, "maven-metadata.xml",
                 Nature.RELEASE_OR_SNAPSHOT );
 
-        return buildingRequest.getRepositorySession().getLocalRepositoryManager().getPathForLocalMetadata(
+        return session( buildingRequest ).getLocalRepositoryManager().getPathForLocalMetadata(
                 aetherMetadata );
     }
 
     @Override
-    public ProjectBuildingRequest setLocalRepositoryBasedir( ProjectBuildingRequest buildingRequest,
-                                                             File basedir )
+    public RepositorySession withLocalRepository( RepositorySession repositorySession, Path localRepository )
     {
-        ProjectBuildingRequest newRequest = new DefaultProjectBuildingRequest( buildingRequest );
+        if ( localRepository == null )
+        {
+            return repositorySession;
+        }
 
-        RepositorySystemSession session = buildingRequest.getRepositorySession();
+        RepositorySystemSession session = session( repositorySession );
 
         // "clone" session and replace localRepository
         DefaultRepositorySystemSession newSession = new DefaultRepositorySystemSession( session );
@@ -112,19 +116,27 @@ public class DefaultRepositoryManager
         String repositoryType = resolveRepositoryType( session.getLocalRepository() );
 
         LocalRepositoryManager localRepositoryManager = repositorySystem.newLocalRepositoryManager( newSession,
-                new LocalRepository( basedir, repositoryType ) );
+                new LocalRepository( localRepository.toFile(), repositoryType ) );
 
         newSession.setLocalRepositoryManager( localRepositoryManager );
 
-        newRequest.setRepositorySession( newSession );
-
-        return newRequest;
+        return new DefaultRepositorySession( newSession, null, null );
     }
 
     @Override
     public File getLocalRepositoryBasedir( ProjectBuildingRequest buildingRequest )
     {
-        return buildingRequest.getRepositorySession().getLocalRepository().getBasedir();
+        return session( buildingRequest ).getLocalRepository().getBasedir();
+    }
+
+    private RepositorySystemSession session( ProjectBuildingRequest request )
+    {
+        return request.getRepositorySession();
+    }
+
+    private RepositorySystemSession session( RepositorySession session )
+    {
+        return ( ( DefaultRepositorySession ) session ).getRepositorySystemSession();
     }
 
     /**

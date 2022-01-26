@@ -19,10 +19,8 @@ package org.apache.maven.transfer.dependencies.resolve.internal;
  * under the License.
  */
 
-import java.util.List;
-
 import org.apache.maven.transfer.dependencies.resolve.DependencyResolverException;
-import org.apache.maven.transfer.dependencies.resolve.DependencyResult;
+import org.apache.maven.transfer.dependencies.resolve.DependencyResolverResult;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 
 /**
@@ -41,15 +39,8 @@ class DefaultDependencyResolverException extends DependencyResolverException
     }
     
     @Override
-    public DependencyResult getResult()
+    public DependencyResolverResult getResult()
     {
-        return new DependencyResult()
-        {
-            @Override
-            public List<Exception> getCollectorExceptions()
-            {
-                return e.getResult().getCollectExceptions();
-            }
-        };
+        return new DefaultDependencyResolverResult( e.getResult() );
     }
 }

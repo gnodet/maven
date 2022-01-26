@@ -35,7 +35,7 @@ import org.eclipse.aether.repository.RemoteRepository;
  * @author Pim Moerenhout
  *
  */
-class DefaultDependencyNodeAdapter implements DependencyNode
+public class DefaultDependencyNodeAdapter implements DependencyNode
 {
 
     private org.eclipse.aether.graph.DependencyNode dependencyNode;
@@ -43,7 +43,7 @@ class DefaultDependencyNodeAdapter implements DependencyNode
     /**
      * @param dependencyNode {@link org.eclipse.aether.graph.DependencyNode}
      */
-    DefaultDependencyNodeAdapter( org.eclipse.aether.graph.DependencyNode dependencyNode )
+    public DefaultDependencyNodeAdapter( org.eclipse.aether.graph.DependencyNode dependencyNode )
     {
         this.dependencyNode = dependencyNode;
     }
@@ -97,10 +97,10 @@ class DefaultDependencyNodeAdapter implements DependencyNode
     {
         if ( visitor.visitEnter( this ) )
         {
-            for ( org.eclipse.aether.graph.DependencyNode child : dependencyNode.getChildren() )
+            for ( org.eclipse.aether.graph.DependencyNode aetherNode : dependencyNode.getChildren() )
             {
-                DependencyNode node = new DefaultDependencyNodeAdapter( child );
-                if ( !node.accept( visitor ) )
+                DependencyNode child = new DefaultDependencyNodeAdapter( aetherNode );
+                if ( !child.accept( visitor ) )
                 {
                     break;
                 }

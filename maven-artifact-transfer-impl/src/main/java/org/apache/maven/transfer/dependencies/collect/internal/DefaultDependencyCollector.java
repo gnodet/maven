@@ -23,24 +23,24 @@ import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.model.Model;
-import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.transfer.dependencies.DependableCoordinate;
-import org.apache.maven.transfer.dependencies.collect.CollectorResult;
-import org.apache.maven.transfer.dependencies.collect.DependencyCollector;
+import org.apache.maven.transfer.dependencies.collect.DependencyCollectorRequest;
+import org.apache.maven.transfer.dependencies.collect.DependencyCollectorResult;
 import org.apache.maven.transfer.dependencies.collect.DependencyCollectorException;
+import org.apache.maven.transfer.dependencies.collect.DependencyCollector;
+import org.apache.maven.transfer.dependencies.DependableCoordinate;
+import org.apache.maven.transfer.internal.BaseService;
+import org.apache.maven.transfer.repository.RepositoryManager;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.collection.CollectResult;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -48,114 +48,90 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class DefaultDependencyCollector
+public class DefaultDependencyCollector extends BaseService
         implements DependencyCollector
 {
-    private final RepositorySystem repositorySystem;
 
     private final ArtifactHandlerManager artifactHandlerManager;
 
     @Inject
     public DefaultDependencyCollector( RepositorySystem repositorySystem,
+                                       RepositoryManager repositoryManager,
                                        ArtifactHandlerManager artifactHandlerManager )
     {
-        this.repositorySystem = Objects.requireNonNull( repositorySystem );
+        super( repositorySystem, repositoryManager );
         this.artifactHandlerManager = Objects.requireNonNull( artifactHandlerManager );
     }
 
-    private static Dependency toDependency( org.apache.maven.model.Dependency mavenDependency,
-                                            ArtifactTypeRegistry typeRegistry )
-    {
-        return RepositoryUtils.toDependency( mavenDependency, typeRegistry );
-    }
-
     @Override
-    public CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest,
-                                                org.apache.maven.model.Dependency root )
+    public DependencyCollectorResult collectDependencies( DependencyCollectorRequest request  )
             throws DependencyCollectorException
     {
-        ArtifactTypeRegistry typeRegistry = RepositoryUtils.newArtifactTypeRegistry( artifactHandlerManager );
-
-        CollectRequest request = new CollectRequest();
-        request.setRoot( toDependency( root, typeRegistry ) );
-
-        return collectDependencies( buildingRequest, request );
-    }
-
-    @Override
-    public CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest,
-                                                DependableCoordinate root )
-            throws DependencyCollectorException
-    {
-        ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getType() );
-
-        String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
-
-        Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(), root.getClassifier(),
-                extension, root.getVersion() );
-
-        CollectRequest request = new CollectRequest();
-        request.setRoot( new Dependency( aetherArtifact, null ) );
-
-        return collectDependencies( buildingRequest, request );
-    }
-
-    @Override
-    public CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest,
-                                                Model root )
-            throws DependencyCollectorException
-    {
-        // Are there examples where packaging and type are NOT in sync
-        ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getPackaging() );
-
-        String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
-
-        Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(), extension,
-                root.getVersion() );
-
-        CollectRequest request = new CollectRequest();
-        request.setRoot( new Dependency( aetherArtifact, null ) );
+        Objects.requireNonNull( request, "request should not be null" );
 
         ArtifactTypeRegistry typeRegistry = RepositoryUtils.newArtifactTypeRegistry( artifactHandlerManager );
 
-        List<Dependency> aetherDependencies = new ArrayList<>( root.getDependencies().size() );
-        for ( org.apache.maven.model.Dependency mavenDependency : root.getDependencies() )
+        CollectRequest collectRequest = new CollectRequest();
+
+        if ( request.getRootArtifact() != null )
         {
-            aetherDependencies.add( toDependency( mavenDependency, typeRegistry ) );
+            collectRequest.setRootArtifact( RepositoryUtils.toArtifact( request.getRootArtifact() ) );
         }
-        request.setDependencies( aetherDependencies );
-
-        if ( root.getDependencyManagement() != null )
+        else if ( request.getRootDependency() != null )
         {
-            List<Dependency> aetherManagerDependencies = new ArrayList<>(
-                    root.getDependencyManagement().getDependencies().size() );
-
-            for ( org.apache.maven.model.Dependency mavenDependency : root.getDependencyManagement().getDependencies() )
+            collectRequest.setRoot( RepositoryUtils.toDependency( request.getRootDependency(), typeRegistry ) );
+        }
+        else if ( request.getRootCoordinate() != null )
+        {
+            DependableCoordinate root = request.getRootCoordinate();
+            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getType() );
+            String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
+            Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(),
+                    root.getClassifier(), extension, root.getVersion() );
+            collectRequest.setRootArtifact( aetherArtifact );
+        }
+        else if ( request.getRootModel() != null )
+        {
+            Model root = request.getRootModel();
+            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getPackaging() );
+            String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
+            Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(),
+                    extension, "", root.getVersion() );
+            collectRequest.setRootArtifact( aetherArtifact );
+            for ( org.apache.maven.model.Dependency mavenDependency : root.getDependencies() )
             {
-                aetherManagerDependencies.add( toDependency( mavenDependency, typeRegistry ) );
+                collectRequest.addDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
             }
-
-            request.setManagedDependencies( aetherManagerDependencies );
+            if ( root.getDependencyManagement() != null )
+            {
+                for ( org.apache.maven.model.Dependency mavenDependency
+                            : root.getDependencyManagement().getDependencies() )
+                {
+                    collectRequest.addManagedDependency(
+                            RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+                }
+            }
         }
-
-        return collectDependencies( buildingRequest, request );
-    }
-
-    private CollectorResult collectDependencies( ProjectBuildingRequest buildingRequest,
-                                                 CollectRequest request )
-            throws DependencyCollectorException
-    {
-        request.setRepositories( RepositoryUtils.toRepos( buildingRequest.getRemoteRepositories() ) );
+        for ( org.apache.maven.model.Dependency mavenDependency : request.getDependencies() )
+        {
+            collectRequest.addDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+        }
+        for ( org.apache.maven.model.Dependency mavenDependency : request.getManagedDependencies() )
+        {
+            collectRequest.addManagedDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+        }
+        collectRequest.setRepositories( repositories( request ) );
 
         try
         {
-            return new DefaultCollectorResult(
-                    repositorySystem.collectDependencies( buildingRequest.getRepositorySession(), request )
-            );
+            RepositorySystemSession session = session( request );
+            CollectResult collectResult = repositorySystem.collectDependencies( session, collectRequest );
+            return new DefaultDependencyCollectorResult( collectResult );
         }
-        catch ( DependencyCollectionException e )
+        catch ( org.eclipse.aether.collection.DependencyCollectionException e )
         {
             throw new DependencyCollectorException( e.getMessage(), e );
         }
     }
+
 }

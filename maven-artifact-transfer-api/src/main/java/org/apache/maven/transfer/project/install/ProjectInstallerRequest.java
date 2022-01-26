@@ -19,16 +19,28 @@ package org.apache.maven.transfer.project.install;
  * under the License.
  */
 
+import org.apache.maven.transfer.BaseRequest;
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.project.MavenProject;
 
 /**
  * @author Robert Scholte
  */
-public class ProjectInstallerRequest
+public class ProjectInstallerRequest extends BaseRequest<ProjectInstallerRequest>
 {
     // From InstallMojo
 
     private MavenProject project;
+
+    public ProjectInstallerRequest()
+    {
+    }
+
+    public ProjectInstallerRequest( RepositorySession session, MavenProject project )
+    {
+        setSession( session );
+        this.project = project;
+    }
 
     /**
      * @return the project

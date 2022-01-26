@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.artifact.resolve;
+package org.apache.maven.transfer;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,18 +19,23 @@ package org.apache.maven.transfer.artifact.resolve;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.apache.maven.artifact.repository.ArtifactRepository;
 
 /**
- * The Artifact Result
- * 
- * @author Robert Scholte
- * @since 3.0
+ * The session to install / deploy / resolve artifacts and dependencies.
  */
-public interface ArtifactResult
+public interface RepositorySession
 {
-    /**
-     * @return {@link Artifact}
-     */
-    Artifact getArtifact();
+
+    Path getLocalRepository();
+
+    RepositorySession withLocalRepository( Path localRepository );
+
+    List<ArtifactRepository> getRemoteRepositories();
+
+    RepositorySession withRemoteRepositories( List<ArtifactRepository> repositories );
+
 }

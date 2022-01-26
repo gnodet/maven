@@ -19,11 +19,11 @@ package org.apache.maven.transfer.artifact.install;
  * under the License.
  */
 
-import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.ProjectBuildingRequest;
 
 /**
  * @author Robert Scholte
@@ -31,20 +31,18 @@ import org.apache.maven.project.ProjectBuildingRequest;
 public interface ArtifactInstaller
 {
     /**
-     * @param request {@link ProjectBuildingRequest}
-     * @param mavenArtifacts {@link Artifact} (no null or empty collection allowed.)
+     * @param request {@link ArtifactInstallerRequest}
      * @throws ArtifactInstallerException in case of an error.
      * @throws IllegalArgumentException in case <code>request</code> is <code>null</code>, <code>mavenArtifacts</code>
      *             is <code>null</code> or <code>mavenArtifacts</code> is empty (<code>mavenArtifacts.isEmpty()</code>
      *             == <code>true</code>).
      */
-    void install( ProjectBuildingRequest request, Collection<Artifact> mavenArtifacts )
+    void install( ArtifactInstallerRequest request )
         throws ArtifactInstallerException, IllegalArgumentException;
 
     /**
-     * @param request {@link ProjectBuildingRequest}.
-     * @param localRepository The location for the local repository.
-     * @param mavenArtifacts Collection of {@link Artifact MavenArtifacts}
+     * @param session the repository session
+     * @param artifact the {@link Artifact} to install
      * @throws ArtifactInstallerException In case of an error which can be the a given artifact can not be found or the
      *             installation has failed.
      * @throws IllegalArgumentException in case of parameter <code>request</code> is <code>null</code> or parameter
@@ -52,7 +50,26 @@ public interface ArtifactInstaller
      *             or parameter <code>mavenArtifacts</code> is <code>null</code> or
      *             <code>mavenArtifacts.isEmpty()</code> is <code>true</code>.
      */
-    void install( ProjectBuildingRequest request, File localRepository, Collection<Artifact> mavenArtifacts )
-        throws ArtifactInstallerException;
+    default void install( RepositorySession session, Artifact artifact )
+            throws ArtifactInstallerException
+    {
+        install( session, Collections.singletonList( artifact ) );
+    }
+
+    /**
+     * @param session the repository session
+     * @param artifacts Collection of {@link Artifact MavenArtifacts}
+     * @throws ArtifactInstallerException In case of an error which can be the a given artifact can not be found or the
+     *             installation has failed.
+     * @throws IllegalArgumentException in case of parameter <code>request</code> is <code>null</code> or parameter
+     *             <code>localRepository</code> is <code>null</code> or <code>localRepository</code> is not a directory
+     *             or parameter <code>mavenArtifacts</code> is <code>null</code> or
+     *             <code>mavenArtifacts.isEmpty()</code> is <code>true</code>.
+     */
+    default void install( RepositorySession session, Collection<Artifact> artifacts )
+            throws ArtifactInstallerException
+    {
+        install( new ArtifactInstallerRequest( session, artifacts ) );
+    }
 
 }

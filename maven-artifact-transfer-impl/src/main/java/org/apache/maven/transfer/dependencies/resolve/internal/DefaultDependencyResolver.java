@@ -22,24 +22,22 @@ package org.apache.maven.transfer.dependencies.resolve.internal;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.model.Model;
-import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.artifact.filter.resolve.TransformableFilter;
 import org.apache.maven.artifact.filter.resolve.transform.EclipseAetherFilterTransformer;
 import org.apache.maven.transfer.dependencies.DependableCoordinate;
 import org.apache.maven.transfer.dependencies.resolve.DependencyResolver;
 import org.apache.maven.transfer.dependencies.resolve.DependencyResolverException;
+import org.apache.maven.transfer.dependencies.resolve.DependencyResolverRequest;
+import org.apache.maven.transfer.dependencies.resolve.DependencyResolverResult;
+import org.apache.maven.transfer.internal.BaseService;
+import org.apache.maven.transfer.repository.RepositoryManager;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
@@ -47,11 +45,7 @@ import org.eclipse.aether.resolution.DependencyResult;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+
 import java.util.Objects;
 
 /**
@@ -59,173 +53,97 @@ import java.util.Objects;
  */
 @Singleton
 @Named
-public class DefaultDependencyResolver
+public class DefaultDependencyResolver extends BaseService
         implements DependencyResolver
 {
-    private final RepositorySystem repositorySystem;
 
     private final ArtifactHandlerManager artifactHandlerManager;
 
     @Inject
     public DefaultDependencyResolver( RepositorySystem repositorySystem,
+                                      RepositoryManager repositoryManager,
                                       ArtifactHandlerManager artifactHandlerManager )
     {
-        this.repositorySystem = Objects.requireNonNull( repositorySystem );
+        super( repositorySystem, repositoryManager );
         this.artifactHandlerManager = Objects.requireNonNull( artifactHandlerManager );
     }
 
-    /**
-     * Based on RepositoryUtils#toDependency(org.apache.maven.model.Dependency, ArtifactTypeRegistry)
-     *
-     * @param coordinate  {@link DependableCoordinate}
-     * @param stereotypes {@link ArtifactTypeRegistry
-     * @return as Aether Dependency
-     */
-    private static Dependency toDependency( DependableCoordinate coordinate, ArtifactTypeRegistry stereotypes )
-    {
-        ArtifactType stereotype = stereotypes.get( coordinate.getType() );
-        if ( stereotype == null )
-        {
-            stereotype = new DefaultArtifactType( coordinate.getType() );
-        }
-
-        Artifact artifact = new DefaultArtifact( coordinate.getGroupId(), coordinate.getArtifactId(),
-                coordinate.getClassifier(), null, coordinate.getVersion(), null, stereotype );
-
-        return new Dependency( artifact, null );
-    }
-
-    private static Dependency toDependency( org.apache.maven.model.Dependency root, ArtifactTypeRegistry typeRegistry )
-    {
-        return RepositoryUtils.toDependency( root, typeRegistry );
-    }
-
     @Override
-    public Iterable<org.apache.maven.transfer.artifact.resolve.ArtifactResult> resolveDependencies(
-            ProjectBuildingRequest buildingRequest,
-            DependableCoordinate coordinate,
-            TransformableFilter dependencyFilter ) throws DependencyResolverException
+    public DependencyResolverResult resolveDependencies(
+                    DependencyResolverRequest request ) throws DependencyResolverException
     {
-        ArtifactTypeRegistry typeRegistry = createTypeRegistry();
+        ArtifactTypeRegistry typeRegistry = RepositoryUtils.newArtifactTypeRegistry( artifactHandlerManager );
 
-        Dependency aetherRoot = toDependency( coordinate, typeRegistry );
+        CollectRequest collectRequest = new CollectRequest();
 
-        CollectRequest request = new CollectRequest( aetherRoot,
-                RepositoryUtils.toRepos( buildingRequest.getRemoteRepositories() ) );
-
-        return resolveDependencies( buildingRequest, dependencyFilter, request );
-    }
-
-    private ArtifactTypeRegistry createTypeRegistry()
-    {
-        return RepositoryUtils.newArtifactTypeRegistry( artifactHandlerManager );
-    }
-
-    @Override
-    public Iterable<org.apache.maven.transfer.artifact.resolve.ArtifactResult> resolveDependencies(
-            ProjectBuildingRequest buildingRequest,
-            Model model,
-            TransformableFilter dependencyFilter ) throws DependencyResolverException
-    {
-        // Are there examples where packaging and type are NOT in sync
-        ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( model.getPackaging() );
-
-        String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
-
-        Artifact aetherArtifact = new DefaultArtifact( model.getGroupId(), model.getArtifactId(), extension,
-                model.getVersion() );
-
-        Dependency aetherRoot = new Dependency( aetherArtifact, null );
-
-        CollectRequest request = new CollectRequest( aetherRoot,
-                RepositoryUtils.toRepos( buildingRequest.getRemoteRepositories() ) );
-
-        request.setDependencies( resolveDependencies( model.getDependencies() ) );
-
-        DependencyManagement mavenDependencyManagement = model.getDependencyManagement();
-        if ( mavenDependencyManagement != null )
+        if ( request.getRootArtifact() != null )
         {
-            request.setManagedDependencies( resolveDependencies( model.getDependencyManagement().getDependencies() ) );
+            collectRequest.setRootArtifact( RepositoryUtils.toArtifact( request.getRootArtifact() ) );
         }
-
-        return resolveDependencies( buildingRequest, dependencyFilter, request );
-    }
-
-    /**
-     * @param mavenDependencies {@link org.apache.maven.model.Dependency} can be {@code null}.
-     * @return List of resolved dependencies.
-     */
-    private List<Dependency> resolveDependencies( Collection<org.apache.maven.model.Dependency> mavenDependencies )
-    {
-        if ( mavenDependencies == null )
+        else if ( request.getRootDependency() != null )
         {
-            return Collections.emptyList();
+            collectRequest.setRoot( RepositoryUtils.toDependency( request.getRootDependency(), typeRegistry ) );
         }
-
-        ArtifactTypeRegistry typeRegistry = createTypeRegistry();
-
-        List<Dependency> aetherDependencies = new ArrayList<>( mavenDependencies.size() );
-
-        for ( org.apache.maven.model.Dependency mavenDependency : mavenDependencies )
+        else if ( request.getRootCoordinate() != null )
         {
-            aetherDependencies.add( toDependency( mavenDependency, typeRegistry ) );
+            DependableCoordinate root = request.getRootCoordinate();
+            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getType() );
+            String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
+            Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(),
+                    root.getClassifier(), extension, root.getVersion() );
+            collectRequest.setRootArtifact( aetherArtifact );
         }
+        else if ( request.getRootModel() != null )
+        {
+            Model root = request.getRootModel();
+            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( root.getPackaging() );
+            String extension = artifactHandler != null ? artifactHandler.getExtension() : null;
+            Artifact aetherArtifact = new DefaultArtifact( root.getGroupId(), root.getArtifactId(),
+                    extension, "", root.getVersion() );
+            collectRequest.setRootArtifact( aetherArtifact );
+            for ( org.apache.maven.model.Dependency mavenDependency : root.getDependencies() )
+            {
+                collectRequest.addDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+            }
+            if ( root.getDependencyManagement() != null )
+            {
+                for ( org.apache.maven.model.Dependency mavenDependency
+                            : root.getDependencyManagement().getDependencies() )
+                {
+                    collectRequest.addManagedDependency(
+                            RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+                }
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+        for ( org.apache.maven.model.Dependency mavenDependency : request.getDependencies() )
+        {
+            collectRequest.addDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+        }
+        for ( org.apache.maven.model.Dependency mavenDependency : request.getManagedDependencies() )
+        {
+            collectRequest.addManagedDependency( RepositoryUtils.toDependency( mavenDependency, typeRegistry ) );
+        }
+        // Repositories to use
+        collectRequest.setRepositories( repositories( request ) );
+        // Filter
+        DependencyFilter depFilter = null;
+        if ( request.getFilter() != null )
+        {
+            depFilter = request.getFilter().transform( new EclipseAetherFilterTransformer() );
+        }
+        DependencyRequest depRequest = new DependencyRequest( collectRequest, depFilter );
 
-        return aetherDependencies;
-    }
-
-    @Override
-    public Iterable<org.apache.maven.transfer.artifact.resolve.ArtifactResult> resolveDependencies(
-            ProjectBuildingRequest buildingRequest,
-            Collection<org.apache.maven.model.Dependency> mavenDependencies,
-            Collection<org.apache.maven.model.Dependency> managedMavenDependencies,
-            TransformableFilter filter ) throws DependencyResolverException
-    {
-        List<Dependency> aetherDeps = resolveDependencies( mavenDependencies );
-
-        List<Dependency> aetherManagedDependencies = resolveDependencies( managedMavenDependencies );
-
-        CollectRequest request = new CollectRequest( aetherDeps,
-                aetherManagedDependencies, RepositoryUtils.toRepos( buildingRequest.getRemoteRepositories() ) );
-
-        return resolveDependencies( buildingRequest, filter, request );
-    }
-
-    private Iterable<org.apache.maven.transfer.artifact.resolve.ArtifactResult> resolveDependencies(
-            ProjectBuildingRequest buildingRequest,
-            TransformableFilter dependencyFilter,
-            CollectRequest request ) throws DependencyResolverException
-    {
         try
         {
-            DependencyFilter depFilter = null;
-            if ( dependencyFilter != null )
-            {
-                depFilter = dependencyFilter.transform( new EclipseAetherFilterTransformer() );
-            }
+            RepositorySystemSession session = session( request );
 
-            DependencyRequest depRequest = new DependencyRequest( request, depFilter );
+            DependencyResult dependencyResults = repositorySystem.resolveDependencies( session, depRequest );
 
-            final DependencyResult dependencyResults = repositorySystem.resolveDependencies(
-                    buildingRequest.getRepositorySession(), depRequest );
-
-            // Keep it lazy! Often artifactsResults aren't used, so transforming up front is too expensive
-            return new Iterable<org.apache.maven.transfer.artifact.resolve.ArtifactResult>()
-            {
-                @Override
-                public Iterator<org.apache.maven.transfer.artifact.resolve.ArtifactResult> iterator()
-                {
-                    Collection<org.apache.maven.transfer.artifact.resolve.ArtifactResult> artResults =
-                            new ArrayList<>( dependencyResults.getArtifactResults().size() );
-
-                    for ( ArtifactResult artifactResult : dependencyResults.getArtifactResults() )
-                    {
-                        artResults.add( new DefaultArtifactResult( artifactResult ) );
-                    }
-
-                    return artResults.iterator();
-                }
-            };
+            return new DefaultDependencyResolverResult( dependencyResults );
         }
         catch ( DependencyResolutionException e )
         {

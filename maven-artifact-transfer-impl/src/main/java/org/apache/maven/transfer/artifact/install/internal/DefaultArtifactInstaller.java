@@ -20,15 +20,17 @@ package org.apache.maven.transfer.artifact.install.internal;
  */
 
 import org.apache.maven.RepositoryUtils;
-import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.apache.maven.repository.legacy.metadata.ArtifactMetadata;
 import org.apache.maven.transfer.artifact.install.ArtifactInstaller;
 import org.apache.maven.transfer.artifact.install.ArtifactInstallerException;
+import org.apache.maven.transfer.artifact.install.ArtifactInstallerRequest;
+import org.apache.maven.transfer.internal.BaseService;
 import org.apache.maven.transfer.metadata.internal.DefaultMetadataBridge;
 import org.apache.maven.transfer.repository.RepositoryManager;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
@@ -37,9 +39,8 @@ import org.eclipse.aether.util.artifact.SubArtifact;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.File;
+
 import java.util.Collection;
-import java.util.Objects;
 
 /**
  *
@@ -47,39 +48,21 @@ import java.util.Objects;
 @Singleton
 @Named
 public class DefaultArtifactInstaller
+        extends BaseService
         implements ArtifactInstaller
 {
-    private final RepositorySystem repositorySystem;
-
-    private final RepositoryManager repositoryManager;
-
     @Inject
     public DefaultArtifactInstaller( RepositorySystem repositorySystem,
                                      RepositoryManager repositoryManager )
     {
-        this.repositorySystem = Objects.requireNonNull( repositorySystem );
-        this.repositoryManager = Objects.requireNonNull( repositoryManager );
+        super( repositorySystem, repositoryManager );
     }
 
     @Override
-    public void install( ProjectBuildingRequest request,
-                         Collection<org.apache.maven.artifact.Artifact> mavenArtifacts )
+    public void install( ArtifactInstallerRequest installerRequest )
             throws ArtifactInstallerException
     {
-        install( request, null, mavenArtifacts );
-    }
-
-    @Override
-    public void install( ProjectBuildingRequest buildingRequest,
-                         File localRepository,
-                         Collection<org.apache.maven.artifact.Artifact> mavenArtifacts )
-            throws ArtifactInstallerException
-    {
-        ProjectBuildingRequest currentRequest = buildingRequest;
-        if ( localRepository != null )
-        {
-            currentRequest = repositoryManager.setLocalRepositoryBasedir( buildingRequest, localRepository );
-        }
+        Collection<org.apache.maven.artifact.Artifact> mavenArtifacts = installerRequest.getArtifacts();
 
         // prepare installRequest
         InstallRequest request = new InstallRequest();
@@ -116,7 +99,9 @@ public class DefaultArtifactInstaller
         // install
         try
         {
-            repositorySystem.install( currentRequest.getRepositorySession(), request );
+            RepositorySystemSession session = session( installerRequest );
+
+            repositorySystem.install( session, request );
         }
         catch ( InstallationException e )
         {

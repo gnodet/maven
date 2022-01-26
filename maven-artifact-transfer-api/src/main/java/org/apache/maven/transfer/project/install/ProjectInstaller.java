@@ -21,7 +21,8 @@ package org.apache.maven.transfer.project.install;
 
 import java.io.IOException;
 
-import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.transfer.RepositorySession;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.transfer.artifact.install.ArtifactInstallerException;
 import org.apache.maven.transfer.project.NoFileAssignedException;
 
@@ -66,15 +67,19 @@ public interface ProjectInstaller
      * buildingRequest = repositoryManager.setLocalRepositoryBasedir( buildingRequest, localRepositoryPath );
      * </pre>
      * 
-     * @param projectBuildingRequest {@link ProjectBuildingRequest}
-     * @param projectInstallerRequest {@link ProjectInstallerRequest}
+     * @param request {@link ProjectInstallerRequest}
      * @throws IOException In case of problems related to checksums.
      * @throws ArtifactInstallerException In case of problems to install artifacts.
      * @throws NoFileAssignedException If no file has been assigned to the project.
      * @throws IllegalArgumentException in case of parameter <code>projectBuildingRequest</code> is <code>null</code> or
      *             parameter <code>projectInstallerRequest</code> is <code>null</code>.
      */
-    void install( ProjectBuildingRequest projectBuildingRequest, ProjectInstallerRequest projectInstallerRequest )
-        throws IOException, ArtifactInstallerException, NoFileAssignedException;
+    void install( ProjectInstallerRequest request )
+        throws ArtifactInstallerException, NoFileAssignedException;
 
+    default void install( RepositorySession session, MavenProject project )
+        throws ArtifactInstallerException, NoFileAssignedException
+    {
+        install( new ProjectInstallerRequest( session, project ) );
+    }
 }

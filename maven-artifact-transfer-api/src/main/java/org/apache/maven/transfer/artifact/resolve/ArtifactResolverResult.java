@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.dependencies.resolve.internal;
+package org.apache.maven.transfer.artifact.resolve;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,31 +19,18 @@ package org.apache.maven.transfer.dependencies.resolve.internal;
  * under the License.
  */
 
-import org.apache.maven.RepositoryUtils;
-import org.eclipse.aether.resolution.ArtifactResult;
+import org.apache.maven.artifact.Artifact;
 
 /**
- * {@link org.apache.maven.transfer.artifact.resolve.ArtifactResult} wrapper for {@link ArtifactResult}
+ * The Artifact Result
  * 
  * @author Robert Scholte
  * @since 3.0
  */
-class DefaultArtifactResult
-    implements org.apache.maven.transfer.artifact.resolve.ArtifactResult
+public interface ArtifactResolverResult
 {
-    private final ArtifactResult artifactResult;
-
     /**
-     * @param artifactResult {@link ArtifactResult}
+     * @return {@link Artifact}
      */
-    DefaultArtifactResult( ArtifactResult artifactResult )
-    {
-        this.artifactResult = artifactResult;
-    }
-
-    @Override
-    public org.apache.maven.artifact.Artifact getArtifact()
-    {
-        return RepositoryUtils.toArtifact( artifactResult.getArtifact() );
-    }
+    Artifact getArtifact();
 }

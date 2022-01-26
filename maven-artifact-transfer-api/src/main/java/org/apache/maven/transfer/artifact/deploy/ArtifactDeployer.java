@@ -21,9 +21,9 @@ package org.apache.maven.transfer.artifact.deploy;
 
 import java.util.Collection;
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.project.ProjectBuildingRequest;
 
 /**
  * 
@@ -32,28 +32,30 @@ public interface ArtifactDeployer
 {
 
     /**
-     * @param request {@link ProjectBuildingRequest}
-     * @param mavenArtifacts {@link Artifact}
+     * @param request {@link ArtifactDeployerRequest}
      * @throws ArtifactDeployerException in case of an error.
      * @throws IllegalArgumentException in case of parameter <code>request</code> is <code>null</code> or parameter
      *             <code>mavenArtifacts</code> is <code>null</code> or <code>mavenArtifacts.isEmpty()</code> is
      *             <code>true</code>.
      */
-    void deploy( ProjectBuildingRequest request, Collection<Artifact> mavenArtifacts )
-        throws ArtifactDeployerException;
+    void deploy( ArtifactDeployerRequest request )
+        throws ArtifactDeployerException, IllegalArgumentException;
 
     /**
-     * @param request the building request
-     * @param remoteRepository the repository to deploy to. If {@code null} the {@code mavenArtifact.getRepository()} is
-     *            used.
-     * @param mavenArtifacts the artifacts to deploy
+     * @param session the repository session
+     * @param repository the repository to deploy to
+     * @param artifacts the collection of artifacts to deploy
      * @throws ArtifactDeployerException in case of an error.
      * @throws IllegalArgumentException in case of parameter <code>request</code> is <code>null</code> or parameter
-     *             <code>mavenArtifacts</code> is <code>null</code> or <code>mavenArtifacts.isEmpty()</code> is
+     *             <code>artifacts</code> is <code>null</code> or <code>artifacts.isEmpty()</code> is
      *             <code>true</code>.
      */
-    void deploy( ProjectBuildingRequest request, ArtifactRepository remoteRepository,
-                 Collection<Artifact> mavenArtifacts )
-        throws ArtifactDeployerException;
+    default void deploy( RepositorySession session,
+                         ArtifactRepository repository,
+                         Collection<Artifact> artifacts )
+        throws ArtifactDeployerException, IllegalArgumentException
+    {
+        deploy( new ArtifactDeployerRequest( session, repository, artifacts ) );
+    }
 
 }

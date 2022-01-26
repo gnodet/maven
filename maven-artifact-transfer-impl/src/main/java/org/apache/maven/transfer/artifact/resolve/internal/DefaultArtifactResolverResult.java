@@ -20,23 +20,24 @@ package org.apache.maven.transfer.artifact.resolve.internal;
  */
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.transfer.artifact.resolve.ArtifactResolverResult;
 import org.eclipse.aether.resolution.ArtifactResult;
 
 /**
- * {@link org.apache.maven.transfer.artifact.resolve.ArtifactResult} wrapper for {@link ArtifactResult}
+ * {@link ArtifactResolverResult} wrapper for {@link ArtifactResult}
  * 
  * @author Robert Scholte
  * @since 3.0
  */
-class DefaultArtifactResult
-    implements org.apache.maven.transfer.artifact.resolve.ArtifactResult
+public class DefaultArtifactResolverResult
+    implements ArtifactResolverResult
 {
     private final ArtifactResult artifactResult;
 
     /**
      * @param artifactResult {@link ArtifactResult}
      */
-    DefaultArtifactResult( ArtifactResult artifactResult )
+    public DefaultArtifactResolverResult( ArtifactResult artifactResult )
     {
         this.artifactResult = artifactResult;
     }

@@ -19,8 +19,8 @@ package org.apache.maven.transfer.artifact.resolve;
  * under the License.
  */
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.transfer.artifact.ArtifactCoordinate;
 
 /**
@@ -30,25 +30,43 @@ public interface ArtifactResolver
 {
 
     /**
-     * @param buildingRequest {@link ProjectBuildingRequest}
-     * @param mavenArtifact {@link Artifact}
-     * @return {@link ArtifactResult}
+     * @param request {@link ArtifactResolverRequest}
+     * @return {@link ArtifactResolverResult}
      * @throws ArtifactResolverException in case of an error.
      * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
      *             parameter <code>mavenArtifact</code> is <code>null</code>.
      */
-    ArtifactResult resolveArtifact( ProjectBuildingRequest buildingRequest, Artifact mavenArtifact )
-        throws ArtifactResolverException, IllegalArgumentException;
+    ArtifactResolverResult resolveArtifact( ArtifactResolverRequest request )
+            throws ArtifactResolverException, IllegalArgumentException;
 
     /**
-     * @param buildingRequest {@link ProjectBuildingRequest}
-     * @param coordinate {@link ArtifactCoordinate}
-     * @return {@link ArtifactResult}
+     * @param session {@link RepositorySession}
+     * @param artifact {@link Artifact}
+     * @return {@link ArtifactResolverResult}
      * @throws ArtifactResolverException in case of an error.
      * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
      *             parameter <code>coordinate</code> is <code>null</code>.
      */
-    ArtifactResult resolveArtifact( ProjectBuildingRequest buildingRequest, ArtifactCoordinate coordinate )
-        throws ArtifactResolverException, IllegalArgumentException;
+    default ArtifactResolverResult resolveArtifact( RepositorySession session,
+                                                    Artifact artifact )
+            throws ArtifactResolverException, IllegalArgumentException
+    {
+        return resolveArtifact( new ArtifactResolverRequest( session, artifact ) );
+    }
+
+    /**
+     * @param session {@link RepositorySession}
+     * @param coordinate {@link ArtifactCoordinate}
+     * @return {@link ArtifactResolverResult}
+     * @throws ArtifactResolverException in case of an error.
+     * @throws IllegalArgumentException in case of parameter <code>buildingRequest</code> is <code>null</code> or
+     *             parameter <code>coordinate</code> is <code>null</code>.
+     */
+    default ArtifactResolverResult resolveArtifact( RepositorySession session,
+                                                    ArtifactCoordinate coordinate )
+            throws ArtifactResolverException, IllegalArgumentException
+    {
+        return resolveArtifact( new ArtifactResolverRequest( session, coordinate ) );
+    }
 
 }

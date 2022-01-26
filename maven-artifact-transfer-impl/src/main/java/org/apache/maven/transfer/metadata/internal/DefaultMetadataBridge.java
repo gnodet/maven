@@ -22,8 +22,8 @@ package org.apache.maven.transfer.metadata.internal;
 import java.io.File;
 import java.util.Map;
 
-import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.metadata.RepositoryMetadata;
+import org.apache.maven.repository.legacy.metadata.ArtifactMetadata;
 import org.eclipse.aether.metadata.AbstractMetadata;
 import org.eclipse.aether.metadata.Metadata;
 

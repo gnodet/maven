@@ -20,16 +20,16 @@ package org.apache.maven.transfer.dependencies.collect;
  */
 
 /**
- * 
- * @author Robert Scholte
+ * Thrown in case of bad artifact descriptors, version ranges or other issues encountered during calculation of the
+ * dependency graph.
  */
-public class DependencyCollectorException extends Exception
+public class DependencyCollectorException
+    extends Exception
 {
-
     /**
-     * 
+     *
      */
-    private static final long serialVersionUID = -180986912170441437L;
+    private static final long serialVersionUID = -3134726259840210686L;
 
     /**
      * @param message The message you would give for the exception.
@@ -39,5 +39,4 @@ public class DependencyCollectorException extends Exception
     {
         super( message, cause );
     }
-
 }

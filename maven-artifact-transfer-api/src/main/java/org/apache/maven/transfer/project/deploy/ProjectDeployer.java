@@ -19,8 +19,8 @@ package org.apache.maven.transfer.project.deploy;
  * under the License.
  */
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.transfer.RepositorySession;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployerException;
 import org.apache.maven.transfer.project.NoFileAssignedException;
 
@@ -54,16 +54,18 @@ public interface ProjectDeployer
      *  }
      * </pre>
      * 
-     * @param buildingRequest {@link ProjectBuildingRequest}
      * @param request {@link ProjectDeployerRequest}
-     * @param artifactRepository {@link ArtifactRepository}
      * @throws NoFileAssignedException In case of missing file which has not been assigned to project.
      * @throws ArtifactDeployerException in case of artifact could not correctly deployed.
      * @throws IllegalArgumentException in case <code>buildingRequest</code> is <code>null</code>, <code>request</code>
      *             is <code>null</code> or <code>artifactRepository</code> is <code>null</code>.
      */
-    void deploy( ProjectBuildingRequest buildingRequest, ProjectDeployerRequest request,
-                 ArtifactRepository artifactRepository )
+    void deploy( ProjectDeployerRequest request )
         throws NoFileAssignedException, ArtifactDeployerException;
 
+    default void deploy( RepositorySession session, MavenProject project )
+            throws NoFileAssignedException, ArtifactDeployerException
+    {
+        deploy( new ProjectDeployerRequest( session, project ) );
+    }
 }

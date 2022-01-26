@@ -19,63 +19,89 @@ package org.apache.maven.transfer.dependencies.resolve;
  * under the License.
  */
 
-import java.util.Collection;
+import java.util.List;
 
+import org.apache.maven.transfer.RepositorySession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.artifact.filter.resolve.TransformableFilter;
-import org.apache.maven.transfer.artifact.resolve.ArtifactResult;
 import org.apache.maven.transfer.dependencies.DependableCoordinate;
 
 /**
+ * The DependencyResolver service can be used to collect the dependencies
+ * and download the artifacts.
+ *
  * @author Robert Scholte
+ * @author Guillaume Nodet
  */
 public interface DependencyResolver
 {
     /**
-     * This will resolve the dependencies of the coordinate, not resolving the the artifact of the coordinate itself. If
-     * the coordinate needs to be resolved too, use
-     * {@link #resolveDependencies(ProjectBuildingRequest, Collection, Collection, TransformableFilter)} passing
-     * {@code Collections.singletonList(coordinate)}
-     * 
-     * @param buildingRequest {@link ProjectBuildingRequest}
-     * @param coordinate {@link DependableCoordinate}
-     * @param filter {@link TransformableFilter} (can be {@code null}).
+     * Collect dependencies and resolve the artifacts.
+     *
+     * @param request {@link DependencyResolverRequest}
      * @return the resolved dependencies.
      * @throws DependencyResolverException in case of an error.
      */
-    Iterable<ArtifactResult> resolveDependencies( ProjectBuildingRequest buildingRequest,
-                                                  DependableCoordinate coordinate, TransformableFilter filter )
-        throws DependencyResolverException;
+    DependencyResolverResult resolveDependencies( DependencyResolverRequest request )
+            throws DependencyResolverException;
+
+    /**
+     * This will resolve the dependencies of the coordinate, not resolving the artifact of the coordinate itself. If
+     * the coordinate needs to be resolved too, use
+     * {@link #resolveDependencies(RepositorySession, List, List, TransformableFilter)} passing
+     * {@code Collections.singletonList(coordinate)}
+     *
+     * @param session The {@link RepositorySession}, must not be {@code null}.
+     * @param rootCoordinate {@link DependableCoordinate}
+     * @param filter {@link TransformableFilter} used to eventually filter out some dependencies
+     *               when downloading (can be {@code null}).
+     * @return the resolved dependencies.
+     * @throws DependencyResolverException in case of an error.
+     */
+    default DependencyResolverResult resolveDependencies( RepositorySession session,
+                                                          DependableCoordinate rootCoordinate,
+                                                          TransformableFilter filter )
+        throws DependencyResolverException
+    {
+        return resolveDependencies( new DependencyResolverRequest( session, rootCoordinate, filter ) );
+    }
 
     /**
      * This will resolve the dependencies of the coordinate, not resolving the the artifact of the coordinate itself. If
      * the coordinate needs to be resolved too, use
-     * {@link #resolveDependencies(ProjectBuildingRequest, Collection, Collection, TransformableFilter)} passing
+     * {@link #resolveDependencies(RepositorySession, List, List, TransformableFilter)} passing
      * {@code Collections.singletonList(coordinate)}
-     * 
-     * @param buildingRequest {@link ProjectBuildingRequest}
-     * @param model {@link Model}
+     *
+     * @param session The {@link RepositorySession}, must not be {@code null}.
+     * @param rootModel {@link Model}
      * @param filter {@link TransformableFilter} (can be {@code null}).
      * @return the resolved dependencies.
      * @throws DependencyResolverException in case of an error.
      */
-    Iterable<ArtifactResult> resolveDependencies( ProjectBuildingRequest buildingRequest, Model model,
-                                                  TransformableFilter filter )
-        throws DependencyResolverException;
+    default DependencyResolverResult resolveDependencies( RepositorySession session,
+                                                          Model rootModel,
+                                                          TransformableFilter filter )
+        throws DependencyResolverException
+    {
+        return resolveDependencies( new DependencyResolverRequest( session, rootModel, filter ) );
+    }
 
     /**
-     * @param buildingRequest the project building request, never {@code null}
+     * @param session The {@link RepositorySession}, must not be {@code null}.
      * @param dependencies the dependencies to resolve, can be {@code null}
      * @param managedDependencies managed dependencies, can be {@code null}
      * @param filter a filter, can be {@code null}
      * @return the resolved dependencies.
      * @throws DependencyResolverException in case of an error.
      */
-    Iterable<ArtifactResult> resolveDependencies( ProjectBuildingRequest buildingRequest,
-                                                  Collection<Dependency> dependencies,
-                                                  Collection<Dependency> managedDependencies,
-                                                  TransformableFilter filter )
-        throws DependencyResolverException;
+    default DependencyResolverResult resolveDependencies( RepositorySession session,
+                                                          List<Dependency> dependencies,
+                                                          List<Dependency> managedDependencies,
+                                                          TransformableFilter filter )
+        throws DependencyResolverException
+    {
+        return resolveDependencies(
+                new DependencyResolverRequest( session, dependencies, managedDependencies, filter ) );
+    }
 }

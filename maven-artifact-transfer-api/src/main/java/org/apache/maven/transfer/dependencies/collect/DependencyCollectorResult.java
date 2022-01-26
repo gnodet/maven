@@ -21,17 +21,27 @@ package org.apache.maven.transfer.dependencies.collect;
 
 import java.util.List;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.transfer.graph.DependencyNode;
 
 /**
- * 
- * @author Robert Scholte
+ * The result of a dependency collection request.
  *
+ * @see DependencyCollector#collectDependencies(DependencyCollectorRequest)
  */
-public interface CollectorResult
+public interface DependencyCollectorResult
 {
-    /**
-     * @return List of {@link ArtifactRepository}
-     */
-    List<ArtifactRepository> getRemoteRepositories();
+  /**
+   * Gets the exceptions that occurred while building the dependency graph.
+   *
+   * @return The exceptions that occurred, never {@code null}.
+   */
+  List<Exception> getExceptions();
+
+  /**
+   * Gets the root node of the dependency graph.
+   *
+   * @return The root node of the dependency graph or {@code null} if none.
+   */
+  DependencyNode getRoot();
+
 }

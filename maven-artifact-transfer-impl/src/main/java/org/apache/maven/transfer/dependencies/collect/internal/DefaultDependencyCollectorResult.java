@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.collection.internal;
+package org.apache.maven.transfer.dependencies.collect.internal;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,23 +21,23 @@ package org.apache.maven.transfer.collection.internal;
 
 import java.util.List;
 
-import org.apache.maven.transfer.collection.CollectResult;
+import org.apache.maven.transfer.dependencies.collect.DependencyCollectorResult;
 import org.apache.maven.transfer.graph.DependencyNode;
 
 /**
- * CollectResult wrapper around {@link CollectResult}
+ * CollectResult wrapper around {@link DependencyCollectorResult}
  * 
  * @author Pim Moerenhout
  *
  */
-class DefaultCollectResult implements CollectResult
+class DefaultDependencyCollectorResult implements DependencyCollectorResult
 {
     private final org.eclipse.aether.collection.CollectResult collectResult;
     
     /**
-     * @param collectResult {@link CollectResult}
+     * @param collectResult {@link DependencyCollectorResult}
      */
-    DefaultCollectResult( org.eclipse.aether.collection.CollectResult collectResult )
+    DefaultDependencyCollectorResult( org.eclipse.aether.collection.CollectResult collectResult )
     {
         this.collectResult = collectResult;
     }

@@ -21,7 +21,6 @@ package org.apache.maven.transfer.project.deploy.internal;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployer;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployerException;
@@ -62,11 +61,10 @@ public class DefaultProjectDeployer
      * {@inheritDoc}
      */
     @Override
-    public void deploy( ProjectBuildingRequest buildingRequest, ProjectDeployerRequest projectDeployerRequest,
-                        ArtifactRepository artifactRepository )
+    public void deploy( ProjectDeployerRequest projectDeployerRequest )
         throws NoFileAssignedException, IllegalArgumentException, ArtifactDeployerException
     {
-        validateParameters( buildingRequest, projectDeployerRequest, artifactRepository );
+        validateParameters( projectDeployerRequest );
 
         Artifact artifact = projectDeployerRequest.getProject().getArtifact();
         String packaging = projectDeployerRequest.getProject().getPackaging();
@@ -89,9 +87,7 @@ public class DefaultProjectDeployer
         // What consequence does this have?
         // artifact.setRelease( true );
 
-        artifact.setRepository( artifactRepository );
-
-        int retryFailedDeploymentCount = projectDeployerRequest.getRetryFailedDeploymentCount();
+        artifact.setRepository( projectDeployerRequest.getArtifactRepository() );
 
         List<Artifact> deployableArtifacts = new ArrayList<>();
         if ( isPomArtifact )
@@ -122,35 +118,29 @@ public class DefaultProjectDeployer
 
         deployableArtifacts.addAll( attachedArtifacts );
 
-        deploy( buildingRequest, deployableArtifacts, artifactRepository, retryFailedDeploymentCount );
+        deploy( projectDeployerRequest, deployableArtifacts );
     }
 
-    private void validateParameters( ProjectBuildingRequest buildingRequest,
-                                     ProjectDeployerRequest projectDeployerRequest,
-                                     ArtifactRepository artifactRepository )
+    private void validateParameters( ProjectDeployerRequest projectDeployerRequest )
     {
-        if ( buildingRequest == null )
-        {
-            throw new IllegalArgumentException( "The parameter buildingRequest is not allowed to be null." );
-        }
         if ( projectDeployerRequest == null )
         {
             throw new IllegalArgumentException( "The parameter projectDeployerRequest is not allowed to be null." );
         }
-        if ( artifactRepository == null )
+        if ( projectDeployerRequest.getArtifactRepository() == null )
         {
             throw new IllegalArgumentException( "The parameter artifactRepository is not allowed to be null." );
         }
     }
 
-    private void deploy( ProjectBuildingRequest request, Collection<Artifact> artifacts,
-                         ArtifactRepository deploymentRepository, int retryFailedDeploymentCount )
+    private void deploy( ProjectDeployerRequest request, Collection<Artifact> artifacts )
         throws ArtifactDeployerException
     {
 
         // for now retry means redeploy the complete artifacts collection
-        int retryFailedDeploymentCounter = Math.max( 1, Math.min( 10, retryFailedDeploymentCount ) );
+        int retryFailedDeploymentCounter = Math.max( 1, Math.min( 10, request.getRetryFailedDeploymentCount() ) );
         ArtifactDeployerException exception = null;
+        ArtifactRepository deploymentRepository = request.getArtifactRepository();
         for ( int count = 0; count < retryFailedDeploymentCounter; count++ )
         {
             try
@@ -161,7 +151,7 @@ public class DefaultProjectDeployer
                         + retryFailedDeploymentCounter );
                 }
 
-                deployer.deploy( request, deploymentRepository, artifacts );
+                deployer.deploy( request.getSession(), deploymentRepository, artifacts );
                 exception = null;
                 break;
             }

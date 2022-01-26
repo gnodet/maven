@@ -23,11 +23,13 @@ import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployer;
 import org.apache.maven.transfer.artifact.deploy.ArtifactDeployerException;
+import org.apache.maven.transfer.artifact.deploy.ArtifactDeployerRequest;
+import org.apache.maven.transfer.internal.BaseService;
 import org.apache.maven.transfer.metadata.internal.DefaultMetadataBridge;
+import org.apache.maven.transfer.repository.RepositoryManager;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -40,66 +42,55 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collection;
-import java.util.Objects;
 
 /**
  *
  */
 @Singleton
 @Named
-public class DefaultArtifactDeployer
+public class DefaultArtifactDeployer extends BaseService
         implements ArtifactDeployer
 {
-    private final RepositorySystem repositorySystem;
 
     @Inject
-    public DefaultArtifactDeployer( RepositorySystem repositorySystem )
+    public DefaultArtifactDeployer( RepositorySystem repositorySystem, RepositoryManager repositoryManager )
     {
-        this.repositorySystem = Objects.requireNonNull( repositorySystem );
+        super( repositorySystem, repositoryManager );
     }
 
     @Override
-    public void deploy( ProjectBuildingRequest buildingRequest,
-                        Collection<org.apache.maven.artifact.Artifact> mavenArtifacts )
+    public void deploy( ArtifactDeployerRequest request )
             throws ArtifactDeployerException
     {
-        deploy( buildingRequest, null, mavenArtifacts );
-    }
-
-    @Override
-    public void deploy( ProjectBuildingRequest buildingRequest,
-                        ArtifactRepository remoteRepository,
-                        Collection<org.apache.maven.artifact.Artifact> mavenArtifacts )
-            throws ArtifactDeployerException
-    {
-        // prepare request
-        DeployRequest request = new DeployRequest();
-
-        RemoteRepository defaultRepository = null;
-
-        if ( remoteRepository != null )
+        if ( request == null )
         {
-            defaultRepository = getRemoteRepository( buildingRequest.getRepositorySession(), remoteRepository );
+            throw new IllegalArgumentException( "request should not be null" );
+        }
+        if ( request.getSession() == null )
+        {
+            throw new IllegalArgumentException( "session should not be null" );
+        }
+        if ( request.getRepository() == null )
+        {
+            throw new IllegalArgumentException( "repository should not be null" );
         }
 
+        RepositorySystemSession session = session( request );
+
+        // prepare request
+        DeployRequest deployRequest = new DeployRequest();
+
+        ArtifactRepository remoteRepository = request.getRepository();
+        RemoteRepository aetherRepository = getRemoteRepository( session, remoteRepository );
+        deployRequest.setRepository( aetherRepository );
+
         // transform artifacts
+        Collection<org.apache.maven.artifact.Artifact> mavenArtifacts = request.getArtifacts();
         for ( org.apache.maven.artifact.Artifact mavenArtifact : mavenArtifacts )
         {
             Artifact aetherArtifact = RepositoryUtils.toArtifact( mavenArtifact );
-            request.addArtifact( aetherArtifact );
+            deployRequest.addArtifact( aetherArtifact );
 
-            RemoteRepository aetherRepository;
-            if ( remoteRepository == null )
-            {
-                aetherRepository = getRemoteRepository( buildingRequest.getRepositorySession(),
-                        mavenArtifact.getRepository() );
-            }
-            else
-            {
-                aetherRepository = defaultRepository;
-            }
-
-            request.setRepository( aetherRepository );
 
             for ( ArtifactMetadata metadata : mavenArtifact.getMetadataList() )
             {
@@ -107,7 +98,7 @@ public class DefaultArtifactDeployer
                 {
                     Artifact pomArtifact = new SubArtifact( aetherArtifact, "", "pom" );
                     pomArtifact = pomArtifact.setFile( ( (ProjectArtifactMetadata) metadata ).getFile() );
-                    request.addArtifact( pomArtifact );
+                    deployRequest.addArtifact( pomArtifact );
                 }
                 else if ( // metadata instanceof SnapshotArtifactRepositoryMetadata ||
                         metadata instanceof ArtifactRepositoryMetadata )
@@ -119,7 +110,8 @@ public class DefaultArtifactDeployer
                     org.apache.maven.transfer.metadata.ArtifactMetadata transferMetadata =
                             (org.apache.maven.transfer.metadata.ArtifactMetadata) metadata;
 
-                    request.addMetadata( new DefaultMetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
+                    deployRequest.addMetadata(
+                            new DefaultMetadataBridge( metadata ).setFile( transferMetadata.getFile() ) );
                 }
             }
         }
@@ -127,7 +119,7 @@ public class DefaultArtifactDeployer
         // deploy
         try
         {
-            repositorySystem.deploy( buildingRequest.getRepositorySession(), request );
+            repositorySystem.deploy( session, deployRequest );
         }
         catch ( DeploymentException e )
         {

@@ -19,13 +19,16 @@ package org.apache.maven.transfer.project.deploy;
  * under the License.
  */
 
+import org.apache.maven.transfer.BaseRequest;
+import org.apache.maven.transfer.RepositorySession;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.project.MavenProject;
 
 /**
  * 
  * @author Robert Scholte
  */
-public class ProjectDeployerRequest
+public class ProjectDeployerRequest extends BaseRequest<ProjectDeployerRequest>
 {
 
     private int retryFailedDeploymentCount;
@@ -39,6 +42,18 @@ public class ProjectDeployerRequest
     private String altSnapshotDeploymentRepository;
 
     private String altReleaseDeploymentRepository;
+
+    private ArtifactRepository artifactRepository;
+
+    public ProjectDeployerRequest()
+    {
+    }
+
+    public ProjectDeployerRequest( RepositorySession session, MavenProject project )
+    {
+        setSession( session );
+        this.project = project;
+    }
 
     /**
      * @return the retryFailedDeploymentCount
@@ -127,6 +142,17 @@ public class ProjectDeployerRequest
     public ProjectDeployerRequest setAltReleaseDeploymentRepository( String theAltReleaseDeploymentRepositoryToBeSet )
     {
         this.altReleaseDeploymentRepository = theAltReleaseDeploymentRepositoryToBeSet;
+        return this;
+    }
+
+    public ArtifactRepository getArtifactRepository()
+    {
+        return artifactRepository;
+    }
+
+    public ProjectDeployerRequest setArtifactRepository( ArtifactRepository artifactRepository )
+    {
+        this.artifactRepository = artifactRepository;
         return this;
     }
 }

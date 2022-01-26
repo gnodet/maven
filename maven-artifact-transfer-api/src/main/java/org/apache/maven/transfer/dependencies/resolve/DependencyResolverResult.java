@@ -1,4 +1,4 @@
-package org.apache.maven.transfer.collection;
+package org.apache.maven.transfer.dependencies.resolve;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,29 +21,25 @@ package org.apache.maven.transfer.collection;
 
 import java.util.List;
 
+import org.apache.maven.transfer.artifact.resolve.ArtifactResolverResult;
 import org.apache.maven.transfer.graph.DependencyNode;
 
 /**
- * The result of a dependency collection request.
+ * 
+ * @author Robert Scholte
  *
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.model.Dependency)
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.transfer.dependencies.DependableCoordinate)
- * @see DependencyCollector#collectDependencies(org.apache.maven.project.ProjectBuildingRequest, org.apache.maven.model.Model)
  */
-public interface CollectResult
+public interface DependencyResolverResult
 {
-  /**
-   * Gets the exceptions that occurred while building the dependency graph.
-   *
-   * @return The exceptions that occurred, never {@code null}.
-   */
-  List<Exception> getExceptions();
+    /**
+     * Gets the exceptions that occurred while building the dependency graph.
+     * 
+     * @return The list of exceptions {@link Exception}.
+     */
+    List<Exception> getCollectorExceptions();
 
-  /**
-   * Gets the root node of the dependency graph.
-   *
-   * @return The root node of the dependency graph or {@code null} if none.
-   */
-  DependencyNode getRoot();
+    DependencyNode getRoot();
+
+    List<ArtifactResolverResult> getArtifactResults();
 
 }
