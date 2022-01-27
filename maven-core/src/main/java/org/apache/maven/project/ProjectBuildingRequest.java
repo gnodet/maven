@@ -19,12 +19,16 @@ package org.apache.maven.project;
  * under the License.
  */
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Profile;
+import org.apache.maven.api.Session;
+import org.apache.maven.internal.DefaultSession;
 import org.eclipse.aether.RepositorySystemSession;
 
 /**
@@ -202,6 +206,17 @@ public interface ProjectBuildingRequest
          * The repositories specified in the request have precedence over the repositories declared in the POM.
          */
         REQUEST_DOMINANT,
+    }
+
+    default Session newSession()
+    {
+        Path localRepo = null;
+        ArtifactRepository repository = getLocalRepository();
+        if ( repository != null )
+        {
+            localRepo = Paths.get( repository.getBasedir() );
+        }
+        return new DefaultSession( getRepositorySession(), localRepo, null );
     }
 
 }
