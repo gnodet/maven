@@ -104,6 +104,11 @@ under the License.
       <artifactId>failureaccess</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <scope>compile</scope>
+    </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -148,10 +153,6 @@ under the License.
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
