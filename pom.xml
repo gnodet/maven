@@ -84,13 +84,12 @@ under the License.
     <module>maven-builder-support</module>
     <module>maven-model</module>
     <module>maven-model-builder</module>
+    <module>maven-core-api</module>
     <module>maven-core</module>
+    <module>maven-core-impl</module>
     <module>maven-settings</module>
     <module>maven-settings-builder</module>
     <module>maven-artifact</module>
-    <module>maven-artifact-transfer-api</module>
-    <module>maven-artifact-transfer-impl</module>
-    <module>maven-artifact-filters</module>
     <module>maven-resolver-provider</module>
     <module>maven-repository-metadata</module>
     <module>maven-slf4j-provider</module>
