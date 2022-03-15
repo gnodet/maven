@@ -42,10 +42,10 @@ import org.apache.maven.model.Reporting;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
+import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.apache.maven.project.ModelUtils;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * DefaultModelInheritanceAssembler
@@ -447,7 +447,7 @@ public class DefaultModelInheritanceAssembler
         Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
         Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
 
-        childConfiguration = Xpp3Dom.mergeXpp3Dom( childConfiguration, parentConfiguration );
+        childConfiguration.merge( parentConfiguration );
 
         child.setConfiguration( childConfiguration );
     }

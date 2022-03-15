@@ -23,9 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.toolchain.model.PersistedToolchains;
 import org.apache.maven.toolchain.model.ToolchainModel;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  *
@@ -77,19 +77,19 @@ public class MavenToolchainMerger
     }
 
     protected void mergeToolchainModelConfiguration( ToolchainModel target,
-                                                    ToolchainModel source )
+                                                     ToolchainModel source )
     {
-        Xpp3Dom src = (Xpp3Dom) source.getConfiguration();
+        Dom src = source.getConfiguration();
         if ( src != null )
         {
-            Xpp3Dom tgt = (Xpp3Dom) target.getConfiguration();
+            Dom tgt = target.getConfiguration();
             if ( tgt == null )
             {
-                tgt = Xpp3Dom.mergeXpp3Dom( new Xpp3Dom( src ), tgt );
+                tgt = src.clone();
             }
             else
             {
-                tgt = Xpp3Dom.mergeXpp3Dom( tgt, src );
+                tgt.merge( src );
             }
             target.setConfiguration( tgt );
         }

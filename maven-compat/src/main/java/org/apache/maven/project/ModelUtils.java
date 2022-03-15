@@ -31,7 +31,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 
 /** @deprecated */
 @Deprecated
@@ -206,7 +206,7 @@ public final class ModelUtils
         Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
         Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
 
-        childConfiguration = Xpp3Dom.mergeXpp3Dom( childConfiguration, parentConfiguration );
+        childConfiguration.merge( parentConfiguration );
 
         child.setConfiguration( childConfiguration );
 
@@ -304,7 +304,7 @@ public final class ModelUtils
         Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
         Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
 
-        childConfiguration = Xpp3Dom.mergeXpp3Dom( childConfiguration, parentConfiguration );
+        childConfiguration.merge( parentConfiguration );
 
         child.setConfiguration( childConfiguration );
     }

@@ -31,13 +31,13 @@ import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.model.ReportSet;
 import org.apache.maven.model.Reporting;
+import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;
 import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblem.Version;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Handles conversion of the <code>&lt;reporting&gt;</code> section into the configuration of Maven Site Plugin 3.x,

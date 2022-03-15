@@ -31,8 +31,8 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.PluginExecution;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.apache.maven.model.builder.DomBuilder;
+import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
 
@@ -457,13 +457,13 @@ public class ModelUtilsTest
         throws XmlPullParserException, IOException
     {
         String parentConfigStr = "<configuration><items><item>one</item><item>two</item></items></configuration>";
-        Xpp3Dom parentConfig = Xpp3DomBuilder.build( new StringReader( parentConfigStr ) );
+        Xpp3Dom parentConfig = DomBuilder.build( new StringReader( parentConfigStr ) );
 
         Plugin parentPlugin = createPlugin( "group", "artifact", "1", null );
         parentPlugin.setConfiguration( parentConfig );
 
         String childConfigStr = "<configuration><items><item>three</item></items></configuration>";
-        Xpp3Dom childConfig = Xpp3DomBuilder.build( new StringReader( childConfigStr ) );
+        Xpp3Dom childConfig = DomBuilder.build( new StringReader( childConfigStr ) );
 
         Plugin childPlugin = createPlugin( "group", "artifact", "1", null );
         childPlugin.setConfiguration( childConfig );
@@ -484,13 +484,13 @@ public class ModelUtilsTest
         throws XmlPullParserException, IOException
     {
         String parentConfigStr = "<configuration><items><item>one</item><item>two</item></items></configuration>";
-        Xpp3Dom parentConfig = Xpp3DomBuilder.build( new StringReader( parentConfigStr ) );
+        Xpp3Dom parentConfig = DomBuilder.build( new StringReader( parentConfigStr ) );
 
         Plugin parentPlugin = createPlugin( "group", "artifact", "1", null );
         parentPlugin.setConfiguration( parentConfig );
 
         String childConfigStr = "<configuration><items combine.children=\"append\"><item>three</item></items></configuration>";
-        Xpp3Dom childConfig = Xpp3DomBuilder.build( new StringReader( childConfigStr ) );
+        Xpp3Dom childConfig = DomBuilder.build( new StringReader( childConfigStr ) );
 
         Plugin childPlugin = createPlugin( "group", "artifact", "1", null );
         childPlugin.setConfiguration( childConfig );
