@@ -49,6 +49,10 @@ under the License.
             <artifactId>maven-api-model</artifactId>
             <version>4.0.0-alpha-1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.plexus</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

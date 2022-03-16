@@ -206,7 +206,7 @@ public final class ModelUtils
         Dom childConfiguration = child.getConfiguration();
         Dom parentConfiguration = parent.getConfiguration();
 
-        Dom config = Dom.merge( childConfiguration, parentConfiguration, false );
+        Dom config = Dom.merge( childConfiguration, parentConfiguration );
         child.setConfiguration( config );
 
         child.setDependencies( mergeDependencyList( child.getDependencies(), parent.getDependencies() ) );
@@ -303,7 +303,7 @@ public final class ModelUtils
         Dom childConfiguration = child.getConfiguration();
         Dom parentConfiguration = parent.getConfiguration();
 
-        Dom config = Dom.merge( childConfiguration, parentConfiguration, false );
+        Dom config = Dom.merge( childConfiguration, parentConfiguration );
         child.setConfiguration( config );
     }
 

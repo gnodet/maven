@@ -33,7 +33,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.Lifecycle;
 import org.apache.maven.lifecycle.LifecycleMappingDelegate;
@@ -58,7 +60,6 @@ import org.apache.maven.plugin.prefix.NoPluginFoundForPrefixException;
 import org.apache.maven.plugin.version.PluginVersionResolutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 
@@ -314,7 +315,7 @@ public class DefaultLifecycleExecutionPlanCalculator
     {
         MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
 
-        Xpp3Dom executionConfiguration = mojoExecution.getConfiguration();
+        Dom executionConfiguration = mojoExecution.getConfiguration();
         if ( executionConfiguration == null )
         {
             executionConfiguration = new Xpp3Dom( "configuration" );
@@ -328,7 +329,7 @@ public class DefaultLifecycleExecutionPlanCalculator
         {
             for ( Parameter parameter : mojoDescriptor.getParameters() )
             {
-                Xpp3Dom parameterConfiguration = executionConfiguration.getChild( parameter.getName() );
+                Dom parameterConfiguration = executionConfiguration.getChild( parameter.getName() );
 
                 if ( parameterConfiguration == null )
                 {
@@ -337,20 +338,20 @@ public class DefaultLifecycleExecutionPlanCalculator
 
                 Xpp3Dom parameterDefaults = defaultConfiguration.getChild( parameter.getName() );
 
-                parameterConfiguration = Xpp3Dom.mergeXpp3Dom( parameterConfiguration, parameterDefaults,
+                parameterConfiguration = Dom.merge( parameterConfiguration, parameterDefaults,
                                                                Boolean.TRUE );
 
                 if ( parameterConfiguration != null )
                 {
-                    parameterConfiguration = new Xpp3Dom( parameterConfiguration, parameter.getName() );
+                    Xpp3Dom newParameterConfiguration = new Xpp3Dom( parameterConfiguration, parameter.getName() );
 
-                    if ( StringUtils.isEmpty( parameterConfiguration.getAttribute( "implementation" ) )
+                    if ( StringUtils.isEmpty( newParameterConfiguration.getAttribute( "implementation" ) )
                         && StringUtils.isNotEmpty( parameter.getImplementation() ) )
                     {
-                        parameterConfiguration.setAttribute( "implementation", parameter.getImplementation() );
+                        newParameterConfiguration.setAttribute( "implementation", parameter.getImplementation() );
                     }
 
-                    finalConfiguration.addChild( parameterConfiguration );
+                    finalConfiguration.addChild( newParameterConfiguration );
                 }
             }
         }
@@ -549,7 +550,7 @@ public class DefaultLifecycleExecutionPlanCalculator
                 {
                     for ( MojoExecution forkedExecution : forkedExecutions )
                     {
-                        Xpp3Dom forkedConfiguration = forkedExecution.getConfiguration();
+                        Dom forkedConfiguration = forkedExecution.getConfiguration();
 
                         forkedConfiguration = Xpp3Dom.mergeXpp3Dom( phaseConfiguration, forkedConfiguration );
 

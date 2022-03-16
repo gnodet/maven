@@ -21,6 +21,7 @@ package org.apache.maven.internal.xml;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Map;
 
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -49,10 +50,9 @@ public class Xpp3DomWriter
     {
         // TODO: move to XMLWriter?
         xmlWriter.startElement( dom.getName() );
-        String[] attributeNames = dom.getAttributeNames();
-        for ( String attributeName : attributeNames )
+        for ( Map.Entry<String, String> attr : dom.getAttributes().entrySet() )
         {
-            xmlWriter.addAttribute( attributeName, dom.getAttribute( attributeName ) );
+            xmlWriter.addAttribute( attr.getKey(), attr.getValue() );
         }
         for ( Xpp3Dom aChildren : dom.getChildren() )
         {

@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.Objects;
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -69,7 +70,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.apache.maven.project.artifact.MavenMetadataSource;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.slf4j.Logger;
@@ -954,10 +954,10 @@ public class MavenProject
         return Collections.unmodifiableList( attachedArtifacts );
     }
 
-    public Xpp3Dom getGoalConfiguration( String pluginGroupId, String pluginArtifactId, String executionId,
-                                         String goalId )
+    public Dom getGoalConfiguration( String pluginGroupId, String pluginArtifactId, String executionId,
+                                     String goalId )
     {
-        Xpp3Dom dom = null;
+        Dom dom = null;
 
         if ( getBuildPlugins() != null )
         {
@@ -965,7 +965,7 @@ public class MavenProject
             {
                 if ( pluginGroupId.equals( plugin.getGroupId() ) && pluginArtifactId.equals( plugin.getArtifactId() ) )
                 {
-                    dom = (Xpp3Dom) plugin.getConfiguration();
+                    dom = plugin.getConfiguration();
 
                     if ( executionId != null )
                     {
@@ -973,7 +973,7 @@ public class MavenProject
                         if ( execution != null )
                         {
                             // NOTE: The PluginConfigurationExpander already merged the plugin-level config in
-                            dom = (Xpp3Dom) execution.getConfiguration();
+                            dom = execution.getConfiguration();
                         }
                     }
                     break;
@@ -984,7 +984,7 @@ public class MavenProject
         if ( dom != null )
         {
             // make a copy so the original in the POM doesn't get messed with
-            dom = new Xpp3Dom( dom );
+            dom = dom.clone();
         }
 
         return dom;
@@ -1879,9 +1879,9 @@ public class MavenProject
     }
 
     @Deprecated
-    public Xpp3Dom getReportConfiguration( String pluginGroupId, String pluginArtifactId, String reportSetId )
+    public Dom getReportConfiguration( String pluginGroupId, String pluginArtifactId, String reportSetId )
     {
-        Xpp3Dom dom = null;
+        Dom dom = null;
 
         // ----------------------------------------------------------------------
         // I would like to be able to lookup the Mojo object using a key but
@@ -1895,18 +1895,18 @@ public class MavenProject
             {
                 if ( pluginGroupId.equals( plugin.getGroupId() ) && pluginArtifactId.equals( plugin.getArtifactId() ) )
                 {
-                    dom = (Xpp3Dom) plugin.getConfiguration();
+                    dom = plugin.getConfiguration();
 
                     if ( reportSetId != null )
                     {
                         ReportSet reportSet = plugin.getReportSetsAsMap().get( reportSetId );
                         if ( reportSet != null )
                         {
-                            Xpp3Dom executionConfiguration = (Xpp3Dom) reportSet.getConfiguration();
+                            Dom executionConfiguration = reportSet.getConfiguration();
                             if ( executionConfiguration != null )
                             {
-                                Xpp3Dom newDom = new Xpp3Dom( executionConfiguration );
-                                dom = Xpp3Dom.mergeXpp3Dom( newDom, dom );
+                                Dom newDom = executionConfiguration.clone();
+                                dom = Dom.merge( newDom, dom );
                             }
                         }
                     }
@@ -1918,7 +1918,7 @@ public class MavenProject
         if ( dom != null )
         {
             // make a copy so the original in the POM doesn't get messed with
-            dom = new Xpp3Dom( dom );
+            dom = dom.clone();
         }
 
         return dom;

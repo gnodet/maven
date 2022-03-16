@@ -37,6 +37,7 @@ import org.apache.maven.bridge.MavenRepositorySystem;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.feature.Features;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.building.TransformerContext;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.rtinfo.RuntimeInformation;
@@ -47,8 +48,8 @@ import org.apache.maven.settings.building.SettingsProblem;
 import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.settings.crypto.SettingsDecryptionResult;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.apache.maven.internal.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.ConfigurationProperties;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -228,16 +229,15 @@ public class DefaultRepositorySystemSessionFactory
             if ( server.getConfiguration() != null )
             {
                 Xpp3Dom dom = (Xpp3Dom) server.getConfiguration();
-                for ( int i = dom.getChildCount() - 1; i >= 0; i-- )
+                for ( Xpp3Dom child : new ArrayList<>( dom.getChildren() ) )
                 {
-                    Xpp3Dom child = dom.getChild( i );
                     if ( "wagonProvider".equals( child.getName() ) )
                     {
-                        dom.removeChild( i );
+                        dom.removeChild( child );
                     }
                 }
 
-                XmlPlexusConfiguration config = new XmlPlexusConfiguration( dom );
+                PlexusConfiguration config = XmlPlexusConfiguration.toPlexusConfiguration( dom );
                 configProps.put( "aether.connector.wagon.config." + server.getId(), config );
             }
 

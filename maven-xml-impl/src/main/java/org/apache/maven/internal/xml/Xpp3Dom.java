@@ -30,9 +30,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.maven.api.xml.Dom;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.SerializerXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -56,43 +57,7 @@ public class Xpp3Dom
 
     protected Xpp3Dom parent;
 
-    /**
-     * @since 3.2.0
-     */
     protected Object inputLocation;
-
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-    private static final Xpp3Dom[] EMPTY_DOM_ARRAY = new Xpp3Dom[0];
-
-    public static final String CHILDREN_COMBINATION_MODE_ATTRIBUTE = "combine.children";
-
-    public static final String CHILDREN_COMBINATION_MERGE = "merge";
-
-    public static final String CHILDREN_COMBINATION_APPEND = "append";
-
-    /**
-     * This default mode for combining children DOMs during merge means that where element names match, the process will
-     * try to merge the element data, rather than putting the dominant and recessive elements (which share the same
-     * element name) as siblings in the resulting DOM.
-     */
-    public static final String DEFAULT_CHILDREN_COMBINATION_MODE = CHILDREN_COMBINATION_MERGE;
-
-    public static final String SELF_COMBINATION_MODE_ATTRIBUTE = "combine.self";
-
-    public static final String SELF_COMBINATION_OVERRIDE = "override";
-
-    public static final String SELF_COMBINATION_MERGE = "merge";
-
-    public static final String SELF_COMBINATION_REMOVE = "remove";
-
-    /**
-     * This default mode for combining a DOM node during merge means that where element names match, the process will
-     * try to merge the element attributes and values, rather than overriding the recessive element completely with the
-     * dominant one. This means that wherever the dominant element doesn't provide the value or a particular attribute,
-     * that value or attribute will be set from the recessive DOM node.
-     */
-    public static final String DEFAULT_SELF_COMBINATION_MODE = SELF_COMBINATION_MERGE;
 
     public Xpp3Dom( String name )
     {
@@ -114,7 +79,7 @@ public class Xpp3Dom
      * Copy constructor.
      * @param src The source Dom.
      */
-    public Xpp3Dom( Xpp3Dom src )
+    public Xpp3Dom( Dom src )
     {
         this( src, src.getName() );
     }
@@ -124,24 +89,22 @@ public class Xpp3Dom
      * @param src The source Dom.
      * @param name The name of the Dom.
      */
-    public Xpp3Dom( Xpp3Dom src, String name )
+    public Xpp3Dom( Dom src, String name )
     {
         this.name = name;
-        this.inputLocation = src.inputLocation;
-
-        int childCount = src.getChildCount();
+        this.inputLocation = src.getInputLocation();
 
         setValue( src.getValue() );
 
-        String[] attributeNames = src.getAttributeNames();
-        for ( String attributeName : attributeNames )
+        Map<String, String> attrs = src.getAttributes();
+        if ( !attrs.isEmpty() )
         {
-            setAttribute( attributeName, src.getAttribute( attributeName ) );
+            this.attributes = new HashMap<>( attrs );
         }
 
-        for ( int i = 0; i < childCount; i++ )
+        for ( Dom child : src.getChildren() )
         {
-            addChild( src.getChild( i ).clone() );
+            addChild( new Xpp3Dom( child ) );
         }
     }
 
@@ -151,9 +114,9 @@ public class Xpp3Dom
     }
 
     @Override
-    public void merge( Dom source )
+    public void merge( Dom source, Boolean childMergeOverride )
     {
-        mergeXpp3Dom( this, ( Xpp3Dom ) source );
+        mergeIntoXpp3Dom( this, source, childMergeOverride );
     }
 
 
@@ -197,18 +160,6 @@ public class Xpp3Dom
         }
     }
 
-    public String[] getAttributeNames()
-    {
-        if ( null == attributes || attributes.isEmpty() )
-        {
-            return EMPTY_STRING_ARRAY;
-        }
-        else
-        {
-            return attributes.keySet().toArray( EMPTY_STRING_ARRAY );
-        }
-    }
-
     public String getAttribute( String name )
     {
         return ( null != attributes ) ? attributes.get( name ) : null;
@@ -217,12 +168,13 @@ public class Xpp3Dom
     /**
      *
      * @param name name of the attribute to be removed
-     * @return <code>true</code> if the attribute has been removed
-     * @since 3.4.0
      */
-    public boolean removeAttribute( String name )
+    public void removeAttribute( String name )
     {
-        return StringUtils.isEmpty( name ) ? false : attributes.remove( name ) == null;
+        if ( attributes != null && name != null )
+        {
+            attributes.remove( name );
+        }
     }
 
     /**
@@ -241,9 +193,9 @@ public class Xpp3Dom
         {
             throw new NullPointerException( "Attribute name can not be null" );
         }
-        if ( null == attributes )
+        if ( attributes == null )
         {
-            attributes = new HashMap<String, String>();
+            attributes = new HashMap<>();
         }
 
         attributes.put( name, value );
@@ -252,11 +204,6 @@ public class Xpp3Dom
     // ----------------------------------------------------------------------
     // Child handling
     // ----------------------------------------------------------------------
-
-    public Xpp3Dom getChild( int i )
-    {
-        return childList.get( i );
-    }
 
     public Xpp3Dom getChild( String name )
     {
@@ -287,7 +234,7 @@ public class Xpp3Dom
 
     public Collection<Xpp3Dom> getChildren()
     {
-        if ( null == childList || childList.isEmpty() )
+        if ( childList == null || childList.isEmpty() )
         {
             return Collections.emptyList();
         }
@@ -297,60 +244,14 @@ public class Xpp3Dom
         }
     }
 
-    public Xpp3Dom[] getChildren( String name )
-    {
-        return getChildrenAsList( name ).toArray( EMPTY_DOM_ARRAY );
-    }
-
-    private List<Xpp3Dom> getChildrenAsList( String name )
-    {
-        if ( null == childList )
-        {
-            return Collections.emptyList();
-        }
-        else
-        {
-            ArrayList<Xpp3Dom> children = null;
-
-            for ( Xpp3Dom configuration : childList )
-            {
-                if ( name.equals( configuration.getName() ) )
-                {
-                    if ( children == null )
-                    {
-                        children = new ArrayList<Xpp3Dom>();
-                    }
-                    children.add( configuration );
-                }
-            }
-
-            if ( children != null )
-            {
-                return children;
-            }
-            else
-            {
-                return Collections.emptyList();
-            }
-        }
-    }
-
     public int getChildCount()
     {
-        if ( null == childList )
+        if ( childList == null )
         {
             return 0;
         }
 
         return childList.size();
-    }
-
-    public void removeChild( int i )
-    {
-        Xpp3Dom child = getChild( i );
-        childList.remove( i );
-        // In case of any dangling references
-        child.setParent( null );
     }
 
     public void removeChild( Xpp3Dom child )
@@ -450,7 +351,7 @@ public class Xpp3Dom
      *   </ol></li>
      * </ol>
      */
-    private static void mergeIntoXpp3Dom( Xpp3Dom dominant, Xpp3Dom recessive, Boolean childMergeOverride )
+    private static void mergeIntoXpp3Dom( Xpp3Dom dominant, Dom recessive, Boolean childMergeOverride )
     {
         // TODO: share this as some sort of assembler, implement a walk interface?
         if ( recessive == null )
@@ -475,21 +376,18 @@ public class Xpp3Dom
                 dominant.setInputLocation( recessive.getInputLocation() );
             }
 
-            if ( recessive.attributes != null )
+            for ( Map.Entry<String, String> attr : recessive.getAttributes().entrySet() )
             {
-                for ( String attr : recessive.attributes.keySet() )
+                String key = attr.getKey();
+                if ( isEmpty( dominant.getAttribute( key ) ) && !SELF_COMBINATION_MODE_ATTRIBUTE.equals( key ) )
                 {
-                    if ( isEmpty( dominant.getAttribute( attr ) ) && !SELF_COMBINATION_MODE_ATTRIBUTE.equals( attr ) )
-                    {
-                        dominant.setAttribute( attr, recessive.getAttribute( attr ) );
-                    }
+                    dominant.setAttribute( key, attr.getValue() );
                 }
             }
 
-            if ( recessive.getChildCount() > 0 )
+            if ( recessive.getChildren().size() > 0 )
             {
                 boolean mergeChildren = true;
-
                 if ( childMergeOverride != null )
                 {
                     mergeChildren = childMergeOverride;
@@ -497,7 +395,6 @@ public class Xpp3Dom
                 else
                 {
                     String childMergeMode = dominant.getAttribute( CHILDREN_COMBINATION_MODE_ATTRIBUTE );
-
                     if ( CHILDREN_COMBINATION_APPEND.equals( childMergeMode ) )
                     {
                         mergeChildren = false;
@@ -506,46 +403,37 @@ public class Xpp3Dom
 
                 if ( !mergeChildren )
                 {
-                    Collection<Xpp3Dom> dominantChildren = dominant.getChildren();
-                    // remove these now, so we can append them to the recessive list later.
-                    dominant.childList = new ArrayList<>();
-
-                    for ( int i = 0, recessiveChildCount = recessive.getChildCount(); i < recessiveChildCount; i++ )
-                    {
-                        Xpp3Dom recessiveChild = recessive.getChild( i );
-                        dominant.addChild( recessiveChild.clone() );
-                    }
-
-                    // now, re-add these children so they'll be appended to the recessive list.
-                    for ( Xpp3Dom aDominantChildren : dominantChildren )
-                    {
-                        dominant.addChild( aDominantChildren );
-                    }
+                    dominant.childList = Stream.concat(
+                            recessive.getChildren().stream().map( Xpp3Dom::new ),
+                            dominant.getChildren().stream()
+                    ).collect( Collectors.toList() );
                 }
                 else
                 {
-                    Map<String, Iterator<Xpp3Dom>> commonChildren = new HashMap<String, Iterator<Xpp3Dom>>();
+                    Map<String, Iterator<Xpp3Dom>> commonChildren = new HashMap<>();
 
-                    for ( Xpp3Dom recChild : recessive.childList )
+                    for ( Dom recChild : recessive.getChildren() )
                     {
-                        if ( commonChildren.containsKey( recChild.name ) )
+                        String name = recChild.getName();
+                        if ( commonChildren.containsKey( name ) )
                         {
                             continue;
                         }
-                        List<Xpp3Dom> dominantChildren = dominant.getChildrenAsList( recChild.name );
+                        List<Xpp3Dom> dominantChildren = dominant.getChildren().stream()
+                                        .filter( n -> n.getName().equals( name ) )
+                                        .collect( Collectors.toList() );
                         if ( dominantChildren.size() > 0 )
                         {
-                            commonChildren.put( recChild.name, dominantChildren.iterator() );
+                            commonChildren.put( name, dominantChildren.iterator() );
                         }
                     }
 
-                    for ( int i = 0, recessiveChildCount = recessive.getChildCount(); i < recessiveChildCount; i++ )
+                    for ( Dom recessiveChild : recessive.getChildren() )
                     {
-                        Xpp3Dom recessiveChild = recessive.getChild( i );
                         Iterator<Xpp3Dom> it = commonChildren.get( recessiveChild.getName() );
                         if ( it == null )
                         {
-                            dominant.addChild( recessiveChild.clone() );
+                            dominant.addChild( new Xpp3Dom( recessiveChild ) );
                         }
                         else if ( it.hasNext() )
                         {
@@ -599,14 +487,14 @@ public class Xpp3Dom
      * @param recessive The recessive DOM, which will be merged into the dominant DOM
      * @return merged DOM
      */
-    public static Xpp3Dom mergeXpp3Dom( Xpp3Dom dominant, Xpp3Dom recessive )
+    public static Xpp3Dom mergeXpp3Dom( Xpp3Dom dominant, Dom recessive )
     {
         if ( dominant != null )
         {
             mergeIntoXpp3Dom( dominant, recessive, null );
             return dominant;
         }
-        return recessive;
+        return new Xpp3Dom( recessive );
     }
 
     // ----------------------------------------------------------------------

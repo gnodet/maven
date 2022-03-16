@@ -24,13 +24,14 @@ import java.util.Collection;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.api.xml.Dom;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.lifecycle.MojoExecutionConfigurator;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * @since 3.3.1, MNG-5753
@@ -71,9 +72,9 @@ public class DefaultMojoExecutionConfigurator
                 pomConfiguration = (Xpp3Dom) plugin.getConfiguration();
             }
 
-            Xpp3Dom mojoConfiguration = ( pomConfiguration != null ) ? new Xpp3Dom( pomConfiguration ) : null;
+            Dom mojoConfiguration = ( pomConfiguration != null ) ? pomConfiguration.clone() : null;
 
-            mojoConfiguration = Xpp3Dom.mergeXpp3Dom( mojoExecution.getConfiguration(), mojoConfiguration );
+            mojoConfiguration = Dom.merge( mojoExecution.getConfiguration(), mojoConfiguration );
 
             mojoExecution.setConfiguration( mojoConfiguration );
         }

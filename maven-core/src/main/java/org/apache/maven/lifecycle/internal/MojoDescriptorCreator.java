@@ -28,6 +28,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
@@ -47,7 +48,6 @@ import org.apache.maven.plugin.version.PluginVersionResolutionException;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

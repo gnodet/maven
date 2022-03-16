@@ -25,11 +25,13 @@ import java.util.Objects;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.configuration.BeanConfigurationException;
 import org.apache.maven.configuration.BeanConfigurationPathTranslator;
 import org.apache.maven.configuration.BeanConfigurationRequest;
 import org.apache.maven.configuration.BeanConfigurationValuePreprocessor;
 import org.apache.maven.configuration.BeanConfigurator;
+import org.apache.maven.internal.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
@@ -37,8 +39,6 @@ import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConve
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.TypeAwareExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * <strong>Warning:</strong> This is an internal class that is only public for technical reasons, it is not part of the
@@ -71,9 +71,9 @@ public class DefaultBeanConfigurator
         {
             plexusConfig = (PlexusConfiguration) configuration;
         }
-        else if ( configuration instanceof Xpp3Dom )
+        else if ( configuration instanceof Dom )
         {
-            plexusConfig = new XmlPlexusConfiguration( (Xpp3Dom) configuration );
+            plexusConfig = XmlPlexusConfiguration.toPlexusConfiguration( (Dom) configuration );
         }
         else
         {

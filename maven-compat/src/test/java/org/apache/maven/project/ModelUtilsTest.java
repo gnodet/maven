@@ -476,7 +476,7 @@ public class ModelUtilsTest
 
         assertEquals( 1, items.getChildCount() );
 
-        Xpp3Dom item = items.getChild( 0 );
+        Xpp3Dom item = items.getChildren().iterator().next();
         assertEquals( "three", item.getValue() );
     }
 
@@ -498,12 +498,12 @@ public class ModelUtilsTest
 
         ModelUtils.mergePluginDefinitions( childPlugin, parentPlugin, true );
 
-        Xpp3Dom result = (Xpp3Dom) childPlugin.getConfiguration();
-        Xpp3Dom items = result.getChild( "items" );
+        Dom result = childPlugin.getConfiguration();
+        Dom items = result.getChild( "items" );
 
-        assertEquals( 3, items.getChildCount() );
+        assertEquals( 3, items.getChildren().size() );
 
-        Xpp3Dom[] item = items.getChildren().toArray( new Xpp3Dom[0] );
+        Dom[] item = items.getChildren().toArray( new Dom[0] );
 
         List<String> actual = Arrays.asList( item[0].getValue(), item[1].getValue(), item[2].getValue() );
         List<String> expected = Arrays.asList( "one", "two", "three" );

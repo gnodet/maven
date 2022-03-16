@@ -29,6 +29,7 @@ import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.execution.ProjectExecutionEvent;
 import org.apache.maven.execution.ProjectExecutionListener;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.lifecycle.internal.DefaultLifecycleTaskSegmentCalculator;
 import org.apache.maven.lifecycle.internal.ExecutionPlanItem;
 import org.apache.maven.lifecycle.internal.LifecycleExecutionPlanCalculator;
@@ -41,7 +42,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoNotFoundException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

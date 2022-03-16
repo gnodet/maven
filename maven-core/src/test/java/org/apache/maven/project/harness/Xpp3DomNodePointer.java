@@ -60,9 +60,8 @@ class Xpp3DomNodePointer
         {
             return 0;
         }
-        for ( int i = 0; i < node.getChildCount(); i++ )
+        for ( Xpp3Dom child : node.getChildren() )
         {
-            Xpp3Dom child = node.getChild( i );
             if ( child == node1 )
             {
                 return -1;
@@ -90,9 +89,9 @@ class Xpp3DomNodePointer
         else
         {
             List<Object> children = new ArrayList<>();
-            for ( int i = 0; i < node.getChildCount(); i++ )
+            for ( Xpp3Dom child : node.getChildren() )
             {
-                children.add( getValue( node.getChild( i ) ) );
+                children.add( getValue( child ) );
             }
             return children;
         }
