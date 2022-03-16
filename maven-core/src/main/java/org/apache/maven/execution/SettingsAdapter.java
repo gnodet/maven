@@ -19,14 +19,12 @@ package org.apache.maven.execution;
  * under the License.
  */
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Proxy;
-import org.apache.maven.settings.RuntimeInfo;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.SettingsUtils;
@@ -45,19 +43,9 @@ class SettingsAdapter
 
     private MavenExecutionRequest request;
 
-    private RuntimeInfo runtimeInfo;
-
     SettingsAdapter( MavenExecutionRequest request )
     {
         this.request = request;
-
-        /*
-         * NOTE: Plugins like maven-release-plugin query the path to the settings.xml to pass it into a forked Maven and
-         * the CLI will fail when called with a non-existing settings, so be sure to only point at actual files. Having
-         * a null file should be harmless as this case matches general Maven 2.x behavior...
-         */
-        File userSettings = request.getUserSettingsFile();
-        this.runtimeInfo = new RuntimeInfo( ( userSettings != null && userSettings.isFile() ) ? userSettings : null );
     }
 
     @Override
