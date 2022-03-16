@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
-import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 
 /** @deprecated */
 @Deprecated
@@ -203,12 +203,11 @@ public final class ModelUtils
             child.setVersion( parent.getVersion() );
         }
 
-        Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
-        Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
+        Dom childConfiguration = child.getConfiguration();
+        Dom parentConfiguration = parent.getConfiguration();
 
-        childConfiguration.merge( parentConfiguration );
-
-        child.setConfiguration( childConfiguration );
+        Dom config = Dom.merge( childConfiguration, parentConfiguration, false );
+        child.setConfiguration( config );
 
         child.setDependencies( mergeDependencyList( child.getDependencies(), parent.getDependencies() ) );
 
@@ -301,12 +300,11 @@ public final class ModelUtils
 
         child.setGoals( goals );
 
-        Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
-        Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
+        Dom childConfiguration = child.getConfiguration();
+        Dom parentConfiguration = parent.getConfiguration();
 
-        childConfiguration.merge( parentConfiguration );
-
-        child.setConfiguration( childConfiguration );
+        Dom config = Dom.merge( childConfiguration, parentConfiguration, false );
+        child.setConfiguration( config );
     }
 
     public static List<Repository> mergeRepositoryLists( List<Repository> dominant, List<Repository> recessive )

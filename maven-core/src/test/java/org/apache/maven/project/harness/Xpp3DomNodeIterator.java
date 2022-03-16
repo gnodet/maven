@@ -28,8 +28,8 @@ import org.apache.commons.jxpath.ri.compiler.NodeTest;
 import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
 import org.apache.commons.jxpath.ri.model.NodeIterator;
 import org.apache.commons.jxpath.ri.model.NodePointer;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * A node iterator for JXPath to support <code>Xpp3Dom</code>.
@@ -60,7 +60,7 @@ class Xpp3DomNodeIterator
     {
         this.parent = parent;
         this.node = (Xpp3Dom) parent.getNode();
-        this.children = this.node.getChildren();
+        this.children = this.node.getChildren().toArray( new Xpp3Dom[0] );
         if ( startWith != null )
         {
             Xpp3Dom startWithNode = (Xpp3Dom) startWith.getNode();

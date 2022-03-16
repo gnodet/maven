@@ -35,19 +35,19 @@ under the License.
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.4.2-SNAPSHOT</version>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-api-model</artifactId>
+      <version>4.0.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-xml-impl</artifactId>
+      <version>4.0.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-api-model</artifactId>
-      <version>4.0.0-alpha-1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -90,8 +90,8 @@ under the License.
           </models>
           <domAsCustom>true</domAsCustom>
           <domAsCustomInterface>org.apache.maven.api.xml.Dom</domAsCustomInterface>
-          <domAsCustomBuilder>org.apache.maven.model.builder.DomBuilder</domAsCustomBuilder>
-          <domAsCustomLocationBuilder>org.apache.maven.model.builder.DomBuilder.LocationBuilder</domAsCustomLocationBuilder>
+          <domAsCustomBuilder>org.apache.maven.internal.xml.DomBuilder</domAsCustomBuilder>
+          <domAsCustomLocationBuilder>org.apache.maven.internal.xml.DomBuilder.LocationBuilder</domAsCustomLocationBuilder>
         </configuration>
         <executions>
           <execution>

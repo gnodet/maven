@@ -1293,7 +1293,6 @@ public class PomConstructionTest
         assertEquals( "https://project.url/ci", pom.getValue( "ciManagement/url" ) );
         assertEquals( 1, ( (List<?>) pom.getValue( "ciManagement/notifiers" ) ).size() );
         assertEquals( "irc", pom.getValue( "ciManagement/notifiers[1]/type" ) );
-        assertEquals( "ci@", pom.getValue( "ciManagement/notifiers[1]/address" ) );
         assertEquals( Boolean.TRUE, pom.getValue( "ciManagement/notifiers[1]/sendOnError" ) );
         assertEquals( Boolean.FALSE, pom.getValue( "ciManagement/notifiers[1]/sendOnFailure" ) );
         assertEquals( Boolean.FALSE, pom.getValue( "ciManagement/notifiers[1]/sendOnWarning" ) );

@@ -19,8 +19,23 @@ package org.apache.maven.api.xml;
  * under the License.
  */
 
+import java.util.Collection;
+import java.util.Map;
+
 public interface Dom
 {
+
+    String getName();
+
+    String getValue();
+
+    Map<String, String> getAttributes();
+
+    Collection<? extends Dom> getChildren();
+
+    Dom getChild( String name );
+
+    Object getInputLocation();
 
     Dom clone();
 

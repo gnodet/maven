@@ -22,6 +22,7 @@ package org.apache.maven.model.plugin;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.InputSource;
@@ -31,7 +32,6 @@ import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.model.ReportSet;
 import org.apache.maven.model.Reporting;
-import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;

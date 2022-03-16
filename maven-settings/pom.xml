@@ -43,6 +43,11 @@ under the License.
       <artifactId>maven-api-settings</artifactId>
       <version>4.0.0-alpha-1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-xml-impl</artifactId>
+      <version>4.0.0-alpha-1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -84,8 +89,7 @@ under the License.
           </models>
           <domAsCustom>true</domAsCustom>
           <domAsCustomInterface>org.apache.maven.api.xml.Dom</domAsCustomInterface>
-          <domAsCustomBuilder>org.apache.maven.settings.builder.DomBuilder</domAsCustomBuilder>
-          <domAsCustomLocationBuilder>org.apache.maven.settings.builder.DomBuilder.LocationBuilder</domAsCustomLocationBuilder>
+          <domAsCustomBuilder>org.apache.maven.internal.xml.DomBuilder</domAsCustomBuilder>
         </configuration>
         <executions>
           <execution>

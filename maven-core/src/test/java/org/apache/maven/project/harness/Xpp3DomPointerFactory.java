@@ -24,7 +24,7 @@ import java.util.Locale;
 import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 import org.apache.commons.jxpath.ri.model.NodePointerFactory;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.apache.maven.internal.xml.Xpp3Dom;
 
 /**
  * A node pointer factory for JXPath to support <code>Xpp3Dom</code>.

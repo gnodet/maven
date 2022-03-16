@@ -23,9 +23,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

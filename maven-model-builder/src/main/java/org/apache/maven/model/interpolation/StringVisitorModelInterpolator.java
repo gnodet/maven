@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationFile;
 import org.apache.maven.model.ActivationOS;
@@ -79,7 +80,6 @@ import org.codehaus.plexus.interpolation.InterpolationPostProcessor;
 import org.codehaus.plexus.interpolation.RecursionInterceptor;
 import org.codehaus.plexus.interpolation.StringSearchInterpolator;
 import org.codehaus.plexus.interpolation.ValueSource;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * StringVisitorModelInterpolator
@@ -767,7 +767,7 @@ public class StringVisitorModelInterpolator
                     plugin.setInherited( val );
                 }
                 // Configuration
-                visit( (Xpp3Dom) plugin.getConfiguration() );
+                visit( ( Xpp3Dom ) plugin.getConfiguration() );
                 // GroupId
                 org = plugin.getGroupId();
                 val = interpolate( org );
@@ -822,7 +822,7 @@ public class StringVisitorModelInterpolator
                     execution.setInherited( val );
                 }
                 // Configuration
-                visit( (Xpp3Dom) execution.getConfiguration() );
+                visit( ( Xpp3Dom ) execution.getConfiguration() );
                 // Id
                 org = execution.getId();
                 val = interpolate( org );
@@ -855,19 +855,19 @@ public class StringVisitorModelInterpolator
                     dom.setValue( val );
                 }
                 // Attributes
-                for ( String attr : dom.getAttributeNames() )
+                for ( Map.Entry<String, String> attr : dom.getAttributes().entrySet() )
                 {
-                    org = dom.getAttribute( attr );
+                    org = attr.getValue();
                     val = interpolate( org );
                     if ( org != val )
                     {
-                        dom.setAttribute( attr, val );
+                        dom.setAttribute( attr.getKey(), val );
                     }
                 }
                 // Children
-                for ( int i = 0, l = dom.getChildCount(); i < l; i++ )
+                for ( Xpp3Dom child : dom.getChildren() )
                 {
-                    visit( dom.getChild( i ) );
+                    visit( child );
                 }
             }
         }

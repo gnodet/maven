@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
@@ -42,7 +43,6 @@ import org.apache.maven.model.Reporting;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
-import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.apache.maven.project.ModelUtils;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.StringUtils;
@@ -444,8 +444,8 @@ public class DefaultModelInheritanceAssembler
 
         child.setReports( reports );
 
-        Xpp3Dom childConfiguration = (Xpp3Dom) child.getConfiguration();
-        Xpp3Dom parentConfiguration = (Xpp3Dom) parent.getConfiguration();
+        Dom childConfiguration = child.getConfiguration();
+        Dom parentConfiguration = parent.getConfiguration();
 
         childConfiguration.merge( parentConfiguration );
 

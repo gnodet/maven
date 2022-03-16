@@ -20,7 +20,7 @@ package org.apache.maven.toolchain.building;
  */
 
 import org.apache.maven.building.StringSource;
-import org.apache.maven.toolchain.builder.DomBuilder.Xpp3Dom;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.toolchain.io.DefaultToolchainsReader;
 import org.apache.maven.toolchain.io.DefaultToolchainsWriter;
 import org.apache.maven.toolchain.io.ToolchainsParseException;

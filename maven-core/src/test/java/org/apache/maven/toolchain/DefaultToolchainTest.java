@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 
-import org.apache.maven.toolchain.builder.DomBuilder.Xpp3Dom;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.toolchain.java.DefaultJavaToolChain;
 import org.apache.maven.toolchain.model.ToolchainModel;
 import org.junit.jupiter.api.BeforeEach;

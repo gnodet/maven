@@ -117,7 +117,6 @@ under the License.
     <notifiers>
       <notifier>
         <type>irc</type>
-        <address>ci@</address>
         <sendOnError>true</sendOnError>
         <sendOnFailure>false</sendOnFailure>
         <sendOnSuccess>false</sendOnSuccess>

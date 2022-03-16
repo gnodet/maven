@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
@@ -70,17 +72,17 @@ public class TestApi
     void setup()
     {
         RepositorySystemSession rss = MavenRepositorySystemUtils.newSession();
-        MavenSession ms = new MavenSession( null, rss, null, null );
+        DefaultMavenExecutionRequest mer = new DefaultMavenExecutionRequest();
+        MavenSession ms = new MavenSession( null, rss, mer, null );
         DefaultSession session = new DefaultSession( ms, repositorySystem,
                                                      Collections.emptyList(), projectBuilder,
                                                      mavenRepositorySystem, toolchainManagerPrivate );
         DefaultLocalRepository localRepository = new DefaultLocalRepository(
-                new LocalRepository( "target/apiv4-repo" ) );
+                new LocalRepository( "target/test-classes/apiv4-repo" ) );
         org.apache.maven.api.RemoteRepository remoteRepository = session.getRemoteRepository(
                 new RemoteRepository.Builder( "mirror", "default",
                         "file:target/test-classes/repo" ).build() );
         this.session = session
-                .withLocalRepository( session.getService( RepositoryFactory.class ).createLocal( Paths.get( "target/repo" ) ) )
                 .withLocalRepository( localRepository )
                 .withRemoteRepositories( Collections.singletonList( remoteRepository ) );
     }

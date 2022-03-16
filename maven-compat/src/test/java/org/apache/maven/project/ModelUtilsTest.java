@@ -26,13 +26,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.api.xml.Dom;
+import org.apache.maven.internal.xml.DomBuilder;
+import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.PluginExecution;
-import org.apache.maven.model.builder.DomBuilder;
-import org.apache.maven.model.builder.DomBuilder.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
 
@@ -147,7 +148,7 @@ public class ModelUtilsTest
         assertEquals( "group2", result3.getGroupId() );
         assertEquals( "artifact2", result3.getArtifactId() );
 
-        Xpp3Dom result3Config = (Xpp3Dom) result3.getConfiguration();
+        Dom result3Config = result3.getConfiguration();
 
         assertNotNull( result3Config );
 
@@ -502,7 +503,7 @@ public class ModelUtilsTest
 
         assertEquals( 3, items.getChildCount() );
 
-        Xpp3Dom[] item = items.getChildren();
+        Xpp3Dom[] item = items.getChildren().toArray( new Xpp3Dom[0] );
 
         List<String> actual = Arrays.asList( item[0].getValue(), item[1].getValue(), item[2].getValue() );
         List<String> expected = Arrays.asList( "one", "two", "three" );

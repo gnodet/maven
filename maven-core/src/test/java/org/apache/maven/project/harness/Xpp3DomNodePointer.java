@@ -26,7 +26,7 @@ import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.compiler.NodeTest;
 import org.apache.commons.jxpath.ri.model.NodeIterator;
 import org.apache.commons.jxpath.ri.model.NodePointer;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.apache.maven.internal.xml.Xpp3Dom;
 
 /**
  * A node pointer for JXPath to support <code>Xpp3Dom</code>.
