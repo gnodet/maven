@@ -64,7 +64,9 @@ public class DomBuilder
     {
         try
         {
-            return Xpp3DomBuilder.build( parser, trim );
+            Xpp3DomBuilder.InputLocationBuilder ilb =
+                    locationBuilder != null ? ( p -> locationBuilder.getLocation() ) : null;
+            return Xpp3DomBuilder.build( parser, trim, ilb );
         }
         catch ( Exception e )
         {
