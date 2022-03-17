@@ -27,11 +27,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.bridge.MavenRepositorySystem;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
@@ -228,16 +230,12 @@ public class DefaultRepositorySystemSessionFactory
 
             if ( server.getConfiguration() != null )
             {
-                Xpp3Dom dom = (Xpp3Dom) server.getConfiguration();
-                for ( Xpp3Dom child : new ArrayList<>( dom.getChildren() ) )
-                {
-                    if ( "wagonProvider".equals( child.getName() ) )
-                    {
-                        dom.removeChild( child );
-                    }
-                }
-
-                PlexusConfiguration config = XmlPlexusConfiguration.toPlexusConfiguration( dom );
+                Dom dom = server.getConfiguration();
+                Dom mod = new Xpp3Dom( dom.getName(), dom.getValue(), dom.getAttributes(),
+                        dom.getChildren().stream().filter( n -> !"wagonProvider".equals( n.getName() ) )
+                                .collect( Collectors.toList() ),
+                        dom.getInputLocation() );
+                PlexusConfiguration config = XmlPlexusConfiguration.toPlexusConfiguration( mod );
                 configProps.put( "aether.connector.wagon.config." + server.getId(), config );
             }
 

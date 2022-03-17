@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class DefaultLifecycleExecutionPlanCalculator
         this.standardDelegate = null;
         this.delegates = null;
         this.mojoExecutionConfigurators = Collections.singletonMap(
-             "default", (MojoExecutionConfigurator) new DefaultMojoExecutionConfigurator() );
+             "default", new DefaultMojoExecutionConfigurator() );
     }
 
     @Override
@@ -318,13 +319,12 @@ public class DefaultLifecycleExecutionPlanCalculator
         Dom executionConfiguration = mojoExecution.getConfiguration();
         if ( executionConfiguration == null )
         {
-            executionConfiguration = new Xpp3Dom( "configuration" );
+            executionConfiguration = new Xpp3Dom( "configuration", null, null, null, null );
         }
 
-        Xpp3Dom defaultConfiguration = getMojoConfiguration( mojoDescriptor );
+        Dom defaultConfiguration = getMojoConfiguration( mojoDescriptor );
 
-        Xpp3Dom finalConfiguration = new Xpp3Dom( "configuration" );
-
+        List<Dom> children = new ArrayList<>();
         if ( mojoDescriptor.getParameters() != null )
         {
             for ( Parameter parameter : mojoDescriptor.getParameters() )
@@ -336,30 +336,36 @@ public class DefaultLifecycleExecutionPlanCalculator
                     parameterConfiguration = executionConfiguration.getChild( parameter.getAlias() );
                 }
 
-                Xpp3Dom parameterDefaults = defaultConfiguration.getChild( parameter.getName() );
+                Dom parameterDefaults = defaultConfiguration.getChild( parameter.getName() );
 
-                parameterConfiguration = Dom.merge( parameterConfiguration, parameterDefaults,
-                                                               Boolean.TRUE );
+                parameterConfiguration = Dom.merge( parameterConfiguration, parameterDefaults, Boolean.TRUE );
 
                 if ( parameterConfiguration != null )
                 {
-                    Xpp3Dom newParameterConfiguration = new Xpp3Dom( parameterConfiguration, parameter.getName() );
+                    Map<String, String> attrs = new HashMap<>( parameterConfiguration.getAttributes() );
 
-                    if ( StringUtils.isEmpty( newParameterConfiguration.getAttribute( "implementation" ) )
+                    if ( StringUtils.isEmpty( attrs.get( "implementation" ) )
                         && StringUtils.isNotEmpty( parameter.getImplementation() ) )
                     {
-                        newParameterConfiguration.setAttribute( "implementation", parameter.getImplementation() );
+                        attrs.put( "implementation", parameter.getImplementation() );
                     }
 
-                    finalConfiguration.addChild( newParameterConfiguration );
+                    Xpp3Dom newParameterConfiguration = new Xpp3Dom(
+                            parameter.getName(), parameterConfiguration.getValue(),
+                            attrs, parameterConfiguration.getChildren(),
+                            parameterConfiguration.getInputLocation() );
+
+                    children.add( newParameterConfiguration );
                 }
             }
         }
 
+        Xpp3Dom finalConfiguration = new Xpp3Dom( "configuration", null, null, children, null );
+
         mojoExecution.setConfiguration( finalConfiguration );
     }
 
-    private Xpp3Dom getMojoConfiguration( MojoDescriptor mojoDescriptor )
+    private Dom getMojoConfiguration( MojoDescriptor mojoDescriptor )
     {
         return MojoDescriptorCreator.convert( mojoDescriptor );
     }
@@ -534,7 +540,7 @@ public class DefaultLifecycleExecutionPlanCalculator
                         MojoExecution forkedExecution =
                             new MojoExecution( forkedMojoDescriptor, mojoExecution.getExecutionId() );
 
-                        Xpp3Dom forkedConfiguration = (Xpp3Dom) execution.getConfiguration();
+                        Dom forkedConfiguration = execution.getConfiguration();
 
                         forkedExecution.setConfiguration( forkedConfiguration );
 
@@ -544,7 +550,7 @@ public class DefaultLifecycleExecutionPlanCalculator
                     }
                 }
 
-                Xpp3Dom phaseConfiguration = (Xpp3Dom) phase.getConfiguration();
+                Dom phaseConfiguration = phase.getConfiguration();
 
                 if ( phaseConfiguration != null )
                 {
@@ -552,7 +558,7 @@ public class DefaultLifecycleExecutionPlanCalculator
                     {
                         Dom forkedConfiguration = forkedExecution.getConfiguration();
 
-                        forkedConfiguration = Xpp3Dom.mergeXpp3Dom( phaseConfiguration, forkedConfiguration );
+                        forkedConfiguration = Dom.merge( phaseConfiguration, forkedConfiguration );
 
                         forkedExecution.setConfiguration( forkedConfiguration );
                     }

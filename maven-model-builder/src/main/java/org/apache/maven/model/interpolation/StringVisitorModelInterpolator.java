@@ -20,16 +20,19 @@ package org.apache.maven.model.interpolation;
  */
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationFile;
@@ -767,7 +770,12 @@ public class StringVisitorModelInterpolator
                     plugin.setInherited( val );
                 }
                 // Configuration
-                visit( ( Xpp3Dom ) plugin.getConfiguration() );
+                Dom orgd = plugin.getConfiguration();
+                Dom vald = visit( orgd );
+                if ( orgd != vald )
+                {
+                    plugin.setConfiguration( vald );
+                }
                 // GroupId
                 org = plugin.getGroupId();
                 val = interpolate( org );
@@ -822,7 +830,12 @@ public class StringVisitorModelInterpolator
                     execution.setInherited( val );
                 }
                 // Configuration
-                visit( ( Xpp3Dom ) execution.getConfiguration() );
+                Dom orgd = execution.getConfiguration();
+                Dom vald = visit( orgd );
+                if ( orgd != vald )
+                {
+                    execution.setConfiguration( vald );
+                }
                 // Id
                 org = execution.getId();
                 val = interpolate( org );
@@ -842,34 +855,59 @@ public class StringVisitorModelInterpolator
             }
         }
 
-        private void visit( Xpp3Dom dom )
+        private Dom visit( Dom dom )
         {
             if ( dom != null )
             {
-                String org, val;
+                String value = null;
+                Map<String, String> attrs = null;
+                List<Dom> children = null;
                 // Content
+                String org, val;
                 org = dom.getValue();
                 val = interpolate( org );
                 if ( org != val )
                 {
-                    dom.setValue( val );
+                    value = val;
                 }
                 // Attributes
                 for ( Map.Entry<String, String> attr : dom.getAttributes().entrySet() )
                 {
                     org = attr.getValue();
                     val = interpolate( org );
-                    if ( org != val )
+                    if ( !Objects.equals( org, val ) )
                     {
-                        dom.setAttribute( attr.getKey(), val );
+                        if ( attrs == null )
+                        {
+                            attrs = new HashMap<>( dom.getAttributes() );
+                        }
+                        attrs.put( attr.getKey(), val );
                     }
                 }
                 // Children
-                for ( Xpp3Dom child : dom.getChildren() )
+                for ( int i = 0; i < dom.getChildren().size(); i++ )
                 {
-                    visit( child );
+                    Dom child = dom.getChildren().get( i );
+                    Dom v = visit( child );
+                    if ( v != child )
+                    {
+                        if ( children == null )
+                        {
+                            children = new ArrayList<>( dom.getChildren() );
+                        }
+                        children.set( i, v );
+                    }
+                }
+                if ( value != null || attrs != null || children != null )
+                {
+                    return new Xpp3Dom( dom.getName(),
+                            value != null ? value : dom.getValue(),
+                            attrs != null ? attrs : dom.getAttributes(),
+                            children != null ? children : dom.getChildren(),
+                            dom.getInputLocation() );
                 }
             }
+            return dom;
         }
 
         private void visit( Extension extension )
@@ -1362,7 +1400,12 @@ public class StringVisitorModelInterpolator
                     plugin.setInherited( val );
                 }
                 // Configuration
-                visit( (Xpp3Dom) plugin.getConfiguration() );
+                Dom orgd = plugin.getConfiguration();
+                Dom vald = visit( orgd );
+                if ( orgd != vald )
+                {
+                    plugin.setConfiguration( vald );
+                }
                 // GroupId
                 org = plugin.getGroupId();
                 val = interpolate( org );
@@ -1405,7 +1448,12 @@ public class StringVisitorModelInterpolator
                     reportSet.setInherited( val );
                 }
                 // Configuration
-                visit( (Xpp3Dom) reportSet.getConfiguration() );
+                Dom orgd = reportSet.getConfiguration();
+                Dom vald = visit( orgd );
+                if ( orgd != vald )
+                {
+                    reportSet.setConfiguration( vald );
+                }
                 // Id
                 org = reportSet.getId();
                 val = interpolate( org );

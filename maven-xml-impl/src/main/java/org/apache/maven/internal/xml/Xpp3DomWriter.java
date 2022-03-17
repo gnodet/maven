@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.maven.api.xml.Dom;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
@@ -31,22 +32,22 @@ import org.codehaus.plexus.util.xml.XMLWriter;
  */
 public class Xpp3DomWriter
 {
-    public static void write( Writer writer, Xpp3Dom dom )
+    public static void write( Writer writer, Dom dom )
     {
         write( new PrettyPrintXMLWriter( writer ), dom );
     }
 
-    public static void write( PrintWriter writer, Xpp3Dom dom )
+    public static void write( PrintWriter writer, Dom dom )
     {
         write( new PrettyPrintXMLWriter( writer ), dom );
     }
 
-    public static void write( XMLWriter xmlWriter, Xpp3Dom dom )
+    public static void write( XMLWriter xmlWriter, Dom dom )
     {
         write( xmlWriter, dom, true );
     }
 
-    public static void write( XMLWriter xmlWriter, Xpp3Dom dom, boolean escape )
+    public static void write( XMLWriter xmlWriter, Dom dom, boolean escape )
     {
         // TODO: move to XMLWriter?
         xmlWriter.startElement( dom.getName() );
@@ -54,7 +55,7 @@ public class Xpp3DomWriter
         {
             xmlWriter.addAttribute( attr.getKey(), attr.getValue() );
         }
-        for ( Xpp3Dom aChildren : dom.getChildren() )
+        for ( Dom aChildren : dom.getChildren() )
         {
             write( xmlWriter, aChildren, escape );
         }

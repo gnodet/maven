@@ -216,7 +216,7 @@ public class LifecycleExecutionPlanCalculatorStub
         final Plugin plugin = mojoDescriptor.getPluginDescriptor().getPlugin();
         plugin.setLocation( "version", new InputLocation( 12, 34, defaultBindings ) );
         MojoExecution result = new MojoExecution( plugin, goal, executionId );
-        result.setConfiguration( new Xpp3Dom( executionId + "-" + goal ) );
+        result.setConfiguration( new Xpp3Dom( executionId + "-" + goal, null, null, null, null ) );
         result.setMojoDescriptor( mojoDescriptor );
         result.setLifecyclePhase( mojoDescriptor.getPhase() );
 

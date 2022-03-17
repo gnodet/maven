@@ -80,19 +80,9 @@ public class MavenToolchainMerger
                                                      ToolchainModel source )
     {
         Dom src = source.getConfiguration();
-        if ( src != null )
-        {
-            Dom tgt = target.getConfiguration();
-            if ( tgt == null )
-            {
-                tgt = src.clone();
-            }
-            else
-            {
-                tgt.merge( src );
-            }
-            target.setConfiguration( tgt );
-        }
+        Dom tgt = target.getConfiguration();
+        Dom merged = Dom.merge( tgt, src );
+        target.setConfiguration( merged );
     }
 
     protected Object getToolchainModelKey( ToolchainModel model )

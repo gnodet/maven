@@ -36,7 +36,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.maven.api.xml.Dom;
-import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.BuildBase;
@@ -2288,23 +2287,14 @@ public class ModelMerger
     }
 
     protected void mergeConfigurationContainer_Configuration( ConfigurationContainer target,
-                                                              ConfigurationContainer source, boolean sourceDominant,
+                                                              ConfigurationContainer source,
+                                                              boolean sourceDominant,
                                                               Map<Object, Object> context )
     {
         Dom src = source.getConfiguration();
-        if ( src != null )
-        {
-            Dom tgt = target.getConfiguration();
-            if ( sourceDominant || tgt == null )
-            {
-                tgt = Xpp3Dom.mergeXpp3Dom( new Xpp3Dom( src ), tgt );
-            }
-            else
-            {
-                tgt.merge( src );
-            }
-            target.setConfiguration( tgt );
-        }
+        Dom tgt = target.getConfiguration();
+        Dom cfg = sourceDominant ? Dom.merge( src, tgt ) : Dom.merge( tgt, src );
+        target.setConfiguration( cfg );
     }
 
     protected void mergePluginExecution( PluginExecution target, PluginExecution source, boolean sourceDominant,

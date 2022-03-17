@@ -130,20 +130,16 @@ public class DefaultToolchainTest
         tm1.setType( "jdk" );
         tm1.addProvide( "version", "1.5" );
         tm1.addProvide( "vendor", "sun" );
-        Xpp3Dom configuration1 = new Xpp3Dom("configuration");
-        Xpp3Dom jdkHome1 = new Xpp3Dom( "jdkHome" );
-        jdkHome1.setValue("${env.JAVA_HOME}");
-        configuration1.addChild( jdkHome1 );
+        Xpp3Dom jdkHome1 = new Xpp3Dom( "jdkHome", "${env.JAVA_HOME}", null, null, null );
+        Xpp3Dom configuration1 = new Xpp3Dom("configuration", null, null, Collections.singletonList( jdkHome1 ), null );
         tm1.setConfiguration( configuration1 );
 
         ToolchainModel tm2 = new ToolchainModel();
         tm1.setType( "jdk" );
         tm1.addProvide( "version", "1.4" );
         tm1.addProvide( "vendor", "sun" );
-        Xpp3Dom configuration2 = new Xpp3Dom("configuration");
-        Xpp3Dom jdkHome2 = new Xpp3Dom( "jdkHome" );
-        jdkHome2.setValue("${env.JAVA_HOME}");
-        configuration2.addChild( jdkHome2 );
+        Xpp3Dom jdkHome2 = new Xpp3Dom( "jdkHome", "${env.JAVA_HOME}", null, null, null );
+        Xpp3Dom configuration2 = new Xpp3Dom("configuration", null, null, Collections.singletonList( jdkHome2 ), null );
         tm2.setConfiguration( configuration2 );
 
         DefaultToolchain tc1 = new DefaultJavaToolChain( tm1, null );

@@ -23,8 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.maven.api.xml.Dom;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
@@ -142,108 +145,61 @@ public class Xpp3DomBuilder
     public static Xpp3Dom build( XmlPullParser parser, boolean trim, InputLocationBuilder locationBuilder )
         throws XmlPullParserException, IOException
     {
-        List<Xpp3Dom> elements = new ArrayList<>();
-
-        List<StringBuilder> values = new ArrayList<>();
-
-        int eventType = parser.getEventType();
-
         boolean spacePreserve = false;
-
+        String name = null;
+        String value = null;
+        Object location = null;
+        Map<String, String> attrs = null;
+        List<Dom> children = null;
+        int eventType = parser.getEventType();
         while ( eventType != XmlPullParser.END_DOCUMENT )
         {
             if ( eventType == XmlPullParser.START_TAG )
             {
-                spacePreserve = false;
-
-                String rawName = parser.getName();
-
-                Xpp3Dom childConfiguration = new Xpp3Dom( rawName );
-
-                if ( locationBuilder != null )
+                if ( name == null )
                 {
-                    childConfiguration.setInputLocation( locationBuilder.toInputLocation( parser ) );
-                }
-
-                int depth = elements.size();
-
-                if ( depth > 0 )
-                {
-                    Xpp3Dom parent = elements.get( depth - 1 );
-
-                    parent.addChild( childConfiguration );
-                }
-
-                elements.add( childConfiguration );
-
-                if ( parser.isEmptyElementTag() )
-                {
-                    values.add( null );
+                    name = parser.getName();
+                    location = locationBuilder != null ? locationBuilder.toInputLocation( parser ) : null;
+                    int attributesSize = parser.getAttributeCount();
+                    if ( attributesSize > 0 )
+                    {
+                        attrs = new HashMap<>();
+                        for ( int i = 0; i < attributesSize; i++ )
+                        {
+                            String aname = parser.getAttributeName( i );
+                            String avalue = parser.getAttributeValue( i );
+                            attrs.put( aname, avalue );
+                            spacePreserve =
+                                    spacePreserve || ( "xml:space".equals( aname ) && "preserve".equals( avalue ) );
+                        }
+                    }
                 }
                 else
                 {
-                    values.add( new StringBuilder() );
-                }
-
-                int attributesSize = parser.getAttributeCount();
-
-                for ( int i = 0; i < attributesSize; i++ )
-                {
-                    String name = parser.getAttributeName( i );
-
-                    String value = parser.getAttributeValue( i );
-
-                    childConfiguration.setAttribute( name, value );
-
-                    spacePreserve = spacePreserve || ( "xml:space".equals( name ) && "preserve".equals( value ) );
+                    if ( children == null )
+                    {
+                        children = new ArrayList<>();
+                    }
+                    Dom child = build( parser, trim, locationBuilder );
+                    children.add( child );
                 }
             }
             else if ( eventType == XmlPullParser.TEXT )
             {
-                int depth = values.size() - 1;
-
-                @SuppressWarnings( "MismatchedQueryAndUpdateOfStringBuilder" )
-                StringBuilder valueBuffer = values.get( depth );
-
                 String text = parser.getText();
-
                 if ( trim && !spacePreserve )
                 {
                     text = text.trim();
                 }
-
-                valueBuffer.append( text );
+                value = value != null ? value + text : text;
             }
             else if ( eventType == XmlPullParser.END_TAG )
             {
-                int depth = elements.size() - 1;
-
-                Xpp3Dom finishedConfiguration = elements.remove( depth );
-
-                /* this Object could be null if it is a singleton tag */
-                Object accumulatedValue = values.remove( depth );
-
-                if ( finishedConfiguration.getChildCount() == 0 )
-                {
-                    if ( accumulatedValue == null )
-                    {
-                        finishedConfiguration.setValue( null );
-                    }
-                    else
-                    {
-                        finishedConfiguration.setValue( accumulatedValue.toString() );
-                    }
-                }
-
-                if ( depth == 0 )
-                {
-                    return finishedConfiguration;
-                }
+                return new Xpp3Dom( name, children == null ? value : null,
+                        attrs, children, location );
             }
-
             eventType = parser.next();
         }
-
         throw new IllegalStateException( "End of document found before returning to 0 depth" );
     }
 

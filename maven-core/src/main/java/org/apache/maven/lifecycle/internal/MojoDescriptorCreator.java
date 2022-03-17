@@ -21,12 +21,15 @@ package org.apache.maven.lifecycle.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.model.Plugin;
@@ -99,14 +102,12 @@ public class MojoDescriptorCreator
         return null;
     }
 
-    public static Xpp3Dom convert( MojoDescriptor mojoDescriptor )
+    public static Dom convert( MojoDescriptor mojoDescriptor )
     {
-        Xpp3Dom dom = new Xpp3Dom( "configuration" );
-
         PlexusConfiguration c = mojoDescriptor.getMojoConfiguration();
 
+        List<Dom> children = new ArrayList<>();
         PlexusConfiguration[] ces = c.getChildren();
-
         if ( ces != null )
         {
             for ( PlexusConfiguration ce : ces )
@@ -115,17 +116,15 @@ public class MojoDescriptorCreator
                 String defaultValue = ce.getAttribute( "default-value", null );
                 if ( value != null || defaultValue != null )
                 {
-                    Xpp3Dom e = new Xpp3Dom( ce.getName() );
-                    e.setValue( value );
-                    if ( defaultValue != null )
-                    {
-                        e.setAttribute( "default-value", defaultValue );
-                    }
-                    dom.addChild( e );
+                    Xpp3Dom e = new Xpp3Dom( ce.getName(), value,
+                            defaultValue != null ? Collections.singletonMap( "default-value", defaultValue ) : null,
+                            null, null );
+                    children.add( e );
                 }
             }
         }
 
+        Xpp3Dom dom = new Xpp3Dom( "configuration", null, null, children, null );
         return dom;
     }
 

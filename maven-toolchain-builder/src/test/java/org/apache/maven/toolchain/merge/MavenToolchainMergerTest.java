@@ -19,7 +19,7 @@ package org.apache.maven.toolchain.merge;
  * under the License.
  */
 
-import org.apache.maven.internal.xml.Xpp3Dom;
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.toolchain.model.PersistedToolchains;
 import org.apache.maven.toolchain.model.ToolchainModel;
 import org.apache.maven.toolchain.model.TrackableBase;
@@ -104,11 +104,11 @@ public class MavenToolchainMergerTest
 
             merger.merge( jdks, jdksExtend, TrackableBase.USER_LEVEL );
             assertEquals( 2, jdks.getToolchains().size() );
-            Xpp3Dom config0 = (Xpp3Dom) jdks.getToolchains().get( 0 ).getConfiguration();
+            Dom config0 = jdks.getToolchains().get( 0 ).getConfiguration();
             assertEquals( "lib/tools.jar", config0.getChild( "toolsJar" ).getValue() );
-            assertEquals( 2, config0.getChildCount() );
-            Xpp3Dom config1 = (Xpp3Dom) jdks.getToolchains().get( 1 ).getConfiguration();
-            assertEquals( 2, config1.getChildCount() );
+            assertEquals( 2, config0.getChildren().size() );
+            Dom config1 = jdks.getToolchains().get( 1 ).getConfiguration();
+            assertEquals( 2, config1.getChildren().size() );
             assertEquals( "lib/classes.jar", config1.getChild( "toolsJar" ).getValue() );
             assertEquals( 2, jdksExtend.getToolchains().size() );
         }
@@ -122,11 +122,11 @@ public class MavenToolchainMergerTest
             // switch dominant with recessive
             merger.merge( jdksExtend, jdks, TrackableBase.USER_LEVEL );
             assertEquals( 2, jdksExtend.getToolchains().size() );
-            Xpp3Dom config0 = (Xpp3Dom) jdksExtend.getToolchains().get( 0 ).getConfiguration();
+            Dom config0 = jdksExtend.getToolchains().get( 0 ).getConfiguration();
             assertEquals( "lib/tools.jar", config0.getChild( "toolsJar" ).getValue() );
-            assertEquals( 2, config0.getChildCount() );
-            Xpp3Dom config1 = (Xpp3Dom) jdksExtend.getToolchains().get( 1 ).getConfiguration();
-            assertEquals( 2, config1.getChildCount() );
+            assertEquals( 2, config0.getChildren().size() );
+            Dom config1 = jdksExtend.getToolchains().get( 1 ).getConfiguration();
+            assertEquals( 2, config1.getChildren().size() );
             assertEquals( "lib/classes.jar", config1.getChild( "toolsJar" ).getValue() );
             assertEquals( 2, jdks.getToolchains().size() );
         }

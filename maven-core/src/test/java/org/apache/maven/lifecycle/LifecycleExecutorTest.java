@@ -23,13 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.maven.AbstractCoreMavenComponentTestCase;
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.MojoExecutionEvent;
 import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.execution.ProjectExecutionEvent;
 import org.apache.maven.execution.ProjectExecutionListener;
-import org.apache.maven.internal.xml.Xpp3Dom;
 import org.apache.maven.lifecycle.internal.DefaultLifecycleTaskSegmentCalculator;
 import org.apache.maven.lifecycle.internal.ExecutionPlanItem;
 import org.apache.maven.lifecycle.internal.LifecycleExecutionPlanCalculator;
@@ -291,7 +291,7 @@ public class LifecycleExecutorTest
         MojoDescriptor mojoDescriptor =
             mojoDescriptorCreator.getMojoDescriptor( "org.apache.maven.its.plugins:maven-it-plugin:0.1:java", session,
                                                      session.getCurrentProject() );
-        Xpp3Dom dom = MojoDescriptorCreator.convert( mojoDescriptor );
+        Dom dom = MojoDescriptorCreator.convert( mojoDescriptor );
         System.out.println( dom );
     }
 

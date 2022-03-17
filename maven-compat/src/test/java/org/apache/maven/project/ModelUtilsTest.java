@@ -21,6 +21,7 @@ package org.apache.maven.project;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,11 +49,11 @@ public class ModelUtilsTest
     @Test
     public void testShouldUseMainPluginDependencyVersionOverManagedDepVersion()
     {
-        Plugin mgtPlugin = createPlugin( "group", "artifact", "1", Collections.EMPTY_MAP );
+        Plugin mgtPlugin = createPlugin( "group", "artifact", "1", Collections.emptyMap() );
         Dependency mgtDep = createDependency( "g", "a", "2" );
         mgtPlugin.addDependency( mgtDep );
 
-        Plugin plugin = createPlugin( "group", "artifact", "1", Collections.EMPTY_MAP );
+        Plugin plugin = createPlugin( "group", "artifact", "1", Collections.emptyMap() );
         Dependency dep = createDependency( "g", "a", "1" );
         plugin.addDependency( dep );
 
@@ -78,14 +79,14 @@ public class ModelUtilsTest
     {
         PluginContainer parent = new PluginContainer();
 
-        Plugin parentPlugin = createPlugin( "group", "artifact", "1.0", Collections.EMPTY_MAP );
+        Plugin parentPlugin = createPlugin( "group", "artifact", "1.0", Collections.emptyMap() );
         parentPlugin.setInherited( "false" );
 
         parent.addPlugin( parentPlugin );
 
         PluginContainer child = new PluginContainer();
 
-        child.addPlugin( createPlugin( "group3", "artifact3", "1.0", Collections.EMPTY_MAP ) );
+        child.addPlugin( createPlugin( "group3", "artifact3", "1.0", Collections.emptyMap() ) );
 
         ModelUtils.mergePluginLists( child, parent, true );
 
@@ -119,12 +120,12 @@ public class ModelUtilsTest
     {
         PluginContainer parent = new PluginContainer();
 
-        parent.addPlugin( createPlugin( "group", "artifact", "1.0", Collections.EMPTY_MAP ) );
+        parent.addPlugin( createPlugin( "group", "artifact", "1.0", Collections.emptyMap() ) );
         parent.addPlugin( createPlugin( "group2", "artifact2", "1.0", Collections.singletonMap( "key", "value" ) ) );
 
         PluginContainer child = new PluginContainer();
 
-        child.addPlugin( createPlugin( "group3", "artifact3", "1.0", Collections.EMPTY_MAP ) );
+        child.addPlugin( createPlugin( "group3", "artifact3", "1.0", Collections.emptyMap() ) );
         child.addPlugin( createPlugin( "group2", "artifact2", "1.0", Collections.singletonMap( "key2", "value2" ) ) );
 
         ModelUtils.mergePluginLists( child, parent, true );
@@ -156,28 +157,23 @@ public class ModelUtilsTest
         assertEquals( "value2", result3Config.getChild( "key2" ).getValue() );
     }
 
-    private Plugin createPlugin( String groupId, String artifactId, String version, Map configuration )
+    private Plugin createPlugin( String groupId, String artifactId, String version, Map<String, String> configuration )
     {
         Plugin plugin = new Plugin();
         plugin.setGroupId( groupId );
         plugin.setArtifactId( artifactId );
         plugin.setVersion( version );
 
-        Xpp3Dom config = new Xpp3Dom( "configuration" );
-
+        List<Dom> children = new ArrayList<>();
         if( configuration != null )
         {
-            for ( Object o : configuration.entrySet() )
+            for ( Map.Entry<String, String> entry : configuration.entrySet() )
             {
-                Map.Entry entry = (Map.Entry) o;
-
-                Xpp3Dom param = new Xpp3Dom( String.valueOf( entry.getKey() ) );
-                param.setValue( String.valueOf( entry.getValue() ) );
-
-                config.addChild( param );
+                children.add( new Xpp3Dom( entry.getKey(), entry.getValue(), null, null, null ) );
             }
         }
 
+        Xpp3Dom config = new Xpp3Dom( "configuration", null, null, children, null );
         plugin.setConfiguration( config );
 
         return plugin;
@@ -471,12 +467,12 @@ public class ModelUtilsTest
 
         ModelUtils.mergePluginDefinitions( childPlugin, parentPlugin, true );
 
-        Xpp3Dom result = (Xpp3Dom) childPlugin.getConfiguration();
-        Xpp3Dom items = result.getChild( "items" );
+        Dom result = childPlugin.getConfiguration();
+        Dom items = result.getChild( "items" );
 
-        assertEquals( 1, items.getChildCount() );
+        assertEquals( 1, items.getChildren().size() );
 
-        Xpp3Dom item = items.getChildren().iterator().next();
+        Dom item = items.getChildren().iterator().next();
         assertEquals( "three", item.getValue() );
     }
 
@@ -520,7 +516,7 @@ public class ModelUtilsTest
         String ver = "1";
 
         PluginContainer parent = new PluginContainer();
-        Plugin pParent = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pParent = createPlugin( gid, aid, ver, Collections.emptyMap() );
 
         pParent.setInherited( Boolean.toString( true ) );
 
@@ -537,7 +533,7 @@ public class ModelUtilsTest
         parent.addPlugin( pParent );
 
         PluginContainer child = new PluginContainer();
-        Plugin pChild = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pChild = createPlugin( gid, aid, ver, Collections.emptyMap() );
         PluginExecution eChild = new PluginExecution();
 
         eChild.setId( "child-specified" );
@@ -561,7 +557,7 @@ public class ModelUtilsTest
         String ver = "1";
 
         PluginContainer parent = new PluginContainer();
-        Plugin pParent = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pParent = createPlugin( gid, aid, ver, Collections.emptyMap() );
 
         pParent.setInherited( Boolean.toString( false ) );
 
@@ -578,7 +574,7 @@ public class ModelUtilsTest
         parent.addPlugin( pParent );
 
         PluginContainer child = new PluginContainer();
-        Plugin pChild = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pChild = createPlugin( gid, aid, ver, Collections.emptyMap() );
         PluginExecution eChild = new PluginExecution();
 
         eChild.setId( "child-specified" );
@@ -602,7 +598,7 @@ public class ModelUtilsTest
         String ver = "1";
 
         PluginContainer parent = new PluginContainer();
-        Plugin pParent = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pParent = createPlugin( gid, aid, ver, Collections.emptyMap() );
 
         pParent.setInherited( Boolean.toString( true ) );
 
@@ -619,7 +615,7 @@ public class ModelUtilsTest
         parent.addPlugin( pParent );
 
         PluginContainer child = new PluginContainer();
-        Plugin pChild = createPlugin( gid, aid, ver, Collections.EMPTY_MAP );
+        Plugin pChild = createPlugin( gid, aid, ver, Collections.emptyMap() );
         PluginExecution eChild = new PluginExecution();
 
         eChild.setId( "child-specified" );

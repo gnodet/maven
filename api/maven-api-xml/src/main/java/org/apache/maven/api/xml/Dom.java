@@ -19,12 +19,15 @@ package org.apache.maven.api.xml;
  * under the License.
  */
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.api.annotations.Immutable;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
+import org.apache.maven.api.annotations.ThreadSafe;
 
+@ThreadSafe  @Immutable
 public interface Dom
 {
 
@@ -70,7 +73,7 @@ public interface Dom
     String getAttribute( @Nonnull String name );
 
     @Nonnull
-    Collection<? extends Dom> getChildren();
+    List<Dom> getChildren();
 
     @Nullable
     Dom getChild( String name );
@@ -78,15 +81,14 @@ public interface Dom
     @Nullable
     Object getInputLocation();
 
-    @Nonnull
-    Dom clone();
-
-    default void merge( @Nullable Dom source )
+    default Dom merge( @Nullable Dom source )
     {
-        merge( source, (Boolean) null );
+        return merge( source, (Boolean) null );
     }
 
-    void merge( @Nullable Dom source, @Nullable Boolean childMergeOverride );
+    Dom merge( @Nullable Dom source, @Nullable Boolean childMergeOverride );
+
+    Dom clone();
 
     /**
      * Merge recessive into dominant and return either {@code dominant}
@@ -110,15 +112,11 @@ public interface Dom
         {
             return dominant;
         }
-        else if ( dominant == null )
+        if ( dominant == null )
         {
-            return recessive.clone();
+            return recessive;
         }
-        else
-        {
-            dominant.merge( recessive, childMergeOverride );
-            return dominant;
-        }
+        return dominant.merge( recessive, childMergeOverride );
     }
 
 }

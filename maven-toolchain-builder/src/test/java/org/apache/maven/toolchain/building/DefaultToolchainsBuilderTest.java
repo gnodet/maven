@@ -36,6 +36,7 @@ import org.mockito.Spy;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -208,10 +209,8 @@ public class DefaultToolchainsBuilderTest
         toolchain.setType( "TYPE" );
         toolchain.addProvide( "key", "${env.testKey}" );
 
-        Xpp3Dom configurationChild = new Xpp3Dom("jdkHome");
-        configurationChild.setValue("${env.testKey}");
-        Xpp3Dom configuration = new Xpp3Dom("configuration");
-        configuration.addChild(configurationChild);
+        Xpp3Dom configurationChild = new Xpp3Dom("jdkHome", "${env.testKey}", null, null, null);
+        Xpp3Dom configuration = new Xpp3Dom("configuration", null, null, Collections.singletonList(configurationChild), null);
         toolchain.setConfiguration(configuration);
         persistedToolchains.addToolchain( toolchain );
         doReturn(persistedToolchains).when( toolchainsReader ).read( any( InputStream.class ), ArgumentMatchers.<String, Object>anyMap());

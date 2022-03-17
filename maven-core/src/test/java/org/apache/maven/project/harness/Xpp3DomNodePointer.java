@@ -26,6 +26,7 @@ import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.compiler.NodeTest;
 import org.apache.commons.jxpath.ri.model.NodeIterator;
 import org.apache.commons.jxpath.ri.model.NodePointer;
+import org.apache.maven.api.xml.Dom;
 import org.apache.maven.internal.xml.Xpp3Dom;
 
 /**
@@ -54,13 +55,13 @@ class Xpp3DomNodePointer
     @Override
     public int compareChildNodePointers( NodePointer pointer1, NodePointer pointer2 )
     {
-        Xpp3Dom node1 = (Xpp3Dom) pointer1.getBaseValue();
-        Xpp3Dom node2 = (Xpp3Dom) pointer2.getBaseValue();
+        Dom node1 = (Dom) pointer1.getBaseValue();
+        Dom node2 = (Dom) pointer2.getBaseValue();
         if ( node1 == node2 )
         {
             return 0;
         }
-        for ( Xpp3Dom child : node.getChildren() )
+        for ( Dom child : node.getChildren() )
         {
             if ( child == node1 )
             {
@@ -80,7 +81,7 @@ class Xpp3DomNodePointer
         return getValue( node );
     }
 
-    private static Object getValue( Xpp3Dom node )
+    private static Object getValue( Dom node )
     {
         if ( node.getValue() != null )
         {
@@ -89,7 +90,7 @@ class Xpp3DomNodePointer
         else
         {
             List<Object> children = new ArrayList<>();
-            for ( Xpp3Dom child : node.getChildren() )
+            for ( Dom child : node.getChildren() )
             {
                 children.add( getValue( child ) );
             }
