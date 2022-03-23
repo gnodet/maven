@@ -47,7 +47,8 @@ class FileToRawModelMerger extends ModelMerger
 {
 
     @Override
-    protected void mergeBuild_Extensions( Build target, Build source, boolean sourceDominant,
+    protected void mergeBuild_Extensions( Build.Builder builder,
+                                          Build target, Build source, boolean sourceDominant,
                                           Map<Object, Object> context )
     {
         // don't merge
@@ -55,28 +56,32 @@ class FileToRawModelMerger extends ModelMerger
 
 
     @Override
-    protected void mergeBuildBase_Resources( BuildBase target, BuildBase source, boolean sourceDominant,
+    protected void mergeBuildBase_Resources( BuildBase.Builder builder,
+                                             BuildBase target, BuildBase source, boolean sourceDominant,
                                              Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeBuildBase_TestResources( BuildBase target, BuildBase source, boolean sourceDominant,
+    protected void mergeBuildBase_TestResources( BuildBase.Builder builder,
+                                                 BuildBase target, BuildBase source, boolean sourceDominant,
                                                  Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeCiManagement_Notifiers( CiManagement target, CiManagement source, boolean sourceDominant,
+    protected void mergeCiManagement_Notifiers( CiManagement.Builder builder,
+                                                CiManagement target, CiManagement source, boolean sourceDominant,
                                                 Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeDependencyManagement_Dependencies( DependencyManagement target, DependencyManagement source,
+    protected void mergeDependencyManagement_Dependencies( DependencyManagement.Builder builder,
+                                                           DependencyManagement target, DependencyManagement source,
                                                            boolean sourceDominant, Map<Object, Object> context )
     {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
@@ -85,42 +90,48 @@ class FileToRawModelMerger extends ModelMerger
     }
 
     @Override
-    protected void mergeDependency_Exclusions( Dependency target, Dependency source, boolean sourceDominant,
+    protected void mergeDependency_Exclusions( Dependency.Builder builder,
+                                               Dependency target, Dependency source, boolean sourceDominant,
                                                Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeModel_Contributors( Model target, Model source, boolean sourceDominant,
+    protected void mergeModel_Contributors( Model.Builder builder,
+                                            Model target, Model source, boolean sourceDominant,
                                             Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeModel_Developers( Model target, Model source, boolean sourceDominant,
+    protected void mergeModel_Developers( Model.Builder builder,
+                                          Model target, Model source, boolean sourceDominant,
                                           Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeModel_Licenses( Model target, Model source, boolean sourceDominant,
+    protected void mergeModel_Licenses( Model.Builder builder,
+                                        Model target, Model source, boolean sourceDominant,
                                         Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeModel_MailingLists( Model target, Model source, boolean sourceDominant,
+    protected void mergeModel_MailingLists( Model.Builder builder,
+                                            Model target, Model source, boolean sourceDominant,
                                             Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeModel_Profiles( Model target, Model source, boolean sourceDominant,
+    protected void mergeModel_Profiles( Model.Builder builder,
+                                        Model target, Model source, boolean sourceDominant,
                                         Map<Object, Object> context )
     {
         Iterator<Profile> sourceIterator = source.getProfiles().iterator();
@@ -129,7 +140,8 @@ class FileToRawModelMerger extends ModelMerger
     }
 
     @Override
-    protected void mergeModelBase_Dependencies( ModelBase target, ModelBase source, boolean sourceDominant,
+    protected void mergeModelBase_Dependencies( ModelBase.Builder builder,
+                                                ModelBase target, ModelBase source, boolean sourceDominant,
                                                 Map<Object, Object> context )
     {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
@@ -138,21 +150,24 @@ class FileToRawModelMerger extends ModelMerger
     }
 
     @Override
-    protected void mergeModelBase_PluginRepositories( ModelBase target, ModelBase source, boolean sourceDominant,
+    protected void mergeModelBase_PluginRepositories( ModelBase.Builder builder,
+                                                      ModelBase target, ModelBase source, boolean sourceDominant,
                                                       Map<Object, Object> context )
     {
-        target.setPluginRepositories( source.getPluginRepositories() );
+        builder.pluginRepositories( source.getPluginRepositories() );
     }
 
     @Override
-    protected void mergeModelBase_Repositories( ModelBase target, ModelBase source, boolean sourceDominant,
+    protected void mergeModelBase_Repositories( ModelBase.Builder builder,
+                                                ModelBase target, ModelBase source, boolean sourceDominant,
                                                 Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergePlugin_Dependencies( Plugin target, Plugin source, boolean sourceDominant,
+    protected void mergePlugin_Dependencies( Plugin.Builder builder,
+                                             Plugin target, Plugin source, boolean sourceDominant,
                                              Map<Object, Object> context )
     {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
@@ -161,28 +176,32 @@ class FileToRawModelMerger extends ModelMerger
     }
 
     @Override
-    protected void mergePlugin_Executions( Plugin target, Plugin source, boolean sourceDominant,
+    protected void mergePlugin_Executions( Plugin.Builder builder,
+                                           Plugin target, Plugin source, boolean sourceDominant,
                                            Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeReporting_Plugins( Reporting target, Reporting source, boolean sourceDominant,
+    protected void mergeReporting_Plugins( Reporting.Builder builder,
+                                           Reporting target, Reporting source, boolean sourceDominant,
                                            Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergeReportPlugin_ReportSets( ReportPlugin target, ReportPlugin source, boolean sourceDominant,
+    protected void mergeReportPlugin_ReportSets( ReportPlugin.Builder builder,
+                                                 ReportPlugin target, ReportPlugin source, boolean sourceDominant,
                                                  Map<Object, Object> context )
     {
         // don't merge
     }
 
     @Override
-    protected void mergePluginContainer_Plugins( PluginContainer target, PluginContainer source,
+    protected void mergePluginContainer_Plugins( PluginContainer.Builder builder,
+                                                 PluginContainer target, PluginContainer source,
                                                  boolean sourceDominant, Map<Object, Object> context )
     {
         // don't merge

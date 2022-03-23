@@ -85,14 +85,13 @@ interface ModelCacheTag<T>
         @Override
         public ModelData intoCache( ModelData data )
         {
-            Model model = ( data.getModel() != null ) ? data.getModel().clone() : null;
-            return new ModelData( data.getSource(), model, data.getGroupId(), data.getArtifactId(), data.getVersion() );
+            return data;
         }
 
         @Override
         public ModelData fromCache( ModelData data )
         {
-            return intoCache( data );
+            return data;
         }
 
     };
@@ -118,13 +117,13 @@ interface ModelCacheTag<T>
         @Override
         public DependencyManagement intoCache( DependencyManagement data )
         {
-            return ( data != null ) ? data.clone() : null;
+            return data;
         }
 
         @Override
         public DependencyManagement fromCache( DependencyManagement data )
         {
-            return intoCache( data );
+            return data;
         }
 
     };
@@ -150,13 +149,13 @@ interface ModelCacheTag<T>
         @Override
         public Model intoCache( Model data )
         {
-            return ( data != null ) ? data.clone() : null;
+            return data;
         }
 
         @Override
         public Model fromCache( Model data )
         {
-            return intoCache( data );
+            return data;
         }
     };
 }

@@ -80,28 +80,30 @@ under the License.
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.modello</groupId>
-        <artifactId>modello-maven-plugin</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
-        <configuration>
-          <version>4.0.0</version>
-          <models>
-            <model>target/mdo/maven.mdo</model>
-          </models>
-          <domAsCustom>true</domAsCustom>
-          <domAsCustomInterface>org.apache.maven.api.xml.Dom</domAsCustomInterface>
-          <domAsCustomBuilder>org.apache.maven.internal.xml.DomBuilder</domAsCustomBuilder>
-          <domAsCustomLocationBuilder>org.apache.maven.internal.xml.DomBuilder.LocationBuilder</domAsCustomLocationBuilder>
-        </configuration>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>modello-plugin-velocity</artifactId>
+        <version>4.0.0-alpha-1-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>modello</id>
+            <id>velocity</id>
+            <phase>generate-sources</phase>
             <goals>
-              <goal>xpp3-reader</goal>
-              <goal>xpp3-extended-reader</goal>
-              <goal>xpp3-writer</goal>
-              <goal>xpp3-extended-writer</goal>
+              <goal>velocity</goal>
             </goals>
+            <configuration>
+              <version>4.0.0</version>
+              <models>
+                <model>target/mdo/maven.mdo</model>
+              </models>
+              <templates>
+                <template>src/main/mdo/merger.vm</template>
+                <template>src/main/mdo/transformer.vm</template>
+                <template>src/main/mdo/reader.vm</template>
+                <template>src/main/mdo/reader-ex.vm</template>
+                <template>src/main/mdo/writer.vm</template>
+                <template>src/main/mdo/writer-ex.vm</template>
+              </templates>
+            </configuration>
           </execution>
         </executions>
       </plugin>

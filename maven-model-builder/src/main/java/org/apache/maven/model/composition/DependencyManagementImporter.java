@@ -42,7 +42,7 @@ public interface DependencyManagementImporter
      * @param request The model building request that holds further settings, must not be {@code null}.
      * @param problems The container used to collect problems that were encountered, must not be {@code null}.
      */
-    void importManagement( Model target, List<? extends DependencyManagement> sources, ModelBuildingRequest request,
+    Model importManagement( Model target, List<? extends DependencyManagement> sources, ModelBuildingRequest request,
                            ModelProblemCollector problems );
 
 }

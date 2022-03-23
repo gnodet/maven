@@ -381,8 +381,9 @@ public class DefaultModelBuilderFactory
     {
 
         @Override
-        public void injectLifecycleBindings( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+        public Model injectLifecycleBindings( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
         {
+            return null;
         }
 
     }

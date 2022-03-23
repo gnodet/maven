@@ -78,9 +78,8 @@ public class DefaultSuperPomProvider
 
                 String modelId = "org.apache.maven:maven-model-builder:"
                     + this.getClass().getPackage().getImplementationVersion() + ":super-pom";
-                InputSource inputSource = new InputSource();
-                inputSource.setModelId( modelId );
-                inputSource.setLocation( getClass().getResource( resource ).toExternalForm() );
+                InputSource inputSource = new InputSource(
+                        modelId, getClass().getResource( resource ).toExternalForm() );
                 options.put( ModelProcessor.INPUT_SOURCE, inputSource );
 
                 superModel = modelProcessor.read( is, options );

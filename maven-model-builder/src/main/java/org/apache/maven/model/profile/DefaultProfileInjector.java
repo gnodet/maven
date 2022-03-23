@@ -58,22 +58,24 @@ public class DefaultProfileInjector
     private ProfileModelMerger merger = new ProfileModelMerger();
 
     @Override
-    public void injectProfile( Model model, Profile profile, ModelBuildingRequest request,
+    public Model injectProfile( Model model, Profile profile, ModelBuildingRequest request,
                                ModelProblemCollector problems )
     {
         if ( profile != null )
         {
-            merger.mergeModelBase( model, profile );
+            Model.Builder builder = new Model.Builder( model );
+            merger.mergeModelBase( builder, model, profile );
 
             if ( profile.getBuild() != null )
             {
-                if ( model.getBuild() == null )
-                {
-                    model.setBuild( new Build() );
-                }
-                merger.mergeBuildBase( model.getBuild(), profile.getBuild() );
+                Build.Builder bbuilder = new Build.Builder();
+                Build build = model.getBuild() != null ? model.getBuild() : new Build.Builder().build();
+                merger.mergeBuildBase( bbuilder, build, profile.getBuild() );
+                builder.build( bbuilder.build() );
             }
+            return builder.build();
         }
+        return model;
     }
 
     /**
@@ -83,19 +85,20 @@ public class DefaultProfileInjector
         extends MavenModelMerger
     {
 
-        public void mergeModelBase( ModelBase target, ModelBase source )
+        public void mergeModelBase( ModelBase.Builder builder, ModelBase target, ModelBase source )
         {
-            mergeModelBase( target, source, true, Collections.emptyMap() );
+            mergeModelBase( builder, target, source, true, Collections.emptyMap() );
         }
 
-        public void mergeBuildBase( BuildBase target, BuildBase source )
+        public void mergeBuildBase( BuildBase.Builder builder, BuildBase target, BuildBase source )
         {
-            mergeBuildBase( target, source, true, Collections.emptyMap() );
+            mergeBuildBase( builder, target, source, true, Collections.emptyMap() );
         }
 
         @Override
-        protected void mergePluginContainer_Plugins( PluginContainer target, PluginContainer source,
-                                                     boolean sourceDominant, Map<Object, Object> context )
+        protected void mergePluginContainer_Plugins( PluginContainer.Builder builder,
+                                                     PluginContainer target,  PluginContainer source,
+                                                     boolean sourceDominant,  Map<Object, Object> context )
         {
             List<Plugin> src = source.getPlugins();
             if ( !src.isEmpty() )
@@ -143,13 +146,13 @@ public class DefaultProfileInjector
                 }
                 result.addAll( pending );
 
-                target.setPlugins( result );
+                builder.plugins( result );
             }
         }
 
         @Override
-        protected void mergePlugin_Executions( Plugin target, Plugin source, boolean sourceDominant,
-                                               Map<Object, Object> context )
+        protected void mergePlugin_Executions( Plugin.Builder builder, Plugin target, Plugin source,
+                                               boolean sourceDominant, Map<Object, Object> context )
         {
             List<PluginExecution> src = source.getExecutions();
             if ( !src.isEmpty() )
@@ -178,13 +181,13 @@ public class DefaultProfileInjector
                     }
                 }
 
-                target.setExecutions( new ArrayList<>( merged.values() ) );
+                builder.executions( new ArrayList<>( merged.values() ) );
             }
         }
 
         @Override
-        protected void mergeReporting_Plugins( Reporting target, Reporting source, boolean sourceDominant,
-                                               Map<Object, Object> context )
+        protected void mergeReporting_Plugins( Reporting.Builder builder, Reporting target, Reporting source,
+                                               boolean sourceDominant, Map<Object, Object> context )
         {
             List<ReportPlugin> src = source.getPlugins();
             if ( !src.isEmpty() )
@@ -213,12 +216,13 @@ public class DefaultProfileInjector
                     }
                 }
 
-                target.setPlugins( new ArrayList<>( merged.values() ) );
+                builder.plugins( new ArrayList<>( merged.values() ) );
             }
         }
 
         @Override
-        protected void mergeReportPlugin_ReportSets( ReportPlugin target, ReportPlugin source, boolean sourceDominant,
+        protected void mergeReportPlugin_ReportSets( ReportPlugin.Builder builder, ReportPlugin target,
+                                                     ReportPlugin source, boolean sourceDominant,
                                                      Map<Object, Object> context )
         {
             List<ReportSet> src = source.getReportSets();
@@ -247,7 +251,7 @@ public class DefaultProfileInjector
                     }
                 }
 
-                target.setReportSets( new ArrayList<>( merged.values() ) );
+                builder.reportSets( new ArrayList<>( merged.values() ) );
             }
         }
 

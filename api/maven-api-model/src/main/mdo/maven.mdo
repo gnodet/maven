@@ -65,8 +65,8 @@
       <value>org.apache.maven.model</value>
     </default>
   </defaults>
-  <classes>
-    <class rootElement="true" xml.tagName="project" java.clone.hook="cloneHook">
+  <classes class.java.builder="true" class.java.immutable="true" class.field.association.java.init="constructor">
+    <class rootElement="true" xml.tagName="project">
       <name>Model</name>
       <superClass>ModelBase</superClass>
       <description>
@@ -77,6 +77,14 @@
       </description>
       <version>3.0.0+</version>
       <fields>
+
+        <field xml.transient="true">
+          <name>pomFile</name>
+          <version>4.0.0+</version>
+          <required>false</required>
+          <description>Originating POM file</description>
+          <type>java.nio.file.Path</type>
+        </field>
 
         <!-- ====================================================================== -->
         <!-- Model Version                                                          -->
@@ -356,41 +364,15 @@
           <version>4.0.0+</version>
           <code>
             <![CDATA[
-    private void cloneHook( Model copy )
-    {
-        copy.pomFile = pomFile;
-    }
-
-    /**
-     * The POM from which this model originated. This is transient runtime state and therefore not managed by Modello.
-     */
-    private java.io.File pomFile;
-
-    /**
-     * Gets the POM file for the corresponding project (if any).
-     *
-     * @return The POM file from which this model originated or {@code null} if this model does not belong to a local
-     *         project (e.g. describes the metadata of some artifact from the repository).
-     */
-    public java.io.File getPomFile()
-    {
-        return pomFile;
-    }
-
-    public void setPomFile( java.io.File pomFile )
-    {
-        this.pomFile = ( pomFile != null ) ? pomFile.getAbsoluteFile() : null;
-    }
-
     /**
      * Gets the base directory for the corresponding project (if any).
      *
      * @return The base directory for the corresponding project or {@code null} if this model does not belong to a local
      *         project (e.g. describes the metadata of some artifact from the repository).
      */
-    public java.io.File getProjectDirectory()
+    public Path getProjectDirectory()
     {
-        return ( pomFile != null ) ? pomFile.getParentFile() : null;
+        return ( pomFile != null ) ? pomFile.getParent() : null;
     }
 
     /**
@@ -423,15 +405,9 @@
           <version>4.0.0+</version>
           <code>
             <![CDATA[
-
     public boolean isChildProjectUrlInheritAppendPath()
     {
         return ( childProjectUrlInheritAppendPath != null ) ? Boolean.parseBoolean( childProjectUrlInheritAppendPath ) : true;
-    }
-
-    public void setChildProjectUrlInheritAppendPath( boolean childProjectUrlInheritAppendPath )
-    {
-        this.childProjectUrlInheritAppendPath = String.valueOf( childProjectUrlInheritAppendPath );
     }
 
             ]]>
@@ -439,7 +415,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>ModelBase</name>
       <version>3.0.0+</version>
       <description>
@@ -554,7 +530,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>PluginContainer</name>
       <version>3.0.0+</version>
       <description>Contains the plugins informations for the project.</description>
@@ -574,7 +550,7 @@
           <version>4.0.0+</version>
           <code>
             <![CDATA[
-    java.util.Map<String, Plugin> pluginMap;
+    Map<String, Plugin> pluginMap;
 
     /**
      * Reset the <code>pluginsMap</code> field to <code>null</code>
@@ -588,7 +564,7 @@
      * @return a Map of plugins field with <code>Plugins#getKey()</code> as key
      * @see org.apache.maven.model.Plugin#getKey()
      */
-    public synchronized java.util.Map<String, Plugin> getPluginsAsMap()
+    public synchronized Map<String, Plugin> getPluginsAsMap()
     {
         if ( pluginMap == null )
         {
@@ -783,7 +759,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>CiManagement</name>
       <version>4.0.0+</version>
       <description>
@@ -822,7 +798,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Notifier</name>
       <description>Configures one method for notifying users/developers when a build breaks.</description>
       <version>4.0.0+</version>
@@ -873,7 +849,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Contributor</name>
       <description>Description of a person who has contributed to the project, but who does not have
         commit privileges. Usually, these contributions come in the form of patches submitted.</description>
@@ -951,7 +927,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Dependency</name>
       <version>3.0.0+</version>
       <description>
@@ -1100,11 +1076,6 @@
         return ( optional != null ) ? Boolean.parseBoolean( optional ) : false;
     }
 
-    public void setOptional( boolean optional )
-    {
-        this.optional = String.valueOf( optional );
-    }
-
     /**
      * @see java.lang.Object#toString()
      */
@@ -1119,7 +1090,7 @@
           <version>4.0.0+</version>
           <code>
             <![CDATA[
-    private String managementKey;
+    private volatile String managementKey;
 
     /**
      * @return the management key as <code>groupId:artifactId:type</code>
@@ -1131,14 +1102,6 @@
             managementKey = groupId + ":" + artifactId + ":" + type + ( classifier != null ? ":" + classifier : "" );
         }
         return managementKey;
-    }
-
-    /**
-     * Clears the management key in case one field has been modified.
-     */
-    public void clearManagementKey()
-    {
-        managementKey = null;
     }
             ]]>
           </code>
@@ -1159,7 +1122,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Exclusion</name>
       <version>4.0.0+</version>
       <description>
@@ -1185,7 +1148,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>IssueManagement</name>
       <description>Information about the issue tracking (or bug tracking) system used to manage this
         project.</description>
@@ -1205,7 +1168,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>DistributionManagement</name>
       <version>4.0.0+</version>
       <description>This elements describes all that pertains to distribution for a project. It is
@@ -1282,7 +1245,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>License</name>
       <description>Describes the licenses for this project. This is used to generate the license
         page of the project's web site, as well as being taken into consideration in other reporting
@@ -1326,7 +1289,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>MailingList</name>
       <version>3.0.0+</version>
       <description>This element describes all of the mailing lists associated with a project. The
@@ -1401,7 +1364,7 @@
         and maybe even a specific element for the user and scm mailing lists. Then leave the more
         lose structure for any other type of mailing list.</comment>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Organization</name>
       <description>Specifies the organization that produces this project.</description>
       <version>3.0.0+</version>
@@ -1420,7 +1383,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>PatternSet</name>
       <version>3.0.0+</version>
       <description>Definition of include or exclude patterns.</description>
@@ -1488,7 +1451,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Parent</name>
       <version>4.0.0+</version>
       <description>
@@ -1575,7 +1538,7 @@
       </codeSegments>
 
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Scm</name>
       <version>4.0.0+</version>
       <description>
@@ -1688,29 +1651,14 @@
         return ( childScmConnectionInheritAppendPath != null ) ? Boolean.parseBoolean( childScmConnectionInheritAppendPath ) : true;
     }
 
-    public void setChildScmConnectionInheritAppendPath( boolean childScmConnectionInheritAppendPath )
-    {
-        this.childScmConnectionInheritAppendPath = String.valueOf( childScmConnectionInheritAppendPath );
-    }
-
     public boolean isChildScmDeveloperConnectionInheritAppendPath()
     {
         return ( childScmDeveloperConnectionInheritAppendPath != null ) ? Boolean.parseBoolean( childScmDeveloperConnectionInheritAppendPath ) : true;
     }
 
-    public void setChildScmDeveloperConnectionInheritAppendPath( boolean childScmDeveloperConnectionInheritAppendPath )
-    {
-        this.childScmDeveloperConnectionInheritAppendPath = String.valueOf( childScmDeveloperConnectionInheritAppendPath );
-    }
-
     public boolean isChildScmUrlInheritAppendPath()
     {
         return ( childScmUrlInheritAppendPath != null ) ? Boolean.parseBoolean( childScmUrlInheritAppendPath ) : true;
-    }
-
-    public void setChildScmUrlInheritAppendPath( boolean childScmUrlInheritAppendPath )
-    {
-        this.childScmUrlInheritAppendPath = String.valueOf( childScmUrlInheritAppendPath );
     }
 
             ]]>
@@ -1806,24 +1754,9 @@
           <version>4.0.0+</version>
           <code>
             <![CDATA[
-    private static int mergeIdCounter = 0;
-
-    public void initMergeId()
-    {
-        if ( getMergeId() == null )
-        {
-            setMergeId( "resource-" + (mergeIdCounter++) );
-        }
-    }
-
     public boolean isFiltering()
     {
         return ( filtering != null ) ? Boolean.parseBoolean( filtering ) : false;
-    }
-
-    public void setFiltering( boolean filtering )
-    {
-        this.filtering = String.valueOf( filtering );
     }
 
     /**
@@ -1838,7 +1771,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>RepositoryBase</name>
       <version>4.0.0+</version>
       <description>A repository contains the information needed for establishing connections with
@@ -1934,7 +1867,7 @@
       </fields>
     </class>
 
-    <class java.clone="deep">
+    <class>
       <name>RepositoryPolicy</name>
       <version>4.0.0+</version>
       <description>Download policy.</description>
@@ -1995,11 +1928,6 @@
         return ( enabled != null ) ? Boolean.parseBoolean( enabled ) : true;
     }
 
-    public void setEnabled( boolean enabled )
-    {
-        this.enabled = String.valueOf( enabled );
-    }
-
             ]]>
           </code>
         </codeSegment>
@@ -2007,7 +1935,7 @@
     </class>
 
     <!--@todo find better solution for management of site deployments -->
-    <class java.clone="deep">
+    <class>
       <name>Site</name>
       <version>4.0.0+</version>
       <description>Contains the information needed for deploying websites.</description>
@@ -2067,18 +1995,13 @@
         return ( childSiteUrlInheritAppendPath != null ) ? Boolean.parseBoolean( childSiteUrlInheritAppendPath ) : true;
     }
 
-    public void setChildSiteUrlInheritAppendPath( boolean childSiteUrlInheritAppendPath )
-    {
-        this.childSiteUrlInheritAppendPath = String.valueOf( childSiteUrlInheritAppendPath );
-    }
-
             ]]>
           </code>
         </codeSegment>
       </codeSegments>
     </class>
 
-    <class java.clone="deep">
+    <class>
       <name>ConfigurationContainer</name>
       <version>4.0.0+</version>
       <description>Contains the configuration information of the container like Plugin.</description>
@@ -2126,22 +2049,6 @@
         return ( inherited != null ) ? Boolean.parseBoolean( inherited ) : true;
     }
 
-    public void setInherited( boolean inherited )
-    {
-        this.inherited = String.valueOf( inherited );
-    }
-
-    private boolean inheritanceApplied = true;
-
-    public void unsetInheritanceApplied()
-    {
-        this.inheritanceApplied = false;
-    }
-
-    public boolean isInheritanceApplied()
-    {
-        return inheritanceApplied;
-    }
             ]]>
           </code>
         </codeSegment>
@@ -2219,49 +2126,6 @@
     public boolean isExtensions()
     {
         return ( extensions != null ) ? Boolean.parseBoolean( extensions ) : false;
-    }
-
-    public void setExtensions( boolean extensions )
-    {
-        this.extensions = String.valueOf( extensions );
-    }
-
-    private java.util.Map<String, PluginExecution> executionMap = null;
-
-    /**
-     * Reset the <code>executionMap</code> field to <code>null</code>
-     */
-    public void flushExecutionMap()
-    {
-        this.executionMap = null;
-    }
-
-    /**
-     * @return a Map of executions field with <code>PluginExecution#getId()</code> as key
-     * @see org.apache.maven.model.PluginExecution#getId()
-     */
-    public java.util.Map<String, PluginExecution> getExecutionsAsMap()
-    {
-        if ( executionMap == null )
-        {
-            executionMap = new java.util.LinkedHashMap<String, PluginExecution>();
-            if ( getExecutions() != null )
-            {
-                for ( java.util.Iterator<PluginExecution> i = getExecutions().iterator(); i.hasNext(); )
-                {
-                    PluginExecution exec = (PluginExecution) i.next();
-
-                    if ( executionMap.containsKey( exec.getId() ) )
-                    {
-                        throw new IllegalStateException( "You cannot have two plugin executions with the same (or missing) <id/> elements.\nOffending execution\n\nId: \'" + exec.getId() + "\'\nPlugin:\'" + getKey() + "\'\n\n" );
-                    }
-
-                    executionMap.put( exec.getId(), exec );
-                }
-            }
-        }
-
-        return executionMap;
     }
 
     /**
@@ -2401,7 +2265,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>DependencyManagement</name>
       <version>4.0.0+</version>
       <description>Section for management of default dependency information for use in a group of
@@ -2427,7 +2291,7 @@
       <description>Section for management of default plugin information for use in a group of POMs.
       </description>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Reporting</name>
       <version>4.0.0+</version>
       <description>Section for management of reports and their configuration.</description>
@@ -2477,42 +2341,6 @@
         return ( excludeDefaults != null ) ? Boolean.parseBoolean( excludeDefaults ) : false;
     }
 
-    public void setExcludeDefaults( boolean excludeDefaults )
-    {
-        this.excludeDefaults = String.valueOf( excludeDefaults );
-    }
-
-    java.util.Map<String, ReportPlugin> reportPluginMap;
-
-    /**
-     * Reset the <code>reportPluginMap</code> field to <code>null</code>
-     */
-    public synchronized void flushReportPluginMap()
-    {
-        this.reportPluginMap = null;
-    }
-
-    /**
-     * @return a Map of plugins field with <code>ReportPlugin#getKey()</code> as key
-     * @see org.apache.maven.model.ReportPlugin#getKey()
-     */
-    public synchronized java.util.Map<String, ReportPlugin> getReportPluginsAsMap()
-    {
-        if ( reportPluginMap == null )
-        {
-            reportPluginMap = new java.util.LinkedHashMap<String, ReportPlugin>();
-            if ( getPlugins() != null )
-            {
-                for ( java.util.Iterator<ReportPlugin> it = getPlugins().iterator(); it.hasNext(); )
-                {
-                    ReportPlugin reportPlugin = (ReportPlugin) it.next();
-                    reportPluginMap.put( reportPlugin.getKey(), reportPlugin );
-                }
-            }
-        }
-
-        return reportPluginMap;
-    }
             ]]>
           </code>
         </codeSegment>
@@ -2590,7 +2418,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Activation</name>
       <version>4.0.0+</version>
       <description>The conditions within the build runtime environment which will trigger the
@@ -2659,7 +2487,7 @@
         -->
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>ActivationProperty</name>
       <version>4.0.0+</version>
       <description>This is the property specification used to activate a profile. If the value field
@@ -2681,7 +2509,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>ActivationOS</name>
       <version>4.0.0+</version>
       <description>This is an activator which will detect an operating system's attributes in order
@@ -2725,7 +2553,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>ActivationFile</name>
       <version>4.0.0+</version>
       <description><![CDATA[This is the file specification used to activate the profile. The <code>missing</code> value
@@ -2775,7 +2603,7 @@
     </class>
     -->
     <!-- /BuildProfile support -->
-    <class xml.tagName="plugin" java.clone="deep">
+    <class xml.tagName="plugin">
       <name>ReportPlugin</name>
       <version>4.0.0+</version>
       <superClass>ConfigurationContainer</superClass>
@@ -2885,7 +2713,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>ReportSet</name>
       <version>4.0.0+</version>
       <superClass>ConfigurationContainer</superClass>
@@ -2926,7 +2754,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Prerequisites</name>
       <version>4.0.0+</version>
       <description>Describes the prerequisites a project can have.</description>
@@ -2949,7 +2777,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Relocation</name>
       <version>4.0.0+</version>
       <description>Describes where an artifact has moved to. If any of the values are omitted, it is
@@ -2981,7 +2809,7 @@
         </field>
       </fields>
     </class>
-    <class java.clone="deep">
+    <class>
       <name>Extension</name>
       <version>4.0.0+</version>
       <description>Describes a build extension to utilise.</description>
@@ -3065,7 +2893,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class locationTracker="locations" java.clone="shallow">
+    <class locationTracker="locations">
       <name>InputLocation</name>
       <version>4.0.0+</version>
       <fields>
@@ -3087,7 +2915,7 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class sourceTracker="source" java.clone="shallow">
+    <class sourceTracker="source">
       <name>InputSource</name>
       <version>4.0.0+</version>
       <fields>

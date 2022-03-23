@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -51,8 +52,10 @@ public class DefaultModelNormalizer
     private DuplicateMerger merger = new DuplicateMerger();
 
     @Override
-    public void mergeDuplicates( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model mergeDuplicates( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
+        Model.Builder builder = new Model.Builder( model );
+
         Build build = model.getBuild();
         if ( build != null )
         {
@@ -65,14 +68,16 @@ public class DefaultModelNormalizer
                 Plugin first = normalized.get( key );
                 if ( first != null )
                 {
-                    merger.mergePlugin( plugin, first );
+                    plugin = merger.mergePlugin( plugin, first );
                 }
                 normalized.put( key, plugin );
             }
 
             if ( plugins.size() != normalized.size() )
             {
-                build.setPlugins( new ArrayList<>( normalized.values() ) );
+                builder.build( new Build.Builder( build )
+                            .plugins( new ArrayList<>( normalized.values() ) )
+                            .build() );
             }
         }
 
@@ -93,8 +98,10 @@ public class DefaultModelNormalizer
 
         if ( dependencies.size() != normalized.size() )
         {
-            model.setDependencies( new ArrayList<>( normalized.values() ) );
+            builder.dependencies( new ArrayList<>( normalized.values() ) );
         }
+
+        return builder.build();
     }
 
     /**
@@ -104,38 +111,64 @@ public class DefaultModelNormalizer
         extends MavenModelMerger
     {
 
-        public void mergePlugin( Plugin target, Plugin source )
+        public Plugin mergePlugin( Plugin target, Plugin source )
         {
-            super.mergePlugin( target, source, false, Collections.emptyMap() );
+            return super.mergePlugin( target, source, false, Collections.emptyMap() );
         }
 
     }
 
     @Override
-    public void injectDefaultValues( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model injectDefaultValues( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        injectDependencyDefaults( model.getDependencies() );
+        Model.Builder builder = new Model.Builder( model );
 
+        builder.dependencies( injectList( model.getDependencies(), this::injectDependency ) );
         Build build = model.getBuild();
         if ( build != null )
         {
-            for ( Plugin plugin : build.getPlugins() )
-            {
-                injectDependencyDefaults( plugin.getDependencies() );
-            }
+            Build newBuild = new Build.Builder( build )
+                    .plugins( injectList( build.getPlugins(), this::injectPlugin ) )
+                    .build();
+            builder.build( newBuild != build ? newBuild : null );
         }
+
+        return builder.build();
     }
 
-    private void injectDependencyDefaults( List<Dependency> dependencies )
+    private Plugin injectPlugin( Plugin p )
     {
-        for ( Dependency dependency : dependencies )
+        return new Plugin.Builder( p )
+                .dependencies( injectList( p.getDependencies(),this::injectDependency ) )
+                .build();
+    }
+
+    private Dependency injectDependency( Dependency d )
+    {
+        // we cannot set this directly in the MDO due to the interactions with dependency management
+        return StringUtils.isEmpty( d.getScope() ) ? new Dependency.Builder( d ).scope( "compile" ).build() : d;
+    }
+
+    /**
+     * Returns a list suited for the builders, i.e. null if not modified
+     */
+    private <T> List<T> injectList( List<T> list, Function<T, T> modifer )
+    {
+        List<T> newList = null;
+        for ( int i = 0; i < list.size(); i++ )
         {
-            if ( StringUtils.isEmpty( dependency.getScope() ) )
+            T oldT = list.get( i );
+            T newT = modifer.apply( oldT );
+            if ( newT != oldT )
             {
-                // we cannot set this directly in the MDO due to the interactions with dependency management
-                dependency.setScope( "compile" );
+                if ( newList == null )
+                {
+                    newList = new ArrayList<>( list );
+                }
+                newList.set( i, newT );
             }
-        }
+       }
+        return newList;
     }
 
 }

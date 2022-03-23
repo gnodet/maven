@@ -24,6 +24,7 @@ import static org.apache.maven.model.building.Result.newResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -496,20 +497,20 @@ public class DefaultModelBuilder
 
         // model normalization
         problems.setSource( inputModel );
-        modelNormalizer.mergeDuplicates( inputModel, request, problems );
+        inputModel = modelNormalizer.mergeDuplicates( inputModel, request, problems );
 
-        Map<String, Activation> interpolatedActivations = getProfileActivations( inputModel, false );
-        injectProfileActivations( inputModel, interpolatedActivations );
+        Map<String, Activation> interpolatedActivations = getProfileActivations( inputModel );
+        inputModel = injectProfileActivations( inputModel, interpolatedActivations );
 
         // profile injection
         for ( Profile activeProfile : activePomProfiles )
         {
-            profileInjector.injectProfile( inputModel, activeProfile, request, problems );
+            inputModel = profileInjector.injectProfile( inputModel, activeProfile, request, problems );
         }
 
         for ( Profile activeProfile : activeExternalProfiles )
         {
-            profileInjector.injectProfile( inputModel, activeProfile, request, problems );
+            inputModel = profileInjector.injectProfile( inputModel, activeProfile, request, problems );
         }
     }
 
@@ -560,12 +561,12 @@ public class DefaultModelBuilder
                                                                                  profileActivationContext, problems );
             result.setActivePomProfiles( modelId, activePomProfiles );
 
-            Model tmpModel = rawModel.clone();
+            Model tmpModel = rawModel;
 
             problems.setSource( tmpModel );
 
             // model normalization
-            modelNormalizer.mergeDuplicates( tmpModel, request, problems );
+            tmpModel = modelNormalizer.mergeDuplicates( tmpModel, request, problems );
 
             profileActivationContext.setProjectProperties( tmpModel.getProperties() );
 
@@ -656,7 +657,7 @@ public class DefaultModelBuilder
                                                                 DefaultProfileActivationContext context,
                                                                 DefaultModelProblemCollector problems )
     {
-        Map<String, Activation> interpolatedActivations = getProfileActivations( rawModel, true );
+        Map<String, Activation> interpolatedActivations = getProfileActivations( rawModel );
         for ( Activation activation : interpolatedActivations.values() )
         {
             if ( activation.getFile() != null )
@@ -738,16 +739,16 @@ public class DefaultModelBuilder
             }
 
             // lifecycle bindings injection
-            lifecycleBindingsInjector.injectLifecycleBindings( resultModel, request, problems );
+            resultModel = lifecycleBindingsInjector.injectLifecycleBindings( resultModel, request, problems );
         }
 
         // dependency management import
-        importDependencyManagement( resultModel, request, problems, imports );
+        resultModel = importDependencyManagement( resultModel, request, problems, imports );
 
         // dependency management injection
-        dependencyManagementInjector.injectManagement( resultModel, request, problems );
+        resultModel = dependencyManagementInjector.injectManagement( resultModel, request, problems );
 
-        modelNormalizer.injectDefaultValues( resultModel, request, problems );
+        resultModel = modelNormalizer.injectDefaultValues( resultModel, request, problems );
 
         if ( request.isProcessPlugins() )
         {
@@ -846,7 +847,8 @@ public class DefaultModelBuilder
             InputSource source;
             if ( request.isLocationTracking() )
             {
-                source = (InputSource) options.computeIfAbsent( ModelProcessor.INPUT_SOURCE, k -> new InputSource() );
+                source = (InputSource) options.computeIfAbsent( ModelProcessor.INPUT_SOURCE,
+                            k -> new InputSource( null, modelSource.getLocation() ) );
             }
             else
             {
@@ -884,8 +886,16 @@ public class DefaultModelBuilder
 
             if ( source != null )
             {
-                source.setModelId( ModelProblemUtils.toId( model ) );
-                source.setLocation( modelSource.getLocation() );
+                try
+                {
+                    Field field = InputSource.class.getDeclaredField( "modelId" );
+                    field.setAccessible( true );
+                    field.set( source, ModelProblemUtils.toId( model ) );
+                }
+                catch ( Throwable t )
+                {
+                    throw new IllegalStateException( "Unable to set modelId on InputSource", t );
+                }
             }
         }
         catch ( ModelParseException e )
@@ -977,7 +987,7 @@ public class DefaultModelBuilder
         }
         else
         {
-            rawModel = request.getFileModel().clone();
+            rawModel = request.getFileModel();
         }
 
         modelValidator.validateRawModel( rawModel, request, problems );
@@ -1125,7 +1135,7 @@ public class DefaultModelBuilder
         }
     }
 
-    private Map<String, Activation> getProfileActivations( Model model, boolean clone )
+    private Map<String, Activation> getProfileActivations( Model model )
     {
         Map<String, Activation> activations = new HashMap<>();
         for ( Profile profile : model.getProfiles() )
@@ -1137,18 +1147,13 @@ public class DefaultModelBuilder
                 continue;
             }
 
-            if ( clone )
-            {
-                activation = activation.clone();
-            }
-
             activations.put( profile.getId(), activation );
         }
 
         return activations;
     }
 
-    private void injectProfileActivations( Model model, Map<String, Activation> activations )
+    private Model injectProfileActivations( Model model, Map<String, Activation> activations )
     {
         for ( Profile profile : model.getProfiles() )
         {
@@ -1167,7 +1172,7 @@ public class DefaultModelBuilder
     private Model interpolateModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         // save profile activations before interpolation, since they are evaluated with limited scope
-        Map<String, Activation> originalActivations = getProfileActivations( model, true );
+        Map<String, Activation> originalActivations = getProfileActivations( model );
 
         Model interpolatedModel =
             modelInterpolator.interpolateModel( model, model.getProjectDirectory(), request, problems );
@@ -1175,9 +1180,7 @@ public class DefaultModelBuilder
         {
             StringSearchInterpolator ssi = new StringSearchInterpolator();
             ssi.addValueSource( new MapBasedValueSource( request.getUserProperties() ) );
-
             ssi.addValueSource( new MapBasedValueSource( model.getProperties() ) );
-
             ssi.addValueSource( new MapBasedValueSource( request.getSystemProperties() ) );
 
             try
@@ -1482,17 +1485,17 @@ public class DefaultModelBuilder
 
     private Model getSuperModel()
     {
-        return superPomProvider.getSuperModel( "4.0.0" ).clone();
+        return superPomProvider.getSuperModel( "4.0.0" );
     }
 
-    private void importDependencyManagement( Model model, ModelBuildingRequest request,
+    private Model importDependencyManagement( Model model, ModelBuildingRequest request,
                                              DefaultModelProblemCollector problems, Collection<String> importIds )
     {
         DependencyManagement depMgmt = model.getDependencyManagement();
 
         if ( depMgmt == null )
         {
-            return;
+            return model;
         }
 
         String importing = model.getGroupId() + ':' + model.getArtifactId() + ':' + model.getVersion();
@@ -1528,7 +1531,7 @@ public class DefaultModelBuilder
 
         importIds.remove( importing );
 
-        dependencyManagementImporter.importManagement( model, importMgmts, request, problems );
+        return dependencyManagementImporter.importManagement( model, importMgmts, request, problems );
     }
 
     private DependencyManagement loadDependencyManagement( Model model, ModelBuildingRequest request,
@@ -1686,7 +1689,7 @@ public class DefaultModelBuilder
 
         if ( importMgmt == null )
         {
-            importMgmt = new DependencyManagement();
+            importMgmt = new DependencyManagement.Builder().build();
         }
         return importMgmt;
     }

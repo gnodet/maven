@@ -45,7 +45,7 @@ public class DefaultDependencyManagementImporter
 {
 
     @Override
-    public void importManagement( Model target, List<? extends DependencyManagement> sources,
+    public Model importManagement( Model target, List<? extends DependencyManagement> sources,
                                   ModelBuildingRequest request, ModelProblemCollector problems )
     {
         if ( sources != null && !sources.isEmpty() )
@@ -81,6 +81,7 @@ public class DefaultDependencyManagementImporter
 
             depMgmt.setDependencies( new ArrayList<>( dependencies.values() ) );
         }
+        return target;
     }
 
 }

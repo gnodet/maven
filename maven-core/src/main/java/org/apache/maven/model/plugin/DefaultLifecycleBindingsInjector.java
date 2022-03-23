@@ -65,7 +65,7 @@ public class DefaultLifecycleBindingsInjector
         this.lifecycle = lifecycle;
     }
 
-    public void injectLifecycleBindings( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model injectLifecycleBindings( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         String packaging = model.getPackaging();
 
@@ -85,6 +85,7 @@ public class DefaultLifecycleBindingsInjector
 
             merger.merge( model, lifecycleModel );
         }
+        return model;
     }
 
     /**
@@ -96,22 +97,28 @@ public class DefaultLifecycleBindingsInjector
 
         private static final String PLUGIN_MANAGEMENT = "plugin-management";
 
-        public void merge( Model target, Model source )
+        public Model merge( Model target, Model source )
         {
-            if ( target.getBuild() == null )
+            Build targetBuild = target.getBuild();
+            if ( targetBuild == null )
             {
-                target.setBuild( new Build() );
+                targetBuild = new Build.Builder().build();
             }
 
             Map<Object, Object> context =
                 Collections.singletonMap( PLUGIN_MANAGEMENT, target.getBuild().getPluginManagement() );
 
-            mergePluginContainer_Plugins( target.getBuild(), source.getBuild(), false, context );
+            Build.Builder bbuilder = new Build.Builder( targetBuild );
+            mergePluginContainer_Plugins( bbuilder, targetBuild, source.getBuild(), false, context );
+
+            Model.Builder mbuilder = new Model.Builder( target );
+            return builder.build();
         }
 
         @SuppressWarnings( { "checkstyle:methodname" } )
         @Override
-        protected void mergePluginContainer_Plugins( PluginContainer target, PluginContainer source,
+        protected void mergePluginContainer_Plugins( PluginContainer.Builder builder,
+                                                     PluginContainer target, PluginContainer source,
                                                      boolean sourceDominant, Map<Object, Object> context )
         {
             List<Plugin> src = source.getPlugins();
@@ -155,8 +162,7 @@ public class DefaultLifecycleBindingsInjector
                             Plugin addedPlugin = added.get( key );
                             if ( addedPlugin != null )
                             {
-                                Plugin plugin = managedPlugin.clone();
-                                mergePlugin( plugin, addedPlugin, sourceDominant, Collections.emptyMap() );
+                                Plugin plugin = mergePlugin( managedPlugin, addedPlugin, sourceDominant, Collections.emptyMap() );
                                 merged.put( key, plugin );
                             }
                         }
@@ -165,18 +171,22 @@ public class DefaultLifecycleBindingsInjector
 
                 List<Plugin> result = new ArrayList<>( merged.values() );
 
-                target.setPlugins( result );
+                builder.plugins( result );
             }
         }
 
         @Override
-        protected void mergePluginExecution( PluginExecution target, PluginExecution source, boolean sourceDominant,
-                                             Map<Object, Object> context )
+        protected void mergePluginExecution_Priority( PluginExecution.Builder builder, PluginExecution target,
+                                                      PluginExecution source, boolean sourceDominant,
+                                                      Map<Object, Object> context )
         {
-            super.mergePluginExecution( target, source, sourceDominant, context );
-
-            target.setPriority( Math.min( target.getPriority(), source.getPriority() ) );
+            if ( target.getPriority() > source.getPriority() )
+            {
+                builder.priority( source.getPriority() );
+                builder.location( "priority", source.getLocation( "priority" ) );
+            }
         }
+        //mergePluginExecution_Priority( builder, target, source, sourceDominant, context );
 
     }
 

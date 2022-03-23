@@ -41,6 +41,6 @@ public interface ProfileInjector
      * @param request The model building request that holds further settings, must not be {@code null}.
      * @param problems The container used to collect problems that were encountered, must not be {@code null}.
      */
-    void injectProfile( Model model, Profile profile, ModelBuildingRequest request, ModelProblemCollector problems );
+    Model injectProfile( Model model, Profile profile, ModelBuildingRequest request, ModelProblemCollector problems );
 
 }
