@@ -39,6 +39,6 @@ public interface ReportingConverter
      * @param request The model building request that holds further settings, must not be {@code null}.
      * @param problems The container used to collect problems that were encountered, must not be {@code null}.
      */
-    void convertReporting( Model model, ModelBuildingRequest request, ModelProblemCollector problems );
+    Model convertReporting( Model model, ModelBuildingRequest request, ModelProblemCollector problems );
 
 }

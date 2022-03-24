@@ -214,7 +214,12 @@ class DefaultModelResolver
 
             }
 
-            parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+            String newVersion = versionRangeResult.getHighestVersion().toString();
+            if ( !parent.getVersion().equals( newVersion ) )
+            {
+                throw new UnsupportedOperationException( "TODO NOT IMPLEMENTED: setVersion on parent" );
+                //parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+            }
 
             return resolveModel( parent.getGroupId(), parent.getArtifactId(), parent.getVersion() );
         }
@@ -262,7 +267,12 @@ class DefaultModelResolver
 
             }
 
-            dependency.setVersion( versionRangeResult.getHighestVersion().toString() );
+            String newVersion = versionRangeResult.getHighestVersion().toString();
+            if ( !dependency.getVersion().equals( newVersion ) )
+            {
+                throw new UnsupportedOperationException( "TODO NOT IMPLEMENTED: setVersion on dependency" );
+                //parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+            }
 
             return resolveModel( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
         }

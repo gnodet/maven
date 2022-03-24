@@ -61,11 +61,6 @@ public class DefaultDependencyManagementImporter
                     dependencies.put( dependency.getManagementKey(), dependency );
                 }
             }
-            else
-            {
-                depMgmt = new DependencyManagement();
-                target.setDependencyManagement( depMgmt );
-            }
 
             for ( DependencyManagement source : sources )
             {
@@ -79,7 +74,7 @@ public class DefaultDependencyManagementImporter
                 }
             }
 
-            depMgmt.setDependencies( new ArrayList<>( dependencies.values() ) );
+            return Model.newBuilder( target ).dependencies( new ArrayList<>( dependencies.values() ) ).build();
         }
         return target;
     }

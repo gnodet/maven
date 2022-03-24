@@ -19,6 +19,7 @@ package org.apache.maven.model.plugin;
  * under the License.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -45,31 +46,40 @@ public class DefaultPluginConfigurationExpander
 {
 
     @Override
-    public void expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         Build build = model.getBuild();
 
         if ( build != null )
         {
-            expand( build.getPlugins() );
+            Build.Builder builder = Build.newBuilder( build );
+
+            builder.plugins( expand( build.getPlugins() ) );
 
             PluginManagement pluginManagement = build.getPluginManagement();
 
             if ( pluginManagement != null )
             {
-                expand( pluginManagement.getPlugins() );
+                builder.pluginManagement( pluginManagement.withPlugins( expand( pluginManagement.getPlugins() ) ) );
             }
+
+            return model.withBuild( builder.build() );
         }
+
+        return model;
     }
 
-    private void expand( List<Plugin> plugins )
+    private List<Plugin> expand( List<Plugin> plugins )
     {
+        List<Plugin> newPlugins = new ArrayList<>( plugins.size() );
+
         for ( Plugin plugin : plugins )
         {
             Dom parentDom = plugin.getConfiguration();
 
             if ( parentDom != null )
             {
+                List<PluginExecution> executions = new ArrayList<>( plugin.getExecutions().size() );
                 for ( PluginExecution execution : plugin.getExecutions() )
                 {
                     Dom childDom = execution.getConfiguration();
@@ -81,10 +91,16 @@ public class DefaultPluginConfigurationExpander
                     {
                         childDom = parentDom.clone();
                     }
-                    execution.setConfiguration( childDom );
+                    executions.add( execution.withConfiguration(
+                            childDom != null ? childDom.merge( parentDom ) : parentDom ) );
                 }
+                plugin = plugin.withExecutions( executions );
             }
+
+            newPlugins.add( plugin );
         }
+
+        return newPlugins;
     }
 
 }

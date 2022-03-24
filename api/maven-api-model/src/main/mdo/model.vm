@@ -182,6 +182,45 @@ public class ${class.name}
     #end
     }
 
+    #foreach ( $field in $allFields )
+      #set ( $cap = $Helper.capitalise( $field.name ) )
+      #set ( $type = ${types.getOrDefault($field,${types.getOrDefault($field.type,$field.type)})} )
+    public ${class.name} with${cap}( $type $field.name )
+    {
+        return newBuilder( this ).${field.name}( $field.name ).build();
+    }
+    #end
+
+    public static ${class.name} newInstance()
+    {
+        return newInstance( true );
+    }
+
+    public static ${class.name} newInstance( boolean withDefaults )
+    {
+        return newBuilder( withDefaults ).build();
+    }
+
+    public static Builder newBuilder()
+    {
+        return newBuilder( true );
+    }
+
+    public static Builder newBuilder( boolean withDefaults )
+    {
+        return new Builder( withDefaults );
+    }
+
+    public static Builder newBuilder( ${class.name} from )
+    {
+        return newBuilder( from, false );
+    }
+
+    public static Builder newBuilder( ${class.name} from, boolean forceCopy )
+    {
+        return new Builder( from, forceCopy );
+    }
+
     public static class Builder
     #if ( $class.superClass )
         extends ${class.superClass}.Builder
@@ -205,13 +244,41 @@ public class ${class.name}
         Map<Object, InputLocation> locations;
     #end
 
-        public Builder()
+        Builder( boolean withDefaults )
         {
+    #if ( $class.superClass )
+            super( withDefaults );
+    #end
+            if ( withDefaults )
+            {
+    #foreach ( $field in $class.allFields )
+      #if ( $field.defaultValue )
+        #set ( $type = ${types.getOrDefault($field,${types.getOrDefault($field.type,$field.type)})} )
+        #if ( $field.type == "String" )
+                this.${field.name} = "${field.defaultValue}";
+        #elseif ( $field.type != "java.util.List" && $field.type != "java.util.Properties" )
+                this.${field.name} = ${field.defaultValue};
+        #end
+      #end
+    #end
+            }
         }
 
-        public Builder( ${class.name} base )
+        Builder( ${class.name} base, boolean forceCopy )
         {
-            this.base = base;
+    #if ( $class.superClass )
+            super( base, forceCopy );
+    #end
+            if ( forceCopy )
+            {
+    #foreach ( $field in $class.allFields )
+                this.${field.name} = base.${field.name};
+    #end
+            }
+            else
+            {
+                this.base = base;
+            }
         }
 
     #if ( $class == $root )
@@ -245,7 +312,7 @@ public class ${class.name}
         {
             if ( base != null
     #foreach ( $field in $allFields )
-                    && ${field.name} == null
+                    && ( ${field.name} == null || ${field.name} == base.${field.name} )
     #end
             )
             {

@@ -446,10 +446,10 @@ public class DefaultModelBuilder
         // read and validate raw model
         Model fileModel = readFileModel( request, problems );
 
+        fileModel = activateFileModel( request, result, fileModel, problems );
+
         request.setFileModel( fileModel );
         result.setFileModel( fileModel );
-
-        activateFileModel( request, result, problems );
 
         if ( !request.isTwoPhaseBuilding() )
         {
@@ -463,11 +463,10 @@ public class DefaultModelBuilder
         return result;
     }
 
-    private void activateFileModel( final ModelBuildingRequest request, final DefaultModelBuildingResult result,
-                          DefaultModelProblemCollector problems )
+    private Model activateFileModel( final ModelBuildingRequest request, final DefaultModelBuildingResult result,
+                          Model inputModel, DefaultModelProblemCollector problems )
         throws ModelBuildingException
     {
-        Model inputModel = request.getFileModel();
         problems.setRootModel( inputModel );
 
         // profile activation
@@ -512,6 +511,8 @@ public class DefaultModelBuilder
         {
             inputModel = profileInjector.injectProfile( inputModel, activeProfile, request, problems );
         }
+
+        return inputModel;
     }
 
     @SuppressWarnings( "checkstyle:methodlength" )
@@ -573,19 +574,19 @@ public class DefaultModelBuilder
             Map<String, Activation> interpolatedActivations = getInterpolatedActivations( rawModel,
                                                                                           profileActivationContext,
                                                                                           problems );
-            injectProfileActivations( tmpModel, interpolatedActivations );
+            tmpModel = injectProfileActivations( tmpModel, interpolatedActivations );
 
             // profile injection
             for ( Profile activeProfile : result.getActivePomProfiles( modelId ) )
             {
-                profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
+                tmpModel = profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
             }
 
             if ( currentData == resultData )
             {
                 for ( Profile activeProfile : activeExternalProfiles )
                 {
-                    profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
+                    tmpModel = profileInjector.injectProfile( tmpModel, activeProfile, request, problems );
                 }
                 result.setEffectiveModel( tmpModel );
             }
@@ -630,9 +631,7 @@ public class DefaultModelBuilder
         checkPluginVersions( lineage, request, problems );
 
         // inheritance assembly
-        assembleInheritance( lineage, request, problems );
-
-        Model resultModel = lineage.get( 0 );
+        Model resultModel = assembleInheritance( lineage, request, problems );
 
         // consider caching inherited model
 
@@ -643,7 +642,7 @@ public class DefaultModelBuilder
         resultModel = interpolateModel( resultModel, request, problems );
 
         // url normalization
-        modelUrlNormalizer.normalize( resultModel, request );
+        resultModel = modelUrlNormalizer.normalize( resultModel, request );
 
         result.setEffectiveModel( resultModel );
 
@@ -658,18 +657,22 @@ public class DefaultModelBuilder
                                                                 DefaultModelProblemCollector problems )
     {
         Map<String, Activation> interpolatedActivations = getProfileActivations( rawModel );
-        for ( Activation activation : interpolatedActivations.values() )
+        for ( Map.Entry<String, Activation> entry : interpolatedActivations.entrySet() )
         {
+            Activation activation = entry.getValue();
             if ( activation.getFile() != null )
             {
-                replaceWithInterpolatedValue( activation.getFile(), context, problems );
+                Activation value = activation.withFile(
+                        replaceWithInterpolatedValue( activation.getFile(), context, problems ) );
+                entry.setValue( value );
             }
         }
         return interpolatedActivations;
     }
 
-    private void replaceWithInterpolatedValue( ActivationFile activationFile, ProfileActivationContext context,
-                                               DefaultModelProblemCollector problems  )
+    private ActivationFile replaceWithInterpolatedValue( ActivationFile activationFile,
+                                                         ProfileActivationContext context,
+                                                         DefaultModelProblemCollector problems  )
     {
         try
         {
@@ -677,13 +680,13 @@ public class DefaultModelBuilder
             {
                 String path = activationFile.getExists();
                 String absolutePath = profileActivationFilePathInterpolator.interpolate( path, context );
-                activationFile.setExists( absolutePath );
+                return activationFile.withExists( absolutePath );
             }
             else if ( isNotEmpty( activationFile.getMissing() ) )
             {
                 String path = activationFile.getMissing();
                 String absolutePath = profileActivationFilePathInterpolator.interpolate( path, context );
-                activationFile.setMissing( absolutePath );
+                return activationFile.withMissing( absolutePath );
             }
         }
         catch ( InterpolationException e )
@@ -696,6 +699,7 @@ public class DefaultModelBuilder
                     activationFile.getLocation( isNotEmpty( activationFile.getExists() ) ? "exists" : "missing"  ) )
                     .setException( e ) );
         }
+        return activationFile;
     }
 
     private static boolean isNotEmpty( String string )
@@ -724,10 +728,12 @@ public class DefaultModelBuilder
         problems.setRootModel( resultModel );
 
         // model path translation
-        modelPathTranslator.alignToBaseDirectory( resultModel, resultModel.getProjectDirectory(), request );
+        Path projectDirectory = resultModel.getProjectDirectory();
+        resultModel = modelPathTranslator.alignToBaseDirectory( resultModel,
+                projectDirectory != null ? projectDirectory.toFile() : null, request );
 
         // plugin management injection
-        pluginManagementInjector.injectManagement( resultModel, request, problems );
+        resultModel = pluginManagementInjector.injectManagement( resultModel, request, problems );
 
         fireEvent( resultModel, request, problems, ModelBuildingEventCatapult.BUILD_EXTENSIONS_ASSEMBLED );
 
@@ -753,17 +759,19 @@ public class DefaultModelBuilder
         if ( request.isProcessPlugins() )
         {
             // reports configuration
-            reportConfigurationExpander.expandPluginConfiguration( resultModel, request, problems );
+            resultModel = reportConfigurationExpander.expandPluginConfiguration( resultModel, request, problems );
 
             // reports conversion to decoupled site plugin
-            reportingConverter.convertReporting( resultModel, request, problems );
+            resultModel = reportingConverter.convertReporting( resultModel, request, problems );
 
             // plugins configuration
-            pluginConfigurationExpander.expandPluginConfiguration( resultModel, request, problems );
+            resultModel = pluginConfigurationExpander.expandPluginConfiguration( resultModel, request, problems );
         }
 
         // effective model validation
         modelValidator.validateEffectiveModel( resultModel, request, problems );
+
+        result.setEffectiveModel( resultModel );
 
         if ( hasModelErrors( problems ) )
         {
@@ -927,7 +935,7 @@ public class DefaultModelBuilder
 
         if ( modelSource instanceof FileModelSource )
         {
-            model.setPomFile( ( (FileModelSource) modelSource ).getFile() );
+            model = Model.newBuilder( model ).pomFile( ( (FileModelSource) modelSource ).getFile().toPath() ).build();
         }
         problems.setSource( model );
 
@@ -1124,15 +1132,16 @@ public class DefaultModelBuilder
         }
     }
 
-    private void assembleInheritance( List<Model> lineage, ModelBuildingRequest request,
+    private Model assembleInheritance( List<Model> lineage, ModelBuildingRequest request,
                                       ModelProblemCollector problems )
     {
+        Model parent = lineage.get( lineage.size() - 1 );
         for ( int i = lineage.size() - 2; i >= 0; i-- )
         {
-            Model parent = lineage.get( i + 1 );
             Model child = lineage.get( i );
-            inheritanceAssembler.assembleModelInheritance( child, parent, request, problems );
+            parent = inheritanceAssembler.assembleModelInheritance( child, parent, request, problems );
         }
+        return parent;
     }
 
     private Map<String, Activation> getProfileActivations( Model model )
@@ -1155,6 +1164,7 @@ public class DefaultModelBuilder
 
     private Model injectProfileActivations( Model model, Map<String, Activation> activations )
     {
+        List<Profile> newProfiles = null;
         for ( Profile profile : model.getProfiles() )
         {
             Activation activation = profile.getActivation();
@@ -1165,8 +1175,16 @@ public class DefaultModelBuilder
             }
 
             // restore activation
-            profile.setActivation( activations.get( profile.getId() ) );
+            if ( newProfiles == null )
+            {
+                newProfiles = new ArrayList<>( model.getProfiles() );
+            }
+            int idx = model.getProfiles().indexOf( profile );
+            Profile newProfile = Profile.newBuilder( profile ).
+                    activation( activations.get( profile.getId() ) ).build();
+            newProfiles.set( idx, newProfile );
         }
+        return Model.newBuilder( model ).profiles( newProfiles ).build();
     }
 
     private Model interpolateModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
@@ -1174,8 +1192,9 @@ public class DefaultModelBuilder
         // save profile activations before interpolation, since they are evaluated with limited scope
         Map<String, Activation> originalActivations = getProfileActivations( model );
 
-        Model interpolatedModel =
-            modelInterpolator.interpolateModel( model, model.getProjectDirectory(), request, problems );
+        Path projectDir = model.getProjectDirectory();
+        Model interpolatedModel = modelInterpolator.interpolateModel(
+                model, projectDir != null ? projectDir.toFile() : null, request, problems );
         if ( interpolatedModel.getParent() != null )
         {
             StringSearchInterpolator ssi = new StringSearchInterpolator();
@@ -1185,8 +1204,15 @@ public class DefaultModelBuilder
 
             try
             {
-                String interpolated = ssi.interpolate( interpolatedModel.getParent().getVersion() );
-                interpolatedModel.getParent().setVersion( interpolated );
+                String parentVersion = interpolatedModel.getParent().getVersion();
+
+                String interpolated = ssi.interpolate( parentVersion );
+
+                if ( !parentVersion.equals( interpolated ) )
+                {
+                    interpolatedModel = interpolatedModel.withParent(
+                            interpolatedModel.getParent().withVersion( interpolated ) );
+                }
             }
             catch ( Exception e )
             {
@@ -1197,10 +1223,8 @@ public class DefaultModelBuilder
                                                           + " on class: " ).setException( e );
                 problems.add( mpcr );
             }
-
-
         }
-        interpolatedModel.setPomFile( model.getPomFile() );
+        interpolatedModel = interpolatedModel.withPomFile( model.getPomFile() );
 
         // restore profiles with file activation to their value before full interpolation
         injectProfileActivations( model, originalActivations );
@@ -1275,7 +1299,7 @@ public class DefaultModelBuilder
             {
                 return null;
             }
-            candidateSource = new FileModelSource( candidateModel.getPomFile() );
+            candidateSource = new FileModelSource( candidateModel.getPomFile().toFile() );
         }
 
         //
@@ -1513,8 +1537,6 @@ public class DefaultModelBuilder
                 continue;
             }
 
-            it.remove();
-
             DependencyManagement importMgmt = loadDependencyManagement( model, request, problems,
                                                                         dependency, importIds );
 
@@ -1528,6 +1550,8 @@ public class DefaultModelBuilder
                 importMgmts.add( importMgmt );
             }
         }
+
+        model = model.withDependencyManagement( depMgmt.withDependencies( Collections.emptyList() ) );
 
         importIds.remove( importing );
 
@@ -1689,7 +1713,7 @@ public class DefaultModelBuilder
 
         if ( importMgmt == null )
         {
-            importMgmt = new DependencyManagement.Builder().build();
+            importMgmt = DependencyManagement.newInstance();
         }
         return importMgmt;
     }

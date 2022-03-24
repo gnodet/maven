@@ -79,7 +79,11 @@ public class ${className}
     #end
     protected ${class.name} transform${class.name}( ${class.name} target )
     {
-        ${class.name}.Builder builder = new ${class.name}.Builder();
+        if ( target == null )
+        {
+            return null;
+        }
+        ${class.name}.Builder builder = ${class.name}.newBuilder( target );
     #foreach ( $field in $allFields )
         transform${field.modelClass.name}_${Helper.capitalise($field.name)}( builder, target );
     #end
@@ -103,7 +107,7 @@ public class ${className}
             if ( entry.getKey() instanceof String && entry.getValue() instanceof String )
             {
                 String newVal = transform( ( String ) entry.getValue() );
-                if ( newVal != entry.getValue() )
+                if ( newVal != null && newVal != entry.getValue() )
                 {
                     if ( newProps == null )
                     {

@@ -55,9 +55,9 @@ public class ModelMergerTest
     @Test
     public void mergeArtifactId()
     {
-        Model target = new Model.Builder().artifactId( "TARGET" ).build();
+        Model target = Model.newBuilder().artifactId( "TARGET" ).build();
 
-        Model source = new Model.Builder().artifactId( "SOURCE" ).build();
+        Model source = Model.newBuilder().artifactId( "SOURCE" ).build();
 
         Model merged = modelMerger.merge( target, source, true, null );
         assertThat( merged.getArtifactId(), is( "SOURCE" ) );
@@ -69,11 +69,11 @@ public class ModelMergerTest
     @Test
     public void mergeSameContributors()
     {
-        Contributor contributor = new Contributor.Builder().email( "contributor@maven.apache.org" ).build();
+        Contributor contributor = Contributor.newBuilder().email( "contributor@maven.apache.org" ).build();
 
-        Model target = new Model.Builder().contributors( Arrays.asList( contributor ) ).build();
+        Model target = Model.newBuilder().contributors( Arrays.asList( contributor ) ).build();
 
-        Model source = new Model.Builder().contributors( Arrays.asList( contributor ) ).build();
+        Model source = Model.newBuilder().contributors( Arrays.asList( contributor ) ).build();
 
         Model merged = modelMerger.merge( target, source, true, null );
 
@@ -83,11 +83,11 @@ public class ModelMergerTest
     @Test
     public void mergeSameDependencies()
     {
-        Dependency dependency = new Dependency.Builder().groupId( "groupId" ).artifactId( "artifactId" ).type( "type" ).build();
+        Dependency dependency = Dependency.newBuilder().groupId( "groupId" ).artifactId( "artifactId" ).type( "type" ).build();
 
-        Model target = new Model.Builder().dependencies( Arrays.asList( dependency ) ).build();
+        Model target = Model.newBuilder().dependencies( Arrays.asList( dependency ) ).build();
 
-        Model source = new Model.Builder().dependencies( Arrays.asList( dependency ) ).build();
+        Model source = Model.newBuilder().dependencies( Arrays.asList( dependency ) ).build();
 
         Model merged = modelMerger.merge( target, source, true, null );
 

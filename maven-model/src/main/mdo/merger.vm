@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.maven.api.annotations.Generated;
+import org.apache.maven.api.xml.Dom;
 #foreach ( $class in $model.allClasses )
 import org.apache.maven.model.${class.Name};
 #end
@@ -82,7 +83,7 @@ public class ${className}
     #end
     protected ${class.name} merge${class.name}( ${class.name} target, ${class.name} source, boolean sourceDominant, Map<Object, Object> context )
     {
-        ${class.name}.Builder builder = new ${class.name}.Builder( target );
+        ${class.name}.Builder builder = ${class.name}.newBuilder( target );
         merge${class.name}( builder, target, source, sourceDominant, context );
         return builder.build();
     }
@@ -137,26 +138,40 @@ public class ${className}
             ${field.to} tgt = target.get${capField}();
             if ( tgt == null )
             {
-                builder.${field.name}( src );
+                tgt = ${field.to}.newInstance( false );
+            }
+            ${field.to} merged = merge${field.to}( tgt, src, sourceDominant, context );
+            if ( merged == src )
+            {
+                builder.${field.name}( merged );
                 builder.location( "${field.name}", source.getLocation( "${field.name}" ) );
             }
-            else
+            else if ( merged != tgt )
             {
-                ${field.to} merged = merge${field.to}( tgt, src, sourceDominant, context );
-                if ( merged == src )
-                {
-                    builder.${field.name}( merged );
-                    builder.location( "${field.name}", source.getLocation( "${field.name}" ) );
-                }
-                else if ( merged != tgt )
-                {
-                    builder.${field.name}( merged );
-                    builder.location( "${field.name}", InputLocation.merge( target.getLocation( "${field.name}" ), source.getLocation( "${field.name}" ), sourceDominant ) );
-                }
+                builder.${field.name}( merged );
+                builder.location( "${field.name}", InputLocation.merge( target.getLocation( "${field.name}" ), source.getLocation( "${field.name}" ), sourceDominant ) );
             }
         }
       #elseif ( $field.to && $field.multiplicity == "*" )
         builder.${field.name}( merge( target.get${capField}(), source.get${capField}(), sourceDominant, get${field.to}Key() ) );
+      #elseif ( $field.type == "DOM" )
+        Dom src = source.getConfiguration();
+        if ( src != null )
+        {
+            Dom tgt = target.getConfiguration();
+            if ( tgt == null )
+            {
+                builder.configuration( src );
+            }
+            else if ( sourceDominant )
+            {
+                builder.configuration( src.merge( tgt ) );
+            }
+            else
+            {
+                builder.configuration( tgt.merge( src ) );
+            }
+        }
       #else
         // TODO: type=${field.type} to=${field.to} multiplicity=${field.multiplicity}
       #end

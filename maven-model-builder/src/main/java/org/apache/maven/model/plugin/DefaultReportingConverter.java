@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.api.xml.Dom;
@@ -58,47 +59,38 @@ public class DefaultReportingConverter
     {
         String modelId = "org.apache.maven:maven-model-builder:"
             + this.getClass().getPackage().getImplementationVersion() + ":reporting-converter";
-        InputSource inputSource = new InputSource();
-        inputSource.setModelId( modelId );
+        InputSource inputSource = new InputSource( modelId, null );
         location = new InputLocation( -1, -1, inputSource );
-        location.setLocation( 0, location );
     }
 
     @Override
-    public void convertReporting( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model convertReporting( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         Reporting reporting = model.getReporting();
 
         if ( reporting == null )
         {
-            return;
+            return model;
         }
+
+        Model.Builder builder = Model.newBuilder( model );
 
         Build build = model.getBuild();
 
         if ( build == null )
         {
-            build = new Build();
-            model.setBuild( build );
-            model.setLocation( "build", location );
+            build = Build.newInstance();
+            builder.location( "build", location );
         }
 
         Plugin sitePlugin = findSitePlugin( build );
-
         if ( sitePlugin == null )
         {
-            sitePlugin = new Plugin();
-            sitePlugin.setArtifactId( "maven-site-plugin" );
-            sitePlugin.setLocation( "artifactId", location );
-            PluginManagement pluginManagement = build.getPluginManagement();
-            if ( pluginManagement == null )
-            {
-                pluginManagement = new PluginManagement();
-                build.setPluginManagement( pluginManagement );
-            }
-            pluginManagement.addPlugin( sitePlugin );
+            sitePlugin = Plugin.newBuilder()
+                    .artifactId( "maven-site-plugin" )
+                    .location( "artifactId", location )
+                    .build();
         }
-
 
         Dom configuration = sitePlugin.getConfiguration();
         if ( configuration == null )
@@ -116,7 +108,7 @@ public class DefaultReportingConverter
                     .setMessage( "Reporting configuration should be done in <reporting> section, "
                           + "not in maven-site-plugin <configuration> as reportPlugins parameter." )
                     .setLocation( sitePlugin.getLocation( "configuration" ) ) );
-            return;
+            return model;
         }
 
         if ( configuration.getChild( "outputDirectory" ) == null )
@@ -167,7 +159,25 @@ public class DefaultReportingConverter
 
         configChildren.add( newDom( "reportPlugins", reportPlugins, location ) );
         configuration = newDom( "configuration", configChildren, location );
-        sitePlugin.setConfiguration( configuration );
+
+        sitePlugin = sitePlugin.withConfiguration( configuration );
+
+        PluginManagement pluginManagement = build.getPluginManagement();
+        if ( pluginManagement == null )
+        {
+            pluginManagement = PluginManagement.newBuilder()
+                    .plugins( Collections.singletonList( sitePlugin ) )
+                    .build();
+        }
+        else
+        {
+            List<Plugin> plugins = new ArrayList<>( pluginManagement.getPlugins() );
+            plugins.add( sitePlugin );
+            pluginManagement = pluginManagement.withPlugins( plugins );
+        }
+        build = build.withPluginManagement( pluginManagement );
+
+        return builder.build( build ).build();
     }
 
     private Plugin findSitePlugin( Build build )

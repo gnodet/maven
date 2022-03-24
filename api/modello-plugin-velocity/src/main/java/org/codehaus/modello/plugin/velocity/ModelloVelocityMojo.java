@@ -61,9 +61,7 @@ public class ModelloVelocityMojo
         {
             Field field = ModelField.class.getDeclaredField( "PRIMITIVE_TYPES" );
             field.setAccessible( true );
-            Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-            modifiersField.setAccessible( true );
-            modifiersField.setInt( field, field.getModifiers() & ~Modifier.FINAL );
+            unsetFinal( field );
             field.set( null, new String[] { "boolean", "Boolean", "char", "Character", "byte",
                     "Byte", "short", "Short", "int", "Integer", "long", "Long", "float", "Float",
                     "double", "Double", "String", "Date", "DOM", "java.nio.file.Path" } );
@@ -76,6 +74,23 @@ public class ModelloVelocityMojo
         {
             throw new RuntimeException( e );
         }
+    }
+
+    private void unsetFinal( Field field ) throws IllegalAccessException, NoSuchFieldException
+    {
+// TODO: on jdk >= 12, accessing Field.modifiers fail, need to check with VarHandle or adds an open module
+//        try
+//        {
+            Field modifiersField = Field.class.getDeclaredField( "modifiers" );
+            modifiersField.setAccessible( true );
+            modifiersField.setInt( field, field.getModifiers() & ~Modifier.FINAL );
+//        }
+//        catch ( Throwable t )
+//        {
+//            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup());
+//            VarHandle modifiers = lookup.findVarHandle( Field.class, "modifiers", int.class );
+//            modifiers.set( field, field.getModifiers() & ~Modifier.FINAL );
+//        }
     }
 
     protected boolean producesCompilableResult()

@@ -60,14 +60,14 @@ public class DefaultInheritanceAssembler
     private static final String CHILD_DIRECTORY_PROPERTY = "project.directory";
 
     @Override
-    public void assembleModelInheritance( Model child, Model parent, ModelBuildingRequest request,
+    public Model assembleModelInheritance( Model child, Model parent, ModelBuildingRequest request,
                                           ModelProblemCollector problems )
     {
         Map<Object, Object> hints = new HashMap<>();
         String childPath = child.getProperties().getProperty( CHILD_DIRECTORY_PROPERTY, child.getArtifactId() );
         hints.put( CHILD_DIRECTORY, childPath );
         hints.put( MavenModelMerger.CHILD_PATH_ADJUSTMENT, getChildPathAdjustment( child, parent, childPath ) );
-        merger.merge( child, parent, false, hints );
+        return merger.merge( child, parent, false, hints );
     }
 
     /**
@@ -106,7 +106,7 @@ public class DefaultInheritanceAssembler
              */
             if ( child.getProjectDirectory() != null )
             {
-                childName = child.getProjectDirectory().getName();
+                childName = child.getProjectDirectory().getFileName().toString();
             }
 
             for ( String module : parent.getModules() )
@@ -254,7 +254,7 @@ public class DefaultInheritanceAssembler
                     if ( element.isInherited() || !element.getExecutions().isEmpty() )
                     {
                         // NOTE: Enforce recursive merge to trigger merging/inheritance logic for executions
-                        Plugin plugin = new Plugin.Builder().build();
+                        Plugin plugin = Plugin.newInstance( false );
                         plugin = mergePlugin( plugin, element, sourceDominant, context );
 
                         Object key = getPluginKey().apply( plugin );
@@ -271,7 +271,7 @@ public class DefaultInheritanceAssembler
                     Plugin existing = master.get( key );
                     if ( existing != null )
                     {
-                        mergePlugin( element, existing, sourceDominant, context );
+                        element = mergePlugin( element, existing, sourceDominant, context );
 
                         master.put( key, element );
 
@@ -304,12 +304,13 @@ public class DefaultInheritanceAssembler
         }
 
         @Override
-        protected Plugin mergePlugin( Plugin target, Plugin source, boolean sourceDominant, Map<Object, Object> context )
+        protected Plugin mergePlugin( Plugin target, Plugin source,
+                                      boolean sourceDominant, Map<Object, Object> context )
         {
-            Plugin.Builder builder = new Plugin.Builder( target );
+            Plugin.Builder builder = Plugin.newBuilder( target );
             if ( source.isInherited() )
             {
-                mergeConfigurationContainer_Configuration( builder, target, source, sourceDominant, context );
+                mergeConfigurationContainer( builder, target, source, sourceDominant, context );
             }
             mergePlugin_GroupId( builder, target, source, sourceDominant, context );
             mergePlugin_ArtifactId( builder, target, source, sourceDominant, context );
@@ -337,7 +338,7 @@ public class DefaultInheritanceAssembler
                     if ( element.isInherited() )
                     {
                         // NOTE: Enforce recursive merge to trigger merging/inheritance logic for executions as well
-                        ReportPlugin plugin = new ReportPlugin.Builder().build();
+                        ReportPlugin plugin = ReportPlugin.newInstance();
                         plugin = mergeReportPlugin( plugin, element, sourceDominant, context );
 
                         merged.put( getReportPluginKey().apply( element ), plugin );

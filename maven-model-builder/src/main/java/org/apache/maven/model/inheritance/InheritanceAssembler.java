@@ -42,7 +42,7 @@ public interface InheritanceAssembler
      * @param request The model building request that holds further settings, must not be {@code null}.
      * @param problems The container used to collect problems that were encountered, must not be {@code null}.
      */
-    void assembleModelInheritance( Model child, Model parent, ModelBuildingRequest request,
+    Model assembleModelInheritance( Model child, Model parent, ModelBuildingRequest request,
                                    ModelProblemCollector problems );
 
 }

@@ -76,9 +76,7 @@ public class StringVisitorModelInterpolator
 
         InnerInterpolator innerInterpolator = createInterpolator( valueSources, postProcessors, problems );
 
-        new ModelTransformer( innerInterpolator::interpolate ).visit( model );
-
-        return model;
+        return new ModelTransformer( innerInterpolator::interpolate ).visit( model );
     }
 
     private InnerInterpolator createInterpolator( List<? extends ValueSource> valueSources,

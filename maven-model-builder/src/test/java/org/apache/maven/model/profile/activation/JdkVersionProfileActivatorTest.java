@@ -44,11 +44,9 @@ public class JdkVersionProfileActivatorTest
 
     private Profile newProfile(String jdkVersion )
     {
-        Activation a = new Activation();
-        a.setJdk( jdkVersion );
+        Activation a = Activation.newBuilder().jdk( jdkVersion ).build();
 
-        Profile p = new Profile();
-        p.setActivation( a );
+        Profile p = Profile.newBuilder().activation( a ).build();
 
         return p;
     }
@@ -64,11 +62,11 @@ public class JdkVersionProfileActivatorTest
     public void testNullSafe()
         throws Exception
     {
-        Profile p = new Profile();
+        Profile p = Profile.newInstance();
 
         assertActivation( false, p, newContext( null, null ) );
 
-        p.setActivation( new Activation() );
+        p = p.withActivation( Activation.newInstance() );
 
         assertActivation( false, p, newContext( null, null ) );
     }

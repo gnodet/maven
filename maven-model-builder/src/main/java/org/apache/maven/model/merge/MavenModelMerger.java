@@ -77,7 +77,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeModel_Name( Model.Builder builder, Model target, Model source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeModel_Name( Model.Builder builder, Model target, Model source,
+                                    boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getName();
         if ( src != null )
@@ -91,7 +92,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeModel_Url( Model.Builder builder, Model target, Model source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeModel_Url( Model.Builder builder, Model target, Model source,
+                                   boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getUrl();
         if ( src != null )
@@ -130,8 +132,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeModel_IssueManagement( Model.Builder builder, Model target, Model source, boolean sourceDominant,
-                                               Map<Object, Object> context )
+    protected void mergeModel_IssueManagement( Model.Builder builder, Model target, Model source,
+                                               boolean sourceDominant, Map<Object, Object> context )
     {
         IssueManagement src = source.getIssueManagement();
         if ( src != null )
@@ -207,7 +209,8 @@ public class MavenModelMerger
     protected void mergeModel_Contributors( Model.Builder builder, Model target, Model source, boolean sourceDominant,
                                             Map<Object, Object> context )
     {
-        builder.contributors( target.getContributors().isEmpty() ? source.getContributors() : target.getContributors() );
+        builder.contributors( target.getContributors().isEmpty()
+                ? source.getContributors() : target.getContributors() );
     }
 
     @Override
@@ -221,8 +224,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeModelBase_Modules( ModelBase.Builder builder, ModelBase target, ModelBase source, boolean sourceDominant,
-                                           Map<Object, Object> context )
+    protected void mergeModelBase_Modules( ModelBase.Builder builder, ModelBase target, ModelBase source,
+                                           boolean sourceDominant, Map<Object, Object> context )
     {
         List<String> src = source.getModules();
         if ( !src.isEmpty() && sourceDominant )
@@ -256,8 +259,8 @@ public class MavenModelMerger
      * source-first, dominant-first, recessive-first
      */
     @Override
-    protected void mergeModelBase_Repositories( ModelBase.Builder builder, ModelBase target, ModelBase source, boolean sourceDominant,
-                                                Map<Object, Object> context )
+    protected void mergeModelBase_Repositories( ModelBase.Builder builder, ModelBase target, ModelBase source,
+                                                boolean sourceDominant, Map<Object, Object> context )
     {
         List<Repository> src = source.getRepositories();
         if ( !src.isEmpty() )
@@ -297,8 +300,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeModelBase_PluginRepositories( ModelBase.Builder builder, ModelBase target, ModelBase source, boolean sourceDominant,
-                                                      Map<Object, Object> context )
+    protected void mergeModelBase_PluginRepositories( ModelBase.Builder builder, ModelBase target, ModelBase source,
+                                                      boolean sourceDominant, Map<Object, Object> context )
     {
         List<Repository> src = source.getPluginRepositories();
         if ( !src.isEmpty() )
@@ -341,8 +344,8 @@ public class MavenModelMerger
      * TODO: Whether duplicates should be removed looks like an option for the generated merger.
      */
     @Override
-    protected void mergeBuildBase_Filters( BuildBase.Builder builder, BuildBase target, BuildBase source, boolean sourceDominant,
-                                           Map<Object, Object> context )
+    protected void mergeBuildBase_Filters( BuildBase.Builder builder, BuildBase target, BuildBase source,
+                                           boolean sourceDominant, Map<Object, Object> context )
     {
         List<String> src = source.getFilters();
         if ( !src.isEmpty() )
@@ -363,8 +366,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeBuildBase_Resources( BuildBase.Builder builder, BuildBase target, BuildBase source, boolean sourceDominant,
-                                             Map<Object, Object> context )
+    protected void mergeBuildBase_Resources( BuildBase.Builder builder, BuildBase target, BuildBase source,
+                                             boolean sourceDominant, Map<Object, Object> context )
     {
         if ( sourceDominant || target.getResources().isEmpty() )
         {
@@ -403,21 +406,23 @@ public class MavenModelMerger
         if ( src != null )
         {
             Site tgt = target.getSite();
-            Site.Builder sbuilder = new Site.Builder( tgt );
+            if ( tgt == null )
+            {
+                tgt = Site.newBuilder( false ).build();
+            }
+            Site.Builder sbuilder = Site.newBuilder( tgt );
             if ( sourceDominant || tgt == null || isSiteEmpty( tgt ) )
             {
-                mergeSite( sbuilder, new Site.Builder().build(), src, sourceDominant, context );
+                mergeSite( sbuilder, tgt, src, sourceDominant, context );
             }
-            if ( tgt != null )
-            {
-                super.mergeSite_ChildSiteUrlInheritAppendPath( sbuilder, tgt, src, sourceDominant, context );
-            }
+            super.mergeSite_ChildSiteUrlInheritAppendPath( sbuilder, tgt, src, sourceDominant, context );
             builder.site( sbuilder.build() );
         }
     }
 
     @Override
-    protected void mergeSite_ChildSiteUrlInheritAppendPath( Site.Builder builder, Site target, Site source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeSite_ChildSiteUrlInheritAppendPath( Site.Builder builder, Site target, Site source,
+                                                            boolean sourceDominant, Map<Object, Object> context )
     {
     }
 
@@ -428,7 +433,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeSite_Url( Site.Builder builder, Site target, Site source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeSite_Url( Site.Builder builder, Site target, Site source,
+                                  boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getUrl();
         if ( src != null )
@@ -447,7 +453,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeScm_Url( Scm.Builder builder, Scm target, Scm source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeScm_Url( Scm.Builder builder, Scm target, Scm source,
+                                 boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getUrl();
         if ( src != null )
@@ -466,7 +473,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeScm_Connection( Scm.Builder builder, Scm target, Scm source, boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeScm_Connection( Scm.Builder builder, Scm target, Scm source,
+                                        boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getConnection();
         if ( src != null )
@@ -486,8 +494,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeScm_DeveloperConnection( Scm.Builder builder, Scm target, Scm source, boolean sourceDominant,
-                                                 Map<Object, Object> context )
+    protected void mergeScm_DeveloperConnection( Scm.Builder builder, Scm target, Scm source,
+                                                 boolean sourceDominant, Map<Object, Object> context )
     {
         String src = source.getDeveloperConnection();
         if ( src != null )
@@ -507,8 +515,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergePlugin_Executions( Plugin.Builder builder, Plugin target, Plugin source, boolean sourceDominant,
-                                           Map<Object, Object> context )
+    protected void mergePlugin_Executions( Plugin.Builder builder, Plugin target, Plugin source,
+                                           boolean sourceDominant, Map<Object, Object> context )
     {
         List<PluginExecution> src = source.getExecutions();
         if ( !src.isEmpty() )
@@ -543,7 +551,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergePluginExecution_Goals( PluginExecution.Builder builder, PluginExecution target, PluginExecution source, boolean sourceDominant,
+    protected void mergePluginExecution_Goals( PluginExecution.Builder builder, PluginExecution target,
+                                               PluginExecution source, boolean sourceDominant,
                                                Map<Object, Object> context )
     {
         List<String> src = source.getGoals();
@@ -565,7 +574,8 @@ public class MavenModelMerger
     }
 
     @Override
-    protected void mergeReportPlugin_ReportSets( ReportPlugin.Builder builder, ReportPlugin target, ReportPlugin source, boolean sourceDominant,
+    protected void mergeReportPlugin_ReportSets( ReportPlugin.Builder builder, ReportPlugin target,
+                                                 ReportPlugin source, boolean sourceDominant,
                                                  Map<Object, Object> context )
     {
         List<ReportSet> src = source.getReportSets();

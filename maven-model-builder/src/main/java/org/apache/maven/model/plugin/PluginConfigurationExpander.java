@@ -38,6 +38,6 @@ public interface PluginConfigurationExpander
      * @param request The model building request that holds further settings, must not be {@code null}.
      * @param problems The container used to collect problems that were encountered, must not be {@code null}.
      */
-    void expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems );
+    Model expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems );
 
 }

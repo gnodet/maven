@@ -638,7 +638,7 @@ public class ${className}
         throws IOException, XmlPullParserException
     {
         String tagName = parser.getName();
-        ${classUcapName}.Builder ${classLcapName} = new ${classUcapName}.Builder();
+        ${classUcapName}.Builder ${classLcapName} = ${classUcapName}.newBuilder( true );
         for ( int i = parser.getAttributeCount() - 1; i >= 0; i-- )
         {
             String name = parser.getAttributeName( i );
@@ -647,6 +647,12 @@ public class ${className}
             {
                 // just ignore attributes with non-default namespace (for example: xmlns:xsi)
             }
+  #if ( $class == $root )
+            else if ( "xmlns".equals( name ) )
+            {
+                // ignore xmlns attribute in root class, which is a reserved attribute name
+            }
+  #end
   #foreach ( $field in $allFields )
     #if ( $Helper.xmlFieldMetadata( $field ).attribute )
       #set ( $fieldTagName = $Helper.xmlFieldMetadata( $field ).tagName )

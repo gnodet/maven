@@ -38,14 +38,14 @@ public class MavenModelMergerTest
     @Test
     public void testMergeModel_ModelVersion()
     {
-        Model parent = new Model.Builder().modelVersion( "4.0.0" ).build();
-        Model model = new Model.Builder().build();
-        Model.Builder builder = new Model.Builder( model );
+        Model parent = Model.newBuilder().modelVersion( "4.0.0" ).build();
+        Model model = Model.newInstance();
+        Model.Builder builder = Model.newBuilder( model );
         modelMerger.mergeModel_ModelVersion( builder, model, parent, false, null );
         assertNull( builder.build().getModelVersion() );
 
-        model = new Model.Builder().modelVersion( "5.0.0" ).build();
-        builder = new Model.Builder( model );
+        model = Model.newBuilder().modelVersion( "5.0.0" ).build();
+        builder = Model.newBuilder( model );
         modelMerger.mergeModel_ModelVersion( builder, model, parent, false, null );
         assertEquals( "5.0.0", builder.build().getModelVersion() );
     }
@@ -54,14 +54,14 @@ public class MavenModelMergerTest
     @Test
     public void testMergeModel_ArtifactId()
     {
-        Model parent = new Model.Builder().artifactId( "PARENT" ).build();
-        Model model = new Model.Builder().build();
-        Model.Builder builder = new Model.Builder( model );
+        Model parent = Model.newBuilder().artifactId( "PARENT" ).build();
+        Model model = Model.newInstance();
+        Model.Builder builder = Model.newBuilder( model );
         modelMerger.mergeModel_ArtifactId( builder, model, parent, false, null );
         assertNull( model.getArtifactId() );
 
-        model = new Model.Builder().artifactId( "MODEL" ).build();
-        builder = new Model.Builder( model );
+        model = Model.newBuilder().artifactId( "MODEL" ).build();
+        builder = Model.newBuilder( model );
         modelMerger.mergeModel_ArtifactId( builder, model, parent, false, null );
         assertEquals( "MODEL", builder.build().getArtifactId() );
     }
@@ -70,15 +70,15 @@ public class MavenModelMergerTest
     @Test
     public void testMergeModel_Prerequisites()
     {
-        Model parent = new Model.Builder().prerequisites( new Prerequisites.Builder().build() ).build();
-        Model model = new Model.Builder().build();
-        Model.Builder builder = new Model.Builder( model );
+        Model parent = Model.newBuilder().prerequisites( Prerequisites.newInstance() ).build();
+        Model model = Model.newInstance();
+        Model.Builder builder = Model.newBuilder( model );
         modelMerger.mergeModel_Prerequisites( builder, model, parent, false, null );
         assertNull( builder.build().getPrerequisites() );
 
-        Prerequisites modelPrerequisites = new Prerequisites.Builder().maven( "3.0" ).build();
-        model = new Model.Builder().prerequisites( modelPrerequisites ).build();
-        builder = new Model.Builder( model );
+        Prerequisites modelPrerequisites = Prerequisites.newBuilder().maven( "3.0" ).build();
+        model = Model.newBuilder().prerequisites( modelPrerequisites ).build();
+        builder = Model.newBuilder( model );
         modelMerger.mergeModel_Prerequisites( builder, model, parent, false, null );
         assertEquals( modelPrerequisites, builder.build().getPrerequisites() );
     }
@@ -87,15 +87,15 @@ public class MavenModelMergerTest
     @Test
     public void testMergeModel_Profiles()
     {
-        Model parent = new Model.Builder().profiles( Collections.singletonList( new Profile.Builder().build() ) ).build();
-        Model model = new Model.Builder().build();
-        Model.Builder builder = new Model.Builder( model );
+        Model parent = Model.newBuilder().profiles( Collections.singletonList( Profile.newInstance() ) ).build();
+        Model model = Model.newInstance();
+        Model.Builder builder = Model.newBuilder( model );
         modelMerger.mergeModel_Profiles( builder, model, parent, false, null );
         assertEquals( 0, builder.build().getProfiles().size() );
 
-        Profile modelProfile = new Profile.Builder().id( "MODEL" ).build();
-        model = new Model.Builder().profiles( Collections.singletonList( modelProfile ) ).build();
-        builder = new Model.Builder( model );
+        Profile modelProfile = Profile.newBuilder().id( "MODEL" ).build();
+        model = Model.newBuilder().profiles( Collections.singletonList( modelProfile ) ).build();
+        builder = Model.newBuilder( model );
         modelMerger.mergeModel_Prerequisites( builder, model, parent, false, null );
         assertEquals( Collections.singletonList( modelProfile ), builder.build().getProfiles() );
     }

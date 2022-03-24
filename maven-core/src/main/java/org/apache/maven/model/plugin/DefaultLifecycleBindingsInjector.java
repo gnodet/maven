@@ -102,7 +102,7 @@ public class DefaultLifecycleBindingsInjector
             Build targetBuild = target.getBuild();
             if ( targetBuild == null )
             {
-                targetBuild = new Build.Builder().build();
+                targetBuild = Build.newInstance();
             }
 
             Map<Object, Object> context =

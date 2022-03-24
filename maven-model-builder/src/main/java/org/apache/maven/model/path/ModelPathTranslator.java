@@ -40,6 +40,6 @@ public interface ModelPathTranslator
      * @param basedir The base directory to resolve relative paths against, may be {@code null}.
      * @param request The model building request that holds further settings, must not be {@code null}.
      */
-    void alignToBaseDirectory( Model model, File basedir, ModelBuildingRequest request );
+    Model alignToBaseDirectory( Model model, File basedir, ModelBuildingRequest request );
 
 }

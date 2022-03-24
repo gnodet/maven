@@ -22,6 +22,9 @@ package org.apache.maven.model.plugin;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.api.xml.Dom;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.ReportPlugin;
@@ -42,34 +45,33 @@ public class DefaultReportConfigurationExpander
 {
 
     @Override
-    public void expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
+    public Model expandPluginConfiguration( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         Reporting reporting = model.getReporting();
 
         if ( reporting != null )
         {
+            List<ReportPlugin> reportPlugins = new ArrayList<>();
             for ( ReportPlugin reportPlugin : reporting.getPlugins() )
             {
                 Dom parentDom = reportPlugin.getConfiguration();
-
                 if ( parentDom != null )
                 {
-                    for ( ReportSet execution : reportPlugin.getReportSets() )
+                    List<ReportSet> reportSets = new ArrayList<>();
+                    for ( ReportSet reportSet : reportPlugin.getReportSets() )
                     {
-                        Dom childDom = execution.getConfiguration();
-                        if ( childDom != null )
-                        {
-                            childDom.merge( parentDom );
-                        }
-                        else
-                        {
-                            childDom = parentDom.clone();
-                        }
-                        execution.setConfiguration( childDom );
+                        Dom childDom = reportSet.getConfiguration();
+                        Dom newDom = childDom != null ? childDom.merge( parentDom ) : parentDom;
+                        reportSets.add( reportSet.withConfiguration( newDom ) );
                     }
+                    reportPlugin = reportPlugin.withReportSets( reportSets );
                 }
+                reportPlugins.add( reportPlugin );
             }
+            return model.withReporting( reporting.withPlugins( reportPlugins ) );
         }
+
+        return model;
     }
 
 }

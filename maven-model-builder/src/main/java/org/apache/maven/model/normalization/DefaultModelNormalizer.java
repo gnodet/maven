@@ -54,7 +54,7 @@ public class DefaultModelNormalizer
     @Override
     public Model mergeDuplicates( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        Model.Builder builder = new Model.Builder( model );
+        Model.Builder builder = Model.newBuilder( model );
 
         Build build = model.getBuild();
         if ( build != null )
@@ -75,7 +75,7 @@ public class DefaultModelNormalizer
 
             if ( plugins.size() != normalized.size() )
             {
-                builder.build( new Build.Builder( build )
+                builder.build( Build.newBuilder( build )
                             .plugins( new ArrayList<>( normalized.values() ) )
                             .build() );
             }
@@ -121,13 +121,13 @@ public class DefaultModelNormalizer
     @Override
     public Model injectDefaultValues( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        Model.Builder builder = new Model.Builder( model );
+        Model.Builder builder = Model.newBuilder( model );
 
         builder.dependencies( injectList( model.getDependencies(), this::injectDependency ) );
         Build build = model.getBuild();
         if ( build != null )
         {
-            Build newBuild = new Build.Builder( build )
+            Build newBuild = Build.newBuilder( build )
                     .plugins( injectList( build.getPlugins(), this::injectPlugin ) )
                     .build();
             builder.build( newBuild != build ? newBuild : null );
@@ -138,15 +138,15 @@ public class DefaultModelNormalizer
 
     private Plugin injectPlugin( Plugin p )
     {
-        return new Plugin.Builder( p )
-                .dependencies( injectList( p.getDependencies(),this::injectDependency ) )
+        return Plugin.newBuilder( p )
+                .dependencies( injectList( p.getDependencies(), this::injectDependency ) )
                 .build();
     }
 
     private Dependency injectDependency( Dependency d )
     {
         // we cannot set this directly in the MDO due to the interactions with dependency management
-        return StringUtils.isEmpty( d.getScope() ) ? new Dependency.Builder( d ).scope( "compile" ).build() : d;
+        return StringUtils.isEmpty( d.getScope() ) ? Dependency.newBuilder( d ).scope( "compile" ).build() : d;
     }
 
     /**

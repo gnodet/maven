@@ -63,13 +63,13 @@ public class DefaultProfileInjector
     {
         if ( profile != null )
         {
-            Model.Builder builder = new Model.Builder( model );
+            Model.Builder builder = Model.newBuilder( model );
             merger.mergeModelBase( builder, model, profile );
 
             if ( profile.getBuild() != null )
             {
-                Build.Builder bbuilder = new Build.Builder();
-                Build build = model.getBuild() != null ? model.getBuild() : new Build.Builder().build();
+                Build.Builder bbuilder = Build.newBuilder();
+                Build build = model.getBuild() != null ? model.getBuild() : Build.newInstance();
                 merger.mergeBuildBase( bbuilder, build, profile.getBuild() );
                 builder.build( bbuilder.build() );
             }

@@ -31,7 +31,11 @@ class ROProperties extends Properties
         super();
         if ( props != null )
         {
-            super.putAll( props );
+            // Do not use super.putAll, as it may delegate to put which throws an UnsupportedOperationException
+            for ( Map.Entry<Object, Object> e : props.entrySet() )
+            {
+                super.put( e.getKey(), e.getValue() );
+            }
         }
     }
 

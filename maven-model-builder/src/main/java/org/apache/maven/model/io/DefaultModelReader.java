@@ -78,9 +78,7 @@ public class DefaultModelReader
         {
             Model model = read( in, input.toPath(), options );
 
-            model.setPomFile( input );
-
-            return model;
+            return model.withPomFile( input.toPath() );
         }
     }
 

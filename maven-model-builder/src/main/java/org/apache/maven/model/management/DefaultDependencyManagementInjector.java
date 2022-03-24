@@ -102,7 +102,7 @@ public class DefaultDependencyManagementInjector
                         Dependency dependency = dependencies.get( key );
                         newDeps.add( dependency );
                     }
-                    return new Model.Builder( model ).dependencies( newDeps ).build();
+                    return Model.newBuilder( model ).dependencies( newDeps ).build();
                 }
             }
             return model;
