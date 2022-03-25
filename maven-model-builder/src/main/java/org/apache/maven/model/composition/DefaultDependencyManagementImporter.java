@@ -61,20 +61,22 @@ public class DefaultDependencyManagementImporter
                     dependencies.put( dependency.getManagementKey(), dependency );
                 }
             }
+            else
+            {
+                depMgmt = DependencyManagement.newInstance();
+            }
 
             for ( DependencyManagement source : sources )
             {
                 for ( Dependency dependency : source.getDependencies() )
                 {
                     String key = dependency.getManagementKey();
-                    if ( !dependencies.containsKey( key ) )
-                    {
-                        dependencies.put( key, dependency );
-                    }
+                    dependencies.putIfAbsent( key, dependency );
                 }
             }
 
-            return Model.newBuilder( target ).dependencies( new ArrayList<>( dependencies.values() ) ).build();
+            return target.withDependencyManagement(
+                    depMgmt.withDependencies( new ArrayList<>( dependencies.values() ) ) );
         }
         return target;
     }
