@@ -164,10 +164,11 @@ public class DefaultProjectBuildingHelper
         {
             for ( Extension extension : build.getExtensions() )
             {
-                Plugin plugin = new Plugin();
-                plugin.setGroupId( extension.getGroupId() );
-                plugin.setArtifactId( extension.getArtifactId() );
-                plugin.setVersion( extension.getVersion() );
+                Plugin plugin = Plugin.newBuilder()
+                                .groupId( extension.getGroupId() )
+                                .artifactId( extension.getArtifactId() )
+                                .version( extension.getVersion() )
+                                .build();
                 extensionPlugins.add( plugin );
             }
 

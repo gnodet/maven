@@ -93,8 +93,8 @@ public class DefaultBuildResumptionDataRepositoryTest
     public void applyResumptionData_shouldLoadData()
     {
         MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-        Build build = new Build();
-        build.setDirectory( "src/test/resources/org/apache/maven/execution/" );
+        Build build = Build.newBuilder()
+                .directory( "src/test/resources/org/apache/maven/execution/" ).build();
         MavenProject rootProject = new MavenProject();
         rootProject.setBuild( build );
 

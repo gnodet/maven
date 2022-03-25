@@ -21,6 +21,7 @@ package org.apache.maven.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -485,9 +486,9 @@ public class DefaultProjectBuilder
             noErrors = false;
         }
 
-        Model model = result.getFileModel().clone();
+        Model model = result.getFileModel();
 
-        poolBuilder.put( model.getPomFile().toPath(),  model );
+        poolBuilder.put( model.getPomFile(),  model );
 
         InterimResult interimResult = new InterimResult( pomFile, request, result, listener, isRoot );
         interimResults.add( interimResult );
@@ -730,10 +731,11 @@ public class DefaultProjectBuilder
         Set<Artifact> reportArtifacts = new HashSet<>();
         for ( ReportPlugin report : project.getReportPlugins() )
         {
-            Plugin pp = new Plugin();
-            pp.setGroupId( report.getGroupId() );
-            pp.setArtifactId( report.getArtifactId() );
-            pp.setVersion( report.getVersion() );
+            Plugin pp = Plugin.newBuilder()
+                            .groupId( report.getGroupId() )
+                            .artifactId( report.getArtifactId() )
+                            .version( report.getVersion() )
+                            .build();
 
             Artifact artifact = repositorySystem.createPluginArtifact( pp );
 
@@ -914,7 +916,8 @@ public class DefaultProjectBuilder
 
             // org.apache.maven.its.mng4834:parent:0.1
             String parentModelId = result.getModelIds().get( 1 );
-            File parentPomFile = result.getRawModel( parentModelId ).getPomFile();
+            Path parentPomPath = result.getRawModel( parentModelId ).getPomFile();
+            File parentPomFile = parentPomPath != null ? parentPomPath.toFile() : null;
             MavenProject parent = projects.get( parentPomFile );
             if ( parent == null && buildParentIfNotExisting )
             {

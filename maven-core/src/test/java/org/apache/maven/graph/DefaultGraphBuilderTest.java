@@ -356,10 +356,11 @@ class DefaultGraphBuilderTest
     private MavenProject getMavenProject( String artifactId, MavenProject parentProject )
     {
         MavenProject project = getMavenProject( artifactId );
-        Parent parent = new Parent();
-        parent.setGroupId( parentProject.getGroupId() );
-        parent.setArtifactId( parentProject.getArtifactId() );
-        project.getModel().setParent( parent );
+        Parent parent = Parent.newBuilder()
+                        .groupId( parentProject.getGroupId() )
+                        .artifactId( parentProject.getArtifactId() )
+                        .build();
+        project.setModel( project.getModel().withParent( parent ) );
         return project;
     }
 
@@ -376,11 +377,11 @@ class DefaultGraphBuilderTest
 
     private Dependency toDependency( MavenProject mavenProject )
     {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( mavenProject.getGroupId() );
-        dependency.setArtifactId( mavenProject.getArtifactId() );
-        dependency.setVersion( mavenProject.getVersion() );
-        return dependency;
+        return Dependency.newBuilder()
+                        .groupId( mavenProject.getGroupId() )
+                        .artifactId( mavenProject.getArtifactId() )
+                        .version( mavenProject.getVersion() )
+                        .build();
     }
 
     private List<ProjectBuildingResult> createProjectBuildingResultMocks( Collection<MavenProject> projects )

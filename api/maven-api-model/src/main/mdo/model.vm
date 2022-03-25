@@ -57,6 +57,24 @@
         #end
       #end
     #end
+    #set ( $eq = "" )
+    #set ( $hc = "" )
+    #foreach ( $field in $allFields )
+      #if ( $field.identifier )
+        #set ( $dummy = $imports.add( "java.util.Objects" ) )
+        #set ( $dummy = $identifiers.add( $field ) )
+        #if ( $eq == "" )
+          #set ( $eq = "Objects.equals( this.${field.name}, that.${field.name} )" )
+        #else
+          #set ( $eq = "$eq && Objects.equals( this.${field.name}, that.${field.name} )" )
+        #end
+        #if ( $hc == "" )
+          #set ( $hc = "${field.name}" )
+        #else
+          #set ( $hc = "$hc, this.${field.name}" )
+        #end
+      #end
+    #end
 package ${package};
 
   #foreach ( $imp in $imports )
@@ -135,6 +153,29 @@ public class ${class.name}
     #end
     }
 
+    #if ( ! $eq.empty )
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || !( o instanceof ${class.name} ) )
+        {
+            return false;
+        }
+        ${class.name} that = ( ${class.name} ) o;
+        return ${eq};
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( ${hc} );
+    }
+
+    #end
     #if ( $class == $root )
     public String getModelEncoding()
     {
@@ -339,14 +380,14 @@ public class ${class.name}
       #end
     #end
                 Collections.unmodifiableMap( locations ),
-                location,
+                location != null ? location : ( base != null ? base.location : null ),
     #foreach ( $field in $allFields )
       #if ( $field == ${allFields[${allFields.size()} - 1]} )
         #set ( $sep = "" )
       #else
         #set ( $sep = "," )
       #end
-                ${field.name}Location${sep}
+                ${field.name}Location != null ? ${field.name}Location : ( base != null ? base.${field.name}Location : null )${sep}
     #end
             );
         }

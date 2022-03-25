@@ -66,16 +66,18 @@ public class LegacyRepositorySystemTest
     {
         File repoDir = new File( getBasedir(), "src/test/remote-repo" ).getAbsoluteFile();
 
-        RepositoryPolicy policy = new RepositoryPolicy();
-        policy.setEnabled( true );
-        policy.setChecksumPolicy( "ignore" );
-        policy.setUpdatePolicy( "always" );
+        RepositoryPolicy policy = RepositoryPolicy.newBuilder()
+                        .enabled( "true" )
+                        .checksumPolicy( "ignore" )
+                        .updatePolicy( "always" )
+                        .build();
 
-        Repository repository = new Repository();
-        repository.setId( RepositorySystem.DEFAULT_REMOTE_REPO_ID );
-        repository.setUrl( "file://" + repoDir.toURI().getPath() );
-        repository.setReleases( policy );
-        repository.setSnapshots( policy );
+        Repository repository = Repository.newBuilder()
+                        .id( RepositorySystem.DEFAULT_REMOTE_REPO_ID )
+                        .url( "file://" + repoDir.toURI().getPath() )
+                        .releases( policy )
+                        .snapshots( policy )
+                        .build();
 
         return Arrays.asList( repositorySystem.buildArtifactRepository( repository ) );
     }
@@ -95,11 +97,12 @@ public class LegacyRepositorySystemTest
         //
         // We should get a whole slew of dependencies resolving this artifact transitively
         //
-        Dependency d = new Dependency();
-        d.setGroupId( "org.apache.maven.its" );
-        d.setArtifactId( "b" );
-        d.setVersion( "0.1" );
-        d.setScope( Artifact.SCOPE_COMPILE );
+        Dependency d = Dependency.newBuilder()
+                        .groupId( "org.apache.maven.its" )
+                        .artifactId( "b" )
+                        .version( "0.1" )
+                        .scope( Artifact.SCOPE_COMPILE )
+                        .build();
         Artifact artifact = repositorySystem.createDependencyArtifact( d );
 
         ArtifactResolutionRequest request = new ArtifactResolutionRequest()
@@ -123,10 +126,12 @@ public class LegacyRepositorySystemTest
         //
         // System scoped version which should
         //
-        d.setScope( Artifact.SCOPE_SYSTEM );
         File file = new File( getBasedir(), "src/test/repository-system/maven-core-2.1.0.jar" );
         assertTrue( file.exists() );
-        d.setSystemPath( file.getCanonicalPath() );
+        d = Dependency.newBuilder( d )
+                .scope( Artifact.SCOPE_SYSTEM )
+                .systemPath( file.getCanonicalPath() )
+                .build();
 
         artifact = repositorySystem.createDependencyArtifact( d );
 
@@ -148,7 +153,7 @@ public class LegacyRepositorySystemTest
         //
         file = new File( getBasedir(), "src/test/repository-system/maven-monkey-2.1.0.jar" );
         assertFalse( file.exists() );
-        d.setSystemPath( file.getCanonicalPath() );
+        d = d.withSystemPath( file.getCanonicalPath() );
         artifact = repositorySystem.createDependencyArtifact( d );
 
         //

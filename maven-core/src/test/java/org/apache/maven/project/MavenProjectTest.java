@@ -21,6 +21,7 @@ package org.apache.maven.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,13 +45,13 @@ public class MavenProjectTest
     public void testShouldInterpretChildPathAdjustmentBasedOnModulePaths()
         throws IOException
     {
-        Model parentModel = new Model();
-        parentModel.addModule( "../child" );
+        Model parentModel = Model.newBuilder()
+                        .modules( Collections.singletonList("../child" ) )
+                        .build();
 
         MavenProject parentProject = new MavenProject( parentModel );
 
-        Model childModel = new Model();
-        childModel.setArtifactId( "artifact" );
+        Model childModel = Model.newBuilder().artifactId( "artifact" ).build();
 
         MavenProject childProject = new MavenProject( childModel );
 
@@ -70,16 +71,16 @@ public class MavenProjectTest
     @Test
     public void testIdentityProtoInheritance()
     {
-        Parent parent = new Parent();
+        Parent parent = Parent.newBuilder()
+                        .groupId( "test-group" )
+                        .version( "1000" )
+                        .artifactId( "test-artifact" )
+                        .build();
 
-        parent.setGroupId( "test-group" );
-        parent.setVersion( "1000" );
-        parent.setArtifactId( "test-artifact" );
-
-        Model model = new Model();
-
-        model.setParent( parent );
-        model.setArtifactId( "real-artifact" );
+        Model model = Model.newBuilder()
+                        .parent( parent )
+                        .artifactId( "real-artifact" )
+                        .build();
 
         MavenProject project = new MavenProject( model );
 
@@ -142,13 +143,13 @@ public class MavenProjectTest
     public void testGetModulePathAdjustment()
         throws IOException
     {
-        Model moduleModel = new Model();
+        Model moduleModel = Model.newInstance();
 
         MavenProject module = new MavenProject( moduleModel );
         module.setFile( new File( "module-dir/pom.xml" ) );
 
-        Model parentModel = new Model();
-        parentModel.addModule( "../module-dir" );
+        Model parentModel = Model.newBuilder()
+                .modules( Collections.singletonList( "../module-dir" ) ).build();
 
         MavenProject parent = new MavenProject( parentModel );
         parent.setFile( new File( "parent-dir/pom.xml" ) );

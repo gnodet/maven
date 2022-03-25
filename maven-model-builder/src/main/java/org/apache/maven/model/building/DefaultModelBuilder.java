@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -591,10 +592,10 @@ public class DefaultModelBuilder
                 result.setEffectiveModel( tmpModel );
             }
 
-            lineage.add( tmpModel );
-
             if ( currentData == superData )
             {
+                lineage.add( tmpModel );
+
                 break;
             }
 
@@ -623,8 +624,14 @@ public class DefaultModelBuilder
             }
             else
             {
+                if ( !Objects.equals( tmpModel.getParent().getVersion(), parentData.getVersion() ) )
+                {
+//                    tmpModel = tmpModel.withParent( tmpModel.getParent().withVersion( parentData.getVersion() ) );
+                }
                 currentData = parentData;
             }
+
+            lineage.add( tmpModel );
         }
 
         problems.setSource( result.getRawModel() );
@@ -902,6 +909,7 @@ public class DefaultModelBuilder
                 }
                 catch ( Throwable t )
                 {
+                    // TODO: use a lazy source ?
                     throw new IllegalStateException( "Unable to set modelId on InputSource", t );
                 }
             }
@@ -982,7 +990,7 @@ public class DefaultModelBuilder
                 // rawModel with locationTrackers, required for proper feedback during validations
 
                 // Apply enriched data
-                modelMerger.merge( rawModel, transformedFileModel, false, null );
+                rawModel = modelMerger.merge( rawModel, transformedFileModel, false, null );
             }
             catch ( IOException e )
             {
@@ -1434,9 +1442,10 @@ public class DefaultModelBuilder
                                                ModelProblemUtils.toSourceHint( childModel ) ) );
 
         ModelSource modelSource;
+        AtomicReference<Parent> modified = new AtomicReference<>();
         try
         {
-            modelSource = modelResolver.resolveModel( parent );
+            modelSource = modelResolver.resolveModel( parent, modified );
         }
         catch ( UnresolvableModelException e )
         {
@@ -1467,6 +1476,12 @@ public class DefaultModelBuilder
             problems.add( new ModelProblemCollectorRequest( Severity.FATAL, Version.BASE )
                 .setMessage( buffer.toString() ).setLocation( parent.getLocation( "" ) ).setException( e ) );
             throw problems.newModelBuildingException();
+        }
+
+        if ( modified.get() != null )
+        {
+            parent = modified.get();
+            childModel = childModel.withParent( parent );
         }
 
         int validationLevel = Math.min( request.getValidationLevel(), ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0 );
@@ -1528,6 +1543,8 @@ public class DefaultModelBuilder
 
         List<DependencyManagement> importMgmts = null;
 
+        List<Dependency> newDependencies = null;
+
         for ( Iterator<Dependency> it = depMgmt.getDependencies().iterator(); it.hasNext(); )
         {
             Dependency dependency = it.next();
@@ -1536,6 +1553,12 @@ public class DefaultModelBuilder
             {
                 continue;
             }
+
+            if ( newDependencies == null )
+            {
+                newDependencies = new ArrayList<>( depMgmt.getDependencies() );
+            }
+            newDependencies.remove( dependency );
 
             DependencyManagement importMgmt = loadDependencyManagement( model, request, problems,
                                                                         dependency, importIds );
@@ -1551,7 +1574,10 @@ public class DefaultModelBuilder
             }
         }
 
-        model = model.withDependencyManagement( depMgmt.withDependencies( Collections.emptyList() ) );
+        if ( newDependencies != null )
+        {
+            model = model.withDependencyManagement( depMgmt.withDependencies( newDependencies ) );
+        }
 
         importIds.remove( importing );
 
@@ -1663,9 +1689,10 @@ public class DefaultModelBuilder
         if ( importModel == null )
         {
             final ModelSource importSource;
+            final AtomicReference<Dependency> modified = new AtomicReference<>();
             try
             {
-                importSource = modelResolver.resolveModel( dependency );
+                importSource = modelResolver.resolveModel( dependency, modified );
             }
             catch ( UnresolvableModelException e )
             {
@@ -1681,6 +1708,11 @@ public class DefaultModelBuilder
                     .setMessage( buffer.toString() ).setLocation( dependency.getLocation( "" ) )
                     .setException( e ) );
                 return null;
+            }
+
+            if ( modified.get() != null )
+            {
+                throw new UnsupportedOperationException( "NEED TO UPDATE DEPENDENCY" );
             }
 
             final ModelBuildingResult importResult;

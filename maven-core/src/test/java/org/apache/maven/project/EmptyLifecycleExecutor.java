@@ -19,10 +19,12 @@ package org.apache.maven.project;
  * under the License.
  */
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutor;
@@ -57,44 +59,41 @@ public class EmptyLifecycleExecutor
 
     public Set<Plugin> getPluginsBoundByDefaultToAllLifecycles( String packaging )
     {
-        Set<Plugin> plugins;
-
         // NOTE: The upper-case packaging name is intentional, that's a special hinting mode used for certain tests
         if ( "JAR".equals( packaging ) )
         {
-            plugins = new LinkedHashSet<>();
-
-            plugins.add( newPlugin( "maven-compiler-plugin", "compile", "testCompile" ) );
-            plugins.add( newPlugin( "maven-resources-plugin", "resources", "testResources" ) );
-            plugins.add( newPlugin( "maven-surefire-plugin", "test" ) );
-            plugins.add( newPlugin( "maven-jar-plugin", "jar" ) );
-            plugins.add( newPlugin( "maven-install-plugin", "install" ) );
-            plugins.add( newPlugin( "maven-deploy-plugin", "deploy" ) );
+            return new LinkedHashSet<>( Arrays.asList(
+                    newPlugin( "maven-compiler-plugin", "compile", "testCompile" ),
+                    newPlugin( "maven-resources-plugin", "resources", "testResources" ),
+                    newPlugin( "maven-surefire-plugin", "test" ),
+                    newPlugin( "maven-jar-plugin", "jar" ),
+                    newPlugin( "maven-install-plugin", "install" ),
+                    newPlugin( "maven-deploy-plugin", "deploy" )
+            ) );
         }
         else
         {
-            plugins = Collections.emptySet();
+            return Collections.emptySet();
         }
-
-        return plugins;
     }
 
     private Plugin newPlugin( String artifactId, String... goals )
     {
-        Plugin plugin = new Plugin();
+        return Plugin.newBuilder()
+                .groupId( "org.apache.maven.plugins" )
+                .artifactId( artifactId )
+                .executions( Arrays.stream( goals )
+                        .map( this::newPluginExecution )
+                        .collect( Collectors.toList() ) )
+                .build();
+    }
 
-        plugin.setGroupId( "org.apache.maven.plugins" );
-        plugin.setArtifactId( artifactId );
-
-        for ( String goal : goals )
-        {
-            PluginExecution pluginExecution = new PluginExecution();
-            pluginExecution.setId( "default-" + goal );
-            pluginExecution.addGoal( goal );
-            plugin.addExecution( pluginExecution );
-        }
-
-        return plugin;
+    private PluginExecution newPluginExecution( String goal )
+    {
+        return PluginExecution.newBuilder()
+                .id( "default-" + goal )
+                .goals( Collections.singletonList( goal ) )
+                .build();
     }
 
     public void calculateForkedExecutions( MojoExecution mojoExecution, MavenSession session )

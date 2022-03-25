@@ -161,11 +161,10 @@ public class PluginParameterExpressionEvaluatorTest
     {
         String expected = getTestFile( "target/test-classes/target/classes" ).getCanonicalPath();
 
-        Build build = new Build();
-        build.setDirectory( expected.substring( 0, expected.length() - "/classes".length() ) );
+        Build build = Build.newBuilder()
+                .directory( expected.substring( 0, expected.length() - "/classes".length() ) ).build();
 
-        Model model = new Model();
-        model.setBuild( build );
+        Model model = Model.newBuilder().build( build ).build();
 
         MavenProject project = new MavenProject( model );
         project.setFile( new File( "pom.xml" ).getCanonicalFile() );
@@ -184,8 +183,7 @@ public class PluginParameterExpressionEvaluatorTest
     {
         String var = "${var}";
 
-        Model model = new Model();
-        model.setVersion( "1" );
+        Model model = Model.newBuilder().version( "1" ).build();
 
         MavenProject project = new MavenProject( model );
 
@@ -203,8 +201,7 @@ public class PluginParameterExpressionEvaluatorTest
         String var = "${var}";
         String key = var + " with version: ${project.version}";
 
-        Model model = new Model();
-        model.setVersion( "1" );
+        Model model = Model.newBuilder().version( "1" ).build();
 
         MavenProject project = new MavenProject( model );
 
@@ -221,9 +218,7 @@ public class PluginParameterExpressionEvaluatorTest
     {
         String key = "${project.artifactId} with version: ${project.version}";
 
-        Model model = new Model();
-        model.setArtifactId( "test" );
-        model.setVersion( "1" );
+        Model model = Model.newBuilder().artifactId( "test" ).version( "1" ).build();
 
         MavenProject project = new MavenProject( model );
 
@@ -240,7 +235,7 @@ public class PluginParameterExpressionEvaluatorTest
     {
         String expr = "/path/to/someproject-${baseVersion}";
 
-        MavenProject project = new MavenProject( new Model() );
+        MavenProject project = new MavenProject( Model.newInstance() );
 
         ExpressionEvaluator ee = createExpressionEvaluator( project, null, new Properties() );
 
@@ -259,8 +254,7 @@ public class PluginParameterExpressionEvaluatorTest
         Properties properties = new Properties();
         properties.setProperty( key, checkValue );
 
-        Model model = new Model();
-        model.setProperties( properties );
+        Model model = Model.newBuilder().properties( properties ).build();
 
         MavenProject project = new MavenProject( model );
 
@@ -350,12 +344,12 @@ public class PluginParameterExpressionEvaluatorTest
     public void testTwoExpressions()
         throws Exception
     {
-        Build build = new Build();
-        build.setDirectory( "expected-directory" );
-        build.setFinalName( "expected-finalName" );
+        Build build = Build.newBuilder()
+                .directory( "expected-directory" )
+                .finalName( "expected-finalName" )
+                .build();
 
-        Model model = new Model();
-        model.setBuild( build );
+        Model model = Model.newBuilder().build( build ).build();
 
         ExpressionEvaluator expressionEvaluator =
             createExpressionEvaluator( new MavenProject( model ), null, new Properties() );
@@ -393,7 +387,7 @@ public class PluginParameterExpressionEvaluatorTest
 
     private MavenProject createDefaultProject()
     {
-        return new MavenProject( new Model() );
+        return new MavenProject( Model.newInstance() );
     }
 
     private ExpressionEvaluator createExpressionEvaluator( MavenProject project, PluginDescriptor pluginDescriptor, Properties executionProperties )
@@ -417,12 +411,13 @@ public class PluginParameterExpressionEvaluatorTest
     protected Artifact createArtifact( String groupId, String artifactId, String version )
         throws Exception
     {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( groupId );
-        dependency.setArtifactId( artifactId );
-        dependency.setVersion( version );
-        dependency.setType( "jar" );
-        dependency.setScope( "compile" );
+        Dependency dependency = Dependency.newBuilder()
+                        .groupId( groupId )
+                        .artifactId( artifactId )
+                        .version( version )
+                        .type( "jar" )
+                        .scope( "compile" )
+                        .build();
 
         return factory.createDependencyArtifact( dependency );
     }

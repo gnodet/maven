@@ -184,12 +184,11 @@ public class MavenProject
 
     public MavenProject()
     {
-        Model model = new Model();
-
-        model.setGroupId( EMPTY_PROJECT_GROUP_ID );
-        model.setArtifactId( EMPTY_PROJECT_ARTIFACT_ID );
-        model.setVersion( EMPTY_PROJECT_VERSION );
-
+        Model model = Model.newBuilder()
+                .groupId( EMPTY_PROJECT_GROUP_ID )
+                .artifactId( EMPTY_PROJECT_ARTIFACT_ID )
+                .version( EMPTY_PROJECT_VERSION )
+                .build();
         setModel( model );
     }
 
@@ -281,7 +280,7 @@ public class MavenProject
 
     public void setDependencies( List<Dependency> dependencies )
     {
-        getModel().setDependencies( dependencies );
+        model = model.withDependencies( dependencies );
     }
 
     public List<Dependency> getDependencies()
@@ -431,9 +430,20 @@ public class MavenProject
     // Delegate to the model
     // ----------------------------------------------------------------------
 
+    private <T> List<T> concat( List<T> list, T t )
+    {
+        List<T> newList = new ArrayList<>( ( list != null ? list.size() : 0 ) + 1 );
+        if ( list != null )
+        {
+            newList.addAll( newList );
+        }
+        newList.add( t );
+        return newList;
+    }
+
     public void setModelVersion( String pomVersion )
     {
-        getModel().setModelVersion( pomVersion );
+        model = model.withModelVersion( pomVersion );
     }
 
     public String getModelVersion()
@@ -448,7 +458,7 @@ public class MavenProject
 
     public void setGroupId( String groupId )
     {
-        getModel().setGroupId( groupId );
+        model = model.withGroupId( groupId );
     }
 
     public String getGroupId()
@@ -465,7 +475,7 @@ public class MavenProject
 
     public void setArtifactId( String artifactId )
     {
-        getModel().setArtifactId( artifactId );
+        model = model.withArtifactId( artifactId );
     }
 
     public String getArtifactId()
@@ -475,7 +485,7 @@ public class MavenProject
 
     public void setName( String name )
     {
-        getModel().setName( name );
+        model = model.withName( name );
     }
 
     public String getName()
@@ -493,7 +503,7 @@ public class MavenProject
 
     public void setVersion( String version )
     {
-        getModel().setVersion( version );
+        model = model.withVersion( version );
     }
 
     public String getVersion()
@@ -515,12 +525,12 @@ public class MavenProject
 
     public void setPackaging( String packaging )
     {
-        getModel().setPackaging( packaging );
+        model = model.withPackaging( packaging );
     }
 
     public void setInceptionYear( String inceptionYear )
     {
-        getModel().setInceptionYear( inceptionYear );
+        model = model.withInceptionYear( inceptionYear );
     }
 
     public String getInceptionYear()
@@ -530,7 +540,7 @@ public class MavenProject
 
     public void setUrl( String url )
     {
-        getModel().setUrl( url );
+        model = model.withUrl( url );
     }
 
     public String getUrl()
@@ -545,7 +555,7 @@ public class MavenProject
 
     public void setIssueManagement( IssueManagement issueManagement )
     {
-        getModel().setIssueManagement( issueManagement );
+        model = model.withIssueManagement( issueManagement );
     }
 
     public CiManagement getCiManagement()
@@ -555,7 +565,7 @@ public class MavenProject
 
     public void setCiManagement( CiManagement ciManagement )
     {
-        getModel().setCiManagement( ciManagement );
+        model = model.withCiManagement( ciManagement );
     }
 
     public IssueManagement getIssueManagement()
@@ -565,7 +575,7 @@ public class MavenProject
 
     public void setDistributionManagement( DistributionManagement distributionManagement )
     {
-        getModel().setDistributionManagement( distributionManagement );
+        model = model.withDistributionManagement( distributionManagement );
     }
 
     public DistributionManagement getDistributionManagement()
@@ -575,7 +585,7 @@ public class MavenProject
 
     public void setDescription( String description )
     {
-        getModel().setDescription( description );
+        model = model.withDescription( description );
     }
 
     public String getDescription()
@@ -585,7 +595,7 @@ public class MavenProject
 
     public void setOrganization( Organization organization )
     {
-        getModel().setOrganization( organization );
+        model = model.withOrganization( organization );
     }
 
     public Organization getOrganization()
@@ -595,7 +605,7 @@ public class MavenProject
 
     public void setScm( Scm scm )
     {
-        getModel().setScm( scm );
+        model = model.withScm( scm );
     }
 
     public Scm getScm()
@@ -605,7 +615,7 @@ public class MavenProject
 
     public void setMailingLists( List<MailingList> mailingLists )
     {
-        getModel().setMailingLists( mailingLists );
+        model = model.withMailingLists( mailingLists );
     }
 
     public List<MailingList> getMailingLists()
@@ -615,12 +625,12 @@ public class MavenProject
 
     public void addMailingList( MailingList mailingList )
     {
-        getModel().addMailingList( mailingList );
+        model = model.withMailingLists( concat( model.getMailingLists(), mailingList ) );
     }
 
     public void setDevelopers( List<Developer> developers )
     {
-        getModel().setDevelopers( developers );
+        model = model.withDevelopers( developers );
     }
 
     public List<Developer> getDevelopers()
@@ -630,12 +640,12 @@ public class MavenProject
 
     public void addDeveloper( Developer developer )
     {
-        getModel().addDeveloper( developer );
+        setDevelopers( concat( model.getDevelopers(), developer ) );
     }
 
     public void setContributors( List<Contributor> contributors )
     {
-        getModel().setContributors( contributors );
+        model = model.withContributors( contributors );
     }
 
     public List<Contributor> getContributors()
@@ -645,12 +655,12 @@ public class MavenProject
 
     public void addContributor( Contributor contributor )
     {
-        getModel().addContributor( contributor );
+        setContributors( concat( model.getContributors(), contributor ) );
     }
 
     public void setBuild( Build build )
     {
-        getModel().setBuild( build );
+        model = model.withBuild( build );
     }
 
     public Build getBuild()
@@ -670,17 +680,19 @@ public class MavenProject
 
     public void addResource( Resource resource )
     {
-        getBuild().addResource( resource );
+        Build build = getModelBuild();
+        model = model.withBuild( build.withResources( concat( build.getResources(), resource ) ) );
     }
 
     public void addTestResource( Resource testResource )
     {
-        getBuild().addTestResource( testResource );
+        Build build = getModelBuild();
+        model = model.withBuild( build.withTestResources( concat( build.getTestResources(), testResource ) ) );
     }
 
     public void setLicenses( List<License> licenses )
     {
-        getModel().setLicenses( licenses );
+        model = model.withLicenses( licenses );
     }
 
     public List<License> getLicenses()
@@ -690,7 +702,7 @@ public class MavenProject
 
     public void addLicense( License license )
     {
-        getModel().addLicense( license );
+        model = model.withLicenses( concat( model.getLicenses(), license ) );
     }
 
     public void setArtifacts( Set<Artifact> artifacts )
@@ -788,7 +800,7 @@ public class MavenProject
         {
             return Collections.emptyList();
         }
-        return Collections.unmodifiableList( getModel().getBuild().getPlugins() );
+        return getModel().getBuild().getPlugins();
     }
 
     public List<String> getModules()
@@ -811,15 +823,12 @@ public class MavenProject
 
     private Build getModelBuild()
     {
-        Build build = getModel().getBuild();
-
+        Build build = model.getBuild();
         if ( build == null )
         {
-            build = new Build();
-
-            getModel().setBuild( build );
+            build = Build.newInstance();
+            model = model.withBuild( build );
         }
-
         return build;
     }
 
@@ -969,7 +978,9 @@ public class MavenProject
 
                     if ( executionId != null )
                     {
-                        PluginExecution execution = plugin.getExecutionsAsMap().get( executionId );
+                        PluginExecution execution = plugin.getExecutions().stream()
+                                .filter( e -> executionId.equals( e.getId() ) )
+                                .findAny().orElse( null );
                         if ( execution != null )
                         {
                             // NOTE: The PluginConfigurationExpander already merged the plugin-level config in
@@ -1221,6 +1232,7 @@ public class MavenProject
         // copy fields
         file = project.file;
         basedir = project.basedir;
+        model = project.model;
 
         // don't need a deep copy, they don't get modified or added/removed to/from - but make them unmodifiable to be
         // sure!
@@ -1291,11 +1303,6 @@ public class MavenProject
         if ( project.getScriptSourceRoots() != null )
         {
             setScriptSourceRoots( ( new ArrayList<>( project.getScriptSourceRoots() ) ) );
-        }
-
-        if ( project.getModel() != null )
-        {
-            setModel( project.getModel().clone() );
         }
 
         if ( project.getOriginalModel() != null )
@@ -1619,14 +1626,14 @@ public class MavenProject
             if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
                      || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
             {
-                Dependency dependency = new Dependency();
-
-                dependency.setArtifactId( a.getArtifactId() );
-                dependency.setGroupId( a.getGroupId() );
-                dependency.setVersion( a.getVersion() );
-                dependency.setScope( a.getScope() );
-                dependency.setType( a.getType() );
-                dependency.setClassifier( a.getClassifier() );
+                Dependency dependency = Dependency.newBuilder()
+                        .artifactId( a.getArtifactId() )
+                        .groupId( a.getGroupId() )
+                        .version( a.getVersion() )
+                        .scope( a.getScope() )
+                        .type( a.getType() )
+                        .classifier( a.getClassifier() )
+                        .build();
 
                 list.add( dependency );
             }
@@ -1664,14 +1671,14 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            Dependency dependency = new Dependency();
-
-            dependency.setArtifactId( a.getArtifactId() );
-            dependency.setGroupId( a.getGroupId() );
-            dependency.setVersion( a.getVersion() );
-            dependency.setScope( a.getScope() );
-            dependency.setType( a.getType() );
-            dependency.setClassifier( a.getClassifier() );
+            Dependency dependency = Dependency.newBuilder()
+                    .artifactId( a.getArtifactId() )
+                    .groupId( a.getGroupId() )
+                    .version( a.getVersion() )
+                    .scope( a.getScope() )
+                    .type( a.getType() )
+                    .classifier( a.getClassifier() )
+                    .build();
 
             list.add( dependency );
         }
@@ -1695,14 +1702,14 @@ public class MavenProject
             // TODO let the scope handler deal with this
             if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_RUNTIME.equals( a.getScope() ) )
             {
-                Dependency dependency = new Dependency();
-
-                dependency.setArtifactId( a.getArtifactId() );
-                dependency.setGroupId( a.getGroupId() );
-                dependency.setVersion( a.getVersion() );
-                dependency.setScope( a.getScope() );
-                dependency.setType( a.getType() );
-                dependency.setClassifier( a.getClassifier() );
+                Dependency dependency = Dependency.newBuilder()
+                        .artifactId( a.getArtifactId() )
+                        .groupId( a.getGroupId() )
+                        .version( a.getVersion() )
+                        .scope( a.getScope() )
+                        .type( a.getType() )
+                        .classifier( a.getClassifier() )
+                        .build();
 
                 list.add( dependency );
             }
@@ -1791,14 +1798,14 @@ public class MavenProject
             // TODO let the scope handler deal with this
             if ( Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
             {
-                Dependency dependency = new Dependency();
-
-                dependency.setArtifactId( a.getArtifactId() );
-                dependency.setGroupId( a.getGroupId() );
-                dependency.setVersion( a.getVersion() );
-                dependency.setScope( a.getScope() );
-                dependency.setType( a.getType() );
-                dependency.setClassifier( a.getClassifier() );
+                Dependency dependency = Dependency.newBuilder()
+                        .artifactId( a.getArtifactId() )
+                        .groupId( a.getGroupId() )
+                        .version( a.getVersion() )
+                        .scope( a.getScope() )
+                        .type( a.getType() )
+                        .classifier( a.getClassifier() )
+                        .build();
 
                 list.add( dependency );
             }
@@ -1809,7 +1816,7 @@ public class MavenProject
     @Deprecated
     public void setReporting( Reporting reporting )
     {
-        getModel().setReporting( reporting );
+        model = model.withReporting( reporting );
     }
 
     @Deprecated

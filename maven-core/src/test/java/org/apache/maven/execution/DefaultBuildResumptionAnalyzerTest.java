@@ -122,11 +122,11 @@ public class DefaultBuildResumptionAnalyzerTest
 
     private Dependency toDependency(MavenProject mavenProject )
     {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( mavenProject.getGroupId() );
-        dependency.setArtifactId( mavenProject.getArtifactId() );
-        dependency.setVersion( mavenProject.getVersion() );
-        return dependency;
+        return Dependency.newBuilder()
+                    .groupId( mavenProject.getGroupId() )
+                    .artifactId( mavenProject.getArtifactId() )
+                    .version( mavenProject.getVersion() )
+                    .build();
     }
 
     private MavenProject createSkippedMavenProject( String artifactId )

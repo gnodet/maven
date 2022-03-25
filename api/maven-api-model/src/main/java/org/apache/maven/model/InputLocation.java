@@ -37,6 +37,14 @@ public class InputLocation
     private final InputSource source;
     private final Map<Object, InputLocation> locations;
 
+    public InputLocation( InputSource source )
+    {
+        this.lineNumber = -1;
+        this.columnNumber = -1;
+        this.source = source;
+        this.locations = Collections.singletonMap( 0, this );
+    }
+
     public InputLocation( int lineNumber, int columnNumber )
     {
         this( lineNumber, columnNumber, null, null );

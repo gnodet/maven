@@ -351,7 +351,7 @@ public class DefaultInheritanceAssembler
                     ReportPlugin existing = merged.get( key );
                     if ( existing != null )
                     {
-                        mergeReportPlugin( element, existing, sourceDominant, context );
+                        element = mergeReportPlugin( element, existing, sourceDominant, context );
                     }
                     merged.put( key, element );
                 }

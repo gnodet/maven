@@ -28,7 +28,7 @@ import org.apache.maven.project.inheritance.AbstractProjectInheritanceTestCase;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Verifies that plugin execution sections in the parent POM that have
@@ -64,8 +64,8 @@ public class ProjectInheritanceTest extends AbstractProjectInheritanceTestCase
 
         assertNotNull( compilerPlugin );
 
-        Map executionMap = compilerPlugin.getExecutionsAsMap();
-        assertNull( executionMap.get( "test" ),
+        assertTrue( compilerPlugin.getExecutions().stream()
+                        .noneMatch( e -> "test".equals( e.getId() ) ),
                 "Plugin execution: 'test' should NOT exist in the compiler plugin specification for the child project!" );
     }
 }

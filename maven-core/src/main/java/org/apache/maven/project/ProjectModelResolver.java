@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -192,7 +193,7 @@ public class ProjectModelResolver
     }
 
     @Override
-    public ModelSource resolveModel( final Parent parent )
+    public ModelSource resolveModel( final Parent parent, final AtomicReference<Parent> modified )
         throws UnresolvableModelException
     {
         try
@@ -226,9 +227,13 @@ public class ProjectModelResolver
 
             }
 
-            parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+            String newVersion = versionRangeResult.getHighestVersion().toString();
+            if ( !parent.getVersion().equals( newVersion ) )
+            {
+                modified.set( parent.withVersion( newVersion ) );
+            }
 
-            return resolveModel( parent.getGroupId(), parent.getArtifactId(), parent.getVersion() );
+            return resolveModel( parent.getGroupId(), parent.getArtifactId(), newVersion );
         }
         catch ( final VersionRangeResolutionException e )
         {
@@ -239,7 +244,7 @@ public class ProjectModelResolver
     }
 
     @Override
-    public ModelSource resolveModel( final Dependency dependency )
+    public ModelSource resolveModel( final Dependency dependency, final AtomicReference<Dependency> modified )
         throws UnresolvableModelException
     {
         try
@@ -273,20 +278,24 @@ public class ProjectModelResolver
 
             }
 
-            dependency.setVersion( versionRangeResult.getHighestVersion().toString() );
+            String newVersion = versionRangeResult.getHighestVersion().toString();
+            if ( !dependency.getVersion().equals( newVersion ) )
+            {
+                modified.set( dependency.withVersion( newVersion ) );
+            }
 
             if ( modelPool != null )
             {
                 Model model =
-                    modelPool.get( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+                    modelPool.get( dependency.getGroupId(), dependency.getArtifactId(), newVersion );
 
                 if ( model != null )
                 {
-                    return new FileModelSource( model.getPomFile() );
+                    return new FileModelSource( model.getPomFile().toFile() );
                 }
             }
 
-            return resolveModel( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+            return resolveModel( dependency.getGroupId(), dependency.getArtifactId(), newVersion );
         }
         catch ( VersionRangeResolutionException e )
         {

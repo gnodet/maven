@@ -144,10 +144,11 @@ public class BootstrapCoreExtensionManager
              * resolveCoreExtension method which uses a CoreExtension
              * object instead of a Plugin as this makes no sense.
              */
-            Plugin plugin = new Plugin();
-            plugin.setGroupId( interpolator.interpolate( extension.getGroupId() ) );
-            plugin.setArtifactId( interpolator.interpolate( extension.getArtifactId() ) );
-            plugin.setVersion( interpolator.interpolate( extension.getVersion() ) );
+            Plugin plugin = Plugin.newBuilder()
+                    .groupId( interpolator.interpolate( extension.getGroupId() ) )
+                    .artifactId( interpolator.interpolate( extension.getArtifactId() ) )
+                    .version( interpolator.interpolate( extension.getVersion() ) )
+                    .build();
 
             DependencyNode root = pluginDependenciesResolver
                     .resolveCoreExtension( plugin, dependencyFilter, repositories, repoSession );

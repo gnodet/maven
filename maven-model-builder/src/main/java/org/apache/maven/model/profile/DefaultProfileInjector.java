@@ -120,8 +120,8 @@ public class DefaultProfileInjector
                     Plugin existing = master.get( key );
                     if ( existing != null )
                     {
-                        mergePlugin( existing, element, sourceDominant, context );
-
+                        existing = mergePlugin( existing, element, sourceDominant, context );
+                        master.put( key, existing );
                         if ( !pending.isEmpty() )
                         {
                             predecessors.put( key, pending );
@@ -173,12 +173,9 @@ public class DefaultProfileInjector
                     PluginExecution existing = merged.get( key );
                     if ( existing != null )
                     {
-                        mergePluginExecution( existing, element, sourceDominant, context );
+                        element = mergePluginExecution( existing, element, sourceDominant, context );
                     }
-                    else
-                    {
-                        merged.put( key, element );
-                    }
+                    merged.put( key, element );
                 }
 
                 builder.executions( new ArrayList<>( merged.values() ) );
@@ -206,14 +203,11 @@ public class DefaultProfileInjector
                 {
                     Object key = getReportPluginKey().apply( element );
                     ReportPlugin existing = merged.get( key );
-                    if ( existing == null )
+                    if ( existing != null )
                     {
-                        merged.put( key, element );
+                        element = mergeReportPlugin( existing, element, sourceDominant, context );
                     }
-                    else
-                    {
-                        mergeReportPlugin( existing, element, sourceDominant, context );
-                    }
+                    merged.put( key, element );
                 }
 
                 builder.plugins( new ArrayList<>( merged.values() ) );
@@ -243,12 +237,9 @@ public class DefaultProfileInjector
                     ReportSet existing = merged.get( key );
                     if ( existing != null )
                     {
-                        mergeReportSet( existing, element, sourceDominant, context );
+                        element = mergeReportSet( existing, element, sourceDominant, context );
                     }
-                    else
-                    {
-                        merged.put( key, element );
-                    }
+                    merged.put( key, element );
                 }
 
                 builder.reportSets( new ArrayList<>( merged.values() ) );

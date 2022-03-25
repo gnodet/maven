@@ -154,10 +154,11 @@ public class MojoDescriptorCreator
             // version
             // goal
             //
-            plugin = new Plugin();
-            plugin.setGroupId( tok.nextToken() );
-            plugin.setArtifactId( tok.nextToken() );
-            plugin.setVersion( tok.nextToken() );
+            plugin = Plugin.newBuilder()
+                            .groupId( tok.nextToken() )
+                            .artifactId( tok.nextToken() )
+                            .version( tok.nextToken() )
+                            .build();
             goal = tok.nextToken();
 
             // This won't be valid, but it constructs something easy to read in the error message
@@ -177,9 +178,10 @@ public class MojoDescriptorCreator
             // ???
             // goal
             //
-            plugin = new Plugin();
-            plugin.setGroupId( tok.nextToken() );
-            plugin.setArtifactId( tok.nextToken() );
+            plugin = Plugin.newBuilder()
+                    .groupId( tok.nextToken() )
+                    .artifactId( tok.nextToken() )
+                    .build();
             goal = tok.nextToken();
         }
         else
@@ -218,14 +220,14 @@ public class MojoDescriptorCreator
             goal = goal.substring( 0, executionIdx );
         }
 
-        injectPluginDeclarationFromProject( plugin, project );
+        plugin = injectPluginDeclarationFromProject( plugin, project );
 
         // If there is no version to be found then we need to look in the repository metadata for
         // this plugin and see what's specified as the latest release.
         //
         if ( plugin.getVersion() == null )
         {
-            resolvePluginVersion( plugin, session, project );
+            plugin = resolvePluginVersion( plugin, session, project );
         }
 
         return pluginManager.getMojoDescriptor( plugin, goal.toString(), project.getRemotePluginRepositories(),
@@ -257,23 +259,24 @@ public class MojoDescriptorCreator
         PluginPrefixRequest prefixRequest = new DefaultPluginPrefixRequest( prefix, session );
         PluginPrefixResult prefixResult = pluginPrefixResolver.resolve( prefixRequest );
 
-        Plugin plugin = new Plugin();
-        plugin.setGroupId( prefixResult.getGroupId() );
-        plugin.setArtifactId( prefixResult.getArtifactId() );
+        Plugin plugin = Plugin.newBuilder()
+                .groupId( prefixResult.getGroupId() )
+                .artifactId( prefixResult.getArtifactId() )
+                .build();
 
         return plugin;
     }
 
-    private void resolvePluginVersion( Plugin plugin, MavenSession session, MavenProject project )
+    private Plugin resolvePluginVersion( Plugin plugin, MavenSession session, MavenProject project )
         throws PluginVersionResolutionException
     {
         PluginVersionRequest versionRequest =
             new DefaultPluginVersionRequest( plugin, session.getRepositorySession(),
                                              project.getRemotePluginRepositories() );
-        plugin.setVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
+        return plugin.withVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
     }
 
-    private void injectPluginDeclarationFromProject( Plugin plugin, MavenProject project )
+    private Plugin injectPluginDeclarationFromProject( Plugin plugin, MavenProject project )
     {
         Plugin pluginInPom = findPlugin( plugin, project.getBuildPlugins() );
 
@@ -286,11 +289,13 @@ public class MojoDescriptorCreator
         {
             if ( plugin.getVersion() == null )
             {
-                plugin.setVersion( pluginInPom.getVersion() );
+                plugin = plugin.withVersion( pluginInPom.getVersion() );
             }
 
-            plugin.setDependencies( new ArrayList<>( pluginInPom.getDependencies() ) );
+            plugin = plugin.withDependencies( pluginInPom.getDependencies() );
         }
+
+        return plugin;
     }
 
     private Plugin findPlugin( Plugin plugin, Collection<Plugin> plugins )

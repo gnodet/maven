@@ -822,13 +822,15 @@ public class DefaultMavenPluginManager
             PluginVersionRequest versionRequest = new DefaultPluginVersionRequest( plugin, session, repositories );
             try
             {
-                plugin.setVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
+                plugin = plugin.withVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
             }
             catch ( PluginVersionResolutionException e )
             {
                 throw new PluginManagerException( plugin, e.getMessage(), e );
             }
         }
+
+        // TODO: store plugin version
 
         // resolve plugin artifacts
         List<Artifact> artifacts;

@@ -22,6 +22,7 @@ package org.apache.maven;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -182,10 +183,11 @@ public abstract class AbstractCoreMavenComponentTestCase
 
     protected MavenProject createStubMavenProject()
     {
-        Model model = new Model();
-        model.setGroupId( "org.apache.maven.test" );
-        model.setArtifactId( "maven-test" );
-        model.setVersion( "1.0" );
+        Model model = Model.newBuilder()
+                .groupId( "org.apache.maven.test" )
+                .artifactId( "maven-test" )
+                .version( "1.0" )
+                .build();
         return new MavenProject( model );
     }
 
@@ -194,16 +196,18 @@ public abstract class AbstractCoreMavenComponentTestCase
     {
         File repoDir = new File( getBasedir(), "src/test/remote-repo" ).getAbsoluteFile();
 
-        RepositoryPolicy policy = new RepositoryPolicy();
-        policy.setEnabled( true );
-        policy.setChecksumPolicy( "ignore" );
-        policy.setUpdatePolicy( "always" );
+        RepositoryPolicy policy = RepositoryPolicy.newBuilder()
+                        .enabled( "true" )
+                        .checksumPolicy( "ignore" )
+                        .updatePolicy( "always" )
+                        .build();
 
-        Repository repository = new Repository();
-        repository.setId( RepositorySystem.DEFAULT_REMOTE_REPO_ID );
-        repository.setUrl( "file://" + repoDir.toURI().getPath() );
-        repository.setReleases( policy );
-        repository.setSnapshots( policy );
+        Repository repository = Repository.newBuilder()
+                        .id( RepositorySystem.DEFAULT_REMOTE_REPO_ID )
+                        .url( "file://" + repoDir.toURI().getPath() )
+                        .releases( policy )
+                        .snapshots( policy )
+                        .build();
 
         return Arrays.asList( repositorySystem.buildArtifactRepository( repository ) );
     }
@@ -233,12 +237,13 @@ public abstract class AbstractCoreMavenComponentTestCase
 
         public ProjectBuilder( String groupId, String artifactId, String version )
         {
-            Model model = new Model();
-            model.setModelVersion( "4.0.0" );
-            model.setGroupId( groupId );
-            model.setArtifactId( artifactId );
-            model.setVersion( version );
-            model.setBuild(  new Build() );
+            Model model = Model.newBuilder()
+                            .modelVersion( "4.0.0" )
+                            .groupId( groupId )
+                            .artifactId( artifactId )
+                            .version( version )
+                            .build( Build.newInstance() )
+                            .build();
             project = new MavenProject( model );
         }
 
@@ -279,23 +284,18 @@ public abstract class AbstractCoreMavenComponentTestCase
 
         public ProjectBuilder addDependency( String groupId, String artifactId, String version, String scope, String systemPath, Exclusion exclusion )
         {
-            Dependency d = new Dependency();
-            d.setGroupId( groupId );
-            d.setArtifactId( artifactId );
-            d.setVersion( version );
-            d.setScope( scope );
+            Dependency d = Dependency.newBuilder()
+                            .groupId( groupId )
+                            .artifactId( artifactId )
+                            .version( version )
+                            .scope( scope )
+                            .systemPath( scope.equals(  Artifact.SCOPE_SYSTEM ) ? systemPath : null )
+                            .exclusions( exclusion != null ? Collections.singletonList( exclusion ) : null )
+                            .build();
 
-            if ( systemPath != null && scope.equals(  Artifact.SCOPE_SYSTEM ) )
-            {
-                d.setSystemPath( systemPath );
-            }
-
-            if ( exclusion != null )
-            {
-                d.addExclusion( exclusion );
-            }
-
-            project.getDependencies().add( d );
+            List<Dependency> dependencies = new ArrayList<>( project.getDependencies() );
+            dependencies.add( d );
+            project.setDependencies( dependencies );
 
             return this;
         }

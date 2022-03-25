@@ -69,7 +69,7 @@ public class DefaultExceptionHandlerTest
     public void testHandleExceptionAetherClassNotFound()
     {
         Throwable cause2 = new NoClassDefFoundError( "org/sonatype/aether/RepositorySystem" );
-        Plugin plugin = new Plugin();
+        Plugin plugin = Plugin.newInstance();
         Exception cause = new PluginContainerException( plugin, null, null, cause2 );
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         MojoDescriptor mojoDescriptor = new MojoDescriptor();
@@ -88,7 +88,7 @@ public class DefaultExceptionHandlerTest
     public void testHandleExceptionNoClassDefFoundErrorNull()
     {
         Throwable cause2 = new NoClassDefFoundError();
-        Plugin plugin = new Plugin();
+        Plugin plugin = Plugin.newInstance();
         Exception cause = new PluginContainerException( plugin, null, null, cause2 );
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         MojoDescriptor mojoDescriptor = new MojoDescriptor();

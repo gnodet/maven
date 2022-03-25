@@ -59,9 +59,7 @@ public class DefaultModelXmlFactory
             InputSource source = null;
             if ( request.getModelId() != null || request.getLocation() != null )
             {
-                source = new InputSource();
-                source.setModelId( request.getModelId() );
-                source.setLocation( request.getLocation() );
+                source = new InputSource( request.getModelId(), request.getLocation() );
             }
             MavenXpp3ReaderEx xml = new MavenXpp3ReaderEx();
             xml.setAddDefaultEntities( request.isAddDefaultEntities() );

@@ -69,7 +69,7 @@ public class DefaultPluginArtifactsCache
         public CacheKey( Plugin plugin, DependencyFilter extensionFilter, List<RemoteRepository> repositories,
                          RepositorySystemSession session )
         {
-            this.plugin = plugin.clone();
+            this.plugin = plugin;
             workspace = RepositoryUtils.getWorkspace( session );
             this.localRepo = session.getLocalRepository();
             this.repositories = new ArrayList<>( repositories.size() );

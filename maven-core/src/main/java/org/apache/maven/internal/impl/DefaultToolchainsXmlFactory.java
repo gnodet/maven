@@ -54,9 +54,7 @@ public class DefaultToolchainsXmlFactory
             InputSource source = null;
             if ( request.getModelId() != null || request.getLocation() != null )
             {
-                source = new InputSource();
-                source.setModelId( request.getModelId() );
-                source.setLocation( request.getLocation() );
+                source = new InputSource( request.getModelId(), request.getLocation() );
             }
             MavenToolchainsXpp3Reader xml = new MavenToolchainsXpp3Reader();
             xml.setAddDefaultEntities( request.isAddDefaultEntities() );

@@ -77,7 +77,7 @@ public class DefaultPluginRealmCache
                          DependencyFilter dependencyFilter, List<RemoteRepository> repositories,
                          RepositorySystemSession session )
         {
-            this.plugin = plugin.clone();
+            this.plugin = plugin;
             this.workspace = RepositoryUtils.getWorkspace( session );
             this.localRepo = session.getLocalRepository();
             this.repositories = new ArrayList<>( repositories.size() );

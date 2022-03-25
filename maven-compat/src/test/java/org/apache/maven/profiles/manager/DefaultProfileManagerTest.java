@@ -52,23 +52,23 @@ public class DefaultProfileManagerTest
     public void testShouldActivateDefaultProfile()
         throws Exception
     {
-        Profile notActivated = new Profile();
-        notActivated.setId( "notActivated" );
+        Activation nonActivation = Activation.newBuilder()
+                .jdk( "19.2" )
+                .build();
 
-        Activation nonActivation = new Activation();
+        Profile notActivated = Profile.newBuilder()
+                .id( "notActivated" )
+                .activation( nonActivation )
+                .build();
 
-        nonActivation.setJdk( "19.2" );
+        Activation defaultActivation = Activation.newBuilder()
+                .activeByDefault( true )
+                .build();
 
-        notActivated.setActivation( nonActivation );
-
-        Profile defaultActivated = new Profile();
-        defaultActivated.setId( "defaultActivated" );
-
-        Activation defaultActivation = new Activation();
-
-        defaultActivation.setActiveByDefault( true );
-
-        defaultActivated.setActivation( defaultActivation );
+        Profile defaultActivated = Profile.newBuilder()
+                .id( "defaultActivated" )
+                .activation( defaultActivation )
+                .build();
 
         Properties props = System.getProperties();
 
@@ -88,26 +88,27 @@ public class DefaultProfileManagerTest
     public void testShouldNotActivateDefaultProfile()
         throws Exception
     {
-        Profile syspropActivated = new Profile();
-        syspropActivated.setId( "syspropActivated" );
+        ActivationProperty syspropProperty = ActivationProperty.newBuilder()
+                        .name( "java.version" )
+                        .build();
 
-        Activation syspropActivation = new Activation();
+        Activation syspropActivation = Activation.newBuilder()
+                        .property( syspropProperty )
+                                .build();
 
-        ActivationProperty syspropProperty = new ActivationProperty();
-        syspropProperty.setName( "java.version" );
+        Profile syspropActivated = Profile.newBuilder()
+                        .id( "syspropActivated" )
+                        .activation( syspropActivation )
+                        .build();
 
-        syspropActivation.setProperty( syspropProperty );
+        Activation defaultActivation = Activation.newBuilder()
+                        .activeByDefault( true )
+                        .build();
 
-        syspropActivated.setActivation( syspropActivation );
-
-        Profile defaultActivated = new Profile();
-        defaultActivated.setId( "defaultActivated" );
-
-        Activation defaultActivation = new Activation();
-
-        defaultActivation.setActiveByDefault( true );
-
-        defaultActivated.setActivation( defaultActivation );
+        Profile defaultActivated = Profile.newBuilder()
+                .id( "defaultActivated" )
+                .activation( defaultActivation )
+                .build();
 
         Properties props = System.getProperties();
 
@@ -128,17 +129,18 @@ public class DefaultProfileManagerTest
     public void testShouldNotActivateReversalOfPresentSystemProperty()
         throws Exception
     {
-        Profile syspropActivated = new Profile();
-        syspropActivated.setId( "syspropActivated" );
+        ActivationProperty syspropProperty = ActivationProperty.newBuilder()
+                .name( "!java.version" )
+                .build();
 
-        Activation syspropActivation = new Activation();
+        Activation syspropActivation = Activation.newBuilder()
+                .property( syspropProperty )
+                .build();
 
-        ActivationProperty syspropProperty = new ActivationProperty();
-        syspropProperty.setName( "!java.version" );
-
-        syspropActivation.setProperty( syspropProperty );
-
-        syspropActivated.setActivation( syspropActivation );
+        Profile syspropActivated = Profile.newBuilder()
+                .id( "syspropActivated" )
+                .activation( syspropActivation )
+                .build();
 
         Properties props = System.getProperties();
 
@@ -156,17 +158,18 @@ public class DefaultProfileManagerTest
     public void testShouldOverrideAndActivateInactiveProfile()
         throws Exception
     {
-        Profile syspropActivated = new Profile();
-        syspropActivated.setId( "syspropActivated" );
+        ActivationProperty syspropProperty = ActivationProperty.newBuilder()
+                .name( "!java.version" )
+                .build();
 
-        Activation syspropActivation = new Activation();
+        Activation syspropActivation = Activation.newBuilder()
+                .property( syspropProperty )
+                .build();
 
-        ActivationProperty syspropProperty = new ActivationProperty();
-        syspropProperty.setName( "!java.version" );
-
-        syspropActivation.setProperty( syspropProperty );
-
-        syspropActivated.setActivation( syspropActivation );
+        Profile syspropActivated = Profile.newBuilder()
+                .id( "syspropActivated" )
+                .activation( syspropActivation )
+                .build();
 
         Properties props = System.getProperties();
 
@@ -187,17 +190,18 @@ public class DefaultProfileManagerTest
     public void testShouldOverrideAndDeactivateActiveProfile()
         throws Exception
     {
-        Profile syspropActivated = new Profile();
-        syspropActivated.setId( "syspropActivated" );
+        ActivationProperty syspropProperty = ActivationProperty.newBuilder()
+                .name( "java.version" )
+                .build();
 
-        Activation syspropActivation = new Activation();
+        Activation syspropActivation = Activation.newBuilder()
+                .property( syspropProperty )
+                .build();
 
-        ActivationProperty syspropProperty = new ActivationProperty();
-        syspropProperty.setName( "java.version" );
-
-        syspropActivation.setProperty( syspropProperty );
-
-        syspropActivated.setActivation( syspropActivation );
+        Profile syspropActivated = Profile.newBuilder()
+                .id( "syspropActivated" )
+                .activation( syspropActivation )
+                .build();
 
         Properties props = System.getProperties();
 

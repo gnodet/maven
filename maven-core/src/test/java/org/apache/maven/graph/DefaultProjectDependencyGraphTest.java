@@ -161,11 +161,11 @@ public class DefaultProjectDependencyGraphTest
 
     static Dependency toDependency( MavenProject mavenProject )
     {
-        final Dependency dependency = new Dependency();
-        dependency.setArtifactId( mavenProject.getArtifactId() );
-        dependency.setGroupId( mavenProject.getGroupId() );
-        dependency.setVersion( mavenProject.getVersion() );
-        return dependency;
+        return Dependency.newBuilder()
+                .groupId( mavenProject.getGroupId() )
+                .artifactId( mavenProject.getArtifactId() )
+                .version( mavenProject.getVersion() )
+                .build();
     }
 
     private static MavenProject createProject( List<Dependency> dependencies, String artifactId )

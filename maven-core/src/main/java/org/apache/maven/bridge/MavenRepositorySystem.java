@@ -334,27 +334,29 @@ public class MavenRepositorySystem
     public static org.apache.maven.model.Repository fromSettingsRepository( org.apache.maven.settings.Repository
                                                                             settingsRepository )
     {
-        org.apache.maven.model.Repository modelRepository = new org.apache.maven.model.Repository();
-        modelRepository.setId( settingsRepository.getId() );
-        modelRepository.setLayout( settingsRepository.getLayout() );
-        modelRepository.setName( settingsRepository.getName() );
-        modelRepository.setUrl( settingsRepository.getUrl() );
-        modelRepository.setReleases( fromSettingsRepositoryPolicy( settingsRepository.getReleases() ) );
-        modelRepository.setSnapshots( fromSettingsRepositoryPolicy( settingsRepository.getSnapshots() ) );
+        org.apache.maven.model.Repository modelRepository = org.apache.maven.model.Repository.newBuilder()
+                .id( settingsRepository.getId() )
+                .layout( settingsRepository.getLayout() )
+                .name( settingsRepository.getName() )
+                .url( settingsRepository.getUrl() )
+                .releases( fromSettingsRepositoryPolicy( settingsRepository.getReleases() ) )
+                .snapshots( fromSettingsRepositoryPolicy( settingsRepository.getSnapshots() ) )
+                .build();
         return modelRepository;
     }
 
     public static org.apache.maven.model.RepositoryPolicy fromSettingsRepositoryPolicy(
                                                  org.apache.maven.settings.RepositoryPolicy settingsRepositoryPolicy )
     {
-        org.apache.maven.model.RepositoryPolicy modelRepositoryPolicy = new org.apache.maven.model.RepositoryPolicy();
         if ( settingsRepositoryPolicy != null )
         {
-            modelRepositoryPolicy.setEnabled( settingsRepositoryPolicy.isEnabled() );
-            modelRepositoryPolicy.setUpdatePolicy( settingsRepositoryPolicy.getUpdatePolicy() );
-            modelRepositoryPolicy.setChecksumPolicy( settingsRepositoryPolicy.getChecksumPolicy() );
+            return org.apache.maven.model.RepositoryPolicy.newBuilder()
+                    .enabled( Boolean.toString( settingsRepositoryPolicy.isEnabled() ) )
+                    .updatePolicy( settingsRepositoryPolicy.getUpdatePolicy() )
+                    .checksumPolicy( settingsRepositoryPolicy.getChecksumPolicy() )
+                    .build();
         }
-        return modelRepositoryPolicy;
+        return org.apache.maven.model.RepositoryPolicy.newInstance();
     }
 
     public static ArtifactRepository buildArtifactRepository( org.apache.maven.settings.Repository repo )

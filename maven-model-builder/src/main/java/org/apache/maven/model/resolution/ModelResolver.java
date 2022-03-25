@@ -19,6 +19,8 @@ package org.apache.maven.model.resolution;
  * under the License.
  */
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Repository;
@@ -64,7 +66,7 @@ public interface ModelResolver
      *
      * @see Parent#clone()
      */
-    ModelSource resolveModel( Parent parent )
+    ModelSource resolveModel( Parent parent, AtomicReference<Parent> modified )
         throws UnresolvableModelException;
 
     /**
@@ -85,7 +87,7 @@ public interface ModelResolver
      *
      * @see Dependency#clone()
      */
-    ModelSource resolveModel( Dependency dependency )
+    ModelSource resolveModel( Dependency dependency, AtomicReference<Dependency> modified )
         throws UnresolvableModelException;
 
     /**

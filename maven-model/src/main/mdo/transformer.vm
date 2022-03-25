@@ -111,7 +111,8 @@ public class ${className}
                 {
                     if ( newProps == null )
                     {
-                        newProps = new Properties( props );
+                        newProps = new Properties();
+                        newProps.putAll( props );
                         builder.${field.name}( newProps );
                     }
                     newProps.put( ( String ) entry.getKey(), newVal );

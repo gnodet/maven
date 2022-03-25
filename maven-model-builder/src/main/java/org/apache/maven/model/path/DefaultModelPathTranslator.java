@@ -69,7 +69,7 @@ public class DefaultModelPathTranslator
             newBuild = Build.newBuilder( build )
                     .directory( alignToBaseDirectory( build.getDirectory(), basedir ) )
                     .sourceDirectory( alignToBaseDirectory( build.getSourceDirectory(), basedir ) )
-                    .testSourceDirectory( alignToBaseDirectory( build.getSourceDirectory(), basedir ) )
+                    .testSourceDirectory( alignToBaseDirectory( build.getTestSourceDirectory(), basedir ) )
                     .scriptSourceDirectory( alignToBaseDirectory( build.getScriptSourceDirectory(), basedir ) )
                     .resources( map( build.getResources(), r -> alignToBaseDirectory( r, basedir ) ) )
                     .testResources( map( build.getTestResources(), r -> alignToBaseDirectory( r, basedir ) ) )

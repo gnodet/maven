@@ -362,7 +362,7 @@ public class ProjectBuilderTest
         ProjectBuildingResult result =
             getContainer().lookup( org.apache.maven.project.ProjectBuilder.class ).build( modelSource, configuration );
 
-        assertEquals( pomFile.getAbsoluteFile(), result.getProject().getModel().getPomFile().getAbsoluteFile() );
+        assertEquals( pomFile.getAbsoluteFile(), result.getProject().getModel().getPomFile().toFile().getAbsoluteFile() );
         int errors = 0;
         for ( ModelProblem p : result.getProblems() )
         {

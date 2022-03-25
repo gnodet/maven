@@ -19,6 +19,8 @@ package org.apache.maven.lifecycle.internal;
  * under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.maven.api.xml.Dom;
 import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.LifeCyclePluginAnalyzer;
 import org.apache.maven.lifecycle.Lifecycle;
@@ -106,7 +107,7 @@ public class DefaultLifecyclePluginAnalyzer
             return null;
         }
 
-        Map<Plugin, Plugin> plugins = new LinkedHashMap<>();
+        Map<String, Plugin> plugins = new LinkedHashMap<>();
 
         for ( Lifecycle lifecycle : defaultLifeCycles.getLifeCycles() )
         {
@@ -138,7 +139,7 @@ public class DefaultLifecyclePluginAnalyzer
             }
         }
 
-        return plugins.keySet();
+        return new HashSet<>( plugins.values() );
     }
 
     /**
@@ -161,12 +162,10 @@ public class DefaultLifecyclePluginAnalyzer
         }
     }
 
-    private void parseLifecyclePhaseDefinitions( Map<Plugin, Plugin> plugins, String phase, LifecyclePhase goals )
+    private void parseLifecyclePhaseDefinitions( Map<String, Plugin> plugins, String phase, LifecyclePhase goals )
     {
-        InputSource inputSource = new InputSource();
-        inputSource.setModelId( DEFAULTLIFECYCLEBINDINGS_MODELID );
-        InputLocation location = new InputLocation( -1, -1, inputSource );
-        location.setLocation( 0, location );
+        InputSource inputSource = new InputSource( DEFAULTLIFECYCLEBINDINGS_MODELID, null );
+        InputLocation location = new InputLocation( inputSource );
 
         List<LifecycleMojo> mojos = goals.getMojos();
         if ( mojos != null )
@@ -185,52 +184,63 @@ public class DefaultLifecyclePluginAnalyzer
                     continue;
                 }
 
-                Plugin plugin = new Plugin();
-                plugin.setGroupId( gs.groupId );
-                plugin.setArtifactId( gs.artifactId );
-                plugin.setVersion( gs.version );
+                Plugin plugin = Plugin.newBuilder()
+                        .groupId( gs.groupId )
+                        .artifactId( gs.artifactId )
+                        .version( gs.version )
+                        .location( "", location )
+                        .location( "groupId", location )
+                        .location( "artifactId", location )
+                        .location( "version", location )
+                        .build();
 
-                plugin.setLocation( "", location );
-                plugin.setLocation( "groupId", location );
-                plugin.setLocation( "artifactId", location );
-                plugin.setLocation( "version", location );
-
-                Plugin existing = plugins.get( plugin );
+                Plugin existing = plugins.get( plugin.getKey() );
                 if ( existing != null )
                 {
                     if ( existing.getVersion() == null )
                     {
-                        existing.setVersion( plugin.getVersion() );
-                        existing.setLocation( "version", location );
+                        plugin = Plugin.newBuilder( existing )
+                                        .version( plugin.getVersion() )
+                                        .location( "version", location )
+                                        .build();
                     }
-                    plugin = existing;
-                }
-                else
-                {
-                    plugins.put( plugin, plugin );
-                }
-
-                PluginExecution execution = new PluginExecution();
-                execution.setId( getExecutionId( plugin, gs.goal ) );
-                execution.setPhase( phase );
-                execution.setPriority( i - mojos.size() );
-                execution.getGoals().add( gs.goal );
-
-                execution.setLocation( "", location );
-                execution.setLocation( "id", location );
-                execution.setLocation( "phase", location );
-                execution.setLocation( "goals", location );
-
-                Dom lifecycleConfiguration = mojo.getConfiguration();
-                if ( lifecycleConfiguration != null )
-                {
-                    execution.setConfiguration( lifecycleConfiguration.clone() );
+                    else
+                    {
+                        plugin = existing;
+                    }
                 }
 
-                plugin.setDependencies( mojo.getDependencies() );
-                plugin.getExecutions().add( execution );
+                PluginExecution execution = PluginExecution.newBuilder()
+                                .id( getExecutionId( plugin, gs.goal ) )
+                                .phase( phase )
+                                .priority( i - mojos.size() )
+                                .goals( Collections.singletonList( gs.goal ) )
+                                .location( "", location )
+                                .location( "id", location )
+                                .location( "phase", location )
+                                .location( "goals", location )
+                                .configuration( mojo.getConfiguration() )
+                                .build();
+
+                plugin = Plugin.newBuilder( plugin )
+                        .dependencies( mojo.getDependencies() )
+                        .executions( concat( plugin.getExecutions(), execution ) )
+                        .build();
+
+                plugins.put( plugin.getKey(), plugin );
             }
         }
+    }
+
+    private <T> List<T> concat( List<T> list, T t )
+    {
+        List<T> newList = new ArrayList<>( ( list != null ? list.size() : 0 ) + 1 );
+        if ( list != null )
+        {
+            newList.addAll( list );
+        }
+        newList.add( t );
+        return newList;
     }
 
     private GoalSpec parseGoalSpec( String goalSpec )

@@ -94,17 +94,16 @@ public class DefaultPluginManagementInjector
                     managedPlugins.put( key, element );
                 }
 
-                List<Plugin> tgt = target.getPlugins();
                 List<Plugin> newPlugins = new ArrayList<>();
-                for ( Plugin element : tgt )
+                for ( Plugin element : target.getPlugins() )
                 {
                     Object key = getPluginKey().apply( element );
                     Plugin managedPlugin = managedPlugins.get( key );
                     if ( managedPlugin != null )
                     {
-                        Plugin newPlugin = mergePlugin( element, managedPlugin, false, context );
-                        newPlugins.add( newPlugin );
+                        element = mergePlugin( element, managedPlugin, false, context );
                     }
+                    newPlugins.add( element );
                 }
                 return target.withPlugins( newPlugins );
             }
@@ -135,7 +134,7 @@ public class DefaultPluginManagementInjector
                     PluginExecution existing = merged.get( key );
                     if ( existing != null )
                     {
-                        mergePluginExecution( element, existing, sourceDominant, context );
+                        element = mergePluginExecution( element, existing, sourceDominant, context );
                     }
                     merged.put( key, element );
                 }

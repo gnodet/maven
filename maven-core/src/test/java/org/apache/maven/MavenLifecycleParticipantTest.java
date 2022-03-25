@@ -47,24 +47,30 @@ public class MavenLifecycleParticipantTest
         @Override
         public void afterProjectsRead( MavenSession session )
         {
-            MavenProject project = session.getProjects().get( 0 );
-
-            Dependency dependency = new Dependency();
-            dependency.setArtifactId( INJECTED_ARTIFACT_ID );
-            dependency.setGroupId( "foo" );
-            dependency.setVersion( "1.2.3" );
-            dependency.setScope( "system" );
+            String path;
             try
             {
-                dependency.setSystemPath( new File(
-                                                    "src/test/projects/lifecycle-executor/project-with-additional-lifecycle-elements/pom.xml" ).getCanonicalPath() );
+                path = new File( "src/test/projects/lifecycle-executor/project-with-additional-lifecycle-elements/pom.xml" )
+                        .getCanonicalPath();
             }
             catch ( IOException e )
             {
                 throw new RuntimeException( e );
             }
 
-            project.getModel().addDependency( dependency );
+            MavenProject project = session.getProjects().get( 0 );
+
+            Dependency dependency = Dependency.newBuilder()
+                    .artifactId( INJECTED_ARTIFACT_ID )
+                    .groupId( "foo" )
+                    .version( "1.2.3" )
+                    .scope( "system" )
+                    .systemPath( path )
+                    .build();
+
+            List<Dependency> dependencies = new ArrayList<>( project.getDependencies() );
+            dependencies.add( dependency );
+            project.setDependencies( dependencies );
         }
 
         @Override
@@ -90,12 +96,14 @@ public class MavenLifecycleParticipantTest
             {
                 if ( moduleFrom.equals( project.getArtifactId() ) )
                 {
-                    Dependency dependency = new Dependency();
-                    dependency.setArtifactId( moduleTo );
-                    dependency.setGroupId( project.getGroupId() );
-                    dependency.setVersion( project.getVersion() );
-
-                    project.getModel().addDependency( dependency );
+                    Dependency dependency = Dependency.newBuilder()
+                                    .artifactId( moduleTo )
+                                    .groupId( project.getGroupId() )
+                                    .version( project.getVersion() )
+                                    .build();
+                    List<Dependency> dependencies = new ArrayList<>( project.getDependencies() );
+                    dependencies.add( dependency );
+                    project.setDependencies( dependencies );
                 }
             }
         }

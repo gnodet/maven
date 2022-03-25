@@ -19,9 +19,11 @@ package org.apache.maven.lifecycle;
  * under the License.
  */
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -58,20 +60,21 @@ public class EmptyLifecyclePluginAnalyzer
 
     private Plugin newPlugin( String artifactId, String... goals )
     {
-        Plugin plugin = new Plugin();
+        return Plugin.newBuilder()
+                .groupId( "org.apache.maven.plugins" )
+                .artifactId( artifactId )
+                .executions( Arrays.stream( goals )
+                        .map( this::newPluginExecution )
+                        .collect( Collectors.toList() ) )
+                .build();
+    }
 
-        plugin.setGroupId( "org.apache.maven.plugins" );
-        plugin.setArtifactId( artifactId );
-
-        for ( String goal : goals )
-        {
-            PluginExecution pluginExecution = new PluginExecution();
-            pluginExecution.setId( "default-" + goal );
-            pluginExecution.addGoal( goal );
-            plugin.addExecution( pluginExecution );
-        }
-
-        return plugin;
+    private PluginExecution newPluginExecution( String goal )
+    {
+        return PluginExecution.newBuilder()
+                .id( "default-" + goal )
+                .goals( Collections.singletonList( goal ) )
+                .build();
     }
 
 }

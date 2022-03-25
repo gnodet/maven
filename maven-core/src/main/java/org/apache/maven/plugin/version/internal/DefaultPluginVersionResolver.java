@@ -268,10 +268,11 @@ public class DefaultPluginVersionResolver
 
     private boolean isCompatible( PluginVersionRequest request, String version )
     {
-        Plugin plugin = new Plugin();
-        plugin.setGroupId( request.getGroupId() );
-        plugin.setArtifactId( request.getArtifactId() );
-        plugin.setVersion( version );
+        Plugin plugin = Plugin.newBuilder()
+                        .groupId( request.getGroupId() )
+                        .artifactId( request.getArtifactId() )
+                        .version( version )
+                        .build();
 
         PluginDescriptor pluginDescriptor;
 

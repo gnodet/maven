@@ -389,10 +389,41 @@ public class MavenModelMerger
     }
 
     @Override
-    protected DeploymentRepository mergeDeploymentRepository( DeploymentRepository target, DeploymentRepository source,
-                                                              boolean sourceDominant, Map<Object, Object> context )
+    protected void mergeDistributionManagement_Repository( DistributionManagement.Builder builder,
+                                                           DistributionManagement target,
+                                                           DistributionManagement source,
+                                                           boolean sourceDominant,
+                                                           Map<Object, Object> context )
     {
-        return source != null && sourceDominant ? source : target;
+        DeploymentRepository src = source.getRepository();
+        if ( src != null )
+        {
+            DeploymentRepository tgt = target.getRepository();
+            if ( sourceDominant || tgt == null )
+            {
+                tgt = DeploymentRepository.newInstance( false );
+                builder.repository( mergeDeploymentRepository( tgt, src, sourceDominant, context ) );
+            }
+        }
+    }
+
+    @Override
+    protected void mergeDistributionManagement_SnapshotRepository( DistributionManagement.Builder builder,
+                                                                   DistributionManagement target,
+                                                                   DistributionManagement source,
+                                                                   boolean sourceDominant,
+                                                                   Map<Object, Object> context )
+    {
+        DeploymentRepository src = source.getSnapshotRepository();
+        if ( src != null )
+        {
+            DeploymentRepository tgt = target.getSnapshotRepository();
+            if ( sourceDominant || tgt == null )
+            {
+                tgt = DeploymentRepository.newInstance( false );
+                builder.snapshotRepository( mergeDeploymentRepository( tgt, src, sourceDominant, context ) );
+            }
+        }
     }
 
     @Override
@@ -541,7 +572,7 @@ public class MavenModelMerger
                 PluginExecution existing = merged.get( key );
                 if ( existing != null )
                 {
-                    mergePluginExecution( element, existing, sourceDominant, context );
+                    element = mergePluginExecution( element, existing, sourceDominant, context );
                 }
                 merged.put( key, element );
             }

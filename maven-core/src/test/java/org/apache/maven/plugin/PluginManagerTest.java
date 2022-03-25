@@ -56,10 +56,8 @@ public class PluginManagerTest
         throws Exception
     {
         MavenSession session = createMavenSession( null );
-        Plugin plugin = new Plugin();
-        plugin.setGroupId( "org.apache.maven.its.plugins" );
-        plugin.setArtifactId( "maven-it-plugin" );
-        plugin.setVersion( "0.1" );
+        Plugin plugin = Plugin.newBuilder()
+                .groupId( "org.apache.maven.its.plugins" ).artifactId( "maven-it-plugin" ).version( "0.1" ).build();
         PluginDescriptor pluginDescriptor =
             pluginManager.loadPlugin( plugin, session.getCurrentProject().getRemotePluginRepositories(),
                                       session.getRepositorySession() );
@@ -72,10 +70,8 @@ public class PluginManagerTest
     {
         MavenSession session = createMavenSession( null );
         String goal = "it";
-        Plugin plugin = new Plugin();
-        plugin.setGroupId( "org.apache.maven.its.plugins" );
-        plugin.setArtifactId( "maven-it-plugin" );
-        plugin.setVersion( "0.1" );
+        Plugin plugin = Plugin.newBuilder()
+                .groupId( "org.apache.maven.its.plugins" ).artifactId( "maven-it-plugin" ).version( "0.1" ).build();
 
         MojoDescriptor mojoDescriptor =
             pluginManager.getMojoDescriptor( plugin, goal, session.getCurrentProject().getRemotePluginRepositories(),

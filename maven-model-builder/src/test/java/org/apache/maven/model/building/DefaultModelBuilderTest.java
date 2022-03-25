@@ -4,8 +4,9 @@ package org.apache.maven.model.building;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
+  import java.util.concurrent.atomic.AtomicReference;
 
-/*
+  /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -98,7 +99,7 @@ public class DefaultModelBuilderTest
     static class CycleInImportsResolver extends BaseModelResolver
     {
         @Override
-        public ModelSource resolveModel(Dependency dependency) throws UnresolvableModelException
+        public ModelSource resolveModel(Dependency dependency, AtomicReference<Dependency> modified ) throws UnresolvableModelException
         {
             switch ( dependency.getManagementKey() )
             {
@@ -119,13 +120,13 @@ public class DefaultModelBuilderTest
         }
 
         @Override
-        public ModelSource resolveModel( Parent parent ) throws UnresolvableModelException
+        public ModelSource resolveModel( Parent parent, AtomicReference<Parent> modified ) throws UnresolvableModelException
         {
             return null;
         }
 
         @Override
-        public ModelSource resolveModel( Dependency dependency ) throws UnresolvableModelException
+        public ModelSource resolveModel( Dependency dependency, AtomicReference<Dependency> modified ) throws UnresolvableModelException
         {
             return null;
         }

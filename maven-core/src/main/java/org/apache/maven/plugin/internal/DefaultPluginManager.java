@@ -171,9 +171,10 @@ public class DefaultPluginManager
         {
             PluginPrefixResult result = pluginPrefixResolver.resolve( request );
 
-            Plugin plugin = new Plugin();
-            plugin.setGroupId( result.getGroupId() );
-            plugin.setArtifactId( result.getArtifactId() );
+            Plugin plugin = Plugin.newBuilder()
+                    .groupId( result.getGroupId() )
+                    .artifactId( result.getArtifactId() )
+                    .build();
 
             return plugin;
         }
@@ -193,9 +194,10 @@ public class DefaultPluginManager
         {
             PluginPrefixResult result = pluginPrefixResolver.resolve( request );
 
-            Plugin plugin = new Plugin();
-            plugin.setGroupId( result.getGroupId() );
-            plugin.setArtifactId( result.getArtifactId() );
+            Plugin plugin = Plugin.newBuilder()
+                    .groupId( result.getGroupId() )
+                    .artifactId( result.getArtifactId() )
+                    .build();
 
             return loadPluginDescriptor( plugin, session.getCurrentProject(), session );
         }
@@ -245,7 +247,7 @@ public class DefaultPluginManager
             PluginVersionRequest versionRequest =
                 new DefaultPluginVersionRequest( plugin, session.getRepositorySession(),
                                                  project.getRemotePluginRepositories() );
-            plugin.setVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
+            plugin = plugin.withVersion( pluginVersionResolver.resolve( versionRequest ).getVersion() );
         }
 
         try

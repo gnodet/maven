@@ -19,13 +19,8 @@ package org.apache.maven.profiles;
  * under the License.
  */
 
-import org.apache.maven.model.Activation;
-import org.apache.maven.model.ActivationFile;
-import org.apache.maven.model.ActivationProperty;
-import org.apache.maven.model.Profile;
-import org.apache.maven.model.Repository;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ProfilesConversionUtils
@@ -37,118 +32,108 @@ public class ProfilesConversionUtils
     {
     }
 
-    public static Profile convertFromProfileXmlProfile( org.apache.maven.profiles.Profile profileXmlProfile )
+    public static org.apache.maven.model.Profile convertFromProfileXmlProfile( Profile profileXmlProfile )
     {
-        Profile profile = new Profile();
+        org.apache.maven.model.Profile.Builder profile = org.apache.maven.model.Profile.newBuilder();
 
-        profile.setId( profileXmlProfile.getId() );
+        profile.id( profileXmlProfile.getId() );
 
-        profile.setSource( "profiles.xml" );
+        profile.location( "", new org.apache.maven.model.InputLocation(
+                new org.apache.maven.model.InputSource( "settings.xml", null ) ) );
 
-        org.apache.maven.profiles.Activation profileActivation = profileXmlProfile.getActivation();
+        org.apache.maven.profiles.Activation settingsActivation = profileXmlProfile.getActivation();
 
-        if ( profileActivation != null )
+        if ( settingsActivation != null )
         {
-            Activation activation = new Activation();
+            org.apache.maven.model.Activation.Builder activation = org.apache.maven.model.Activation.newBuilder();
 
-            activation.setActiveByDefault( profileActivation.isActiveByDefault() );
+            activation.activeByDefault( settingsActivation.isActiveByDefault() );
 
-            activation.setJdk( profileActivation.getJdk() );
+            activation.jdk( settingsActivation.getJdk() );
 
-            org.apache.maven.profiles.ActivationProperty profileProp = profileActivation.getProperty();
-
-            if ( profileProp != null )
+            org.apache.maven.profiles.ActivationProperty settingsProp = settingsActivation.getProperty();
+            if ( settingsProp != null )
             {
-                ActivationProperty prop = new ActivationProperty();
-
-                prop.setName( profileProp.getName() );
-                prop.setValue( profileProp.getValue() );
-
-                activation.setProperty( prop );
+                activation.property( org.apache.maven.model.ActivationProperty.newBuilder()
+                        .name( settingsProp.getName() )
+                        .value( settingsProp.getValue() )
+                        .build() );
             }
 
-
-            ActivationOS profileOs = profileActivation.getOs();
-
-            if ( profileOs != null )
+            org.apache.maven.profiles.ActivationOS settingsOs = settingsActivation.getOs();
+            if ( settingsOs != null )
             {
-                org.apache.maven.model.ActivationOS os = new org.apache.maven.model.ActivationOS();
-
-                os.setArch( profileOs.getArch() );
-                os.setFamily( profileOs.getFamily() );
-                os.setName( profileOs.getName() );
-                os.setVersion( profileOs.getVersion() );
-
-                activation.setOs( os );
+                activation.os( org.apache.maven.model.ActivationOS.newBuilder()
+                        .arch( settingsOs.getArch() )
+                        .family( settingsOs.getFamily() )
+                        .name( settingsOs.getName() )
+                        .version( settingsOs.getVersion() )
+                        .build() );
             }
 
-            org.apache.maven.profiles.ActivationFile profileFile = profileActivation.getFile();
-
-            if ( profileFile != null )
+            org.apache.maven.profiles.ActivationFile settingsFile = settingsActivation.getFile();
+            if ( settingsFile != null )
             {
-                ActivationFile file = new ActivationFile();
-
-                file.setExists( profileFile.getExists() );
-                file.setMissing( profileFile.getMissing() );
-
-                activation.setFile( file );
+                activation.file( org.apache.maven.model.ActivationFile.newBuilder()
+                        .exists( settingsFile.getExists() )
+                        .missing( settingsFile.getMissing() )
+                        .build() );
             }
 
-            profile.setActivation( activation );
+            profile.activation( activation.build() );
         }
 
-        profile.setProperties( profileXmlProfile.getProperties() );
+        profile.properties( profileXmlProfile.getProperties() );
 
-        List repos = profileXmlProfile.getRepositories();
+        List<org.apache.maven.profiles.Repository> repos = profileXmlProfile.getRepositories();
         if ( repos != null )
         {
-            for ( Object repo : repos )
-            {
-                profile.addRepository( convertFromProfileXmlRepository( (org.apache.maven.profiles.Repository) repo ) );
-            }
+            profile.repositories( repos.stream()
+                    .map( ProfilesConversionUtils::convertFromProfileXmlRepository )
+                    .collect( Collectors.toList() ) );
         }
 
-        List pluginRepos = profileXmlProfile.getPluginRepositories();
+        List<org.apache.maven.profiles.Repository> pluginRepos = profileXmlProfile.getPluginRepositories();
         if ( pluginRepos != null )
         {
-            for ( Object pluginRepo : pluginRepos )
-            {
-                profile.addPluginRepository(
-                    convertFromProfileXmlRepository( (org.apache.maven.profiles.Repository) pluginRepo ) );
-            }
+            profile.pluginRepositories( pluginRepos.stream()
+                    .map( ProfilesConversionUtils::convertFromProfileXmlRepository )
+                    .collect( Collectors.toList() ) );
         }
 
-        return profile;
+        return profile.build();
     }
 
-    private static Repository convertFromProfileXmlRepository( org.apache.maven.profiles.Repository profileXmlRepo )
+    private static org.apache.maven.model.Repository convertFromProfileXmlRepository(
+            org.apache.maven.profiles.Repository profileXmlRepo )
     {
-        Repository repo = new Repository();
+        org.apache.maven.model.Repository.Builder repo = org.apache.maven.model.Repository.newBuilder();
 
-        repo.setId( profileXmlRepo.getId() );
-        repo.setLayout( profileXmlRepo.getLayout() );
-        repo.setName( profileXmlRepo.getName() );
-        repo.setUrl( profileXmlRepo.getUrl() );
+        repo.id( profileXmlRepo.getId() );
+        repo.layout( profileXmlRepo.getLayout() );
+        repo.name( profileXmlRepo.getName() );
+        repo.url( profileXmlRepo.getUrl() );
 
         if ( profileXmlRepo.getSnapshots() != null )
         {
-            repo.setSnapshots( convertRepositoryPolicy( profileXmlRepo.getSnapshots() ) );
+            repo.snapshots( convertRepositoryPolicy( profileXmlRepo.getSnapshots() ) );
         }
         if ( profileXmlRepo.getReleases() != null )
         {
-            repo.setReleases( convertRepositoryPolicy( profileXmlRepo.getReleases() ) );
+            repo.releases( convertRepositoryPolicy( profileXmlRepo.getReleases() ) );
         }
 
-        return repo;
+        return repo.build();
     }
 
-    private static org.apache.maven.model.RepositoryPolicy convertRepositoryPolicy( RepositoryPolicy profileXmlRepo )
+    private static org.apache.maven.model.RepositoryPolicy convertRepositoryPolicy( RepositoryPolicy profileXmlPolicy )
     {
-        org.apache.maven.model.RepositoryPolicy policy = new org.apache.maven.model.RepositoryPolicy();
-        policy.setEnabled( profileXmlRepo.isEnabled() );
-        policy.setUpdatePolicy( profileXmlRepo.getUpdatePolicy() );
-        policy.setChecksumPolicy( profileXmlRepo.getChecksumPolicy() );
+        org.apache.maven.model.RepositoryPolicy policy = org.apache.maven.model.RepositoryPolicy.newBuilder()
+                .enabled( Boolean.toString( profileXmlPolicy.isEnabled() ) )
+                .updatePolicy( profileXmlPolicy.getUpdatePolicy() )
+                .checksumPolicy( profileXmlPolicy.getChecksumPolicy() )
+                .build();
         return policy;
-    }
+   }
 
 }

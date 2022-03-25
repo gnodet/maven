@@ -79,11 +79,10 @@ public class DefaultLifecycleBindingsInjector
         }
         else if ( !defaultPlugins.isEmpty() )
         {
-            Model lifecycleModel = new Model();
-            lifecycleModel.setBuild( new Build() );
-            lifecycleModel.getBuild().getPlugins().addAll( defaultPlugins );
-
-            merger.merge( model, lifecycleModel );
+            Model lifecycleModel = Model.newBuilder()
+                            .build( Build.newBuilder().plugins( new ArrayList<>( defaultPlugins ) ).build() )
+                            .build();
+            model = merger.merge( model, lifecycleModel );
         }
         return model;
     }
@@ -108,11 +107,10 @@ public class DefaultLifecycleBindingsInjector
             Map<Object, Object> context =
                 Collections.singletonMap( PLUGIN_MANAGEMENT, target.getBuild().getPluginManagement() );
 
-            Build.Builder bbuilder = new Build.Builder( targetBuild );
-            mergePluginContainer_Plugins( bbuilder, targetBuild, source.getBuild(), false, context );
+            Build.Builder builder = Build.newBuilder( target.getBuild() );
+            mergePluginContainer_Plugins( builder, targetBuild, source.getBuild(), false, context );
 
-            Model.Builder mbuilder = new Model.Builder( target );
-            return builder.build();
+            return target.withBuild( builder.build() );
         }
 
         @SuppressWarnings( { "checkstyle:methodname" } )
@@ -142,13 +140,13 @@ public class DefaultLifecycleBindingsInjector
                     Plugin existing = merged.get( key );
                     if ( existing != null )
                     {
-                        mergePlugin( existing, element, sourceDominant, context );
+                        element = mergePlugin( existing, element, sourceDominant, context );
                     }
                     else
                     {
-                        merged.put( key, element );
                         added.put( key, element );
                     }
+                    merged.put( key, element );
                 }
 
                 if ( !added.isEmpty() )
@@ -162,7 +160,8 @@ public class DefaultLifecycleBindingsInjector
                             Plugin addedPlugin = added.get( key );
                             if ( addedPlugin != null )
                             {
-                                Plugin plugin = mergePlugin( managedPlugin, addedPlugin, sourceDominant, Collections.emptyMap() );
+                                Plugin plugin = mergePlugin( managedPlugin, addedPlugin,
+                                        sourceDominant, Collections.emptyMap() );
                                 merged.put( key, plugin );
                             }
                         }

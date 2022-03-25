@@ -594,7 +594,7 @@ public class ${className}
 #set ( $rootTag = $rootXml.tagName )
 #set ( $rootUcapName = $Helper.capitalise( $root.name ) )
 #set ( $rootLcapName = $Helper.uncapitalise( $root.name ) )
-    private Model read( XmlPullParser parser, boolean strict, InputSource source )
+    public Model read( XmlPullParser parser, boolean strict, InputSource source )
         throws IOException, XmlPullParserException
     {
         $rootUcapName $rootLcapName = null;
@@ -639,6 +639,7 @@ public class ${className}
     {
         String tagName = parser.getName();
         ${classUcapName}.Builder ${classLcapName} = ${classUcapName}.newBuilder( true );
+        ${classLcapName}.location( "", new InputLocation( parser.getLineNumber(), parser.getColumnNumber(), source ) );
         for ( int i = parser.getAttributeCount() - 1; i >= 0; i-- )
         {
             String name = parser.getAttributeName( i );
@@ -799,6 +800,16 @@ public class ${className}
                 return tagName;
         }
     }
+
+    /**
+     * Sets the state of the "add default entities" flag.
+     *
+     * @param addDefaultEntities a addDefaultEntities object.
+     */
+    public void setAddDefaultEntities( boolean addDefaultEntities )
+    {
+        this.addDefaultEntities = addDefaultEntities;
+    } //-- void setAddDefaultEntities( boolean )
 
     public static interface ContentTransformer
     {

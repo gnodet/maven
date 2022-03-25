@@ -51,11 +51,8 @@ public class ProjectSorterTest
 
     private Parent createParent( String groupId, String artifactId, String version )
     {
-        Parent plugin = new Parent();
-        plugin.setGroupId( groupId );
-        plugin.setArtifactId( artifactId );
-        plugin.setVersion( version );
-        return plugin;
+        return Parent.newBuilder()
+                .groupId( groupId ).artifactId( artifactId ).version( version ).build();
     }
 
     private Dependency createDependency( MavenProject project )
@@ -65,11 +62,8 @@ public class ProjectSorterTest
 
     private Dependency createDependency( String groupId, String artifactId, String version )
     {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( groupId );
-        dependency.setArtifactId( artifactId );
-        dependency.setVersion( version );
-        return dependency;
+        return Dependency.newBuilder()
+                .groupId( groupId ).artifactId( artifactId ).version( version ).build();
     }
 
     private Plugin createPlugin( MavenProject project )
@@ -79,30 +73,22 @@ public class ProjectSorterTest
 
     private Plugin createPlugin( String groupId, String artifactId, String version )
     {
-        Plugin plugin = new Plugin();
-        plugin.setGroupId( groupId );
-        plugin.setArtifactId( artifactId );
-        plugin.setVersion( version );
-        return plugin;
+        return Plugin.newBuilder()
+                .groupId( groupId ).artifactId( artifactId ).version( version ).build();
     }
 
     private Extension createExtension( String groupId, String artifactId, String version )
     {
-        Extension extension = new Extension();
-        extension.setGroupId( groupId );
-        extension.setArtifactId( artifactId );
-        extension.setVersion( version );
-        return extension;
+        return Extension.newBuilder()
+                .groupId( groupId ).artifactId( artifactId ).version( version ).build();
     }
 
     private static MavenProject createProject( String groupId, String artifactId, String version )
     {
-        Model model = new Model();
-        model.setGroupId( groupId );
-        model.setArtifactId( artifactId );
-        model.setVersion( version );
-        model.setBuild( new Build() );
-        return new MavenProject( model );
+        return new MavenProject( Model.newBuilder()
+                .groupId( groupId ).artifactId( artifactId ).version( version )
+                .build( Build.newInstance() )
+                .build() );
     }
 
     @Test
@@ -111,15 +97,15 @@ public class ProjectSorterTest
     {
         MavenProject project = createProject( "group", "artifact", "1.0" );
 
-        Build build = project.getModel().getBuild();
+        Build build = project.getBuild();
 
         Plugin plugin = createPlugin( "other.group", "other-artifact", "1.0" );
 
         Dependency dep = createDependency( "group", "artifact", "1.0" );
 
-        plugin.addDependency( dep );
+        plugin = plugin.withDependencies( Collections.singletonList( dep ) );
 
-        build.addPlugin( plugin );
+        project.setBuild( build.withPlugins( Collections.singletonList( plugin ) ) );
 
         new ProjectSorter( Collections.singletonList( project ) );
     }
@@ -128,21 +114,16 @@ public class ProjectSorterTest
     public void testShouldNotFailWhenManagedPluginDepReferencesCurrentProject()
         throws Exception
     {
-        MavenProject project = createProject( "group", "artifact", "1.0" );
-
-        Build build = project.getModel().getBuild();
-
-        PluginManagement pMgmt = new PluginManagement();
-
-        Plugin plugin = createPlugin( "other.group", "other-artifact", "1.0" );
-
         Dependency dep = createDependency( "group", "artifact", "1.0" );
 
-        plugin.addDependency( dep );
+        Plugin plugin = createPlugin( "other.group", "other-artifact", "1.0" )
+                .withDependencies( Collections.singletonList( dep ) );
 
-        pMgmt.addPlugin( plugin );
+        PluginManagement pMgt = PluginManagement.newBuilder()
+                        .plugins( Collections.singletonList( plugin ) ).build();
 
-        build.setPluginManagement( pMgmt );
+        MavenProject project = createProject( "group", "artifact", "1.0" );
+        project.setBuild( project.getBuild().withPluginManagement( pMgt ) );
 
         new ProjectSorter( Collections.singletonList( project ) );
     }
@@ -151,13 +132,10 @@ public class ProjectSorterTest
     public void testShouldNotFailWhenProjectReferencesNonExistentProject()
         throws Exception
     {
-        MavenProject project = createProject( "group", "artifact", "1.0" );
-
-        Build build = project.getModel().getBuild();
-
         Extension extension = createExtension( "other.group", "other-artifact", "1.0" );
 
-        build.addExtension( extension );
+        MavenProject project = createProject( "group", "artifact", "1.0" );
+        project.setBuild( project.getBuild().withExtensions( Collections.singletonList( extension ) ) );
 
         new ProjectSorter( Collections.singletonList( project ) );
     }
@@ -171,7 +149,7 @@ public class ProjectSorterTest
         projects.add( project1 );
         MavenProject project2 = createProject( "groupId2", "artifactId", "1.0" );
         projects.add( project2 );
-        project1.getDependencies().add( createDependency( project2 ) );
+        project1.setDependencies( Collections.singletonList( createDependency( project2 ) ) );
 
         projects = new ProjectSorter( projects ).getSortedProjects();
 
@@ -188,7 +166,7 @@ public class ProjectSorterTest
         projects.add( project1 );
         MavenProject project2 = createProject( "groupId", "artifactId2", "1.0" );
         projects.add( project2 );
-        project1.getDependencies().add( createDependency( project2 ) );
+        project1.setDependencies( Collections.singletonList( createDependency( project2 ) ) );
 
         projects = new ProjectSorter( projects ).getSortedProjects();
 
@@ -238,26 +216,23 @@ public class ProjectSorterTest
 
         MavenProject declaringProject = createProject( "groupId", "declarer", "1.0" );
         declaringProject.setParent( parentProject );
-        declaringProject.getModel().setParent( createParent( parentProject ) );
+        declaringProject.setModel( declaringProject.getModel().withParent( createParent( parentProject ) ) );
         projects.add( declaringProject );
 
         MavenProject pluginLevelDepProject = createProject( "groupId", "plugin-level-dep", "1.0" );
         pluginLevelDepProject.setParent( parentProject );
-        pluginLevelDepProject.getModel().setParent( createParent( parentProject ) );
+        pluginLevelDepProject.setModel( pluginLevelDepProject.getModel().withParent( createParent( parentProject ) ) );
         projects.add( pluginLevelDepProject );
 
         MavenProject pluginProject = createProject( "groupId", "plugin", "1.0" );
         pluginProject.setParent( parentProject );
-        pluginProject.getModel().setParent( createParent( parentProject ) );
+        pluginProject.setModel( pluginProject.getModel().withParent( createParent( parentProject ) ) );
         projects.add( pluginProject );
 
-        Plugin plugin = createPlugin( pluginProject );
+        Plugin plugin = createPlugin( pluginProject )
+                .withDependencies( Collections.singletonList( createDependency( pluginLevelDepProject ) ) );
 
-        plugin.addDependency( createDependency( pluginLevelDepProject ) );
-
-        Build build = declaringProject.getModel().getBuild();
-
-        build.addPlugin( plugin );
+        declaringProject.setBuild( declaringProject.getBuild().withPlugins( Collections.singletonList( plugin ) ) );
 
         projects = new ProjectSorter( projects ).getSortedProjects();
 
@@ -282,21 +257,18 @@ public class ProjectSorterTest
 
         MavenProject pluginProject = createProject( "groupId", "plugin", "1.0" );
         pluginProject.setParent( parentProject );
-        pluginProject.getModel().setParent( createParent( parentProject ) );
+        pluginProject.setModel( pluginProject.getModel().withParent( createParent( parentProject ) ) );
         projects.add( pluginProject );
 
         MavenProject pluginLevelDepProject = createProject( "groupId", "plugin-level-dep", "1.0" );
         pluginLevelDepProject.setParent( parentProject );
-        pluginLevelDepProject.getModel().setParent( createParent( parentProject ) );
+        pluginLevelDepProject.setModel( pluginLevelDepProject.getModel().withParent( createParent( parentProject ) ) );
         projects.add( pluginLevelDepProject );
 
-        Plugin plugin = createPlugin( pluginProject );
+        Plugin plugin = createPlugin( pluginProject )
+                .withDependencies( Collections.singletonList( createDependency( pluginLevelDepProject ) ) );
 
-        plugin.addDependency( createDependency( pluginLevelDepProject ) );
-
-        Build build = parentProject.getModel().getBuild();
-
-        build.addPlugin( plugin );
+        parentProject.setBuild( parentProject.getBuild().withPlugins( Collections.singletonList( plugin ) ) );
 
         projects = new ProjectSorter( projects ).getSortedProjects();
 
@@ -315,11 +287,13 @@ public class ProjectSorterTest
 
         MavenProject pluginProjectA = createProject( "group", "plugin-a", "2.0-SNAPSHOT" );
         projects.add( pluginProjectA );
-        pluginProjectA.getModel().getBuild().addPlugin( createPlugin( "group", "plugin-b", "1.0" ) );
+        pluginProjectA.setBuild( pluginProjectA.getBuild()
+                .withPlugins( Collections.singletonList( createPlugin( "group", "plugin-b", "1.0" ) ) ) );
 
         MavenProject pluginProjectB = createProject( "group", "plugin-b", "2.0-SNAPSHOT" );
         projects.add( pluginProjectB );
-        pluginProjectB.getModel().getBuild().addPlugin( createPlugin( "group", "plugin-a", "1.0" ) );
+        pluginProjectB.setBuild( pluginProjectB.getBuild()
+                .withPlugins( Collections.singletonList( createPlugin( "group", "plugin-a", "1.0" ) ) ) );
 
         projects = new ProjectSorter( projects ).getSortedProjects();
 
@@ -335,7 +309,8 @@ public class ProjectSorterTest
 
         MavenProject usingProject = createProject( "group", "project", "1.0" );
         projects.add( usingProject );
-        usingProject.getModel().addDependency( createDependency( "group", "dependency", "1.0" ) );
+        usingProject.setModel( usingProject.getModel()
+                .withDependencies( Collections.singletonList( createDependency( "group", "dependency", "1.0" ) ) ) );
 
         MavenProject pluginProject = createProject( "group", "dependency", "1.0" );
         projects.add( pluginProject );
@@ -354,7 +329,8 @@ public class ProjectSorterTest
 
         MavenProject usingProject = createProject( "group", "project", "1.0" );
         projects.add( usingProject );
-        usingProject.getModel().addDependency( createDependency( "group", "dependency", "[1.0,)" ) );
+        usingProject.setModel( usingProject.getModel()
+                .withDependencies( Collections.singletonList( createDependency( "group", "dependency", "[1.0,)" ) ) ) );
 
         MavenProject pluginProject = createProject( "group", "dependency", "1.0" );
         projects.add( pluginProject );

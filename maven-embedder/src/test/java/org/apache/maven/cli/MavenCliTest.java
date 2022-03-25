@@ -435,7 +435,7 @@ public class MavenCliTest
     {
         MavenCli cli = new MavenCli();
         CliRequest request = new CliRequest( new String[] { }, null );
-        request.commandLine = CommandLine.newInstance();
+        request.commandLine = new CommandLine.Builder().build();
         MavenExecutionRequest executionRequest;
 
         // Use default

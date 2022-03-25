@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Parent;
@@ -179,7 +180,7 @@ class DefaultModelResolver
     }
 
     @Override
-    public ModelSource resolveModel( final Parent parent )
+    public ModelSource resolveModel( final Parent parent, final AtomicReference<Parent> modified )
         throws UnresolvableModelException
     {
         try
@@ -217,11 +218,10 @@ class DefaultModelResolver
             String newVersion = versionRangeResult.getHighestVersion().toString();
             if ( !parent.getVersion().equals( newVersion ) )
             {
-                throw new UnsupportedOperationException( "TODO NOT IMPLEMENTED: setVersion on parent" );
-                //parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+                modified.set( parent.withVersion( newVersion ) );
             }
 
-            return resolveModel( parent.getGroupId(), parent.getArtifactId(), parent.getVersion() );
+            return resolveModel( parent.getGroupId(), parent.getArtifactId(), newVersion );
         }
         catch ( final VersionRangeResolutionException e )
         {
@@ -232,7 +232,7 @@ class DefaultModelResolver
     }
 
     @Override
-    public ModelSource resolveModel( final Dependency dependency )
+    public ModelSource resolveModel( final Dependency dependency, AtomicReference<Dependency> modified )
         throws UnresolvableModelException
     {
         try
@@ -270,11 +270,10 @@ class DefaultModelResolver
             String newVersion = versionRangeResult.getHighestVersion().toString();
             if ( !dependency.getVersion().equals( newVersion ) )
             {
-                throw new UnsupportedOperationException( "TODO NOT IMPLEMENTED: setVersion on dependency" );
-                //parent.setVersion( versionRangeResult.getHighestVersion().toString() );
+                modified.set( dependency.withVersion( newVersion ) );
             }
 
-            return resolveModel( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+            return resolveModel( dependency.getGroupId(), dependency.getArtifactId(), newVersion );
         }
         catch ( VersionRangeResolutionException e )
         {
