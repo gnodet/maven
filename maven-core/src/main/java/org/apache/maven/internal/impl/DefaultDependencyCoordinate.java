@@ -19,12 +19,13 @@ package org.apache.maven.internal.impl;
  * under the License.
  */
 
-import java.util.Objects;
+import java.util.Collection;
 
-import org.apache.maven.api.Dependency;
+import org.apache.maven.api.DependencyCoordinate;
+import org.apache.maven.api.Exclusion;
 import org.apache.maven.api.Scope;
 import org.apache.maven.api.Type;
-import org.apache.maven.api.Version;
+import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.services.TypeRegistry;
@@ -32,28 +33,16 @@ import org.eclipse.aether.artifact.ArtifactProperties;
 
 import static org.apache.maven.internal.impl.Utils.nonNull;
 
-public class DefaultDependency implements Dependency
+public class DefaultDependencyCoordinate implements DependencyCoordinate
 {
     private final AbstractSession session;
     private final org.eclipse.aether.graph.Dependency dependency;
-    private final String id;
 
-    public DefaultDependency( @Nonnull AbstractSession session,
-                              @Nonnull org.eclipse.aether.graph.Dependency dependency )
+    public DefaultDependencyCoordinate( @Nonnull AbstractSession session,
+                                        @Nonnull org.eclipse.aether.graph.Dependency dependency )
     {
         this.session = nonNull( session, "session" );
         this.dependency = nonNull( dependency, "dependency" );
-        this.id = getGroupId()
-                + ':' + getArtifactId()
-                + ':' + getExtension()
-                + ( getClassifier().length() > 0 ? ":" + getClassifier() : "" )
-                + ':' + getVersion();
-    }
-
-    @Override
-    public String id()
-    {
-        return id;
     }
 
     @Nonnull
@@ -81,9 +70,9 @@ public class DefaultDependency implements Dependency
     }
 
     @Override
-    public Version getVersion()
+    public VersionRange getVersion()
     {
-        return session.parseVersion( dependency.getArtifact().getVersion() );
+        return session.parseVersionRange( dependency.getArtifact().getVersion() );
     }
 
     @Override
@@ -96,14 +85,8 @@ public class DefaultDependency implements Dependency
     public Type getType()
     {
         String type = dependency.getArtifact().getProperty( ArtifactProperties.TYPE,
-                dependency.getArtifact().getExtension() );
+                            dependency.getArtifact().getExtension() );
         return session.getService( TypeRegistry.class ).getType( type );
-    }
-
-    @Override
-    public boolean isSnapshot()
-    {
-        return DefaultVersionParser.checkSnapshot( dependency.getArtifact().getVersion() );
     }
 
     @Nonnull
@@ -115,27 +98,35 @@ public class DefaultDependency implements Dependency
 
     @Nullable
     @Override
-    public boolean isOptional()
+    public Boolean getOptional()
     {
-        return dependency.isOptional();
+        return dependency.getOptional();
     }
 
+    @Nonnull
     @Override
-    public boolean equals( Object o )
+    public Collection<Exclusion> getExclusions()
     {
-        return o instanceof DefaultDependency
-                && Objects.equals( id, ( (DefaultDependency) o ).id );
+        return new MappedCollection<>( dependency.getExclusions(), this::toExclusion );
     }
 
-    @Override
-    public int hashCode()
+    private Exclusion toExclusion( org.eclipse.aether.graph.Exclusion exclusion )
     {
-        return id.hashCode();
-    }
+        return new Exclusion()
+        {
+            @Nullable
+            @Override
+            public String getGroupId()
+            {
+                return exclusion.getGroupId();
+            }
 
-    @Override
-    public String toString()
-    {
-        return dependency.toString();
+            @Nullable
+            @Override
+            public String getArtifactId()
+            {
+                return exclusion.getArtifactId();
+            }
+        };
     }
 }
