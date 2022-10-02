@@ -19,6 +19,8 @@ package org.apache.maven.artifact.handler;
  * under the License.
  */
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 /**

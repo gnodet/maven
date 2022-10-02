@@ -83,10 +83,10 @@ public class Xpp3Dom
         this.name = Objects.requireNonNull( name );
         this.value = value;
         this.attributes = attributes != null
-                ? Collections.unmodifiableMap( new HashMap<>( attributes ) )
+                ? Map.copyOf( attributes )
                 : Collections.emptyMap();
         this.children = children != null
-                ? Collections.unmodifiableList( new ArrayList<>( children ) )
+                ? List.copyOf( children )
                 : Collections.emptyList();
         this.location = location;
     }

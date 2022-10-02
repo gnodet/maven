@@ -113,7 +113,7 @@ public class DelegatingLocalArtifactRepository
 
         versions.addAll( userLocalArtifactRepository.findVersions( artifact ) );
 
-        return Collections.unmodifiableList( new ArrayList<>( versions ) );
+        return List.copyOf( versions );
     }
 
     public String pathOfLocalRepositoryMetadata( ArtifactMetadata metadata, ArtifactRepository repository )

@@ -124,7 +124,7 @@ public class ProjectActivation
     @Deprecated
     public List<String> getSelectedProjects()
     {
-        return Collections.unmodifiableList( new ArrayList<>( getProjectSelectors( pa -> pa.active ) ) );
+        return List.copyOf( getProjectSelectors( pa -> pa.active ) );
     }
 
     /**
@@ -135,7 +135,7 @@ public class ProjectActivation
     @Deprecated
     public List<String> getExcludedProjects()
     {
-        return Collections.unmodifiableList( new ArrayList<>( getProjectSelectors( pa -> !pa.active ) ) );
+        return List.copyOf( getProjectSelectors( pa -> !pa.active ) );
     }
 
     /**

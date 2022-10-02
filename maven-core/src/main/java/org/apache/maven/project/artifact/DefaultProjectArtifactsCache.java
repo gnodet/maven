@@ -116,10 +116,10 @@ public class DefaultProjectArtifactsCache
             }
             collect = scopesToCollect == null
                 ? Collections.emptySet()
-                : Collections.unmodifiableSet( new HashSet<>( scopesToCollect ) );
+                : Set.copyOf( scopesToCollect );
             resolve = scopesToResolve == null
                 ? Collections.emptySet()
-                : Collections.unmodifiableSet( new HashSet<>( scopesToResolve ) );
+                : Set.copyOf( scopesToResolve );
             this.aggregating = aggregating;
 
             int hash = 17;

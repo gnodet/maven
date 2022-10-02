@@ -41,7 +41,7 @@ public class InputLocation
         this.lineNumber = -1;
         this.columnNumber = -1;
         this.source = source;
-        this.locations = Collections.singletonMap( 0, this );
+        this.locations = Map.of( 0, this );
     }
 
     public InputLocation( int lineNumber, int columnNumber )
@@ -68,7 +68,7 @@ public class InputLocation
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.source = source;
-        this.locations = ImmutableCollections.copy( locations );
+        this.locations = Map.copyOf( locations );
     }
 
     public int getLineNumber()

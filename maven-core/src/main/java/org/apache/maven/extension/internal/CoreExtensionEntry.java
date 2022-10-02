@@ -51,8 +51,8 @@ public class CoreExtensionEntry
     public CoreExtensionEntry( ClassRealm realm, Collection<String> artifacts, Collection<String> packages )
     {
         this.realm = realm;
-        this.artifacts = Collections.unmodifiableSet( new HashSet<>( artifacts ) );
-        this.packages = Collections.unmodifiableSet( new HashSet<>( packages ) );
+        this.artifacts = Set.copyOf( artifacts );
+        this.packages = Set.copyOf( packages );
     }
 
     /**

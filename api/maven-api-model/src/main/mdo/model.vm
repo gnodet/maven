@@ -182,15 +182,17 @@ public class ${class.name}
         this.modelEncoding = modelEncoding;
     #end
     #foreach ( $field in $class.getFields($version) )
-      #if ( $field.type == "java.util.List" || $field.type == "java.util.Properties" || $field.type == "java.util.Map" )
-        this.${field.name} = ImmutableCollections.copy( ${field.name} );
+      #if ( $field.type == "java.util.List" )
+        this.${field.name} = List.copyOf( ${field.name} );
+      #elseif ( $field.type == "java.util.Properties" )
+        this.${field.name} = Map.copyOf( ${field.name} );
       #else
         this.${field.name} = ${field.name};
       #end
     #end
     #if ( $locationTracking )
       #if ( ! $class.superClass )
-        this.locations = ImmutableCollections.copy( locations );
+        this.locations = Map.copyOf( locations );
         this.location = location;
       #end
       #foreach ( $field in $class.getFields($version) )

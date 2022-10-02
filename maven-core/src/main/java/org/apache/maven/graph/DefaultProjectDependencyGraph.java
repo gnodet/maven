@@ -80,7 +80,7 @@ public class DefaultProjectDependencyGraph
                                           Collection<MavenProject> projects )
             throws CycleDetectedException, DuplicateProjectException
     {
-        this.allProjects = Collections.unmodifiableList( new ArrayList<>( allProjects ) );
+        this.allProjects = List.copyOf( allProjects );
         this.sorter = new ProjectSorter( projects );
         this.order = new HashMap<>();
         this.projects = new HashMap<>();

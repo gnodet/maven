@@ -44,7 +44,7 @@ public class ProfileActivation
     @Deprecated
     public List<String> getActiveProfiles()
     {
-        return Collections.unmodifiableList( new ArrayList<>( getProfileIds( pa -> pa.active ) ) );
+        return List.copyOf( getProfileIds( pa -> pa.active ) );
     }
 
     /**
@@ -54,7 +54,7 @@ public class ProfileActivation
     @Deprecated
     public List<String> getInactiveProfiles()
     {
-        return Collections.unmodifiableList( new ArrayList<>( getProfileIds( pa -> !pa.active ) ) );
+        return List.copyOf( getProfileIds( pa -> !pa.active ) );
     }
 
     /**

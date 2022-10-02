@@ -158,7 +158,7 @@ public class DefaultPluginArtifactsCache
         assertUniqueKey( key );
 
         CacheRecord record =
-            new CacheRecord( Collections.unmodifiableList( new ArrayList<>( pluginArtifacts ) ) );
+            new CacheRecord( List.copyOf( pluginArtifacts ) );
 
         cache.put( key, record );
 

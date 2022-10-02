@@ -49,7 +49,7 @@ public class CoreExports
 
     public CoreExports( ClassRealm realm, Set<String> exportedArtifacts, Set<String> exportedPackages )
     {
-        this.artifacts = Collections.unmodifiableSet( new HashSet<>( exportedArtifacts ) );
+        this.artifacts = Set.copyOf( exportedArtifacts );
         this.packages = exportedPackages.stream().collect(
                 collectingAndThen( toMap( identity(), v -> realm ), Collections::unmodifiableMap ) );
     }
