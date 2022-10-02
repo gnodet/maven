@@ -46,7 +46,9 @@ under the License.
   <inceptionYear>2001</inceptionYear>
 
   <properties>
-    <javaVersion>8</javaVersion>
+    <javaVersion>11</javaVersion>
+    <maven.compiler.source>${javaVersion}</maven.compiler.source>
+    <maven.compiler.target>${javaVersion}</maven.compiler.target>
     <classWorldsVersion>2.6.0</classWorldsVersion>
     <commonsCliVersion>1.5.0</commonsCliVersion>
     <commonsIoVersion>2.11.0</commonsIoVersion>
@@ -597,27 +599,6 @@ under the License.
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.21</version>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java18</artifactId>
-            <version>1.0</version>
-          </signature>
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-java-compat</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
