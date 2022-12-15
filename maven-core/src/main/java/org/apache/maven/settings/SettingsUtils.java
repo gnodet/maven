@@ -35,7 +35,7 @@ public final class SettingsUtils {
      * @param recessiveSourceLevel
      */
     public static void merge(Settings dominant, Settings recessive, String recessiveSourceLevel) {
-        SettingsUtilsV4.merge(dominant.getDelegate(), recessive.getDelegate(), recessiveSourceLevel);
+        dominant.delegate = SettingsUtilsV4.merge(dominant.getDelegate(), recessive.getDelegate());
     }
 
     /**
