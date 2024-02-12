@@ -83,26 +83,26 @@ public class DefaultDependencyResolver implements DependencyResolver {
      * @return the result of the resolution
      */
     @Override
-    public DependencyResolverResult resolve(final DependencyResolverRequest request)
+    public DependencyResolverResult resolve(DependencyResolverRequest request)
             throws DependencyCollectorException, DependencyResolverException, ArtifactResolverException {
         nonNull(request, "request");
-        final InternalSession session = InternalSession.from(request.getSession());
-        final Predicate<PathType> filter = request.getPathTypeFilter();
-        final PathModularizationCache cache = new PathModularizationCache(); // TODO: should be project-wide cache.
+        InternalSession session = InternalSession.from(request.getSession());
+        Predicate<PathType> filter = request.getPathTypeFilter();
+        PathModularizationCache cache = new PathModularizationCache(); // TODO: should be project-wide cache.
         if (request.getProject().isPresent()) {
-            final DependencyResolutionResult resolved = resolveDependencies(
+            DependencyResolutionResult resolved = resolveDependencies(
                     request.getSession(), request.getProject().get(), request.getPathScope());
 
-            final Map<org.eclipse.aether.graph.Dependency, org.eclipse.aether.graph.DependencyNode> nodes = stream(
+            Map<org.eclipse.aether.graph.Dependency, org.eclipse.aether.graph.DependencyNode> nodes = stream(
                             resolved.getDependencyGraph())
                     .filter(n -> n.getDependency() != null)
                     .collect(Collectors.toMap(DependencyNode::getDependency, n -> n));
 
-            final Node root = session.getNode(resolved.getDependencyGraph());
-            final List<org.eclipse.aether.graph.Dependency> deprendencies = resolved.getResolvedDependencies();
-            final DefaultDependencyResolverResult result =
-                    new DefaultDependencyResolverResult(resolved.getCollectionErrors(), root, deprendencies.size());
-            for (org.eclipse.aether.graph.Dependency dep : deprendencies) {
+            Node root = session.getNode(resolved.getDependencyGraph());
+            List<org.eclipse.aether.graph.Dependency> dependencies = resolved.getResolvedDependencies();
+            DefaultDependencyResolverResult result =
+                    new DefaultDependencyResolverResult(resolved.getCollectionErrors(), root, dependencies.size());
+            for (org.eclipse.aether.graph.Dependency dep : dependencies) {
                 Node node = session.getNode(nodes.get(dep));
                 Path path = dep.getArtifact().getFile().toPath();
                 try {
@@ -114,16 +114,16 @@ public class DefaultDependencyResolver implements DependencyResolver {
             return result;
         }
 
-        final DependencyCollectorResult collectorResult =
+        DependencyCollectorResult collectorResult =
                 session.getService(DependencyCollector.class).collect(request);
-        final List<Node> nodes = flatten(session, collectorResult.getRoot(), request.getPathScope());
-        final List<ArtifactCoordinate> coordinates = nodes.stream()
+        List<Node> nodes = flatten(session, collectorResult.getRoot(), request.getPathScope());
+        List<ArtifactCoordinate> coordinates = nodes.stream()
                 .map(Node::getDependency)
                 .filter(Objects::nonNull)
                 .map(Artifact::toCoordinate)
                 .collect(Collectors.toList());
-        final Map<Artifact, Path> artifacts = session.resolveArtifacts(coordinates);
-        final DefaultDependencyResolverResult result = new DefaultDependencyResolverResult(
+        Map<Artifact, Path> artifacts = session.resolveArtifacts(coordinates);
+        DefaultDependencyResolverResult result = new DefaultDependencyResolverResult(
                 collectorResult.getExceptions(), collectorResult.getRoot(), nodes.size());
         for (Node node : nodes) {
             Dependency d = node.getDependency();
@@ -135,10 +135,6 @@ public class DefaultDependencyResolver implements DependencyResolver {
             }
         }
         return result;
-    }
-
-    private static Stream<DependencyNode> stream(final DependencyNode node) {
-        return Stream.concat(Stream.of(node), node.getChildren().stream().flatMap(DefaultDependencyResolver::stream));
     }
 
     private DependencyResolutionResult resolveDependencies(Session session, Project project, PathScope scope) {
@@ -158,15 +154,19 @@ public class DefaultDependencyResolver implements DependencyResolver {
         }
     }
 
-    private static MavenProject getMavenProject(final Project project) {
+    private static Stream<DependencyNode> stream(DependencyNode node) {
+        return Stream.concat(Stream.of(node), node.getChildren().stream().flatMap(DefaultDependencyResolver::stream));
+    }
+
+    private static MavenProject getMavenProject(Project project) {
         return ((DefaultProject) project).getProject();
     }
 
-    private Collection<String> toScopes(PathScope scope) {
+    private static Collection<String> toScopes(PathScope scope) {
         return map(scope.dependencyScopes(), DependencyScope::id);
     }
 
-    private static DependencyResolverException cannotReadModuleInfo(final Path path, final IOException cause) {
+    private static DependencyResolverException cannotReadModuleInfo(Path path, IOException cause) {
         return new DependencyResolverException("Cannot read module information of " + path, cause);
     }
 }

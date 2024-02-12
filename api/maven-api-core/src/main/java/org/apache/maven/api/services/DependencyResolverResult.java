@@ -77,7 +77,7 @@ public interface DependencyResolverResult extends DependencyCollectorResult {
      * @param type the desired type of path (class-path, module-path, …)
      * @return the option to pass to Java tools
      */
-    default Optional<String> formatOption(final PathType type) {
+    default Optional<String> formatOption(PathType type) {
         List<Path> paths = getDispatchedPaths().get(type);
         if (paths != null) {
             String option = type.option(paths);
