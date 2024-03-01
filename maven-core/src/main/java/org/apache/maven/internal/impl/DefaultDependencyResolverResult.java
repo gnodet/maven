@@ -266,7 +266,7 @@ class DefaultDependencyResolverResult implements DependencyResolverResult {
                 return; // Dependency added, we are done.
             }
         }
-        cache.selectPathType(pathTypes, filter, path).ifPresent((type) -> addPathElement(type, path));
+        addPathElement(cache.selectPathType(pathTypes, filter, path).orElse(PathType.UNRESOLVED), path);
     }
 
     /**

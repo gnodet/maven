@@ -38,6 +38,35 @@ import org.apache.maven.api.annotations.Nonnull;
 @Experimental
 public interface PathType {
     /**
+     * The type for all paths that could not be placed in any of the types requested by a caller.
+     * This type can appear in the return value of a call to
+     * {@link Session#resolveDependencies resolveDependencies(...)} when at least one dependency
+     * cannot be associated to any type specified in the {@code desiredTypes} argument.
+     * Plugins can choose to report a warning to users when unresolved paths exist.
+     */
+    PathType UNRESOLVED = new PathType() {
+        @Override
+        public String name() {
+            return "UNRESOLVED";
+        }
+
+        @Override
+        public String id() {
+            return "UNRESOLVED";
+        }
+
+        @Override
+        public Optional<String> option() {
+            return Optional.empty();
+        }
+
+        @Override
+        public String option(Iterable<? extends Path> paths) {
+            return "";
+        }
+    };
+
+    /**
      * Returns the unique name of this path type, including the module to patch if any.
      * For example, if this type is {@link JavaPathType#MODULES}, then this method returns {@code "MODULES"}.
      * But if this type was created by {@code JavaPathType.patchModule("foo.bar")}, then this method returns

@@ -90,7 +90,7 @@ class PathModularizationCache {
 
     /**
      * Selects the type of path where to place the given dependency.
-     * This method returns one of the values specified in the given array.
+     * This method returns one of the values specified in the given collection.
      * This method does not handle the patch-module paths, because the patches
      * depend on which modules have been previously added on the module-paths.
      *

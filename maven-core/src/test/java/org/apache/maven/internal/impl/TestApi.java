@@ -185,9 +185,12 @@ class TestApi {
                 coord, PathScope.TEST_COMPILE, Arrays.asList(JavaPathType.CLASSES, JavaPathType.MODULES));
         List<Path> classes = dispatched.get(JavaPathType.CLASSES);
         List<Path> modules = dispatched.get(JavaPathType.MODULES);
-        assertEquals(2, dispatched.size());
-        assertEquals(8, classes.size()); // "pluxus.pom" and "junit.jar" are excluded.
+        List<Path> unresolved = dispatched.get(PathType.UNRESOLVED);
+        assertEquals(3, dispatched.size());
+        assertEquals(1, unresolved.size());
+        assertEquals(8, classes.size()); // "plexus.pom" and "junit.jar" are excluded.
         assertEquals(1, modules.size());
+        assertEquals("plexus-1.0.11.pom", unresolved.get(0).getFileName().toString());
         assertEquals("test-extension-1.jar", classes.get(0).getFileName().toString());
         assertEquals("junit-4.13.1.jar", modules.get(0).getFileName().toString());
         assertTrue(paths.containsAll(classes));
@@ -197,10 +200,13 @@ class TestApi {
         dispatched = session.resolveDependencies(coord, PathScope.TEST_COMPILE, Arrays.asList(JavaPathType.CLASSES));
         classes = dispatched.get(JavaPathType.CLASSES);
         modules = dispatched.get(JavaPathType.MODULES);
-        assertEquals(1, dispatched.size());
+        unresolved = dispatched.get(PathType.UNRESOLVED);
+        assertEquals(2, dispatched.size());
+        assertEquals(1, unresolved.size());
         assertEquals(9, classes.size());
         assertNull(modules);
         assertTrue(paths.containsAll(classes));
+        assertEquals("plexus-1.0.11.pom", unresolved.get(0).getFileName().toString());
     }
 
     @Test
