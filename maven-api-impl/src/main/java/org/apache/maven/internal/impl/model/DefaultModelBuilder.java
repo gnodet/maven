@@ -411,10 +411,8 @@ public class DefaultModelBuilder implements ModelBuilder {
             }
 
             @Override
-            public org.apache.maven.api.model.Profile apply(org.apache.maven.api.model.Profile p) {
-                return org.apache.maven.api.model.Profile.newBuilder(p)
-                        .activation(transformActivation(p.getActivation()))
-                        .build();
+            public Profile apply(Profile p) {
+                return p.withActivation(transformActivation(p.getActivation()));
             }
 
             @Override
