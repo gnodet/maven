@@ -29,7 +29,7 @@ async function createJiraIssueAndUpdatePR() {
 
   const auth = {
     headers: {
-      Authorization: `Basic ${Buffer.from(`email@example.com:${jiraToken}`).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(`gnodet:${jiraToken}`).toString('base64')}`,
       'Content-Type': 'application/json',
     }
   };
