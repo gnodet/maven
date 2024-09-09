@@ -1,0 +1,47 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Create JIRA from PR comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  create_jira_issue:
+    if: github.event.comment.body == '@mavenbot create jira'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # or whichever version you prefer
+
+      - name: Create JIRA issue and Update PR title
+        run: |
+          npm install axios
+          node ./scripts/mavenbot-create-jira.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: 'MNG'  # Your JIRA project key
+          JIRA_DOMAIN: 'https://issues.apache.org/jira/issues'
+          PR_NUMBER: ${{ github.event.issue.number }}  # Refers to the PR number
+          PR_TITLE: ${{ github.event.issue.title }}
