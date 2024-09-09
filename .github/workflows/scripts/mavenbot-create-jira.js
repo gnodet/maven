@@ -46,7 +46,7 @@ async function createJiraIssueAndUpdatePR() {
 
   let jiraIssueKey;
   try {
-    const response = await axios.post(`${jiraDomain}/rest/api/3/issue`, issueData, auth);
+    const response = await axios.post(`${jiraDomain}/rest/api/2/issue`, issueData, auth);
     jiraIssueKey = response.data.key;
     console.log(`Created JIRA issue ${jiraIssueKey}`);
   } catch (error) {
