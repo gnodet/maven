@@ -22,7 +22,7 @@ on:
     types: [created]
 
 jobs:
-  create_jira_issue:
+  create-jira-issue:
     if: |
       github.event.issue.pull_request &&
       contains(github.event.comment.body, '@mavenbot create jira') &&
@@ -46,31 +46,32 @@ jobs:
               html_url: pr.data.html_url
             }
 
-      - name: Login to JIRA
-        uses: atlassian/gajira-login@v3
+      - name: Create JIRA issue
+        id: create_issue
         env:
           JIRA_BASE_URL: http://issues.apache.org/jira
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-
-      - name: Create JIRA issue
-        id: create
-        uses: atlassian/gajira-create@v3
-        with:
-          project: MNG
-          issuetype: Task
-          summary: 'Dependabot PR: ${{ fromJson(steps.pr_details.outputs.result).title }}'
-          description: |
-            Dependabot has created a new pull request:
-      
-            ${{ fromJson(steps.pr_details.outputs.result).html_url }}
-      
-            Summary: ${{ fromJson(steps.pr_details.outputs.result).title }}
-      
-            ${{ fromJson(steps.pr_details.outputs.result).body }}
-
-      - name: Log created issue
-        run: echo "Created issue ${{ steps.create.outputs.issue }}"
+        run: |
+          PR_TITLE=$(echo '${{ fromJson(steps.pr_details.outputs.result).title }}' | jq -sRr @uri)
+          PR_BODY=$(echo '${{ fromJson(steps.pr_details.outputs.result).body }}' | jq -sRr @uri)
+          PR_URL=$(echo '${{ fromJson(steps.pr_details.outputs.result).html_url }}' | jq -sRr @uri)
+          
+          RESPONSE=$(curl -u "$JIRA_USER_EMAIL:$JIRA_API_TOKEN" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data '{
+              "fields": {
+                "project": {"key": "MNG"},
+                "summary": "Dependabot PR: '"$PR_TITLE"'",
+                "description": "Dependabot has created a new pull request:\n\n'"$PR_URL"'\n\nSummary: '"$PR_TITLE"'\n\n'"$PR_BODY"'",
+                "issuetype": {"name": "Task"}
+              }
+            }' \
+            "$JIRA_BASE_URL/rest/api/2/issue/")
+          
+          ISSUE_KEY=$(echo $RESPONSE | jq -r '.key')
+          echo "ISSUE_KEY=$ISSUE_KEY" >> $GITHUB_OUTPUT
 
       - name: Comment PR with JIRA issue link
         uses: actions/github-script@v6
@@ -81,5 +82,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
-              body: 'Created JIRA issue: [MNG-${{ steps.create.outputs.issue }}](http://issues.apache.org/jira/browse/MNG-${{ steps.create.outputs.issue }})'
+              body: 'Created JIRA issue: [${{ steps.create_issue.outputs.ISSUE_KEY }}](${{ env.JIRA_BASE_URL }}/browse/${{ steps.create_issue.outputs.ISSUE_KEY }})'
             })
