@@ -23,25 +23,63 @@ on:
 
 jobs:
   create_jira_issue:
-    if: github.event.comment.body == '@mavenbot create jira'
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@mavenbot create jira') &&
+      github.event.issue.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Get PR details
+        id: pr_details
+        uses: actions/github-script@v6
         with:
-          node-version: '14'  # or whichever version you prefer
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              pull_number: context.issue.number
+            });
+            return {
+              title: pr.data.title,
+              body: pr.data.body,
+              html_url: pr.data.html_url
+            }
 
-      - name: "[mavenbot] Create JIRA issue and Update PR title"
-        run: |
-          npm install axios
-          node ./.github/workflows/scripts/mavenbot-create-jira.js
+      - name: Login to JIRA
+        uses: atlassian/gajira-login@v3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JIRA_BASE_URL: http://issues.apache.org/jira
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-          JIRA_PROJECT_KEY: 'MNG'  # Your JIRA project key
-          JIRA_DOMAIN: 'https://issues.apache.org/jira/'
-          PR_NUMBER: ${{ github.event.issue.number }}  # Refers to the PR number
-          PR_TITLE: ${{ github.event.issue.title }}
+
+      - name: Create JIRA issue
+        id: create
+        uses: atlassian/gajira-create@v3
+        with:
+          project: MNG
+          issuetype: Task
+          summary: 'Dependabot PR: ${{ fromJson(steps.pr_details.outputs.result).title }}'
+          description: |
+            Dependabot has created a new pull request:
+      
+            ${{ fromJson(steps.pr_details.outputs.result).html_url }}
+      
+            Summary: ${{ fromJson(steps.pr_details.outputs.result).title }}
+      
+            ${{ fromJson(steps.pr_details.outputs.result).body }}
+
+      - name: Log created issue
+        run: echo "Created issue ${{ steps.create.outputs.issue }}"
+
+      - name: Comment PR with JIRA issue link
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: 'Created JIRA issue: [MNG-${{ steps.create.outputs.issue }}](http://issues.apache.org/jira/browse/MNG-${{ steps.create.outputs.issue }})'
+            })
