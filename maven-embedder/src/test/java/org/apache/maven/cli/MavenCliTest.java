@@ -655,6 +655,20 @@ class MavenCliTest {
         cli.populateRequest(request);
     }
 
+    @Test
+    public void testEmptyProfile() throws Exception {
+        CliRequest request = new CliRequest(new String[] {"-P", ""}, null);
+        cli.cli(request);
+        cli.populateRequest(request);
+    }
+
+    @Test
+    public void testEmptyProject() throws Exception {
+        CliRequest request = new CliRequest(new String[] {"-pl", ""}, null);
+        cli.cli(request);
+        cli.populateRequest(request);
+    }
+
     @ParameterizedTest
     @MethodSource("activateBatchModeArguments")
     public void activateBatchMode(boolean ciEnv, String[] cliArgs, boolean isBatchMode) throws Exception {
