@@ -71,7 +71,7 @@ public class ProfileActivationFilePathInterpolator {
                 Path root = rootLocator.findMandatoryRoot(basedir);
                 return root.toFile().getAbsolutePath();
             }
-            String r = context.getModel().getProperties().get(s);
+            String r = context.getProjectProperties().get(s);
             if (r == null) {
                 r = context.getUserProperties().get(s);
             }

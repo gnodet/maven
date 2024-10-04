@@ -18,13 +18,16 @@
  */
 package org.apache.maven.internal.impl.model;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.model.ProfileActivationContext;
 
 /**
@@ -40,6 +43,8 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
     private Map<String, String> systemProperties = Collections.emptyMap();
 
     private Map<String, String> userProperties = Collections.emptyMap();
+
+    private Map<String, String> projectProperties = Collections.emptyMap();
 
     private Model model;
 
@@ -142,8 +147,21 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
 
     public DefaultProfileActivationContext setModel(Model model) {
         this.model = model;
-
+        this.projectProperties = unmodifiable(model.getProperties());
         return this;
+    }
+
+    @Override
+    public Map<String, String> getProjectProperties() {
+        return projectProperties;
+    }
+
+    public void addProfileProperties(Collection<Profile> profiles) {
+        Map<String, String> props = new HashMap<>(this.projectProperties);
+        for (var profile : profiles) {
+            props.putAll(profile.getProperties());
+        }
+        this.projectProperties = unmodifiable(props);
     }
 
     private static List<String> unmodifiable(List<String> list) {

@@ -202,7 +202,7 @@ public class ConditionProfileActivator implements ProfileActivator {
             // Check project properties
             // TODO: this may leads to instability between file model activation and effective model activation
             //       as the effective model properties may be different from the file model
-            v = context.getModel().getProperties().get(name);
+            v = context.getProjectProperties().get(name);
         }
         if (v == null) {
             // Check system properties
