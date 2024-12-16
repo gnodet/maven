@@ -41,35 +41,58 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Get Apache repositories
-        id: get-repos
+        id: set-matrix
         uses: actions/github-script@v7
         with:
           script: |
-            const repos = await github.paginate(github.rest.repos.listForOrg, {
-              org: 'apache',
-              per_page: 100,
-              type: 'public'
-            });
+            try {
+              console.log('Fetching repositories from Apache organization...');
             
-            // Filter for Java repositories that might use Maven
-            const mavenCandidates = repos.filter(repo => 
-              repo.language === 'Java' || 
-              repo.language === 'Kotlin' ||
-              repo.language === 'Scala'
-            ).map(repo => ({
-              name: repo.name,
-              clone_url: repo.clone_url
-            }));
+              const repos = await github.paginate(github.rest.repos.listForOrg, {
+                org: 'apache',
+                per_page: 100,
+                type: 'public'
+              });
             
-            core.setOutput('matrix', JSON.stringify(mavenCandidates));
+              console.log(`Found ${repos.length} total repositories`);
+            
+              // Filter for Java repositories that might use Maven
+              const mavenCandidates = repos.filter(repo => 
+                repo.language === 'Java' || 
+                repo.language === 'Kotlin' ||
+                repo.language === 'Scala'
+              ).map(repo => ({
+                name: repo.name,
+                clone_url: repo.clone_url
+              }));
+            
+              console.log(`Filtered down to ${mavenCandidates.length} Java/Kotlin/Scala repositories`);
+              console.log('First 5 candidates:', mavenCandidates.slice(0, 5));
+            
+              // Ensure we have at least one repository to test
+              if (mavenCandidates.length === 0) {
+                core.setFailed('No candidate repositories found');
+                return;
+              }
+            
+              // Set a default matrix if empty to avoid workflow errors
+              const matrix = {
+                repo: mavenCandidates.length > 0 ? mavenCandidates : [{ name: 'maven', clone_url: 'https://github.com/apache/maven.git' }]
+              };
+            
+              core.setOutput('matrix', JSON.stringify(matrix));
+            
+            } catch (error) {
+              console.log('Error occurred:', error);
+              core.setFailed(error.message);
+            }
 
   test-maven4:
     needs: discover-projects
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        repo: ${{fromJson(needs.discover-projects.outputs.matrix)}}
+      matrix: ${{fromJson(needs.discover-projects.outputs.matrix)}}
 
     steps:
       - name: Checkout repository
