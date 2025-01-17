@@ -13,9 +13,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>17</javaVersion>
-    <mavenVersion>4.0.0-beta-5</mavenVersion>
+    <mavenVersion>4.0.0-rc-1</mavenVersion>
     <mavenPluginPluginVersion>4.0.0-beta-1</mavenPluginPluginVersion>
-    <version.sisu-maven-plugin>0.9.0.M3</version.sisu-maven-plugin>
   </properties>
 
   <dependencies>
@@ -37,30 +36,10 @@
       <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <version>${mavenPluginPluginVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
-        <version>${version.sisu-maven-plugin}</version>
-        <executions>
-          <execution>
-            <id>index-project</id>
-            <goals>
-              <goal>main-index</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>

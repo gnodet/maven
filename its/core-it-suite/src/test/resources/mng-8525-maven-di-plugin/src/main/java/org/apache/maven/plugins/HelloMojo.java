@@ -38,16 +38,16 @@ package org.apache.maven.plugins;
  */
 
 import org.apache.maven.api.di.Inject;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.Lifecycle.Phase;
 
-@Mojo(name = "hello", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = false)
+@Mojo(name = "hello", defaultPhase = Phase.VALIDATE, projectRequired = false)
 public class HelloMojo implements org.apache.maven.api.plugin.Mojo {
 
+    @Inject
     private MavenDIComponent component;
 
-    @Inject
-    public HelloMojo(MavenDIComponent component) {
+    public HelloMojo() {
         this.component = component;
     }
 
