@@ -21,9 +21,9 @@ package org.apache.maven.cling.executor.embedded;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -116,6 +116,7 @@ public class EmbeddedMavenExecutor implements Executor {
     protected final boolean cacheContexts;
     protected final boolean useMavenArgsEnv;
     protected final AtomicBoolean closed;
+    protected final InputStream originalStdin;
     protected final PrintStream originalStdout;
     protected final PrintStream originalStderr;
     protected final Properties originalProperties;
@@ -130,6 +131,7 @@ public class EmbeddedMavenExecutor implements Executor {
         this.cacheContexts = cacheContexts;
         this.useMavenArgsEnv = useMavenArgsEnv;
         this.closed = new AtomicBoolean(false);
+        this.originalStdin = System.in;
         this.originalStdout = System.out;
         this.originalStderr = System.err;
         this.originalClassLoader = Thread.currentThread().getContextClassLoader();
@@ -149,12 +151,6 @@ public class EmbeddedMavenExecutor implements Executor {
 
         Thread.currentThread().setContextClassLoader(context.tccl);
         try {
-            if (executorRequest.stdOut().isPresent()) {
-                System.setOut(new PrintStream(executorRequest.stdOut().get(), true));
-            }
-            if (executorRequest.stdErr().isPresent()) {
-                System.setErr(new PrintStream(executorRequest.stdErr().get(), true));
-            }
             return context.exec.apply(executorRequest);
         } catch (Exception e) {
             throw new ExecutorException("Failed to execute", e);
@@ -162,6 +158,7 @@ public class EmbeddedMavenExecutor implements Executor {
             try {
                 disposeRuntimeCreatedRealms(context);
             } finally {
+                System.setIn(originalStdin);
                 System.setOut(originalStdout);
                 System.setErr(originalStderr);
                 Thread.currentThread().setContextClassLoader(originalClassLoader);
@@ -281,8 +278,14 @@ public class EmbeddedMavenExecutor implements Executor {
                     try {
                         ArrayList<String> args = new ArrayList<>(mavenArgs);
                         args.addAll(r.arguments());
+                        PrintStream stdout = r.stdOut().isEmpty()
+                                ? null
+                                : new PrintStream(r.stdOut().orElseThrow(), true);
+                        PrintStream stderr = r.stdErr().isEmpty()
+                                ? null
+                                : new PrintStream(r.stdErr().orElseThrow(), true);
                         return (int) doMain.invoke(mavenCli, new Object[] {
-                            args.toArray(new String[0]), r.cwd().toString(), null, null
+                            args.toArray(new String[0]), r.cwd().toString(), stdout, stderr
                         });
                     } catch (Exception e) {
                         throw new ExecutorException("Failed to execute", e);
@@ -290,25 +293,25 @@ public class EmbeddedMavenExecutor implements Executor {
                 };
             } else {
                 // assume 4.x
-                Method mainMethod = cliClass.getMethod("main", String[].class, classWorld.getClass());
-                Class<?> ansiConsole = cliClass.getClassLoader().loadClass("org.jline.jansi.AnsiConsole");
-                Field ansiConsoleInstalled = ansiConsole.getDeclaredField("installed");
-                ansiConsoleInstalled.setAccessible(true);
+                Method mainMethod = cliClass.getMethod(
+                        "main",
+                        String[].class,
+                        classWorld.getClass(),
+                        InputStream.class,
+                        OutputStream.class,
+                        OutputStream.class);
                 exec = r -> {
                     System.setProperties(prepareProperties(r));
                     try {
-                        try {
-                            if (r.stdOut().isPresent() || r.stdErr().isPresent()) {
-                                ansiConsoleInstalled.set(null, 1);
-                            }
-                            ArrayList<String> args = new ArrayList<>(mavenArgs);
-                            args.addAll(r.arguments());
-                            return (int) mainMethod.invoke(null, args.toArray(new String[0]), classWorld);
-                        } finally {
-                            if (r.stdOut().isPresent() || r.stdErr().isPresent()) {
-                                ansiConsoleInstalled.set(null, 0);
-                            }
-                        }
+                        ArrayList<String> args = new ArrayList<>(mavenArgs);
+                        args.addAll(r.arguments());
+                        return (int) mainMethod.invoke(
+                                null,
+                                args.toArray(new String[0]),
+                                classWorld,
+                                r.stdIn().orElse(null),
+                                r.stdOut().orElse(null),
+                                r.stdErr().orElse(null));
                     } catch (Exception e) {
                         throw new ExecutorException("Failed to execute", e);
                     }
@@ -346,8 +349,6 @@ public class EmbeddedMavenExecutor implements Executor {
         // Maven 4.x
         properties.setProperty(
                 "library.jline.path", mavenHome.resolve("lib/jline-native").toString());
-        // TODO: is this needed?
-        properties.setProperty("org.jline.terminal.provider", "dumb");
         properties.setProperty("maven.mainClass", requireNonNull(MAIN_CLASSES.get(request.command()), "mainClass"));
 
         if (request.jvmSystemProperties().isPresent()) {
