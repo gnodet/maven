@@ -54,16 +54,19 @@ public class EmptyLifecycleBindingsInjector extends DefaultLifecycleBindingsInje
     private static final LifecycleRegistry EMPTY_LIFECYCLE_REGISTRY = new LifecycleRegistry() {
 
         @Override
+        @Nonnull
         public Iterator<Lifecycle> iterator() {
             return Collections.emptyIterator();
         }
 
         @Override
+        @Nonnull
         public Optional<Lifecycle> lookup(String id) {
             return Optional.empty();
         }
 
         @Override
+        @Nonnull
         public List<String> computePhases(Lifecycle lifecycle) {
             return List.of();
         }
@@ -71,19 +74,23 @@ public class EmptyLifecycleBindingsInjector extends DefaultLifecycleBindingsInje
 
     private static final PackagingRegistry EMPTY_PACKAGING_REGISTRY = new PackagingRegistry() {
         @Override
-        public Optional<Packaging> lookup(String id) {
+        @Nonnull
+        public Optional<Packaging> lookup(@Nonnull String id) {
             return Optional.of(new Packaging() {
                 @Override
+                @Nonnull
                 public String id() {
                     return id;
                 }
 
                 @Override
+                @Nonnull
                 public Type type() {
                     return null;
                 }
 
                 @Override
+                @Nonnull
                 public Map<String, PluginContainer> plugins() {
                     if ("JAR".equals(id)) {
                         return Map.of(
@@ -138,14 +145,17 @@ public class EmptyLifecycleBindingsInjector extends DefaultLifecycleBindingsInje
         }
 
         @Override
+        @Nonnull
         public Iterator<Lifecycle> iterator() {
             return getDelegate().iterator();
         }
 
+        @Nonnull
         protected LifecycleRegistry getDelegate() {
             return lifecycleRegistry;
         }
 
+        @Nonnull
         @Override
         public List<String> computePhases(Lifecycle lifecycle) {
             return List.of();
@@ -154,7 +164,8 @@ public class EmptyLifecycleBindingsInjector extends DefaultLifecycleBindingsInje
 
     static class WrapperPackagingRegistry implements PackagingRegistry {
         @Override
-        public Optional<Packaging> lookup(String id) {
+        @Nonnull
+        public Optional<Packaging> lookup(@Nonnull String id) {
             return getDelegate().lookup(id);
         }
 

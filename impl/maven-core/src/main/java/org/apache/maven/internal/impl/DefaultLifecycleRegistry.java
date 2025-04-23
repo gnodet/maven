@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 
 import org.apache.maven.api.DependencyScope;
 import org.apache.maven.api.Lifecycle;
+import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.model.InputLocation;
 import org.apache.maven.api.model.InputSource;
 import org.apache.maven.api.model.Plugin;
@@ -127,11 +128,13 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
     }
 
     @Override
+    @Nonnull
     public Stream<Lifecycle> stream() {
         return providers.stream().map(ExtensibleEnumProvider::provides).flatMap(Collection::stream);
     }
 
     @Override
+    @Nonnull
     public Optional<Lifecycle> lookup(String id) {
         return stream().filter(lf -> Objects.equals(id, lf.id())).findAny();
     }
@@ -201,6 +204,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         }
 
         @Override
+        @Nonnull
         public Collection<Lifecycle> provides() {
             try {
                 Map<String, org.apache.maven.lifecycle.Lifecycle> all =
@@ -219,11 +223,13 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         private Lifecycle wrap(org.apache.maven.lifecycle.Lifecycle lifecycle) {
             return new Lifecycle() {
                 @Override
+                @Nonnull
                 public String id() {
                     return lifecycle.getId();
                 }
 
                 @Override
+                @Nonnull
                 public Collection<Phase> phases() {
                     List<String> names = lifecycle.getPhases();
                     List<Phase> phases = new ArrayList<>();
@@ -232,22 +238,26 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
                         String prev = i > 0 ? names.get(i - 1) : null;
                         phases.add(new Phase() {
                             @Override
+                            @Nonnull
                             public String name() {
                                 return name;
                             }
 
                             @Override
+                            @Nonnull
                             public List<Phase> phases() {
                                 return List.of();
                             }
 
                             @Override
+                            @Nonnull
                             public Stream<Phase> allPhases() {
                                 return Stream.concat(
                                         Stream.of(this), phases().stream().flatMap(Lifecycle.Phase::allPhases));
                             }
 
                             @Override
+                            @Nonnull
                             public List<Plugin> plugins() {
                                 Map<String, LifecyclePhase> lfPhases = lifecycle.getDefaultLifecyclePhases();
                                 return lfPhases != null
@@ -258,25 +268,30 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
                             }
 
                             @Override
+                            @Nonnull
                             public Collection<Link> links() {
                                 if (prev == null) {
                                     return List.of();
                                 } else {
                                     return List.of(new Link() {
                                         @Override
+                                        @Nonnull
                                         public Kind kind() {
                                             return Kind.AFTER;
                                         }
 
                                         @Override
+                                        @Nonnull
                                         public Pointer pointer() {
                                             return new Pointer() {
                                                 @Override
+                                                @Nonnull
                                                 public String phase() {
                                                     return prev;
                                                 }
 
                                                 @Override
+                                                @Nonnull
                                                 public Type type() {
                                                     return Type.PROJECT;
                                                 }
@@ -291,6 +306,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
                 }
 
                 @Override
+                @Nonnull
                 public Collection<Alias> aliases() {
                     return Collections.emptyList();
                 }
@@ -357,11 +373,13 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         private static final String MAVEN_CLEAN_PLUGIN_VERSION = "3.4.0";
 
         @Override
+        @Nonnull
         public String id() {
             return Lifecycle.CLEAN;
         }
 
         @Override
+        @Nonnull
         public Collection<Phase> phases() {
             // START SNIPPET: clean
             return List.of(phase(
@@ -373,6 +391,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         }
 
         @Override
+        @Nonnull
         public Collection<Alias> aliases() {
             return List.of(alias("pre-clean", BEFORE + Phase.CLEAN), alias("post-clean", AFTER + Phase.CLEAN));
         }
@@ -380,11 +399,13 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
 
     static class DefaultLifecycle implements Lifecycle {
         @Override
+        @Nonnull
         public String id() {
             return Lifecycle.DEFAULT;
         }
 
         @Override
+        @Nonnull
         public Collection<Phase> phases() {
             // START SNIPPET: default
             return List.of(phase(
@@ -425,6 +446,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         }
 
         @Override
+        @Nonnull
         public Collection<Phase> v3phases() {
             return List.of(phase(
                     ALL,
@@ -447,6 +469,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         }
 
         @Override
+        @Nonnull
         public Collection<Alias> aliases() {
             return List.of(
                     alias("generate-sources", SOURCES),
@@ -474,11 +497,13 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         private static final String PHASE_SITE_DEPLOY = "site-deploy";
 
         @Override
+        @Nonnull
         public String id() {
             return Lifecycle.SITE;
         }
 
         @Override
+        @Nonnull
         public Collection<Phase> phases() {
             // START SNIPPET: site
             return List.of(
@@ -491,6 +516,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         }
 
         @Override
+        @Nonnull
         public Collection<Alias> aliases() {
             return List.of(alias("pre-site", BEFORE + PHASE_SITE), alias("post-site", AFTER + PHASE_SITE));
         }
