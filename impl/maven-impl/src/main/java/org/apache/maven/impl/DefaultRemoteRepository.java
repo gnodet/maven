@@ -40,7 +40,7 @@ public class DefaultRemoteRepository implements RemoteRepository {
      * @param repository the Aether remote repository to wrap
      */
     public DefaultRemoteRepository(@Nonnull org.eclipse.aether.repository.RemoteRepository repository) {
-        this.repository = ImplUtils.nonNull(repository, "repository");
+        this.repository = Objects.requireNonNull(repository, "repository cannot be null");
     }
 
     public org.eclipse.aether.repository.RemoteRepository getRepository() {

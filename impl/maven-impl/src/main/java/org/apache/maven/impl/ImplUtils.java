@@ -31,38 +31,6 @@ import org.apache.maven.api.annotations.Nullable;
  * Provides standardized null checking and type casting functionality.
  */
 class ImplUtils {
-    /**
-     * Ensures the provided value is not null.
-     *
-     * @param <T> the type of the value
-     * @param t the value to check
-     * @return the value if not null
-     * @throws IllegalArgumentException if the value is null
-     */
-    @Nonnull
-    public static <T> T nonNull(@Nullable T t) {
-        if (t == null) {
-            throw new IllegalArgumentException("Value cannot be null");
-        }
-        return t;
-    }
-
-    /**
-     * Ensures the provided value is not null, with a custom error message.
-     *
-     * @param <T> the type of the value
-     * @param t the value to check
-     * @param name the name of the parameter for the error message
-     * @return the value if not null
-     * @throws IllegalArgumentException if the value is null
-     */
-    @Nonnull
-    public static <T> T nonNull(@Nullable T t, @Nonnull String name) {
-        if (t == null) {
-            throw new IllegalArgumentException(name + " cannot be null");
-        }
-        return t;
-    }
 
     /**
      * Casts an object to the specified type, with validation and error handling.
@@ -78,9 +46,9 @@ class ImplUtils {
     public static <T> T cast(@Nonnull Class<T> clazz, @Nullable Object o, @Nonnull String name) {
         if (!clazz.isInstance(o)) {
             if (o == null) {
-                throw new IllegalArgumentException(name + " is null");
+                throw new NullPointerException(name + " is null");
             }
-            throw new IllegalArgumentException(name + " is not an instance of " + clazz.getName());
+            throw new ClassCastException(name + " is not an instance of " + clazz.getName());
         }
         return clazz.cast(o);
     }

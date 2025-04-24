@@ -62,7 +62,6 @@ import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 
 import static org.apache.maven.impl.ImplUtils.cast;
 import static org.apache.maven.impl.ImplUtils.map;
-import static org.apache.maven.impl.ImplUtils.nonNull;
 
 @Named
 @Singleton
@@ -72,7 +71,7 @@ public class DefaultDependencyResolver implements DependencyResolver {
     @Override
     public DependencyResolverResult collect(@Nonnull DependencyResolverRequest request)
             throws DependencyResolverException, IllegalArgumentException {
-        nonNull(request, "request");
+        Objects.requireNonNull(request, "request cannot be null");
         InternalSession session = InternalSession.from(request.getSession());
         RequestTraceHelper.ResolverTrace trace = RequestTraceHelper.enter(session, request);
         try {
@@ -169,7 +168,7 @@ public class DefaultDependencyResolver implements DependencyResolver {
     public DependencyResolverResult resolve(DependencyResolverRequest request)
             throws DependencyResolverException, ArtifactResolverException {
         InternalSession session =
-                InternalSession.from(nonNull(request, "request").getSession());
+                InternalSession.from(Objects.requireNonNull(request, "request cannot be null").getSession());
         RequestTraceHelper.ResolverTrace trace = RequestTraceHelper.enter(session, request);
         try {
             DependencyResolverResult result;
