@@ -24,9 +24,9 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.Lifecycle;
+import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.model.Plugin;
 import org.apache.maven.api.model.PluginExecution;
-import org.apache.maven.api.annotations.Nonnull;
 
 public class Lifecycles {
 
@@ -117,6 +117,7 @@ public class Lifecycles {
             Objects.requireNonNull(kind, "kind cannot be null");
             Objects.requireNonNull(pointer, "pointer cannot be null");
         }
+
         @Override
         @Nonnull
         public String toString() {
@@ -136,6 +137,7 @@ public class Lifecycles {
         DefaultPhasePointer {
             Objects.requireNonNull(phase, "phase cannot be null");
         }
+
         @Override
         @Nonnull
         public String toString() {
@@ -157,6 +159,7 @@ public class Lifecycles {
             Objects.requireNonNull(phase, "phase cannot be null");
             Objects.requireNonNull(scope, "scope cannot be null");
         }
+
         @Override
         @Nonnull
         public String toString() {
@@ -176,6 +179,7 @@ public class Lifecycles {
         DefaultChildrenPointer {
             Objects.requireNonNull(phase, "phase cannot be null");
         }
+
         @Override
         @Nonnull
         public String toString() {
@@ -183,7 +187,7 @@ public class Lifecycles {
         }
     }
 
-     /**
+    /**
      * Record implementation of Lifecycle.Phase.
      *
      * @param name The name of the phase
@@ -192,10 +196,8 @@ public class Lifecycles {
      * @param phases The list of sub-phases
      */
     record DefaultPhase(
-            String name,
-            List<Plugin> plugins,
-            Collection<Lifecycle.Link> links,
-            List<Lifecycle.Phase> phases) implements Lifecycle.Phase {
+            String name, List<Plugin> plugins, Collection<Lifecycle.Link> links, List<Lifecycle.Phase> phases)
+            implements Lifecycle.Phase {
 
         /**
          * Canonical constructor with null validation and defensive copying.
@@ -205,11 +207,8 @@ public class Lifecycles {
          * @param links The collection of links from this phase to other phases
          * @param phases The list of sub-phases
          */
-        public DefaultPhase(
-                String name,
-                List<Plugin> plugins,
-                Collection<Lifecycle.Link> links,
-                List<Lifecycle.Phase> phases) {
+        DefaultPhase(
+                String name, List<Plugin> plugins, Collection<Lifecycle.Link> links, List<Lifecycle.Phase> phases) {
             this.name = Objects.requireNonNull(name, "name cannot be null");
             this.plugins = List.copyOf(Objects.requireNonNull(plugins, "plugins cannot be null"));
             this.links = List.copyOf(Objects.requireNonNull(links, "links cannot be null"));

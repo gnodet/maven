@@ -228,7 +228,8 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
      * @param prev The name of the previous phase (may be null)
      * @param lifecycle The original Maven 3 lifecycle
      */
-    record WrappedPhase(String name, String prev, org.apache.maven.lifecycle.Lifecycle lifecycle) implements Lifecycle.Phase {
+    record WrappedPhase(String name, String prev, org.apache.maven.lifecycle.Lifecycle lifecycle)
+            implements Lifecycle.Phase {
         /**
          * Compact constructor with null validation.
          */
@@ -256,8 +257,8 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
             Map<String, LifecyclePhase> lfPhases = lifecycle.getDefaultLifecyclePhases();
             return lfPhases != null
                     ? List.of(DefaultPackagingRegistry.parseLifecyclePhaseDefinitions(lfPhases)
-                    .values()
-                    .toArray(Plugin[]::new))
+                            .values()
+                            .toArray(Plugin[]::new))
                     : List.of();
         }
 
@@ -267,7 +268,8 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
             if (prev == null) {
                 return List.of();
             } else {
-                return List.of(new Lifecycles.DefaultLink(Lifecycle.Link.Kind.AFTER, new Lifecycles.DefaultPhasePointer(prev)));
+                return List.of(new Lifecycles.DefaultLink(
+                        Lifecycle.Link.Kind.AFTER, new Lifecycles.DefaultPhasePointer(prev)));
             }
         }
     }
