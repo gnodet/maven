@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.maven.api.model.Model;
 import org.apache.maven.model.v4.MavenStaxReader;
@@ -264,7 +263,7 @@ public class PomMemoryAnalyzer {
                             .map(e -> new ValueFrequency(e.getKey(), e.getValue()))
                             .sorted((a, b) -> Long.compare(b.frequency, a.frequency))
                             .limit(5)
-                            .collect(Collectors.toList());
+                            .toList();
 
                     return new GroupAnalysis(
                             groupName, paths, totalUnique, totalOccurrences, totalMemory, totalSavings, topValues);

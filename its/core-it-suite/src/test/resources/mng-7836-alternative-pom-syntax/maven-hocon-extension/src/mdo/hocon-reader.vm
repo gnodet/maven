@@ -165,7 +165,7 @@ public class ${className} {
     protected List<String> getStringList(ConfigValue v) {
         if (v instanceof ConfigList) {
             return ((ConfigList) v).unwrapped().stream().map(Object::toString)
-                .collect(Collectors.toList());
+                .toList();
         }
         throw new IllegalArgumentException("Unable to convert to List<String>: '" + v + "'");
     }
@@ -186,7 +186,7 @@ public class ${className} {
     }
 
     protected <T> List<T> getList(ConfigValue v, Function<ConfigValue, T> parser) {
-        return getList(v).stream().map(parser).collect(Collectors.toList());
+        return getList(v).stream().map(parser).toList();
     }
 
     protected Map<String, String> getStringMap(ConfigValue v) {

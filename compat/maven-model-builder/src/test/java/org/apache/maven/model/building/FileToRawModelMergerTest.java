@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.model.v4.MavenMerger;
@@ -63,7 +62,7 @@ class FileToRawModelMergerTest {
         List<String> overriddenMethods = Stream.of(FileToRawModelMerger.class.getDeclaredMethods())
                 .map(Method::getName)
                 .filter(m -> m.startsWith("merge"))
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(overriddenMethods, hasItems(methodNames.toArray(new String[0])));
     }

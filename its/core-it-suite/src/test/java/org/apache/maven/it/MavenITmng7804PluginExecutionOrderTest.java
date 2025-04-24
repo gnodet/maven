@@ -54,7 +54,7 @@ class MavenITmng7804PluginExecutionOrderTest extends AbstractMavenIntegrationTes
 
         List<String> executions = verifier.loadLogLines().stream()
                 .filter(l -> l.contains(" This should be "))
-                .collect(Collectors.toList());
+                .toList();
         assertEquals(4, executions.size());
         assertTrue(executions.get(0).contains("100"));
         assertTrue(executions.get(1).contains("200"));

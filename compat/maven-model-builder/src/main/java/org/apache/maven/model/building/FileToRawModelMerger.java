@@ -20,7 +20,6 @@ package org.apache.maven.model.building;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.maven.api.model.Build;
 import org.apache.maven.api.model.BuildBase;
@@ -92,7 +91,7 @@ class FileToRawModelMerger extends MavenMerger {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
         builder.dependencies(target.getDependencies().stream()
                 .map(d -> mergeDependency(d, sourceIterator.next(), sourceDominant, context))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -135,7 +134,7 @@ class FileToRawModelMerger extends MavenMerger {
         Iterator<Profile> sourceIterator = source.getProfiles().iterator();
         builder.profiles(target.getProfiles().stream()
                 .map(d -> mergeProfile(d, sourceIterator.next(), sourceDominant, context))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -148,7 +147,7 @@ class FileToRawModelMerger extends MavenMerger {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
         builder.dependencies(target.getDependencies().stream()
                 .map(d -> mergeDependency(d, sourceIterator.next(), sourceDominant, context))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -177,7 +176,7 @@ class FileToRawModelMerger extends MavenMerger {
         Iterator<Dependency> sourceIterator = source.getDependencies().iterator();
         builder.dependencies(target.getDependencies().stream()
                 .map(d -> mergeDependency(d, sourceIterator.next(), sourceDominant, context))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override

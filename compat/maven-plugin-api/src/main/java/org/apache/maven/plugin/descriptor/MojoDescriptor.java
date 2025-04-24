@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.Mojo;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -168,7 +167,7 @@ public class MojoDescriptor extends ComponentDescriptor<Mojo> implements Cloneab
         this.setThreadSafe(true);
         this.setImplementation(md.getImplementation());
         try {
-            this.setParameters(md.getParameters().stream().map(Parameter::new).collect(Collectors.toList()));
+            this.setParameters(md.getParameters().stream().map(Parameter::new).toList());
         } catch (DuplicateParameterException e) {
             throw new IllegalArgumentException(e);
         }
@@ -659,7 +658,7 @@ public class MojoDescriptor extends ComponentDescriptor<Mojo> implements Cloneab
                             .parameters(getParameters().stream()
                                     .filter(p -> p.getRequirement() == null)
                                     .map(Parameter::getParameterV4)
-                                    .collect(Collectors.toList()))
+                                    .toList())
                             .id(getId())
                             .fullGoalName(getFullGoalName())
                             .build();

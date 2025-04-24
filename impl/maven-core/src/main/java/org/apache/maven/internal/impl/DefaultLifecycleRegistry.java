@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.DependencyScope;
@@ -213,8 +212,8 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
                         .filter(id -> !Lifecycle.CLEAN.equals(id)
                                 && !Lifecycle.DEFAULT.equals(id)
                                 && !Lifecycle.SITE.equals(id))
-                        .map(id -> new WrappedLifecycle(all.get(id)))
-                        .collect(Collectors.toList());
+                        .map(id -> (Lifecycle) new WrappedLifecycle(all.get(id)))
+                        .toList();
             } catch (ComponentLookupException e) {
                 throw new LookupException(e);
             }

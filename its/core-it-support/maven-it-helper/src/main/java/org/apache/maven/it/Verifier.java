@@ -193,7 +193,7 @@ public class Verifier {
                 // remove it
                 args = args.stream()
                         .filter(s -> !s.startsWith("-Dmaven.repo.local.tail="))
-                        .collect(Collectors.toList());
+                        .toList();
             }
 
             // push things to tail

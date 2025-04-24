@@ -50,7 +50,7 @@ class MavenITmng7740ConsumerBuildShouldCleanUpOldFilesTest extends AbstractMaven
             final List<Path> consumerFiles = stream.filter(
                             path -> path.getFileName().toString().contains("consumer")
                                     && path.getFileName().toString().contains("pom"))
-                    .collect(Collectors.toList());
+                    .toList();
             assertTrue(consumerFiles.size() == 0, "Expected no consumer pom file.");
         }
     }

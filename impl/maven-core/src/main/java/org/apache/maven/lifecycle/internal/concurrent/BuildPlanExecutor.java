@@ -472,7 +472,7 @@ public class BuildPlanExecutor {
                     eventCatapult.fire(ExecutionEvent.Type.ProjectSucceeded, session, null);
                     break;
                 default:
-                    List<MojoExecution> executions = step.executions().collect(Collectors.toList());
+                    List<MojoExecution> executions = step.executions().toList();
                     if (!executions.isEmpty()) {
                         attachToThread(step);
                         clock.start();
