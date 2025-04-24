@@ -123,6 +123,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
     }
 
     @Override
+    @Nonnull
     public Iterator<Lifecycle> iterator() {
         return stream().toList().iterator();
     }
@@ -135,18 +136,17 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
 
     @Override
     @Nonnull
-    public Optional<Lifecycle> lookup(String id) {
+    public Optional<Lifecycle> lookup(@Nonnull String id) {
         return stream().filter(lf -> Objects.equals(id, lf.id())).findAny();
     }
 
+    @Nonnull
     public List<String> computePhases(Lifecycle lifecycle) {
         Graph graph = new Graph();
         addPhases(graph, null, null, lifecycle.v3phases());
         List<String> allPhases = graph.visitAll();
         Collections.reverse(allPhases);
-        List<String> computed =
-                allPhases.stream().filter(s -> !s.startsWith("$")).collect(Collectors.toList());
-        return computed;
+        return allPhases.stream().filter(s -> !s.startsWith("$")).toList();
     }
 
     private static void addPhase(
@@ -213,110 +213,101 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
                         .filter(id -> !Lifecycle.CLEAN.equals(id)
                                 && !Lifecycle.DEFAULT.equals(id)
                                 && !Lifecycle.SITE.equals(id))
-                        .map(id -> wrap(all.get(id)))
+                        .map(id -> new WrappedLifecycle(all.get(id)))
                         .collect(Collectors.toList());
             } catch (ComponentLookupException e) {
                 throw new LookupException(e);
             }
         }
+    }
 
-        private Lifecycle wrap(org.apache.maven.lifecycle.Lifecycle lifecycle) {
-            return new Lifecycle() {
-                @Override
-                @Nonnull
-                public String id() {
-                    return lifecycle.getId();
-                }
+    /**
+     * Record implementation of Lifecycle.Phase for wrapped phases.
+     *
+     * @param name The name of the phase
+     * @param prev The name of the previous phase (may be null)
+     * @param lifecycle The original Maven 3 lifecycle
+     */
+    record WrappedPhase(String name, String prev, org.apache.maven.lifecycle.Lifecycle lifecycle) implements Lifecycle.Phase {
+        /**
+         * Compact constructor with null validation.
+         */
+        WrappedPhase {
+            Objects.requireNonNull(name, "name cannot be null");
+            Objects.requireNonNull(lifecycle, "lifecycle cannot be null");
+            // prev can be null for the first phase
+        }
 
-                @Override
-                @Nonnull
-                public Collection<Phase> phases() {
-                    List<String> names = lifecycle.getPhases();
-                    List<Phase> phases = new ArrayList<>();
-                    for (int i = 0; i < names.size(); i++) {
-                        String name = names.get(i);
-                        String prev = i > 0 ? names.get(i - 1) : null;
-                        phases.add(new Phase() {
-                            @Override
-                            @Nonnull
-                            public String name() {
-                                return name;
-                            }
+        @Override
+        @Nonnull
+        public List<Lifecycle.Phase> phases() {
+            return List.of();
+        }
 
-                            @Override
-                            @Nonnull
-                            public List<Phase> phases() {
-                                return List.of();
-                            }
+        @Override
+        @Nonnull
+        public Stream<Lifecycle.Phase> allPhases() {
+            return Stream.concat(Stream.of(this), phases().stream().flatMap(Lifecycle.Phase::allPhases));
+        }
 
-                            @Override
-                            @Nonnull
-                            public Stream<Phase> allPhases() {
-                                return Stream.concat(
-                                        Stream.of(this), phases().stream().flatMap(Lifecycle.Phase::allPhases));
-                            }
+        @Override
+        @Nonnull
+        public List<Plugin> plugins() {
+            Map<String, LifecyclePhase> lfPhases = lifecycle.getDefaultLifecyclePhases();
+            return lfPhases != null
+                    ? List.of(DefaultPackagingRegistry.parseLifecyclePhaseDefinitions(lfPhases)
+                    .values()
+                    .toArray(Plugin[]::new))
+                    : List.of();
+        }
 
-                            @Override
-                            @Nonnull
-                            public List<Plugin> plugins() {
-                                Map<String, LifecyclePhase> lfPhases = lifecycle.getDefaultLifecyclePhases();
-                                return lfPhases != null
-                                        ? List.of(DefaultPackagingRegistry.parseLifecyclePhaseDefinitions(lfPhases)
-                                                .values()
-                                                .toArray(Plugin[]::new))
-                                        : List.of();
-                            }
-
-                            @Override
-                            @Nonnull
-                            public Collection<Link> links() {
-                                if (prev == null) {
-                                    return List.of();
-                                } else {
-                                    return List.of(new Link() {
-                                        @Override
-                                        @Nonnull
-                                        public Kind kind() {
-                                            return Kind.AFTER;
-                                        }
-
-                                        @Override
-                                        @Nonnull
-                                        public Pointer pointer() {
-                                            return new Pointer() {
-                                                @Override
-                                                @Nonnull
-                                                public String phase() {
-                                                    return prev;
-                                                }
-
-                                                @Override
-                                                @Nonnull
-                                                public Type type() {
-                                                    return Type.PROJECT;
-                                                }
-                                            };
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                    return phases;
-                }
-
-                @Override
-                @Nonnull
-                public Collection<Alias> aliases() {
-                    return Collections.emptyList();
-                }
-            };
+        @Override
+        @Nonnull
+        public Collection<Lifecycle.Link> links() {
+            if (prev == null) {
+                return List.of();
+            } else {
+                return List.of(new Lifecycles.DefaultLink(Lifecycle.Link.Kind.AFTER, new Lifecycles.DefaultPhasePointer(prev)));
+            }
         }
     }
 
-    static class WrappedLifecycle extends org.apache.maven.lifecycle.Lifecycle {
-        WrappedLifecycle(LifecycleRegistry registry, Lifecycle lifecycle) {
-            super(registry, lifecycle);
+    /**
+     * Record implementation of Lifecycle for wrapped lifecycles.
+     *
+     * @param lifecycle The original Maven 3 lifecycle
+     */
+    record WrappedLifecycle(org.apache.maven.lifecycle.Lifecycle lifecycle) implements Lifecycle {
+        /**
+         * Compact constructor with null validation.
+         */
+        WrappedLifecycle {
+            Objects.requireNonNull(lifecycle, "lifecycle cannot be null");
+        }
+
+        @Override
+        @Nonnull
+        public String id() {
+            return lifecycle.getId();
+        }
+
+        @Override
+        @Nonnull
+        public Collection<Phase> phases() {
+            List<String> names = lifecycle.getPhases();
+            List<Phase> phases = new ArrayList<>();
+            for (int i = 0; i < names.size(); i++) {
+                String name = names.get(i);
+                String prev = i > 0 ? names.get(i - 1) : null;
+                phases.add(new WrappedPhase(name, prev, lifecycle));
+            }
+            return phases;
+        }
+
+        @Override
+        @Nonnull
+        public Collection<Alias> aliases() {
+            return List.of();
         }
     }
 
@@ -334,7 +325,7 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         public org.apache.maven.lifecycle.Lifecycle get() {
             try {
                 LifecycleRegistry registry = lookup.lookup(LifecycleRegistry.class);
-                return new WrappedLifecycle(registry, registry.require(name));
+                return new org.apache.maven.lifecycle.Lifecycle(registry, registry.require(name));
             } catch (ComponentLookupException e) {
                 throw new LookupException(e);
             }
