@@ -28,11 +28,26 @@ import org.apache.maven.api.annotations.Nonnull;
 import static org.apache.maven.impl.ImplUtils.nonNull;
 
 /**
- * A wrapper class around a maven resolver artifact.
+ * Default implementation of the Artifact interface.
+ * Wraps an Aether artifact and provides access to its properties.
  */
 public class DefaultArtifact implements Artifact {
-    protected final @Nonnull InternalSession session;
-    protected final @Nonnull org.eclipse.aether.artifact.Artifact artifact;
+    /**
+     * The session used for artifact operations.
+     */
+    @Nonnull
+    protected final InternalSession session;
+
+    /**
+     * The wrapped Aether artifact.
+     */
+    @Nonnull
+    protected final org.eclipse.aether.artifact.Artifact artifact;
+
+    /**
+     * The unique key for this artifact.
+     */
+    @Nonnull
     protected final String key;
 
     public DefaultArtifact(@Nonnull InternalSession session, @Nonnull org.eclipse.aether.artifact.Artifact artifact) {
