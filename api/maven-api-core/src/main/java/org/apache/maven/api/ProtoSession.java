@@ -182,9 +182,9 @@ public interface ProtoSession {
                     Path rootDirectory) {
                 this.userProperties = Map.copyOf(userProperties);
                 this.systemProperties = Map.copyOf(systemProperties);
-                Map<String, String> cp = new HashMap<>(systemProperties);
-                cp.putAll(userProperties);
-                this.effectiveProperties = Map.copyOf(cp);
+                Map<String, String> tmpProperties = new HashMap<>(systemProperties);
+                tmpProperties.putAll(userProperties);
+                this.effectiveProperties = Map.copyOf(tmpProperties);
                 this.startTime = requireNonNull(startTime);
                 this.topDirectory = requireNonNull(topDirectory);
                 this.rootDirectory = rootDirectory;
