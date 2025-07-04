@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.maven.api.model.Activation;
 import org.apache.maven.api.model.ActivationProperty;
+import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.model.ProfileActivationContext;
 import org.apache.maven.api.services.model.ProfileActivator;
@@ -64,6 +65,7 @@ public class DefaultProfileSelectorTest {
         // Create context with prop1 set
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setModel(Model.newInstance());
         context.setSystemProperties(Map.of("prop1", "value1"));
 
         // Test cascading mode (current implementation only supports cascading)
@@ -87,7 +89,7 @@ public class DefaultProfileSelectorTest {
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
         context.setSystemProperties(Map.of("prop1", "value1"));
-        context.setModel(org.apache.maven.api.model.Model.newInstance()); // Set a model for property injection
+        context.setModel(Model.newInstance()); // Set a model for property injection
 
         // Test cascading mode
         List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
@@ -110,7 +112,7 @@ public class DefaultProfileSelectorTest {
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
         context.setSystemProperties(Map.of("prop1", "value1"));
-        context.setModel(org.apache.maven.api.model.Model.newInstance()); // Set a model for property injection
+        context.setModel(Model.newInstance()); // Set a model for property injection
 
         // Cascading should activate both profile1 and profile2
         List<Profile> cascading = selector.getActiveProfiles(profiles, context, problems);
@@ -126,6 +128,7 @@ public class DefaultProfileSelectorTest {
 
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setModel(Model.newInstance());
 
         // Should activate default profile when no conditions are met
         List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
@@ -148,6 +151,7 @@ public class DefaultProfileSelectorTest {
 
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setModel(Model.newInstance());
         context.setSystemProperties(Map.of("prop1", "value1", "prop2", "value2"));
 
         List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
@@ -163,6 +167,7 @@ public class DefaultProfileSelectorTest {
         List<Profile> profiles = Collections.emptyList();
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setModel(Model.newInstance());
 
         List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
         assertTrue(activeProfiles.isEmpty());
@@ -183,7 +188,7 @@ public class DefaultProfileSelectorTest {
                 List.of(),
                 Map.of("prop2", "value2"),
                 Map.of(),
-                null);
+                Model.newInstance());
 
         List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
         assertEquals(2, activeProfiles.size());
@@ -238,7 +243,7 @@ public class DefaultProfileSelectorTest {
     private static class PropertyProfileActivator implements ProfileActivator {
         @Override
         public boolean isActive(
-                org.apache.maven.api.model.Profile profile,
+                Profile profile,
                 ProfileActivationContext context,
                 org.apache.maven.api.services.ModelProblemCollector problems) {
             Activation activation = profile.getActivation();
@@ -272,7 +277,7 @@ public class DefaultProfileSelectorTest {
 
         @Override
         public boolean presentInConfig(
-                org.apache.maven.api.model.Profile profile,
+                Profile profile,
                 ProfileActivationContext context,
                 org.apache.maven.api.services.ModelProblemCollector problems) {
             return profile.getActivation() != null && profile.getActivation().getProperty() != null;

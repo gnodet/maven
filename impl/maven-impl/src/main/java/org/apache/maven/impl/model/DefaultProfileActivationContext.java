@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.Interpolator;
 import org.apache.maven.api.services.InterpolatorException;
 import org.apache.maven.api.services.ModelBuilderException;
@@ -466,12 +467,7 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
     // Cascading profile activation methods
 
     @Override
-    public org.apache.maven.api.model.Model getModel() {
-        return model;
-    }
-
-    @Override
-    public void addProfileProperties(Collection<org.apache.maven.api.model.Profile> activatedProfiles) {
+    public void addProfileProperties(Collection<Profile> activatedProfiles) {
         // Inject properties from activated profiles into the model
         // This enables cascading profile activation
         if (model != null && activatedProfiles != null && !activatedProfiles.isEmpty()) {
@@ -481,7 +477,7 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
             }
 
             // Add properties from each activated profile
-            for (org.apache.maven.api.model.Profile profile : activatedProfiles) {
+            for (Profile profile : activatedProfiles) {
                 if (profile.getProperties() != null) {
                     modelProperties.putAll(profile.getProperties());
                 }
