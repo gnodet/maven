@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.maven.its.mng3309</groupId>
+  <artifactId>cascading-profile-activation-test</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>MNG-3309 Cascading Profile Activation Integration Test</name>
+  <description>
+    Integration test for MNG-3309: Cascading profile activation where one profile's properties 
+    trigger the activation of other profiles.
+    
+    Test scenarios:
+    1. Basic cascading: mvn validate -Dtrigger=start
+    2. Circular dependency: mvn validate -Dcircular=test  
+    3. Stop condition: mvn validate -Dstop.test=true
+    4. No cascading: mvn validate (no profiles should be active)
+  </description>
+
+  <properties>
+    <!-- Default properties to track activation -->
+    <test.result>none</test.result>
+    <profile1.active>false</profile1.active>
+    <profile2.active>false</profile2.active>
+    <profile3.active>false</profile3.active>
+    <profile4.active>false</profile4.active>
+    <circular.active>false</circular.active>
+  </properties>
+
+  <profiles>
+    <!-- Profile 1: Entry point - activated by trigger=start -->
+    <profile>
+      <id>profile1</id>
+      <activation>
+        <property>
+          <name>trigger</name>
+          <value>start</value>
+        </property>
+      </activation>
+      <properties>
+        <profile1.active>true</profile1.active>
+        <!-- This property should cascade to activate profile2 -->
+        <level1.cascade>activate</level1.cascade>
+        <test.result>profile1-activated</test.result>
+      </properties>
+    </profile>
+
+    <!-- Profile 2: Cascaded from profile1 via level1.cascade=activate -->
+    <profile>
+      <id>profile2</id>
+      <activation>
+        <property>
+          <name>level1.cascade</name>
+          <value>activate</value>
+        </property>
+      </activation>
+      <properties>
+        <profile2.active>true</profile2.active>
+        <!-- This property should cascade to activate profile3 -->
+        <level2.cascade>activate</level2.cascade>
+        <test.result>profile2-activated</test.result>
+      </properties>
+    </profile>
+
+    <!-- Profile 3: Cascaded from profile2 via level2.cascade=activate -->
+    <profile>
+      <id>profile3</id>
+      <activation>
+        <property>
+          <name>level2.cascade</name>
+          <value>activate</value>
+        </property>
+      </activation>
+      <properties>
+        <profile3.active>true</profile3.active>
+        <!-- This property would cascade to profile4, but profile4 requires a different value -->
+        <level3.cascade>activate</level3.cascade>
+        <test.result>profile3-activated</test.result>
+      </properties>
+    </profile>
+
+    <!-- Profile 4: Should NOT be activated (requires level3.cascade=different) -->
+    <profile>
+      <id>profile4</id>
+      <activation>
+        <property>
+          <name>level3.cascade</name>
+          <value>different</value>
+        </property>
+      </activation>
+      <properties>
+        <profile4.active>true</profile4.active>
+        <test.result>profile4-activated</test.result>
+      </properties>
+    </profile>
+
+    <!-- Circular Profile: Creates circular dependency with profile1 -->
+    <profile>
+      <id>circular</id>
+      <activation>
+        <property>
+          <name>circular</name>
+          <value>test</value>
+        </property>
+      </activation>
+      <properties>
+        <circular.active>true</circular.active>
+        <!-- This creates a circular dependency by setting trigger=start -->
+        <trigger>start</trigger>
+        <test.result>circular-activated</test.result>
+      </properties>
+    </profile>
+
+    <!-- Stop Profile: Tests that cascading stops when no more profiles can be activated -->
+    <profile>
+      <id>stop-test</id>
+      <activation>
+        <property>
+          <name>stop.test</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <stop.active>true</stop.active>
+        <!-- This property doesn't match any other profile's activation -->
+        <stop.cascade>nowhere</stop.cascade>
+        <test.result>stop-activated</test.result>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <!-- Help plugin to show active profiles -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-help-plugin</artifactId>
+        <version>3.4.0</version>
+        <executions>
+          <execution>
+            <id>show-profiles</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>active-profiles</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Antrun plugin to display test results -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>display-results</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo message="=== MNG-3309 Cascading Profile Activation Test Results ==="/>
+                <echo message="Test Result: ${test.result}"/>
+                <echo message="Profile1 Active: ${profile1.active}"/>
+                <echo message="Profile2 Active: ${profile2.active}"/>
+                <echo message="Profile3 Active: ${profile3.active}"/>
+                <echo message="Profile4 Active: ${profile4.active}"/>
+                <echo message="Circular Active: ${circular.active}"/>
+                <echo message="Stop Active: ${stop.active}"/>
+                <echo message="========================================================="/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

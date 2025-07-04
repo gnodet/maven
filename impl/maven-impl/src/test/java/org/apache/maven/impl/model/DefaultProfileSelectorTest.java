@@ -196,6 +196,148 @@ public class DefaultProfileSelectorTest {
         assertTrue(activeProfiles.stream().anyMatch(p -> "profile2".equals(p.getId())));
     }
 
+    @Test
+    void testCascadingActivationChain() {
+        // Create a chain of profiles: profile1 -> profile2 -> profile3
+        Profile profile1 = createProfileWithProperties(
+                "profile1", "prop1", "value1", Map.of("prop2", "value2"), Profile.SOURCE_POM);
+        Profile profile2 = createProfileWithProperties(
+                "profile2", "prop2", "value2", Map.of("prop3", "value3"), Profile.SOURCE_POM);
+        Profile profile3 = createProfile("profile3", "prop3", "value3", Profile.SOURCE_POM);
+
+        List<Profile> profiles = Arrays.asList(profile1, profile2, profile3);
+
+        // Create context with prop1 set
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext(
+                new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setModel(Model.newInstance());
+
+        // Test cascading mode
+        List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
+
+        // All three profiles should be activated through cascading
+        assertEquals(3, activeProfiles.size());
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile1".equals(p.getId())));
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile2".equals(p.getId())));
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile3".equals(p.getId())));
+        assertTrue(problems.getErrors().isEmpty());
+    }
+
+    @Test
+    void testCascadingStopCondition() {
+        // Test that cascading stops when no more profiles can be activated
+        Profile profile1 = createProfileWithProperties(
+                "profile1", "prop1", "value1", Map.of("prop2", "value2"), Profile.SOURCE_POM);
+        Profile profile2 = createProfileWithProperties(
+                "profile2", "prop2", "value2", Map.of("prop3", "value3"), Profile.SOURCE_POM);
+        // profile3 requires prop4 which is never set, so cascading should stop
+        Profile profile3 = createProfile("profile3", "prop4", "value4", Profile.SOURCE_POM);
+
+        List<Profile> profiles = Arrays.asList(profile1, profile2, profile3);
+
+        // Create context with prop1 set
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext(
+                new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setModel(Model.newInstance());
+
+        // Test cascading mode
+        List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
+
+        // Only profile1 and profile2 should be activated, profile3 should not
+        assertEquals(2, activeProfiles.size());
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile1".equals(p.getId())));
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile2".equals(p.getId())));
+        assertTrue(activeProfiles.stream().noneMatch(p -> "profile3".equals(p.getId())));
+        assertTrue(problems.getErrors().isEmpty());
+    }
+
+    @Test
+    void testCascadingWithCircularDependency() {
+        // Test that cascading handles circular dependencies gracefully
+        Profile profile1 = createProfileWithProperties(
+                "profile1", "prop1", "value1", Map.of("prop2", "value2"), Profile.SOURCE_POM);
+        Profile profile2 = createProfileWithProperties(
+                "profile2", "prop2", "value2", Map.of("prop1", "value1"), Profile.SOURCE_POM);
+
+        List<Profile> profiles = Arrays.asList(profile1, profile2);
+
+        // Create context with prop1 set
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext(
+                new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setModel(Model.newInstance());
+
+        // Test cascading mode
+        List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
+
+        // Both profiles should be activated, but cascading should stop after first iteration
+        assertEquals(2, activeProfiles.size());
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile1".equals(p.getId())));
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile2".equals(p.getId())));
+        assertTrue(problems.getErrors().isEmpty());
+    }
+
+    @Test
+    void testCascadingWithInactiveProfile() {
+        // Create profiles where one would activate another, but the second is explicitly deactivated
+        Profile profile1 = createProfileWithProperties(
+                "profile1", "prop1", "value1", Map.of("prop2", "value2"), Profile.SOURCE_POM);
+        Profile profile2 = createProfile("profile2", "prop2", "value2", Profile.SOURCE_POM);
+
+        List<Profile> profiles = Arrays.asList(profile1, profile2);
+
+        // Create context with prop1 set and profile2 explicitly deactivated
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext(
+                new DefaultPathTranslator(),
+                new DefaultRootLocator(),
+                new DefaultInterpolator(),
+                List.of(),
+                List.of("profile2"),
+                Map.of("prop1", "value1"),
+                Map.of(),
+                Model.newInstance());
+
+        // Test cascading mode
+        List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
+
+        // Only profile1 should be activated, profile2 should be deactivated despite cascading
+        assertEquals(1, activeProfiles.size());
+        assertTrue(activeProfiles.stream().anyMatch(p -> "profile1".equals(p.getId())));
+        assertTrue(activeProfiles.stream().noneMatch(p -> "profile2".equals(p.getId())));
+        assertTrue(problems.getErrors().isEmpty());
+    }
+
+    @Test
+    void testCascadingWithRecordImmutability() {
+        // Test that profile records remain immutable during cascading
+        Profile originalProfile1 = createProfileWithProperties(
+                "profile1", "prop1", "value1", Map.of("prop2", "value2"), Profile.SOURCE_POM);
+        Profile originalProfile2 = createProfile("profile2", "prop2", "value2", Profile.SOURCE_POM);
+
+        List<Profile> profiles = Arrays.asList(originalProfile1, originalProfile2);
+
+        // Create context with prop1 set
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext(
+                new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
+        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setModel(Model.newInstance());
+
+        // Test cascading mode
+        List<Profile> activeProfiles = selector.getActiveProfiles(profiles, context, problems);
+
+        // Verify that original profiles are unchanged (immutable records)
+        assertEquals("profile1", originalProfile1.getId());
+        assertEquals("profile2", originalProfile2.getId());
+        assertEquals(Map.of("prop2", "value2"), originalProfile1.getProperties());
+        assertEquals(Map.of(), originalProfile2.getProperties());
+
+        // Verify activation worked
+        assertEquals(2, activeProfiles.size());
+        assertTrue(problems.getErrors().isEmpty());
+    }
+
     // Helper methods for creating test profiles
 
     private Profile createProfile(String id, String propName, String propValue, String source) {
