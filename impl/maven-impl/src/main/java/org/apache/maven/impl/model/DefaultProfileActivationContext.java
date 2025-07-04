@@ -466,6 +466,11 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
     // Cascading profile activation methods
 
     @Override
+    public org.apache.maven.api.model.Model getModel() {
+        return model;
+    }
+
+    @Override
     public void addProfileProperties(Collection<org.apache.maven.api.model.Profile> activatedProfiles) {
         // Inject properties from activated profiles into the model
         // This enables cascading profile activation

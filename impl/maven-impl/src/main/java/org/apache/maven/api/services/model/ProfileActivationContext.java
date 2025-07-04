@@ -141,4 +141,15 @@ public interface ProfileActivationContext {
      * @param activatedProfiles The collection of profiles that have been activated that may trigger the cascading effect.
      */
     void addProfileProperties(Collection<Profile> activatedProfiles);
+
+    /**
+     * Gets the current model for cascading profile activation.
+     * This method provides access to the model that contains properties injected by activated profiles.
+     *
+     * @return The current model, or {@code null} if not set.
+     */
+    @Nullable
+    default org.apache.maven.api.model.Model getModel() {
+        return null;
+    }
 }
