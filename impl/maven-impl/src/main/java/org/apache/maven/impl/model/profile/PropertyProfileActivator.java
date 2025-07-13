@@ -80,8 +80,6 @@ public class PropertyProfileActivator implements ProfileActivator {
             sysValue = context.getSystemProperty(name);
         }
 
-
-
         String propValue = property.getValue();
         if (propValue != null && !propValue.isEmpty()) {
             boolean reverseValue = false;

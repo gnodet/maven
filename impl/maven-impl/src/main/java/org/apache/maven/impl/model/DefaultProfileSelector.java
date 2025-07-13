@@ -68,12 +68,42 @@ public class DefaultProfileSelector implements ProfileSelector {
         List<Profile> activePomProfiles = new ArrayList<>();
         List<Profile> activePomProfilesByDefault = new ArrayList<>();
 
-        // Cascading mode: iterate until no more profiles are activated
-        List<Profile> remainingProfiles = new ArrayList<>(profiles);
-        List<Profile> activatedProfiles;
-        do {
-            activatedProfiles = new ArrayList<>();
-            for (Profile profile : List.copyOf(remainingProfiles)) {
+        // Check if cascading profile activation is enabled (opt-in via system property)
+        boolean cascadingEnabled =
+                Boolean.parseBoolean(context.getSystemProperty("maven.profile.activation.cascading"));
+
+        if (cascadingEnabled) {
+            // Cascading mode: iterate until no more profiles are activated
+            List<Profile> remainingProfiles = new ArrayList<>(profiles);
+            List<Profile> activatedProfiles;
+            do {
+                activatedProfiles = new ArrayList<>();
+                for (Profile profile : List.copyOf(remainingProfiles)) {
+                    if (!context.isProfileInactive(profile.getId())) {
+                        boolean activated = context.isProfileActive(profile.getId());
+                        boolean active = isActive(profile, context, problems);
+                        boolean activeByDefault = isActiveByDefault(profile);
+                        if (activated || active || activeByDefault) {
+                            if (Profile.SOURCE_POM.equals(profile.getSource())) {
+                                if (activated || active) {
+                                    activePomProfiles.add(profile);
+                                } else {
+                                    activePomProfilesByDefault.add(profile);
+                                }
+                            } else {
+                                activeSettingsProfiles.add(profile);
+                            }
+                            remainingProfiles.remove(profile);
+                            activatedProfiles.add(profile);
+                        }
+                    }
+                }
+                // Add profile properties for cascading activation
+                context.addProfileProperties(activatedProfiles);
+            } while (!activatedProfiles.isEmpty());
+        } else {
+            // Non-cascading mode (original Maven behavior): single pass activation
+            for (Profile profile : profiles) {
                 if (!context.isProfileInactive(profile.getId())) {
                     boolean activated = context.isProfileActive(profile.getId());
                     boolean active = isActive(profile, context, problems);
@@ -88,14 +118,10 @@ public class DefaultProfileSelector implements ProfileSelector {
                         } else {
                             activeSettingsProfiles.add(profile);
                         }
-                        remainingProfiles.remove(profile);
-                        activatedProfiles.add(profile);
                     }
                 }
             }
-            // Add profile properties for cascading activation
-            context.addProfileProperties(activatedProfiles);
-        } while (!activatedProfiles.isEmpty());
+        }
 
         List<Profile> allActivated = new ArrayList<>();
         if (activePomProfiles.isEmpty()) {

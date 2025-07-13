@@ -30,7 +30,7 @@ Cascading profile activation allows profiles to activate other profiles through 
 ### 1. Basic Cascading Activation
 
 ```bash
-mvn validate -Dtrigger=start
+mvn validate -Dtrigger=start -Dmaven.profile.activation.cascading=true
 ```
 
 **Expected behavior:**
@@ -58,7 +58,7 @@ Profile4 Active: false
 ### 2. Circular Dependency Handling
 
 ```bash
-mvn validate -Dcircular=test
+mvn validate -Dcircular=test -Dmaven.profile.activation.cascading=true
 ```
 
 **Expected behavior:**
@@ -80,7 +80,7 @@ Active profiles:
 ### 3. Stop Condition
 
 ```bash
-mvn validate -Dstop.test=true
+mvn validate -Dstop.test=true -Dmaven.profile.activation.cascading=true
 ```
 
 **Expected behavior:**

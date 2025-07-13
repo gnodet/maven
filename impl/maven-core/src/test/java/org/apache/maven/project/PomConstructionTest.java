@@ -1528,7 +1528,8 @@ class PomConstructionTest {
         // profile2 should be activated by profile1's cascade.level1=activate property
         // profile3 should be activated by profile2's cascade.level2=activate property
 
-        List<org.apache.maven.model.Profile> activeProfiles = pom.getMavenProject().getActiveProfiles();
+        List<org.apache.maven.model.Profile> activeProfiles =
+                pom.getMavenProject().getActiveProfiles();
 
         // Should have 3 active profiles (profile1, profile2, profile3)
         assertEquals(3, activeProfiles.size());
@@ -1560,7 +1561,8 @@ class PomConstructionTest {
         // profile5 sets trigger=start which would activate profile1
         // But this should not cause infinite loops
 
-        List<org.apache.maven.model.Profile> activeProfiles = pom.getMavenProject().getActiveProfiles();
+        List<org.apache.maven.model.Profile> activeProfiles =
+                pom.getMavenProject().getActiveProfiles();
 
         // Should have profile5 and profile1 active (and cascaded profiles)
         assertTrue(activeProfiles.stream().anyMatch(p -> "profile5".equals(p.getId())));
@@ -1576,7 +1578,8 @@ class PomConstructionTest {
         // Test with no trigger properties - no profiles should be activated
         PomTestWrapper pom = buildPom("cascading-profile-activation");
 
-        List<org.apache.maven.model.Profile> activeProfiles = pom.getMavenProject().getActiveProfiles();
+        List<org.apache.maven.model.Profile> activeProfiles =
+                pom.getMavenProject().getActiveProfiles();
 
         // No profiles should be active
         assertEquals(0, activeProfiles.size());

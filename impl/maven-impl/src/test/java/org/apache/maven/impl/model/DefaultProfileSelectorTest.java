@@ -85,10 +85,10 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(profile1, profile2);
 
-        // Create context with prop1 set (should activate profile1, which sets prop2, which activates profile2)
+        // Create context with prop1 set and cascading enabled
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance()); // Set a model for property injection
 
         // Test cascading mode
@@ -111,7 +111,7 @@ public class DefaultProfileSelectorTest {
 
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance()); // Set a model for property injection
 
         // Cascading should activate both profile1 and profile2
@@ -207,10 +207,10 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(profile1, profile2, profile3);
 
-        // Create context with prop1 set
+        // Create context with prop1 set and cascading enabled
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance());
 
         // Test cascading mode
@@ -236,10 +236,10 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(profile1, profile2, profile3);
 
-        // Create context with prop1 set
+        // Create context with prop1 set and cascading enabled
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance());
 
         // Test cascading mode
@@ -263,10 +263,10 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(profile1, profile2);
 
-        // Create context with prop1 set
+        // Create context with prop1 set and cascading enabled
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance());
 
         // Test cascading mode
@@ -288,14 +288,14 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(profile1, profile2);
 
-        // Create context with prop1 set and profile2 explicitly deactivated
+        // Create context with prop1 set, cascading enabled, and profile2 explicitly deactivated
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(),
                 new DefaultRootLocator(),
                 new DefaultInterpolator(),
                 List.of(),
                 List.of("profile2"),
-                Map.of("prop1", "value1"),
+                Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"),
                 Map.of(),
                 Model.newInstance());
 
@@ -318,10 +318,10 @@ public class DefaultProfileSelectorTest {
 
         List<Profile> profiles = Arrays.asList(originalProfile1, originalProfile2);
 
-        // Create context with prop1 set
+        // Create context with prop1 set and cascading enabled
         DefaultProfileActivationContext context = new DefaultProfileActivationContext(
                 new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator());
-        context.setSystemProperties(Map.of("prop1", "value1"));
+        context.setSystemProperties(Map.of("prop1", "value1", "maven.profile.activation.cascading", "true"));
         context.setModel(Model.newInstance());
 
         // Test cascading mode
