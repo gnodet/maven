@@ -36,13 +36,18 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.api.Language;
+import org.apache.maven.api.ProducedArtifact;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.ProjectScope;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.SourceRoot;
 import org.apache.maven.api.annotations.Nonnull;
+import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -51,6 +56,9 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.impl.DefaultSourceRoot;
+import org.apache.maven.impl.InternalSession;
+import org.apache.maven.internal.impl.DefaultProject;
+import org.apache.maven.internal.impl.DefaultProjectManager;
 import org.apache.maven.lifecycle.internal.DefaultProjectArtifactFactory;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.CiManagement;
@@ -201,6 +209,10 @@ public class MavenProject implements Cloneable {
 
     private final Set<String> lifecyclePhases = Collections.synchronizedSet(new LinkedHashSet<>());
 
+    // New delegation fields for the refactored architecture
+    private Project project;
+    private ProjectManager projectManager;
+
     public MavenProject() {
         Model model = new Model();
 
@@ -221,6 +233,22 @@ public class MavenProject implements Cloneable {
 
     public MavenProject(MavenProject project) {
         deepCopy(project);
+    }
+
+    /**
+     * New constructor for the refactored architecture where MavenProject delegates to Project.
+     *
+     * @param project the immutable Project to delegate to
+     * @param projectManager the ProjectManager for mutable state
+     */
+    public MavenProject(Project project, ProjectManager projectManager) {
+        this.project = project;
+        this.projectManager = projectManager;
+        // Initialize the model from the project
+        setModel(new Model(project.getModel()));
+        // Set basic properties
+        setFile(project.getPomPath() != null ? project.getPomPath().toFile() : null);
+        setBasedir(project.getBasedir().toFile());
     }
 
     public File getParentFile() {
@@ -301,6 +329,15 @@ public class MavenProject implements Cloneable {
         return getBasedir().toPath();
     }
 
+    /**
+     * Sets the base directory of this project.
+     *
+     * @param basedir the base directory
+     */
+    public void setBasedir(File basedir) {
+        this.basedir = basedir;
+    }
+
     public void setDependencies(List<Dependency> dependencies) {
         getModel().setDependencies(dependencies);
     }
@@ -327,7 +364,13 @@ public class MavenProject implements Cloneable {
      * @since 4.0.0
      */
     public void addSourceRoot(SourceRoot source) {
-        sources.add(source);
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            projectManager.addSourceRoot(project, source);
+        } else {
+            // Legacy behavior
+            sources.add(source);
+        }
     }
 
     /**
@@ -345,10 +388,16 @@ public class MavenProject implements Cloneable {
      * @since 4.0.0
      */
     public void addSourceRoot(@Nonnull ProjectScope scope, @Nonnull Language language, @Nonnull Path directory) {
-        directory = getBaseDirectory()
-                .resolve(Objects.requireNonNull(directory, "directory cannot be null"))
-                .normalize();
-        addSourceRoot(new DefaultSourceRoot(scope, language, directory));
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            projectManager.addSourceRoot(project, scope, language, directory);
+        } else {
+            // Legacy behavior
+            directory = getBaseDirectory()
+                    .resolve(Objects.requireNonNull(directory, "directory cannot be null"))
+                    .normalize();
+            addSourceRoot(new DefaultSourceRoot(scope, language, directory));
+        }
     }
 
     /**
@@ -441,7 +490,13 @@ public class MavenProject implements Cloneable {
      * @see #addSourceRoot(SourceRoot)
      */
     public Collection<SourceRoot> getSourceRoots() {
-        return Collections.unmodifiableCollection(sources);
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            return projectManager.getSourceRoots(project);
+        } else {
+            // Legacy behavior
+            return Collections.unmodifiableCollection(sources);
+        }
     }
 
     /**
@@ -1022,17 +1077,89 @@ public class MavenProject implements Cloneable {
     }
 
     public List<RemoteRepository> getRemoteProjectRepositories() {
-        if (remoteProjectRepositories == null) {
-            remoteProjectRepositories = new ArrayList<>();
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager and convert to Aether repositories
+            List<org.apache.maven.api.RemoteRepository> apiRepositories =
+                    projectManager.getRemoteProjectRepositories(project);
+            Session session = getSessionFromProjectManager();
+            if (session instanceof InternalSession) {
+                return ((InternalSession) session).toRepositories(apiRepositories);
+            } else {
+                throw new IllegalStateException("Session is not an InternalSession");
+            }
+        } else {
+            // Legacy behavior
+            if (remoteProjectRepositories == null) {
+                remoteProjectRepositories = new ArrayList<>();
+            }
+            return remoteProjectRepositories;
         }
-        return remoteProjectRepositories;
     }
 
     public List<RemoteRepository> getRemotePluginRepositories() {
-        if (remotePluginRepositories == null) {
-            remotePluginRepositories = new ArrayList<>();
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager and convert to Aether repositories
+            List<org.apache.maven.api.RemoteRepository> apiRepositories =
+                    projectManager.getRemotePluginRepositories(project);
+            Session session = getSessionFromProjectManager();
+            if (session instanceof InternalSession) {
+                return ((InternalSession) session).toRepositories(apiRepositories);
+            } else {
+                throw new IllegalStateException("Session is not an InternalSession");
+            }
+        } else {
+            // Legacy behavior
+            if (remotePluginRepositories == null) {
+                remotePluginRepositories = new ArrayList<>();
+            }
+            return remotePluginRepositories;
         }
-        return remotePluginRepositories;
+    }
+
+    public void setRemoteProjectRepositories(List<RemoteRepository> repositories) {
+        if (isDelegatingToProject()) {
+            // In the new architecture, convert Aether repositories to API repositories and delegate to ProjectManager
+            Session session = getSessionFromProjectManager();
+            if (session instanceof InternalSession) {
+                // Convert Aether repositories to API repositories
+                List<org.apache.maven.api.RemoteRepository> apiRepositories = repositories.stream()
+                        .map(((InternalSession) session)::getRemoteRepository)
+                        .collect(Collectors.toList());
+
+                if (projectManager instanceof DefaultProjectManager) {
+                    ((DefaultProjectManager) projectManager).setRemoteProjectRepositories(project, apiRepositories);
+                }
+            } else {
+                throw new IllegalStateException("Session is not an InternalSession");
+            }
+        } else {
+            this.remoteProjectRepositories = repositories;
+            // In legacy mode, we don't need to update the deprecated field
+            // as it's managed separately and we don't have session context
+        }
+    }
+
+    public void setRemotePluginRepositories(List<RemoteRepository> repositories) {
+        if (isDelegatingToProject()) {
+            // In the new architecture, convert Aether repositories to API repositories and delegate to ProjectManager
+            Session session = getSessionFromProjectManager();
+            if (session instanceof InternalSession) {
+                // Convert Aether repositories to API repositories
+                List<org.apache.maven.api.RemoteRepository> apiRepositories = repositories.stream()
+                        .map(((InternalSession) session)::getRemoteRepository)
+                        .collect(Collectors.toList());
+
+                if (projectManager instanceof DefaultProjectManager) {
+                    ((DefaultProjectManager) projectManager).setRemotePluginRepositories(project, apiRepositories);
+                }
+            } else {
+                throw new IllegalStateException("Session is not an InternalSession");
+            }
+        } else {
+            this.remotePluginRepositories = repositories;
+            // In legacy mode, we don't need to update the deprecated field
+            // as it's managed separately and we don't have session context
+        }
     }
 
     public void setActiveProfiles(List<Profile> activeProfiles) {
@@ -1077,13 +1204,46 @@ public class MavenProject implements Cloneable {
      * @throws DuplicateArtifactAttachmentException will never happen but leave it for backward compatibility
      */
     public void addAttachedArtifact(Artifact artifact) throws DuplicateArtifactAttachmentException {
-        // if already there we remove it and add again
-        int index = attachedArtifacts.indexOf(artifact);
-        if (index >= 0) {
-            LOGGER.warn("artifact '{}' already attached, replacing previous instance", artifact);
-            attachedArtifacts.set(index, artifact);
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            try {
+                // Convert the old Artifact to a ProducedArtifact
+                ProducedArtifact producedArtifact = convertToProducedArtifact(artifact);
+
+                // Get the file path from the artifact
+                java.nio.file.Path path =
+                        artifact.getFile() != null ? artifact.getFile().toPath() : null;
+
+                if (path != null) {
+                    // Use ProjectManager to attach the artifact
+                    projectManager.attachArtifact(project, producedArtifact, path);
+                } else {
+                    // If no file path, create a temporary path and attach the artifact
+                    // The path will be updated later when the file is set
+                    try {
+                        java.nio.file.Path tempPath = java.nio.file.Files.createTempFile("artifact-", ".tmp");
+                        projectManager.attachArtifact(project, producedArtifact, tempPath);
+                        // The ArtifactManager will handle updating the path when the real file is set
+                    } catch (java.io.IOException e) {
+                        throw new RuntimeException("Failed to create temporary file for artifact", e);
+                    }
+                }
+            } catch (Exception e) {
+                throw new DuplicateArtifactAttachmentException(this, artifact);
+            }
         } else {
-            attachedArtifacts.add(artifact);
+            // Legacy behavior
+            if (attachedArtifacts == null) {
+                attachedArtifacts = new ArrayList<>();
+            }
+            // if already there we remove it and add again
+            int index = attachedArtifacts.indexOf(artifact);
+            if (index >= 0) {
+                LOGGER.warn("artifact '{}' already attached, replacing previous instance", artifact);
+                attachedArtifacts.set(index, artifact);
+            } else {
+                attachedArtifacts.add(artifact);
+            }
         }
     }
 
@@ -1093,10 +1253,103 @@ public class MavenProject implements Cloneable {
      * @return the attached artifacts of this project
      */
     public List<Artifact> getAttachedArtifacts() {
-        if (attachedArtifacts == null) {
-            attachedArtifacts = new ArrayList<>();
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            // Convert ProducedArtifacts back to Artifacts
+            return projectManager.getAttachedArtifacts(project).stream()
+                    .map(this::convertToArtifact)
+                    .collect(Collectors.toList());
+        } else {
+            // Legacy behavior
+            if (attachedArtifacts == null) {
+                attachedArtifacts = new ArrayList<>();
+            }
+            return Collections.unmodifiableList(attachedArtifacts);
         }
-        return Collections.unmodifiableList(attachedArtifacts);
+    }
+
+    /**
+     * Check if this MavenProject is using the new delegation architecture.
+     */
+    private boolean isDelegatingToProject() {
+        return project != null && projectManager != null;
+    }
+
+    /**
+     * Convert an old API Artifact to a new API ProducedArtifact.
+     */
+    private ProducedArtifact convertToProducedArtifact(Artifact artifact) {
+        if (project == null || projectManager == null) {
+            throw new IllegalStateException("Cannot convert artifact without proper session context");
+        }
+
+        // Get the session through the project manager
+        Session session = getSessionFromProjectManager();
+
+        // Create a ProducedArtifact with the same coordinates as the old Artifact
+        return session.createProducedArtifact(
+                artifact.getGroupId(),
+                artifact.getArtifactId(),
+                artifact.getVersion(),
+                artifact.getClassifier(),
+                artifact.getType(), // extension
+                artifact.getType() // type
+                );
+    }
+
+    /**
+     * Convert a ProducedArtifact to an Artifact for legacy compatibility.
+     */
+    private Artifact convertToArtifact(ProducedArtifact producedArtifact) {
+        if (project == null || projectManager == null) {
+            throw new IllegalStateException("Cannot convert artifact without proper session context");
+        }
+
+        // Get the session to perform the conversion
+        Session session = getSessionFromProjectManager();
+
+        // Convert the ProducedArtifact to an Aether artifact, then to a Maven artifact
+        if (session instanceof InternalSession) {
+            org.eclipse.aether.artifact.Artifact aetherArtifact =
+                    ((InternalSession) session).toArtifact(producedArtifact);
+            return RepositoryUtils.toArtifact(aetherArtifact);
+        } else {
+            throw new IllegalStateException("Session is not an InternalSession");
+        }
+    }
+
+    /**
+     * Get the session from the project context.
+     */
+    private Session getSessionFromProjectManager() {
+        // We can get the session through the project itself
+        // Since the project is from the new API, it should have access to the session
+        if (project instanceof DefaultProject) {
+            return ((DefaultProject) project).getSession();
+        }
+        throw new IllegalStateException("Cannot get session from project");
+    }
+
+    /**
+     * Convert an Aether RemoteRepository to an old API ArtifactRepository.
+     */
+    private org.apache.maven.artifact.repository.ArtifactRepository convertToArtifactRepository(
+            org.eclipse.aether.repository.RemoteRepository repository) {
+        // Convert Aether repository to API repository, then to ArtifactRepository
+        Session session = getSessionFromProjectManager();
+        if (session instanceof InternalSession) {
+            org.apache.maven.api.RemoteRepository apiRepository =
+                    ((InternalSession) session).getRemoteRepository(repository);
+
+            if (session instanceof org.apache.maven.internal.impl.InternalMavenSession) {
+                return ((org.apache.maven.internal.impl.InternalMavenSession) session)
+                        .toArtifactRepository(apiRepository);
+            } else {
+                throw new IllegalStateException("Session is not an InternalMavenSession");
+            }
+        } else {
+            throw new IllegalStateException("Session is not an InternalSession");
+        }
     }
 
     public Xpp3Dom getGoalConfiguration(
@@ -1223,7 +1476,15 @@ public class MavenProject implements Cloneable {
     }
 
     public Properties getProperties() {
-        return getModel().getProperties();
+        if (isDelegatingToProject()) {
+            // In the new architecture, delegate to ProjectManager
+            Properties props = new Properties();
+            props.putAll(projectManager.getProperties(project));
+            return props;
+        } else {
+            // Legacy behavior
+            return getModel().getProperties();
+        }
     }
 
     public List<String> getFilters() {

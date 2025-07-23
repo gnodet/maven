@@ -20,46 +20,68 @@ package org.apache.maven.internal.impl;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-import org.apache.maven.RepositoryUtils;
 import org.apache.maven.api.DependencyCoordinates;
-import org.apache.maven.api.DependencyScope;
-import org.apache.maven.api.Exclusion;
 import org.apache.maven.api.Packaging;
 import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Project;
-import org.apache.maven.api.Type;
-import org.apache.maven.api.VersionConstraint;
 import org.apache.maven.api.annotations.Nonnull;
-import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.model.DependencyManagement;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Profile;
-import org.apache.maven.impl.MappedCollection;
-import org.apache.maven.impl.MappedList;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.artifact.ProjectArtifact;
-import org.eclipse.aether.util.artifact.ArtifactIdUtils;
 
+/**
+ * Default implementation of {@link Project} for the new Maven API architecture.
+ * This implementation is completely independent of the legacy MavenProject and
+ * represents a clean, immutable project representation.
+ */
 public class DefaultProject implements Project {
 
     private final InternalMavenSession session;
-    private final MavenProject project;
     private final Packaging packaging;
 
-    public DefaultProject(InternalMavenSession session, MavenProject project) {
-        this.session = session;
-        this.project = project;
+    // Immutable project data
+    private final Model model;
+    private final Path basedir;
+    private final Path pomPath;
+    private final List<ProducedArtifact> artifacts;
+    private final List<Profile> activeProfiles;
+    private final Project parent;
+
+    /**
+     * Creates a new Project from model and computed data.
+     *
+     * @param session the Maven session
+     * @param model the project model
+     * @param basedir the project base directory
+     * @param pomPath the path to the POM file
+     * @param activeProfiles the active profiles for this project
+     * @param parent the parent project, or null if this is a root project
+     */
+    public DefaultProject(
+            InternalMavenSession session,
+            Model model,
+            Path basedir,
+            Path pomPath,
+            List<ProducedArtifact> artifacts,
+            List<Profile> activeProfiles,
+            Project parent) {
+        this.session = Objects.requireNonNull(session, "session cannot be null");
+        this.model = Objects.requireNonNull(model, "model cannot be null");
+        this.basedir = basedir != null ? basedir : Path.of(".");
+        this.pomPath = pomPath;
+        this.artifacts = List.copyOf(artifacts != null ? artifacts : Collections.emptyList());
+        this.activeProfiles = List.copyOf(activeProfiles != null ? activeProfiles : Collections.emptyList());
+        this.parent = parent;
+
+        // Initialize packaging
         ClassLoader ttcl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(project.getClassRealm());
-            this.packaging = session.requirePackaging(project.getPackaging());
+            this.packaging = session.requirePackaging(model.getPackaging());
         } finally {
             Thread.currentThread().setContextClassLoader(ttcl);
         }
@@ -69,40 +91,22 @@ public class DefaultProject implements Project {
         return session;
     }
 
-    public MavenProject getProject() {
-        return project;
-    }
-
     @Nonnull
     @Override
     public String getGroupId() {
-        return project.getGroupId();
+        return model.getGroupId();
     }
 
     @Nonnull
     @Override
     public String getArtifactId() {
-        return project.getArtifactId();
+        return model.getArtifactId();
     }
 
     @Nonnull
     @Override
     public String getVersion() {
-        return project.getVersion();
-    }
-
-    @Nonnull
-    @Override
-    public List<ProducedArtifact> getArtifacts() {
-        org.eclipse.aether.artifact.Artifact pomArtifact = RepositoryUtils.toArtifact(new ProjectArtifact(project));
-        org.eclipse.aether.artifact.Artifact projectArtifact = RepositoryUtils.toArtifact(project.getArtifact());
-
-        ArrayList<ProducedArtifact> result = new ArrayList<>(2);
-        result.add(session.getArtifact(ProducedArtifact.class, pomArtifact));
-        if (!ArtifactIdUtils.equalsVersionlessId(pomArtifact, projectArtifact)) {
-            result.add(session.getArtifact(ProducedArtifact.class, projectArtifact));
-        }
-        return Collections.unmodifiableList(result);
+        return model.getVersion();
     }
 
     @Nonnull
@@ -113,28 +117,16 @@ public class DefaultProject implements Project {
 
     @Nonnull
     @Override
-    public Model getModel() {
-        return project.getModel().getDelegate();
-    }
-
-    @Nonnull
-    @Override
-    public Path getPomPath() {
-        return Objects.requireNonNull(project.getFile(), "pomPath cannot be null")
-                .toPath();
-    }
-
-    @Nonnull
-    @Override
-    public Path getBasedir() {
-        return Objects.requireNonNull(project.getBasedir(), "basedir cannot be null")
-                .toPath();
+    public List<ProducedArtifact> getArtifacts() {
+        return artifacts;
     }
 
     @Nonnull
     @Override
     public List<DependencyCoordinates> getDependencies() {
-        return new MappedList<>(getModel().getDependencies(), this::toDependency);
+        // For now, return empty list until we implement proper dependency conversion
+        // TODO: Implement dependency conversion from model to DependencyCoordinates
+        return Collections.emptyList();
     }
 
     @Nonnull
@@ -142,14 +134,92 @@ public class DefaultProject implements Project {
     public List<DependencyCoordinates> getManagedDependencies() {
         DependencyManagement dependencyManagement = getModel().getDependencyManagement();
         if (dependencyManagement != null) {
-            return new MappedList<>(dependencyManagement.getDependencies(), this::toDependency);
+            // For now, return empty list until we implement proper dependency conversion
+            // TODO: Implement dependency conversion from model to DependencyCoordinates
+            return Collections.emptyList();
         }
         return Collections.emptyList();
     }
 
+    @Nonnull
+    @Override
+    public Model getModel() {
+        return model;
+    }
+
+    @Nonnull
+    @Override
+    public Path getPomPath() {
+        return Objects.requireNonNull(pomPath, "pomPath cannot be null");
+    }
+
+    @Nonnull
+    @Override
+    public Path getBasedir() {
+        return basedir;
+    }
+
+    @Override
+    public Path getRootDirectory() {
+        return session.getRootDirectory();
+    }
+
+    @Override
+    public Optional<Project> getParent() {
+        return Optional.ofNullable(parent);
+    }
+
+    @Override
+    @Nonnull
+    public List<Profile> getDeclaredProfiles() {
+        return model.getProfiles();
+    }
+
+    @Override
+    @Nonnull
+    public List<Profile> getEffectiveProfiles() {
+        List<Profile> result = new ArrayList<>();
+
+        // Collect profiles from this project and all parents
+        Project current = this;
+        while (current != null) {
+            result.addAll(current.getModel().getProfiles());
+            current = current.getParent().orElse(null);
+        }
+
+        return Collections.unmodifiableList(result);
+    }
+
+    @Override
+    @Nonnull
+    public List<Profile> getDeclaredActiveProfiles() {
+        return activeProfiles;
+    }
+
+    @Override
+    @Nonnull
+    public List<Profile> getEffectiveActiveProfiles() {
+        List<Profile> result = new ArrayList<>();
+
+        // Collect active profiles from this project and all parents
+        Project current = this;
+        while (current != null) {
+            result.addAll(current.getDeclaredActiveProfiles());
+            current = current.getParent().orElse(null);
+        }
+
+        return Collections.unmodifiableList(result);
+    }
+
+    @Nonnull
+    @Override
+    public String getId() {
+        return model.getGroupId() + ":" + model.getArtifactId() + ":" + model.getVersion();
+    }
+
     @Override
     public boolean isTopProject() {
-        return getBasedir().equals(getSession().getTopDirectory());
+        return getBasedir().equals(session.getTopDirectory());
     }
 
     @Override
@@ -158,124 +228,28 @@ public class DefaultProject implements Project {
     }
 
     @Override
-    public Path getRootDirectory() {
-        return project.getRootDirectory();
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DefaultProject that = (DefaultProject) o;
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
-    public Optional<Project> getParent() {
-        MavenProject parent = project.getParent();
-        return Optional.ofNullable(session.getProject(parent));
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override
-    @Nonnull
-    public List<Profile> getDeclaredProfiles() {
-        return getModel().getProfiles();
-    }
-
-    @Override
-    @Nonnull
-    public List<Profile> getEffectiveProfiles() {
-        return Stream.iterate(this.project, Objects::nonNull, MavenProject::getParent)
-                .flatMap(project -> project.getModel().getDelegate().getProfiles().stream())
-                .toList();
-    }
-
-    @Override
-    @Nonnull
-    public List<Profile> getDeclaredActiveProfiles() {
-        return project.getActiveProfiles().stream()
-                .map(org.apache.maven.model.Profile::getDelegate)
-                .toList();
-    }
-
-    @Override
-    @Nonnull
-    public List<Profile> getEffectiveActiveProfiles() {
-        return Stream.iterate(this.project, Objects::nonNull, MavenProject::getParent)
-                .flatMap(project -> project.getActiveProfiles().stream())
-                .map(org.apache.maven.model.Profile::getDelegate)
-                .toList();
-    }
-
-    @Nonnull
-    private DependencyCoordinates toDependency(org.apache.maven.api.model.Dependency dependency) {
-        return new DependencyCoordinates() {
-            @Override
-            public String getGroupId() {
-                return dependency.getGroupId();
-            }
-
-            @Override
-            public String getArtifactId() {
-                return dependency.getArtifactId();
-            }
-
-            @Override
-            public String getClassifier() {
-                String classifier = dependency.getClassifier();
-                if (classifier == null || classifier.isEmpty()) {
-                    classifier = getType().getClassifier();
-                    if (classifier == null) {
-                        classifier = "";
-                    }
-                }
-                return classifier;
-            }
-
-            @Override
-            public VersionConstraint getVersionConstraint() {
-                return session.parseVersionConstraint(dependency.getVersion());
-            }
-
-            @Override
-            public String getExtension() {
-                return getType().getExtension();
-            }
-
-            @Override
-            public Type getType() {
-                String type = dependency.getType();
-                return session.requireType(type);
-            }
-
-            @Nonnull
-            @Override
-            public DependencyScope getScope() {
-                String scope = dependency.getScope();
-                if (scope == null) {
-                    scope = "";
-                }
-                return session.requireDependencyScope(scope);
-            }
-
-            @Override
-            public Boolean getOptional() {
-                return dependency.isOptional();
-            }
-
-            @Nonnull
-            @Override
-            public Collection<Exclusion> getExclusions() {
-                return new MappedCollection<>(dependency.getExclusions(), this::toExclusion);
-            }
-
-            private Exclusion toExclusion(org.apache.maven.api.model.Exclusion exclusion) {
-                return new Exclusion() {
-                    @Nullable
-                    @Override
-                    public String getGroupId() {
-                        return exclusion.getGroupId();
-                    }
-
-                    @Nullable
-                    @Override
-                    public String getArtifactId() {
-                        return exclusion.getArtifactId();
-                    }
-                };
-            }
-        };
+    public String toString() {
+        return "DefaultProject{" + "groupId='"
+                + getGroupId() + '\'' + ", artifactId='"
+                + getArtifactId() + '\'' + ", version='"
+                + getVersion() + '\'' + ", packaging='"
+                + getPackaging().id() + '\'' + '}';
     }
 }

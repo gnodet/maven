@@ -37,6 +37,7 @@ import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.api.services.MavenException;
+import org.apache.maven.api.services.RepositoryFactory;
 import org.apache.maven.api.settings.Settings;
 import org.apache.maven.api.toolchain.ToolchainModel;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -100,7 +101,7 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
     @Override
     public Project getProject(MavenProject project) {
         return project != null && project.getBasedir() != null
-                ? allProjects.computeIfAbsent(project.getId(), id -> new DefaultProject(this, project))
+                ? allProjects.computeIfAbsent(project.getId(), id -> new DefaultLegacyProject(this, project))
                 : null;
     }
 
@@ -188,7 +189,26 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
             MojoExecution mojoExecution = lookup.lookup(MojoExecution.class);
             MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
             PluginDescriptor pluginDescriptor = mojoDescriptor.getPluginDescriptor();
-            return getMavenSession().getPluginContext(pluginDescriptor, ((DefaultProject) project).getProject());
+
+            // For now, we need to get the MavenProject to access the plugin context
+            // TODO: Implement plugin context without requiring MavenProject
+            // Handle different project implementations
+            if (project instanceof DefaultLegacyProject) {
+                DefaultLegacyProject legacyProject = (DefaultLegacyProject) project;
+                MavenProject mavenProject = legacyProject.getProject();
+                if (mavenProject != null) {
+                    return getMavenSession().getPluginContext(pluginDescriptor, mavenProject);
+                }
+            }
+
+            // For new DefaultProject or when MavenProject is not available,
+            // find the MavenProject by ID as a fallback
+            String projectId = project.getId();
+            MavenProject foundProject = getMavenSession().getProjects().stream()
+                    .filter(p -> projectId.equals(p.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Cannot find MavenProject for Project: " + projectId));
+            return getMavenSession().getPluginContext(pluginDescriptor, foundProject);
         } catch (LookupException e) {
             throw new MavenException("The PluginContext is only available during a mojo execution", e);
         }
@@ -215,6 +235,12 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
                 mavenRepositorySystem,
                 lookup,
                 runtimeInformation);
+    }
+
+    @Nonnull
+    @Override
+    public RemoteRepository createRemoteRepository(@Nonnull org.apache.maven.api.model.Repository repository) {
+        return getService(RepositoryFactory.class).createRemote(repository);
     }
 
     @Override

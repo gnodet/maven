@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import org.apache.maven.RepositoryUtils;
@@ -43,10 +44,9 @@ import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.di.SessionScoped;
 import org.apache.maven.api.services.ArtifactManager;
 import org.apache.maven.api.services.ProjectManager;
+import org.apache.maven.impl.DefaultSourceRoot;
 import org.apache.maven.impl.InternalSession;
-import org.apache.maven.impl.MappedList;
 import org.apache.maven.impl.PropertiesAsMap;
-import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Typed;
 
 import static java.util.Objects.requireNonNull;
@@ -59,6 +59,13 @@ public class DefaultProjectManager implements ProjectManager {
 
     private final InternalMavenSession session;
     private final ArtifactManager artifactManager;
+
+    // Store mutable state per project
+    private final Map<String, List<org.apache.maven.artifact.Artifact>> attachedArtifacts = new ConcurrentHashMap<>();
+    private final Map<String, Properties> projectProperties = new ConcurrentHashMap<>();
+    private final Map<String, List<SourceRoot>> sourceRoots = new ConcurrentHashMap<>();
+    private final Map<String, List<RemoteRepository>> remoteProjectRepositories = new ConcurrentHashMap<>();
+    private final Map<String, List<RemoteRepository>> remotePluginRepositories = new ConcurrentHashMap<>();
 
     @Inject
     public DefaultProjectManager(InternalMavenSession session, ArtifactManager artifactManager) {
@@ -78,9 +85,11 @@ public class DefaultProjectManager implements ProjectManager {
     @Override
     public Collection<ProducedArtifact> getAttachedArtifacts(@Nonnull Project project) {
         requireNonNull(project, "project" + " cannot be null");
-        Collection<ProducedArtifact> attached =
-                map(getMavenProject(project).getAttachedArtifacts(), a -> getSession(project)
-                        .getArtifact(ProducedArtifact.class, RepositoryUtils.toArtifact(a)));
+        String projectId = project.getId();
+        List<org.apache.maven.artifact.Artifact> artifacts =
+                attachedArtifacts.getOrDefault(projectId, Collections.emptyList());
+        Collection<ProducedArtifact> attached = map(
+                artifacts, a -> getSession(project).getArtifact(ProducedArtifact.class, RepositoryUtils.toArtifact(a)));
         return Collections.unmodifiableCollection(attached);
     }
 
@@ -123,30 +132,45 @@ public class DefaultProjectManager implements ProjectManager {
                             + " but received " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
                             + artifact.getBaseVersion());
         }
-        getMavenProject(project)
-                .addAttachedArtifact(
-                        RepositoryUtils.toArtifact(getSession(project).toArtifact(artifact)));
+        // Store the attached artifact in our internal storage
+        String projectId = project.getId();
+        org.apache.maven.artifact.Artifact mavenArtifact =
+                RepositoryUtils.toArtifact(getSession(project).toArtifact(artifact));
+        attachedArtifacts.computeIfAbsent(projectId, k -> new ArrayList<>()).add(mavenArtifact);
         artifactManager.setPath(artifact, path);
     }
 
     @Nonnull
     @Override
     public Collection<SourceRoot> getSourceRoots(@Nonnull Project project) {
-        MavenProject prj = getMavenProject(requireNonNull(project, "project" + " cannot be null"));
-        return prj.getSourceRoots();
+        requireNonNull(project, "project" + " cannot be null");
+        String projectId = project.getId();
+        List<SourceRoot> roots = sourceRoots.computeIfAbsent(projectId, k -> {
+            // Initialize with model source roots
+            List<SourceRoot> initialRoots = new ArrayList<>();
+            // Add source roots from the model
+            project.getModel().getBuild().getSources().forEach(source -> {
+                initialRoots.add(new DefaultSourceRoot(getSession(project), project.getBasedir(), source));
+            });
+            return initialRoots;
+        });
+        return Collections.unmodifiableCollection(roots);
     }
 
     @Nonnull
     @Override
     public Stream<SourceRoot> getEnabledSourceRoots(@Nonnull Project project, ProjectScope scope, Language language) {
-        MavenProject prj = getMavenProject(requireNonNull(project, "project" + " cannot be null"));
-        return prj.getEnabledSourceRoots(scope, language);
+        return getSourceRoots(project).stream()
+                .filter(SourceRoot::enabled)
+                .filter(source -> scope.equals(source.scope()) && language.equals(source.language()));
     }
 
     @Override
     public void addSourceRoot(@Nonnull Project project, @Nonnull SourceRoot source) {
-        MavenProject prj = getMavenProject(requireNonNull(project, "project" + " cannot be null"));
-        prj.addSourceRoot(requireNonNull(source, "source" + " cannot be null"));
+        requireNonNull(project, "project" + " cannot be null");
+        requireNonNull(source, "source" + " cannot be null");
+        String projectId = project.getId();
+        sourceRoots.computeIfAbsent(projectId, k -> new ArrayList<>()).add(source);
     }
 
     @Override
@@ -155,30 +179,59 @@ public class DefaultProjectManager implements ProjectManager {
             @Nonnull ProjectScope scope,
             @Nonnull Language language,
             @Nonnull Path directory) {
-        MavenProject prj = getMavenProject(requireNonNull(project, "project" + " cannot be null"));
-        prj.addSourceRoot(
-                requireNonNull(scope, "scope" + " cannot be null"),
-                requireNonNull(language, "language" + " cannot be null"),
-                requireNonNull(directory, "directory" + " cannot be null"));
+        requireNonNull(project, "project" + " cannot be null");
+        requireNonNull(scope, "scope" + " cannot be null");
+        requireNonNull(language, "language" + " cannot be null");
+        requireNonNull(directory, "directory" + " cannot be null");
+
+        Path resolvedDirectory = project.getBasedir().resolve(directory).normalize();
+        SourceRoot sourceRoot = new DefaultSourceRoot(scope, language, resolvedDirectory);
+        addSourceRoot(project, sourceRoot);
     }
 
     @Override
     @Nonnull
     public List<RemoteRepository> getRemoteProjectRepositories(@Nonnull Project project) {
-        return Collections.unmodifiableList(new MappedList<>(
-                getMavenProject(project).getRemoteProjectRepositories(), session::getRemoteRepository));
+        requireNonNull(project, "project cannot be null");
+        String projectId = project.getId();
+        return Collections.unmodifiableList(remoteProjectRepositories.computeIfAbsent(projectId, k -> {
+            // Initialize with model repositories converted to RemoteRepository
+            List<RemoteRepository> repos = new ArrayList<>();
+            project.getModel().getRepositories().forEach(repo -> {
+                repos.add(getSession(project)
+                        .getService(org.apache.maven.api.services.RepositoryFactory.class)
+                        .createRemote(repo));
+            });
+            return repos;
+        }));
     }
 
     @Override
     @Nonnull
     public List<RemoteRepository> getRemotePluginRepositories(@Nonnull Project project) {
-        return Collections.unmodifiableList(
-                new MappedList<>(getMavenProject(project).getRemotePluginRepositories(), session::getRemoteRepository));
+        requireNonNull(project, "project cannot be null");
+        String projectId = project.getId();
+        return Collections.unmodifiableList(remotePluginRepositories.computeIfAbsent(projectId, k -> {
+            // Initialize with model plugin repositories converted to RemoteRepository
+            List<RemoteRepository> repos = new ArrayList<>();
+            project.getModel().getPluginRepositories().forEach(repo -> {
+                repos.add(getSession(project)
+                        .getService(org.apache.maven.api.services.RepositoryFactory.class)
+                        .createRemote(repo));
+            });
+            return repos;
+        }));
     }
 
     @Override
     public void setProperty(@Nonnull Project project, @Nonnull String key, String value) {
-        Properties properties = getMavenProject(project).getProperties();
+        String projectId = project.getId();
+        Properties properties = projectProperties.computeIfAbsent(projectId, k -> {
+            // Initialize with model properties
+            Properties props = new Properties();
+            props.putAll(project.getModel().getProperties());
+            return props;
+        });
         if (value == null) {
             properties.remove(key);
         } else {
@@ -189,25 +242,45 @@ public class DefaultProjectManager implements ProjectManager {
     @Override
     @Nonnull
     public Map<String, String> getProperties(@Nonnull Project project) {
-        return Collections.unmodifiableMap(
-                new PropertiesAsMap(getMavenProject(project).getProperties()));
+        String projectId = project.getId();
+        Properties properties = projectProperties.computeIfAbsent(projectId, k -> {
+            // Initialize with model properties
+            Properties props = new Properties();
+            props.putAll(project.getModel().getProperties());
+            return props;
+        });
+        return Collections.unmodifiableMap(new PropertiesAsMap(properties));
     }
 
     @Override
     @Nonnull
     public Optional<Project> getExecutionProject(@Nonnull Project project) {
-        // Session keep tracks of the Project per project id,
-        // so we cannot use session.getProject(p) for forked projects
-        // which are temporary clones
-        return Optional.ofNullable(getMavenProject(project).getExecutionProject())
-                .map(p -> new DefaultProject(session, p));
+        // For now, return empty until we implement execution project support
+        // TODO: Implement execution project support in the new architecture
+        return Optional.empty();
     }
 
-    private MavenProject getMavenProject(Project project) {
-        return ((DefaultProject) project).getProject();
+    // Helper methods for setting repositories during project building
+    public void setRemoteProjectRepositories(@Nonnull Project project, @Nonnull List<RemoteRepository> repositories) {
+        requireNonNull(project, "project cannot be null");
+        requireNonNull(repositories, "repositories cannot be null");
+        String projectId = project.getId();
+        remoteProjectRepositories.put(projectId, new ArrayList<>(repositories));
+    }
+
+    public void setRemotePluginRepositories(@Nonnull Project project, @Nonnull List<RemoteRepository> repositories) {
+        requireNonNull(project, "project cannot be null");
+        requireNonNull(repositories, "repositories cannot be null");
+        String projectId = project.getId();
+        remotePluginRepositories.put(projectId, new ArrayList<>(repositories));
     }
 
     private static InternalSession getSession(Project project) {
-        return ((DefaultProject) project).getSession();
+        if (project instanceof DefaultProject) {
+            return ((DefaultProject) project).getSession();
+        } else if (project instanceof DefaultLegacyProject) {
+            return ((DefaultLegacyProject) project).getSession();
+        }
+        throw new IllegalArgumentException("Unsupported project type: " + project.getClass());
     }
 }

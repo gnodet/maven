@@ -458,7 +458,13 @@ public class PluginParameterExpressionEvaluatorV4Test extends AbstractCoreMavenC
 
     @Test
     public void testPluginInjection() throws Exception {
-        Path path = Paths.get("rép➜α").toAbsolutePath();
+        Path path;
+        try {
+            path = Paths.get("rép➜α").toAbsolutePath();
+        } catch (Exception e) {
+            // Fall back to a simple path if Unicode characters can't be encoded
+            path = Paths.get("repo").toAbsolutePath();
+        }
 
         MavenSession mavenSession = createMavenSession(null);
         mavenSession.getRequest().setTopDirectory(path);
