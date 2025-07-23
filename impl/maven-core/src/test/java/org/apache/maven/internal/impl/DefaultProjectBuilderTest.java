@@ -350,7 +350,7 @@ class DefaultProjectBuilderTest {
         ProjectBuilderRequest recursiveRequest = ProjectBuilderRequest.builder()
                 .session(session)
                 .path(pomFile.toPath())
-                .recursive(true)  // Enable recursive loading
+                .recursive(true) // Enable recursive loading
                 .processPlugins(false)
                 .build();
 
@@ -366,7 +366,7 @@ class DefaultProjectBuilderTest {
         ProjectBuilderRequest nonRecursiveRequest = ProjectBuilderRequest.builder()
                 .session(session)
                 .path(pomFile.toPath())
-                .recursive(false)  // Disable recursive loading
+                .recursive(false) // Disable recursive loading
                 .processPlugins(false)
                 .build();
 
@@ -553,7 +553,8 @@ class DefaultProjectBuilderTest {
                 .allowStubModel(true);
 
         // Test with repositories
-        if (session.getRemoteRepositories() != null && !session.getRemoteRepositories().isEmpty()) {
+        if (session.getRemoteRepositories() != null
+                && !session.getRemoteRepositories().isEmpty()) {
             builder.repositories(session.getRemoteRepositories());
         }
 

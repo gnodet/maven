@@ -134,7 +134,8 @@ public class DefaultProjectBuilder implements ProjectBuilder {
 
         ModelBuilderRequest.ModelBuilderRequestBuilder builder = ModelBuilderRequest.builder()
                 .session(session)
-                .trace(request.getTrace().orElse(null))
+                .trace(request.getTrace())
+                .locationTracking(true)
                 .requestType(
                         request.isProcessPlugins()
                                 ? ModelBuilderRequest.RequestType.BUILD_PROJECT
@@ -148,8 +149,8 @@ public class DefaultProjectBuilder implements ProjectBuilder {
         } else if (request.getSource().isPresent()) {
             // Convert Source to ModelSource if needed
             Source source = request.getSource().get();
-            if (source instanceof ModelSource) {
-                builder.source((ModelSource) source);
+            if (source instanceof ModelSource modelSource) {
+                builder.source(modelSource);
             } else {
                 // Create a ModelSource from the Source path
                 Path sourcePath = source.getPath();
@@ -281,8 +282,6 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             return null;
         }
     }
-
-
 
     private Collection<BuilderProblem> convertProblems(java.util.stream.Stream<? extends ModelProblem> modelProblems) {
         // ModelProblem already extends BuilderProblem, so no conversion needed
