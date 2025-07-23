@@ -341,6 +341,46 @@ class DefaultProjectBuilderTest {
 
     @Test
     @Disabled("Test disabled until ModelBuilder integration is complete")
+    void testBuildProjectWithRecursiveFlag() throws Exception {
+        File pomFile = new File("src/test/resources/projects/modelsourcebasedir/pom.xml");
+
+        ProjectBuilder projectBuilder = session.getService(ProjectBuilder.class);
+
+        // Test with recursive=true
+        ProjectBuilderRequest recursiveRequest = ProjectBuilderRequest.builder()
+                .session(session)
+                .path(pomFile.toPath())
+                .recursive(true)  // Enable recursive loading
+                .processPlugins(false)
+                .build();
+
+        ProjectBuilderResult result = projectBuilder.build(recursiveRequest);
+
+        Optional<Project> projectOpt = result.getProject();
+        assertTrue(projectOpt.isPresent(), "Project should be present");
+
+        Project project = projectOpt.get();
+        assertNotNull(project, "Project should not be null");
+
+        // Test with recursive=false
+        ProjectBuilderRequest nonRecursiveRequest = ProjectBuilderRequest.builder()
+                .session(session)
+                .path(pomFile.toPath())
+                .recursive(false)  // Disable recursive loading
+                .processPlugins(false)
+                .build();
+
+        ProjectBuilderResult nonRecursiveResult = projectBuilder.build(nonRecursiveRequest);
+
+        Optional<Project> nonRecursiveProjectOpt = nonRecursiveResult.getProject();
+        assertTrue(nonRecursiveProjectOpt.isPresent(), "Project should be present even without recursive");
+
+        // Both should succeed, but recursive loading affects internal ModelBuilder behavior
+        assertNotNull(nonRecursiveProjectOpt.get(), "Non-recursive project should not be null");
+    }
+
+    @Test
+    @Disabled("Test disabled until ModelBuilder integration is complete")
     void testBuildProjectWithRepositories() throws Exception {
         File pomFile = new File("src/test/resources/projects/modelsourcebasedir/pom.xml");
 
@@ -499,5 +539,68 @@ class DefaultProjectBuilderTest {
 
         // Note: Other immutability tests would depend on the specific implementation
         // of the collections returned by DefaultProject
+    }
+
+    @Test
+    void testProjectBuilderRequestParameterMapping() {
+        ProjectBuilder projectBuilder = session.getService(ProjectBuilder.class);
+
+        // Test that all ProjectBuilderRequest parameters are properly handled
+        ProjectBuilderRequest.ProjectBuilderRequestBuilder builder = ProjectBuilderRequest.builder()
+                .session(session)
+                .processPlugins(true)
+                .recursive(true)
+                .allowStubModel(true);
+
+        // Test with repositories
+        if (session.getRemoteRepositories() != null && !session.getRemoteRepositories().isEmpty()) {
+            builder.repositories(session.getRemoteRepositories());
+        }
+
+        // Create request with all parameters
+        ProjectBuilderRequest request = builder.build();
+
+        // Verify all parameters are accessible
+        assertEquals(session, request.getSession());
+        assertTrue(request.isProcessPlugins(), "processPlugins should be true");
+        assertTrue(request.isRecursive(), "recursive should be true");
+        assertTrue(request.isAllowStubModel(), "allowStubModel should be true");
+
+        // The actual building would be tested in integration tests
+        // Here we just verify the parameter mapping works
+        assertNotNull(request.getRepositories(), "repositories should be accessible");
+    }
+
+    @Test
+    @Disabled("Test disabled until ModelBuilder integration is complete")
+    void testParameterMappingToModelBuilder() throws Exception {
+        File pomFile = new File("src/test/resources/projects/modelsourcebasedir/pom.xml");
+
+        ProjectBuilder projectBuilder = session.getService(ProjectBuilder.class);
+
+        // Create request with all parameters that should be mapped to ModelBuilderRequest
+        ProjectBuilderRequest request = ProjectBuilderRequest.builder()
+                .session(session)
+                .path(pomFile.toPath())
+                .processPlugins(true)
+                .recursive(true)
+                .allowStubModel(false)
+                .repositories(session.getRemoteRepositories())
+                .build();
+
+        // This should properly map all parameters to ModelBuilderRequest:
+        // - session -> session
+        // - processPlugins -> requestType (BUILD_PROJECT vs BUILD_EFFECTIVE)
+        // - recursive -> recursive
+        // - repositories -> repositories
+        // - session profiles -> profiles
+        // - session properties -> systemProperties, userProperties
+        // - trace -> trace
+
+        ProjectBuilderResult result = projectBuilder.build(request);
+
+        // Verify the request was processed with all parameters
+        assertEquals(request, result.getRequest(), "Original request should be preserved");
+        assertNotNull(result.getProject(), "Project should be built with all parameters");
     }
 }

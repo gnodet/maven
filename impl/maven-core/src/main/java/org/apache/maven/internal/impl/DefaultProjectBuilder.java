@@ -130,14 +130,17 @@ public class DefaultProjectBuilder implements ProjectBuilder {
     }
 
     private ModelBuilderRequest createModelBuilderRequest(ProjectBuilderRequest request) {
+        Session session = request.getSession();
+
         ModelBuilderRequest.ModelBuilderRequestBuilder builder = ModelBuilderRequest.builder()
-                .session(request.getSession())
+                .session(session)
+                .trace(request.getTrace().orElse(null))
                 .requestType(
                         request.isProcessPlugins()
                                 ? ModelBuilderRequest.RequestType.BUILD_PROJECT
                                 : ModelBuilderRequest.RequestType.BUILD_EFFECTIVE)
                 .locationTracking(true)
-                .recursive(true); // Enable recursive loading for parent and child projects
+                .recursive(request.isRecursive()); // Use recursive flag from ProjectBuilderRequest
 
         // Set source or path
         if (request.getPath().isPresent()) {
@@ -165,7 +168,32 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             builder.repositories(request.getRepositories());
         }
 
+        // Map session-level properties and profiles
+        mapSessionProperties(builder, session);
+
         return builder.build();
+    }
+
+    private void mapSessionProperties(ModelBuilderRequest.ModelBuilderRequestBuilder builder, Session session) {
+        // Map profiles from session settings
+        if (session.getSettings() != null && session.getSettings().getProfiles() != null) {
+            builder.profiles(session.getSettings().getProfiles());
+        }
+
+        // Map active and inactive profile IDs from session
+        if (session.getRequest() != null) {
+            builder.activeProfileIds(session.getRequest().getActiveProfiles());
+            builder.inactiveProfileIds(session.getRequest().getInactiveProfiles());
+        }
+
+        // Map system properties from session
+        builder.systemProperties(session.getSystemProperties());
+
+        // Map user properties from session
+        builder.userProperties(session.getUserProperties());
+
+        // Set repository merging strategy (default to POM_DOMINANT like legacy)
+        builder.repositoryMerging(ModelBuilderRequest.RepositoryMerging.POM_DOMINANT);
     }
 
     private Path extractPomPath(ProjectBuilderRequest request, ModelBuilderResult modelResult) {
