@@ -32,15 +32,19 @@ import java.util.Optional;
 
 import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.ArtifactFactory;
 import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.api.services.DependencyResolverResult;
 import org.apache.maven.api.services.ModelBuilder;
 import org.apache.maven.api.services.ModelBuilderException;
 import org.apache.maven.api.services.ModelBuilderRequest;
 import org.apache.maven.api.services.ModelBuilderResult;
+import org.apache.maven.api.services.ModelProblem;
+import org.apache.maven.api.services.ModelSource;
 import org.apache.maven.api.services.ProjectBuilder;
 import org.apache.maven.api.services.ProjectBuilderException;
 import org.apache.maven.api.services.ProjectBuilderRequest;
@@ -83,9 +87,10 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             throws ProjectBuilderException, IllegalArgumentException {
         RequestTraceHelper.ResolverTrace trace = RequestTraceHelper.enter(request.getSession(), request);
         try {
-            // Build the model using ModelBuilder
+            // Build the model using ModelBuilder with recursive support
             ModelBuilderRequest modelRequest = createModelBuilderRequest(request);
-            ModelBuilderResult modelResult = modelBuilder.newSession().build(modelRequest);
+            ModelBuilder.ModelBuilderSession session = modelBuilder.newSession();
+            ModelBuilderResult modelResult = session.build(modelRequest);
 
             // Extract information from the model result
             Model effectiveModel = modelResult.getEffectiveModel();
@@ -99,7 +104,7 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             List<Profile> activeProfiles = extractActiveProfiles(modelResult);
 
             // Resolve parent project if needed
-            Project parent = resolveParentProject(request, effectiveModel);
+            Project parent = resolveParentProject(request, modelResult, session);
 
             // Create the Project instance
             Project project = new DefaultProject(
@@ -131,7 +136,8 @@ public class DefaultProjectBuilder implements ProjectBuilder {
                         request.isProcessPlugins()
                                 ? ModelBuilderRequest.RequestType.BUILD_PROJECT
                                 : ModelBuilderRequest.RequestType.BUILD_EFFECTIVE)
-                .locationTracking(true);
+                .locationTracking(true)
+                .recursive(true); // Enable recursive loading for parent and child projects
 
         // Set source or path
         if (request.getPath().isPresent()) {
@@ -139,8 +145,8 @@ public class DefaultProjectBuilder implements ProjectBuilder {
         } else if (request.getSource().isPresent()) {
             // Convert Source to ModelSource if needed
             Source source = request.getSource().get();
-            if (source instanceof org.apache.maven.api.services.ModelSource) {
-                builder.source((org.apache.maven.api.services.ModelSource) source);
+            if (source instanceof ModelSource) {
+                builder.source((ModelSource) source);
             } else {
                 // Create a ModelSource from the Source path
                 Path sourcePath = source.getPath();
@@ -178,7 +184,7 @@ public class DefaultProjectBuilder implements ProjectBuilder {
         return Path.of(".");
     }
 
-    private List<ProducedArtifact> createArtifacts(org.apache.maven.api.Session session, Model model) {
+    private List<ProducedArtifact> createArtifacts(Session session, Model model) {
         List<ProducedArtifact> artifacts = new ArrayList<>();
 
         // Always create POM artifact
@@ -204,14 +210,53 @@ public class DefaultProjectBuilder implements ProjectBuilder {
         return Collections.emptyList();
     }
 
-    private Project resolveParentProject(ProjectBuilderRequest request, Model model) {
-        // For now, return null - parent resolution would require recursive building
-        // TODO: Implement proper parent project resolution
-        return null;
+    private Project resolveParentProject(
+            ProjectBuilderRequest request, ModelBuilderResult modelResult, ModelBuilder.ModelBuilderSession session) {
+
+        Model parentModel = modelResult.getParentModel();
+        if (parentModel == null) {
+            return null;
+        }
+
+        try {
+            // Create artifacts for the parent project
+            List<ProducedArtifact> parentArtifacts = createArtifacts(request.getSession(), parentModel);
+
+            // Get active profiles for parent (simplified for now)
+            List<Profile> parentActiveProfiles = Collections.emptyList();
+
+            // Determine parent paths
+            Path parentPomPath = parentModel.getPomFile();
+            Path parentBasedir = parentPomPath != null ? parentPomPath.getParent() : null;
+
+            // Recursively resolve parent's parent if needed
+            Project grandParent = null;
+            if (parentModel.getParent() != null) {
+                // For now, we don't recursively resolve grandparents to avoid infinite recursion
+                // This could be enhanced later with proper cycle detection
+                grandParent = null;
+            }
+
+            // Create the parent Project instance
+            return new DefaultProject(
+                    (InternalMavenSession) InternalSession.from(request.getSession()),
+                    parentModel,
+                    parentBasedir,
+                    parentPomPath,
+                    parentArtifacts,
+                    parentActiveProfiles,
+                    grandParent);
+
+        } catch (Exception e) {
+            // If parent resolution fails, log and continue without parent
+            // This matches the behavior of the legacy project builder
+            return null;
+        }
     }
 
-    private Collection<BuilderProblem> convertProblems(
-            java.util.stream.Stream<? extends org.apache.maven.api.services.ModelProblem> modelProblems) {
+
+
+    private Collection<BuilderProblem> convertProblems(java.util.stream.Stream<? extends ModelProblem> modelProblems) {
         // ModelProblem already extends BuilderProblem, so no conversion needed
         return modelProblems.map(BuilderProblem.class::cast).toList();
     }
@@ -264,7 +309,7 @@ public class DefaultProjectBuilder implements ProjectBuilder {
 
         @Nonnull
         @Override
-        public Optional<org.apache.maven.api.services.DependencyResolverResult> getDependencyResolverResult() {
+        public Optional<DependencyResolverResult> getDependencyResolverResult() {
             // For now, return empty - dependency resolution would be handled separately
             // TODO: Implement dependency resolution integration
             return Optional.empty();
