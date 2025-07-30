@@ -18,6 +18,7 @@
  */
 package org.apache.maven.api.plugin.testing.stubs;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.maven.api.Artifact;
@@ -121,6 +122,11 @@ public class ArtifactStub implements Artifact {
     @Override
     public boolean isSnapshot() {
         return false;
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return Map.of();
     }
 
     @Override

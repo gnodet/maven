@@ -18,6 +18,7 @@
  */
 package org.apache.maven.impl;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.maven.api.Artifact;
@@ -95,6 +96,11 @@ public class DefaultArtifact implements Artifact {
     @Override
     public boolean isSnapshot() {
         return DefaultModelVersionParser.checkSnapshot(artifact.getVersion());
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return artifact.getProperties();
     }
 
     @Nonnull

@@ -21,9 +21,11 @@ package org.apache.maven.api;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.api.annotations.Experimental;
 import org.apache.maven.api.annotations.Nonnull;
+import org.apache.maven.api.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.api.plugin.descriptor.lifecycle.Lifecycle;
 
@@ -57,4 +59,7 @@ public interface Plugin {
 
     @Nonnull
     Map<String, Dependency> getDependenciesMap();
+
+    @Nonnull
+    Optional<MojoDescriptor> getMojoDescriptor(String goal);
 }

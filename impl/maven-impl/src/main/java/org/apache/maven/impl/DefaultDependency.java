@@ -18,6 +18,7 @@
  */
 package org.apache.maven.impl;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.maven.api.Artifact;
@@ -61,6 +62,11 @@ public class DefaultDependency extends AetherDependencyWrapper implements Depend
     @Override
     public boolean isSnapshot() {
         return DefaultModelVersionParser.checkSnapshot(dependency.getArtifact().getVersion());
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return dependency.getArtifact().getProperties();
     }
 
     @Override

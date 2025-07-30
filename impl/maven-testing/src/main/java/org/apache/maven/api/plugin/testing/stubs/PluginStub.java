@@ -21,10 +21,13 @@ package org.apache.maven.api.plugin.testing.stubs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.maven.api.Artifact;
 import org.apache.maven.api.Dependency;
 import org.apache.maven.api.Plugin;
+import org.apache.maven.api.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.api.plugin.descriptor.lifecycle.Lifecycle;
 
@@ -118,5 +121,12 @@ public class PluginStub implements Plugin {
 
     public void setDependenciesMap(Map<String, Dependency> dependenciesMap) {
         this.dependenciesMap = dependenciesMap;
+    }
+
+    @Override
+    public Optional<MojoDescriptor> getMojoDescriptor(String goal) {
+        return descriptor.getMojos().stream()
+                .filter(md -> Objects.equals(goal, md.getGoal()))
+                .findFirst();
     }
 }

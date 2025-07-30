@@ -18,6 +18,8 @@
  */
 package org.apache.maven.api;
 
+import java.util.Map;
+
 import org.apache.maven.api.annotations.Experimental;
 import org.apache.maven.api.annotations.Immutable;
 import org.apache.maven.api.annotations.Nonnull;
@@ -120,6 +122,14 @@ public interface Artifact {
      * @see org.apache.maven.api.Session#isVersionSnapshot(String)
      */
     boolean isSnapshot();
+
+    /**
+     * Gets the properties of this artifact. Clients may use these properties to associate non-persistent values with an
+     * artifact that help later processing when the artifact gets passed around within the application.
+     *
+     * @return The (read-only) properties, never {@code null}.
+     */
+    Map<String, String> getProperties();
 
     /**
      * {@return coordinates with the same identifiers as this artifact}.
