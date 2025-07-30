@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.maven.api.Project;
 import org.apache.maven.api.annotations.Nonnull;
@@ -87,7 +88,16 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             ProjectBuildingResult res;
             if (request.getPath().isPresent()) {
                 Path path = request.getPath().get();
-                res = builder.build(path.toFile(), req);
+                if (request.isRecursive()) {
+                    // Use the multi-file method for recursive building
+                    List<ProjectBuildingResult> results = builder.build(List.of(path.toFile()), true, req);
+                    if (results.isEmpty()) {
+                        throw new ProjectBuildingException("No projects found", "No projects found", (Throwable) null);
+                    }
+                    res = results.get(0); // The main project is the first result
+                } else {
+                    res = builder.build(path.toFile(), req);
+                }
             } else if (request.getSource().isPresent()) {
                 Source source = request.getSource().get();
                 ModelSource2 modelSource = new SourceWrapper(source);
@@ -125,8 +135,23 @@ public class DefaultProjectBuilder implements ProjectBuilder {
                     return new MappedCollection<>(res.getProblems(), this::toProblem);
                 }
 
+                @Override
+                public List<? extends ProjectBuilderResult> getChildren() {
+                    return getChildResults(request, res, session);
+                }
+
                 private BuilderProblem toProblem(ModelProblem problem) {
-                    return new BuilderProblem() {
+                    return new org.apache.maven.api.services.ModelProblem() {
+                        @Override
+                        public String getModelId() {
+                            return problem.getModelId();
+                        }
+
+                        @Override
+                        public Version getVersion() {
+                            return Version.valueOf(problem.getVersion().name());
+                        }
+
                         @Override
                         public String getSource() {
                             return problem.getSource();
@@ -194,7 +219,7 @@ public class DefaultProjectBuilder implements ProjectBuilder {
                 }
             };
         } catch (ProjectBuildingException e) {
-            throw new ProjectBuilderException("Unable to build project", e);
+            throw new ProjectBuilderException(e.getProjectId(), "Unable to build project", e);
         } finally {
             RequestTraceHelper.exit(trace);
         }
@@ -228,5 +253,91 @@ public class DefaultProjectBuilder implements ProjectBuilder {
             Path path = source.getPath();
             return path != null ? path.toUri() : URI.create(source.getLocation());
         }
+    }
+
+    /**
+     * Creates child ProjectBuilderResult instances for recursive builds.
+     */
+    private List<? extends ProjectBuilderResult> getChildResults(
+            ProjectBuilderRequest request, ProjectBuildingResult res, InternalSession session) {
+        // If this was a recursive build and we have a path, we need to get all child projects
+        if (request.isRecursive() && request.getPath().isPresent()) {
+            try {
+                // Re-run the recursive build to get all results
+                Path path = request.getPath().get();
+                List<ArtifactRepository> repositories = InternalMavenSession.from(session)
+                        .toArtifactRepositories(
+                                request.getRepositories() != null
+                                        ? request.getRepositories()
+                                        : InternalMavenSession.from(session).getRemoteRepositories());
+                ProjectBuildingRequest req = new DefaultProjectBuildingRequest()
+                        .setRepositorySession(InternalMavenSession.from(session).getSession())
+                        .setRemoteRepositories(repositories)
+                        .setPluginArtifactRepositories(repositories)
+                        .setProcessPlugins(request.isProcessPlugins());
+
+                List<ProjectBuildingResult> allResults = builder.build(List.of(path.toFile()), true, req);
+
+                // Skip the first result (which is the main project) and return the rest as children
+                return allResults.stream()
+                        .skip(1) // Skip the main project
+                        .map(childResult -> createChildResult(request, childResult, session))
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                // If we can't get children, return empty list
+                return List.of();
+            }
+        }
+        return List.of();
+    }
+
+    /**
+     * Creates a ProjectBuilderResult for a child project.
+     */
+    private ProjectBuilderResult createChildResult(
+            ProjectBuilderRequest request, ProjectBuildingResult childResult, InternalSession session) {
+        return new ProjectBuilderResult() {
+            @Override
+            public ProjectBuilderRequest getRequest() {
+                return request;
+            }
+
+            @Nonnull
+            @Override
+            public String getProjectId() {
+                return childResult.getProjectId();
+            }
+
+            @Nonnull
+            @Override
+            public Optional<Path> getPomFile() {
+                return Optional.ofNullable(childResult.getPomFile()).map(File::toPath);
+            }
+
+            @Nonnull
+            @Override
+            public Optional<Project> getProject() {
+                return Optional.ofNullable(InternalMavenSession.from(session).getProject(childResult.getProject()));
+            }
+
+            @Nonnull
+            @Override
+            public Collection<BuilderProblem> getProblems() {
+                // For simplicity, return empty list for child projects
+                // The main project will have the important problems
+                return List.of();
+            }
+
+            @Override
+            public List<? extends ProjectBuilderResult> getChildren() {
+                return List.of(); // Nested children not supported in this simple implementation
+            }
+
+            @Nonnull
+            @Override
+            public Optional<DependencyResolverResult> getDependencyResolverResult() {
+                return Optional.empty();
+            }
+        };
     }
 }

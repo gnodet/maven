@@ -20,6 +20,7 @@ package org.apache.maven.api.services;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.maven.api.Project;
@@ -76,4 +77,12 @@ public interface ProjectBuilderResult extends Result<ProjectBuilderRequest> {
      */
     @Nonnull
     Optional<DependencyResolverResult> getDependencyResolverResult();
+
+    /**
+     * Gets the children of this result.
+     *
+     * @return the children of this result, can be empty but never {@code null}
+     */
+    @Nonnull
+    List<? extends ProjectBuilderResult> getChildren();
 }

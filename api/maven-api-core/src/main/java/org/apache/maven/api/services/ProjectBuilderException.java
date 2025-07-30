@@ -18,8 +18,6 @@
  */
 package org.apache.maven.api.services;
 
-import java.io.Serial;
-
 import org.apache.maven.api.annotations.Experimental;
 
 /**
@@ -30,14 +28,24 @@ import org.apache.maven.api.annotations.Experimental;
 @Experimental
 public class ProjectBuilderException extends MavenException {
 
-    @Serial
-    private static final long serialVersionUID = -7629871850875943799L;
+    private final String projectId;
+    private final ProjectBuilderResult result;
 
     /**
      * @param message the message to give
      * @param e the {@link Exception}
      */
-    public ProjectBuilderException(String message, Exception e) {
+    public ProjectBuilderException(String projectId, String message, Exception e) {
         super(message, e);
+        this.projectId = projectId;
+        this.result = null;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public ProjectBuilderResult getResult() {
+        return result;
     }
 }

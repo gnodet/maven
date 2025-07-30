@@ -22,24 +22,30 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.maven.DefaultMaven;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.model.building.ModelSource;
-import org.apache.maven.model.building.UrlModelSource;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.api.services.ProjectBuilder;
+import org.apache.maven.api.services.ProjectBuilderException;
+import org.apache.maven.api.services.ProjectBuilderRequest;
+import org.apache.maven.api.services.ProjectBuilderResult;
+import org.apache.maven.api.services.Source;
 
 /**
  * Strategy to collect projects for building when the Maven invocation is not in a directory that contains a pom.xml.
  */
 @Named("PomlessCollectionStrategy")
 @Singleton
-public class PomlessCollectionStrategy implements ProjectCollectionStrategy {
+public class PomlessCollectionStrategy extends AbstractProjectCollectionStrategy {
     private final ProjectBuilder projectBuilder;
 
     @Inject
@@ -48,14 +54,55 @@ public class PomlessCollectionStrategy implements ProjectCollectionStrategy {
     }
 
     @Override
-    public List<MavenProject> collectProjects(final MavenExecutionRequest request) throws ProjectBuildingException {
-        ProjectBuildingRequest buildingRequest = request.getProjectBuildingRequest();
-        ModelSource modelSource = new UrlModelSource(DefaultMaven.class.getResource("project/standalone.xml"));
-        MavenProject project =
-                projectBuilder.build(modelSource, buildingRequest).getProject();
-        project.setExecutionRoot(true);
-        request.setProjectPresent(false);
+    public List<Project> collectProjects(MavenRequest request) throws ProjectBuilderException {
+        // Get the Session from the repository session
+        Session session = request.getSession();
 
-        return Arrays.asList(project);
+        // Convert UrlModelSource to UrlSource
+        URL standalone = DefaultMaven.class.getResource("project/standalone.xml");
+        ProjectBuilderRequest pbr = ProjectBuilderRequest.builder()
+                .session(session)
+                .recursive(request.isRecursive())
+                .processPlugins(true)
+                .source(new UrlSource(standalone))
+                .build();
+
+        ProjectBuilderResult result = projectBuilder.build(pbr);
+
+        return projects(result).toList();
+    }
+
+    static Stream<Project> projects(ProjectBuilderResult result) {
+        return Stream.concat(
+                Stream.of(result.getProject()).filter(Optional::isPresent).map(Optional::get),
+                result.getChildren().stream().flatMap(PomlessCollectionStrategy::projects));
+    }
+
+    static class UrlSource implements Source {
+        private final URL url;
+
+        UrlSource(URL url) {
+            this.url = url;
+        }
+
+        @Override
+        public Path getPath() {
+            return null;
+        }
+
+        @Override
+        public InputStream openStream() throws IOException {
+            return url.openStream();
+        }
+
+        @Override
+        public String getLocation() {
+            return url.toString();
+        }
+
+        @Override
+        public Source resolve(String relative) {
+            return null;
+        }
     }
 }

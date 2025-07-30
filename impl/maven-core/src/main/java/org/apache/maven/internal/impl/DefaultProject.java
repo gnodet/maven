@@ -199,6 +199,13 @@ public class DefaultProject implements Project {
                 .toList();
     }
 
+    @Override
+    public List<Project> getActiveSubprojects() {
+        return this.project.getCollectedProjects().stream()
+                .map(session::getProject)
+                .toList();
+    }
+
     @Nonnull
     private DependencyCoordinates toDependency(org.apache.maven.api.model.Dependency dependency) {
         return new DependencyCoordinates() {

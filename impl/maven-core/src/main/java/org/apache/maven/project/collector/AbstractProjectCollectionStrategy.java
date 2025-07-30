@@ -18,31 +18,26 @@
  */
 package org.apache.maven.project.collector;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.List;
 
 import org.apache.maven.api.Project;
-import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.services.ProjectBuilderException;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.internal.impl.DefaultMavenRequest;
+import org.apache.maven.internal.impl.DefaultProject;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 
-/**
- * Strategy to collect projects based on the <code>-f</code> CLI parameter or the pom.xml in the working directory.
- */
-@Named("RequestPomCollectionStrategy")
-@Singleton
-public class RequestPomCollectionStrategy extends AbstractProjectCollectionStrategy {
-    private final ProjectsSelector projectsSelector;
-
-    @Inject
-    public RequestPomCollectionStrategy(ProjectsSelector projectsSelector) {
-        this.projectsSelector = projectsSelector;
-    }
-
+public abstract class AbstractProjectCollectionStrategy implements ProjectCollectionStrategy {
     @Override
-    public List<Project> collectProjects(MavenRequest request) throws ProjectBuilderException {
-        return projectsSelector.selectProjects(List.of(request.getPom().toAbsolutePath()), request);
+    public List<MavenProject> collectProjects(MavenExecutionRequest request) throws ProjectBuildingException {
+        try {
+            List<Project> projects = collectProjects(new DefaultMavenRequest(request));
+            return projects.stream()
+                    .map(project -> ((DefaultProject) project).getProject())
+                    .toList();
+        } catch (ProjectBuilderException e) {
+            throw new ProjectBuildingException(e.getProjectId(), e.getMessage(), e);
+        }
     }
 }

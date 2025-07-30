@@ -22,23 +22,23 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.api.services.ProjectBuilderException;
+import org.apache.maven.api.services.ProjectBuilderResult;
 import org.apache.maven.api.services.model.ModelProcessor;
-import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugin.PluginResolutionException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.ProjectBuildingResult;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 @Named("MultiModuleCollectionStrategy")
 @Singleton
-public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy {
+public class MultiModuleCollectionStrategy extends AbstractProjectCollectionStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiModuleCollectionStrategy.class);
     private final ModelProcessor modelProcessor;
     private final ProjectsSelector projectsSelector;
@@ -61,11 +61,11 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
     }
 
     @Override
-    public List<MavenProject> collectProjects(MavenExecutionRequest request) throws ProjectBuildingException {
-        File moduleProjectPomFile = getRootProject(request);
-        List<File> files = Collections.singletonList(moduleProjectPomFile.getAbsoluteFile());
+    public List<Project> collectProjects(MavenRequest request) throws ProjectBuilderException {
+        Path moduleProjectPomFile = getRootProject(request);
+        List<Path> files = Collections.singletonList(moduleProjectPomFile.toAbsolutePath());
         try {
-            List<MavenProject> projects = projectsSelector.selectProjects(files, request);
+            List<Project> projects = projectsSelector.selectProjects(files, request);
             boolean isRequestedProjectCollected = isRequestedProjectCollected(request, projects);
             if (isRequestedProjectCollected) {
                 return projects;
@@ -76,11 +76,12 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
                                 + "Maven assumed that POM file to be the parent of the requested project ({}), but it turned "
                                 + "out that it was not. Another project collection strategy will be executed as result.",
                         System.lineSeparator(),
-                        moduleProjectPomFile.getAbsolutePath(),
-                        request.getPom().getAbsolutePath());
+                        moduleProjectPomFile.toAbsolutePath(),
+                        request.getPom().toAbsolutePath());
                 return Collections.emptyList();
             }
-        } catch (ProjectBuildingException e) {
+        } catch (ProjectBuilderException e) {
+            // Convert new API exception to old API exception
             boolean fallThrough = isModuleOutsideRequestScopeDependingOnPluginModule(request, e);
 
             if (fallThrough) {
@@ -97,9 +98,9 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
         }
     }
 
-    private File getRootProject(MavenExecutionRequest request) {
+    private Path getRootProject(MavenRequest request) {
         Path rootDirectory = request.getRootDirectory();
-        if (request.getPom().getParentFile().toPath().equals(rootDirectory)) {
+        if (request.getPom().getParent().equals(rootDirectory)) {
             return request.getPom();
         } else {
             Path rootProjectPom = modelProcessor.locateExistingPom(rootDirectory);
@@ -114,7 +115,7 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
                 return request.getPom();
             }
 
-            return rootProjectPom.toFile();
+            return rootProjectPom;
         }
     }
 
@@ -125,8 +126,8 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
      *
      * @return true if the collected projects contain the requested project (for example with -f)
      */
-    private boolean isRequestedProjectCollected(MavenExecutionRequest request, List<MavenProject> projects) {
-        return projects.stream().map(MavenProject::getFile).anyMatch(request.getPom()::equals);
+    private boolean isRequestedProjectCollected(MavenRequest request, List<Project> projects) {
+        return projects.stream().map(Project::getPomPath).anyMatch(request.getPom()::equals);
     }
 
     /**
@@ -144,21 +145,23 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
      * @return true if the module which fails to collect the inter-module plugin is not part of the build
      */
     private boolean isModuleOutsideRequestScopeDependingOnPluginModule(
-            MavenExecutionRequest request, ProjectBuildingException exception) {
-        return exception.getResults().stream()
-                .map(ProjectBuildingResult::getProject)
-                .filter(Objects::nonNull)
-                .filter(project -> request.getPom().equals(project.getFile()))
+            MavenRequest request, ProjectBuilderException exception) {
+        return getResults(exception.getResult())
+                .map(ProjectBuilderResult::getProject)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(project -> request.getPom().equals(project.getPomPath()))
                 .findFirst()
                 .map(requestPomProject -> {
-                    List<MavenProject> modules = requestPomProject.getCollectedProjects() != null
-                            ? requestPomProject.getCollectedProjects()
+                    List<Project> modules = requestPomProject.getActiveSubprojects() != null
+                            ? requestPomProject.getActiveSubprojects()
                             : Collections.emptyList();
-                    List<MavenProject> projectsInRequestScope = new ArrayList<>(modules);
+                    List<Project> projectsInRequestScope = new ArrayList<>(modules);
                     projectsInRequestScope.add(requestPomProject);
 
-                    Predicate<ProjectBuildingResult> projectsOutsideOfRequestScope =
-                            pr -> !projectsInRequestScope.contains(pr.getProject());
+                    Predicate<ProjectBuilderResult> projectsOutsideOfRequestScope = pr -> pr.getProject()
+                                    .isPresent()
+                            && !projectsInRequestScope.contains(pr.getProject().get());
 
                     Predicate<Exception> pluginArtifactNotFoundException = exc -> exc instanceof PluginManagerException
                             && exc.getCause() instanceof PluginResolutionException
@@ -170,14 +173,18 @@ public class MultiModuleCollectionStrategy implements ProjectCollectionStrategy 
                                     && project.getArtifactId().equals(plugin.getArtifactId())
                                     && project.getVersion().equals(plugin.getVersion()));
 
-                    return exception.getResults().stream()
+                    return getResults(exception.getResult())
                             .filter(projectsOutsideOfRequestScope)
                             .flatMap(projectBuildingResult -> projectBuildingResult.getProblems().stream())
-                            .map(ModelProblem::getException)
+                            .map(BuilderProblem::getException)
                             .filter(pluginArtifactNotFoundException)
                             .map(exc -> ((PluginResolutionException) exc.getCause()).getPlugin())
                             .anyMatch(isPluginPartOfRequestScope);
                 })
                 .orElse(false);
+    }
+
+    Stream<ProjectBuilderResult> getResults(ProjectBuilderResult result) {
+        return Stream.concat(Stream.of(result), result.getChildren().stream());
     }
 }

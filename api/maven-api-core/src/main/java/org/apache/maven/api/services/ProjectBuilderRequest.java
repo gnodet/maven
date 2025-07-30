@@ -231,6 +231,17 @@ public interface ProjectBuilderRequest extends Request<Session> {
         }
 
         /**
+         * Sets
+         *
+         * @param recursive
+         * @return this builder instance
+         */
+        public ProjectBuilderRequestBuilder recursive(boolean recursive) {
+            this.recursive = recursive;
+            return this;
+        }
+
+        /**
          * Builds a new ProjectBuilderRequest with the current builder settings.
          *
          * @return a new ProjectBuilderRequest instance

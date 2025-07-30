@@ -18,12 +18,13 @@
  */
 package org.apache.maven.project.collector;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.annotations.Nonnull;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.api.services.ProjectBuilderException;
 
 /**
  * Facade to select projects for a given set of pom.xml files.
@@ -32,9 +33,10 @@ public interface ProjectsSelector {
     /**
      * Select Maven projects from a list of POM files.
      * @param files List of POM files.
-     * @param request The {@link MavenExecutionRequest}
+     * @param request The {@link MavenRequest}
      * @return A list of projects that have been found in the specified POM files.
-     * @throws ProjectBuildingException In case the POMs are not used.
+     * @throws ProjectBuilderException In case the POMs are not used.
      */
-    List<MavenProject> selectProjects(List<File> files, MavenExecutionRequest request) throws ProjectBuildingException;
+    List<Project> selectProjects(@Nonnull List<Path> files, @Nonnull MavenRequest request)
+            throws ProjectBuilderException;
 }

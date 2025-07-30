@@ -103,6 +103,14 @@ public class DefaultMojoExecution implements MojoExecution {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d)));
             }
+
+            @Override
+            public Optional<MojoDescriptor> getMojoDescriptor(String goal) {
+                org.apache.maven.plugin.descriptor.MojoDescriptor mojo =
+                        delegate.getMojoDescriptor().getPluginDescriptor().getMojo(goal);
+                return Optional.ofNullable(mojo)
+                        .map(org.apache.maven.plugin.descriptor.MojoDescriptor::getMojoDescriptorV4);
+            }
         };
     }
 

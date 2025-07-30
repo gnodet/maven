@@ -303,4 +303,11 @@ public interface Project {
      */
     @Nonnull
     List<Profile> getEffectiveActiveProfiles();
+
+    /**
+     * Returns all active subprojects for this project.
+     * @return
+     */
+    @Nonnull
+    List<Project> getActiveSubprojects();
 }

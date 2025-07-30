@@ -37,8 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.services.Interpolator;
 import org.apache.maven.api.services.InterpolatorException;
+import org.apache.maven.api.services.MavenException;
 import org.apache.maven.api.services.ModelBuilderException;
-import org.apache.maven.api.services.ProjectBuilderException;
 import org.apache.maven.api.services.model.PathTranslator;
 import org.apache.maven.api.services.model.ProfileActivationContext;
 import org.apache.maven.api.services.model.RootLocator;
@@ -451,7 +451,7 @@ public class DefaultProfileActivationContext implements ProfileActivationContext
                 });
                 return found.get();
             } catch (IOException e) {
-                throw new ProjectBuilderException(
+                throw new MavenException(
                         "Unable to verify file existence for '" + glob + "' inside '" + fixedPath + "'", e);
             }
         }
