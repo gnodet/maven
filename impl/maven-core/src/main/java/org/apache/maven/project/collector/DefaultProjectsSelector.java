@@ -57,8 +57,7 @@ public class DefaultProjectsSelector implements ProjectsSelector {
 
         Session session = request.getSession();
 
-        boolean hasProjectSelection = !request.getProjectActivation().isEmpty();
-        boolean isRecursive = hasProjectSelection || request.isRecursive();
+        boolean isRecursive = request.isRecursive();
 
         // Build projects using new API - need to iterate through files since new API doesn't have bulk build
         List<ProjectBuilderResult> results = new ArrayList<>();
@@ -166,7 +165,6 @@ public class DefaultProjectsSelector implements ProjectsSelector {
      * Recursively adds child projects from a ProjectBuilderResult to the projects list.
      *
      * @param result the ProjectBuilderResult to process
-     * @param request the original request
      * @param projects the list to add projects to
      */
     private void addChildProjects(ProjectBuilderResult result, List<Project> projects) {

@@ -19,9 +19,9 @@
 package org.apache.maven.graph;
 
 import java.util.List;
-
-import org.apache.maven.execution.ProjectDependencyGraph;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
+import org.apache.maven.api.model.Model;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,11 +37,11 @@ class FilteredProjectDependencyGraphTest {
     @Mock
     private ProjectDependencyGraph projectDependencyGraph;
 
-    private final MavenProject aProject = createProject("A");
+    private final Project aProject = createProject("A");
 
-    private final MavenProject bProject = createProject("B");
+    private final Project bProject = createProject("B");
 
-    private final MavenProject cProject = createProject("C");
+    private final Project cProject = createProject("C");
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
@@ -71,11 +71,13 @@ class FilteredProjectDependencyGraphTest {
         verify(projectDependencyGraph).getUpstreamProjects(bProject, transitive);
     }
 
-    private static MavenProject createProject(String id) {
-        MavenProject result = new MavenProject();
-        result.setGroupId("org.apache");
-        result.setArtifactId(id);
-        result.setVersion("1.2");
+    private static Project createProject(String artifactId) {
+        ProjectStub result = new ProjectStub();
+        result.setModel(Model.newBuilder()
+                .groupId("org.apache")
+                .artifactId(artifactId)
+                .version("1.2")
+                .build());
         return result;
     }
 }

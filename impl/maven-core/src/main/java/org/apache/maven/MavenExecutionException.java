@@ -20,28 +20,34 @@ package org.apache.maven;
 
 import java.io.File;
 
+import java.nio.file.Path;
 import org.apache.maven.project.ProjectBuildingException;
 
 /**
  */
 public class MavenExecutionException extends Exception {
-    private File pomFile;
+    private Path pomFile;
 
-    public MavenExecutionException(String message, File pomFile) {
+    public MavenExecutionException(String message, Path pomFile) {
         super(message);
         this.pomFile = pomFile;
     }
 
+    public MavenExecutionException(String message, File pomFile) {
+        super(message);
+        this.pomFile = pomFile.toPath();
+    }
+
     public MavenExecutionException(String message, File pomFile, ProjectBuildingException cause) {
         super(message, cause);
-        this.pomFile = pomFile;
+        this.pomFile = pomFile.toPath();
     }
 
     public MavenExecutionException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public File getPomFile() {
+    public Path getPomFile() {
         return pomFile;
     }
 }

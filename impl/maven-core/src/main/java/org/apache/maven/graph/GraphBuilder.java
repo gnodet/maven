@@ -18,8 +18,9 @@
  */
 package org.apache.maven.graph;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.api.exec.ProjectActivation;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.model.building.Result;
 
 /**
@@ -30,5 +31,5 @@ import org.apache.maven.model.building.Result;
 public interface GraphBuilder {
     String HINT = "graphBuilder";
 
-    Result<? extends ProjectDependencyGraph> build(MavenSession session);
+    Result<? extends ProjectDependencyGraph> build(MavenRequest request, ProjectActivation projectActivation);
 }

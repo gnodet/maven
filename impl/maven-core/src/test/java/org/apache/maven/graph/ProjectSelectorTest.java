@@ -20,20 +20,25 @@ package org.apache.maven.graph;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.maven.MavenExecutionException;
-import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.api.Packaging;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.internal.impl.DefaultProject;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -46,14 +51,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ProjectSelectorTest {
+
     private final ProjectSelector sut = new ProjectSelector();
-    private final MavenExecutionRequest mavenExecutionRequest = mock(MavenExecutionRequest.class);
+    private final MavenRequest mavenExecutionRequest = mock(MavenRequest.class);
+    private final InternalMavenSession session = mock(InternalMavenSession.class);
 
     @Test
     void getBaseDirectoryFromRequestWhenDirectoryIsNullReturnNull() {
         when(mavenExecutionRequest.getBaseDirectory()).thenReturn(null);
 
-        final File baseDirectoryFromRequest = sut.getBaseDirectoryFromRequest(mavenExecutionRequest);
+        final Path baseDirectoryFromRequest = sut.getBaseDirectoryFromRequest(mavenExecutionRequest);
 
         assertThat(baseDirectoryFromRequest, nullValue());
     }
@@ -62,10 +69,10 @@ class ProjectSelectorTest {
     void getBaseDirectoryFromRequestWhenDirectoryIsValidReturnFile() {
         when(mavenExecutionRequest.getBaseDirectory()).thenReturn("path/to/file");
 
-        final File baseDirectoryFromRequest = sut.getBaseDirectoryFromRequest(mavenExecutionRequest);
+        final Path baseDirectoryFromRequest = sut.getBaseDirectoryFromRequest(mavenExecutionRequest);
 
         assertThat(baseDirectoryFromRequest, notNullValue());
-        assertThat(baseDirectoryFromRequest.getPath(), is(new File("path/to/file").getPath()));
+        assertThat(baseDirectoryFromRequest.toFile().getPath(), is(new File("path/to/file").getPath()));
     }
 
     @ParameterizedTest
@@ -87,10 +94,9 @@ class ProjectSelectorTest {
     void isMatchingProjectMatchOnFileReturnsTrue() throws IOException {
         final File tempFile = File.createTempFile("maven-core-unit-test-pom", ".xml");
         final String selector = tempFile.getName();
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        mavenProject.setFile(tempFile);
+        final Project mavenProject = createMavenProject("maven-core", tempFile);
 
-        final boolean result = sut.isMatchingProject(mavenProject, selector, tempFile.getParentFile());
+        final boolean result = sut.isMatchingProject(mavenProject, selector, tempFile.getParentFile().toPath());
 
         tempFile.delete();
         assertThat(result, is(true));
@@ -101,10 +107,9 @@ class ProjectSelectorTest {
         String selector = "maven-core";
         final File tempProjectDir = new File(tempDir, "maven-core");
         tempProjectDir.mkdir();
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        mavenProject.setFile(new File(tempProjectDir, "some-file.xml"));
+        final Project mavenProject = createMavenProject("maven-core", new File(tempProjectDir, "some-file.xml"));
 
-        final boolean result = sut.isMatchingProject(mavenProject, selector, tempDir);
+        final boolean result = sut.isMatchingProject(mavenProject, selector, tempDir.toPath());
 
         tempProjectDir.delete();
         assertThat(result, is(true));
@@ -116,10 +121,10 @@ class ProjectSelectorTest {
         selectors.add(":maven-core");
         selectors.add(":optional");
 
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        final List<MavenProject> listOfProjects = Collections.singletonList(mavenProject);
+        final Project mavenProject = createMavenProject("maven-core");
+        final List<Project> listOfProjects = Collections.singletonList(mavenProject);
 
-        final Set<MavenProject> optionalProjectsBySelectors =
+        final Set<Project> optionalProjectsBySelectors =
                 sut.getOptionalProjectsBySelectors(mavenExecutionRequest, listOfProjects, selectors);
 
         assertThat(optionalProjectsBySelectors.size(), is(1));
@@ -132,8 +137,8 @@ class ProjectSelectorTest {
         selectors.add(":maven-core");
         selectors.add(":required");
 
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        final List<MavenProject> listOfProjects = Collections.singletonList(mavenProject);
+        final Project mavenProject = createMavenProject("maven-core");
+        final List<Project> listOfProjects = Collections.singletonList(mavenProject);
 
         final MavenExecutionException exception = assertThrows(
                 MavenExecutionException.class,
@@ -147,10 +152,10 @@ class ProjectSelectorTest {
         final HashSet<String> selectors = new HashSet<>();
         selectors.add(":maven-core");
 
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        final List<MavenProject> listOfProjects = Collections.singletonList(mavenProject);
+        final Project mavenProject = createMavenProject("maven-core");
+        final List<Project> listOfProjects = Collections.singletonList(mavenProject);
 
-        final Set<MavenProject> requiredProjectsBySelectors =
+        final Set<Project> requiredProjectsBySelectors =
                 sut.getRequiredProjectsBySelectors(mavenExecutionRequest, listOfProjects, selectors);
 
         assertThat(requiredProjectsBySelectors.size(), is(1));
@@ -164,12 +169,11 @@ class ProjectSelectorTest {
         final HashSet<String> selectors = new HashSet<>();
         selectors.add(":maven-core");
 
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        final MavenProject child = createMavenProject("maven-core-child");
-        mavenProject.setCollectedProjects(Collections.singletonList(child));
-        final List<MavenProject> listOfProjects = Collections.singletonList(mavenProject);
+        final Project child = createMavenProject("maven-core-child");
+        final Project mavenProject = createMavenProject("maven-core", child);
+        final List<Project> listOfProjects = Collections.singletonList(mavenProject);
 
-        final Set<MavenProject> requiredProjectsBySelectors =
+        final Set<Project> requiredProjectsBySelectors =
                 sut.getRequiredProjectsBySelectors(mavenExecutionRequest, listOfProjects, selectors);
 
         assertThat(requiredProjectsBySelectors.size(), is(2));
@@ -183,25 +187,44 @@ class ProjectSelectorTest {
         final HashSet<String> selectors = new HashSet<>();
         selectors.add(":maven-core");
 
-        final MavenProject mavenProject = createMavenProject("maven-core");
-        final MavenProject child = createMavenProject("maven-core-child");
-        mavenProject.setCollectedProjects(Collections.singletonList(child));
-        final List<MavenProject> listOfProjects = Collections.singletonList(mavenProject);
+        final Project child = createMavenProject("maven-core-child");
+        final Project mavenProject = createMavenProject("maven-core", child);
+        final List<Project> listOfProjects = Collections.singletonList(mavenProject);
 
-        final Set<MavenProject> optionalProjectsBySelectors =
+        final Set<Project> optionalProjectsBySelectors =
                 sut.getOptionalProjectsBySelectors(mavenExecutionRequest, listOfProjects, selectors);
 
         assertThat(optionalProjectsBySelectors.size(), is(2));
         assertThat(optionalProjectsBySelectors, contains(mavenProject, child));
     }
 
-    private MavenProject createMavenProject(String artifactId) {
+    private Project createMavenProject(String artifactId) {
+        return createMavenProject(artifactId, null, null);
+    }
+
+    private Project createMavenProject(String artifactId, File file) {
+        return createMavenProject(artifactId, null, file);
+    }
+
+    private Project createMavenProject(String artifactId, Project child) {
+        return createMavenProject(artifactId, child, null);
+    }
+
+    private Project createMavenProject(String artifactId, Project child, File file) {
         MavenProject mavenProject = new MavenProject();
         mavenProject.setGroupId("org.apache.maven");
         mavenProject.setArtifactId(artifactId);
         mavenProject.setVersion("1.0");
-        mavenProject.setFile(new File(artifactId, "some-dir"));
+        mavenProject.setFile(file != null ? file : new File(artifactId, "some-dir"));
         mavenProject.setCollectedProjects(new ArrayList<>());
-        return mavenProject;
+        if (child != null) {
+            mavenProject.getCollectedProjects().add(((DefaultProject) child).getProject());
+        }
+
+        Packaging packaging = Mockito.mock(Packaging.class);
+        Mockito.when(session.requirePackaging(mavenProject.getPackaging())).thenReturn(packaging);
+        Project project = new DefaultProject(session, mavenProject);
+        Mockito.when(session.getProject(mavenProject)).thenReturn(project);
+        return project;
     }
 }

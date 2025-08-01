@@ -27,27 +27,31 @@ package org.apache.maven.api.exec;
  */
 public record ActivationSettings(boolean active, boolean optional, boolean recurse) {
 
-    static ActivationSettings of(final boolean active, final boolean optional) {
+    public static ActivationSettings of(final boolean active, final boolean optional) {
         return of(active, optional, true);
     }
 
-    static ActivationSettings of(final boolean active, final boolean optional, final boolean recursive) {
+    public static ActivationSettings of(final boolean active, final boolean optional, final boolean recursive) {
         return new ActivationSettings(active, optional, recursive);
     }
 
-    static ActivationSettings activated() {
+    public static ActivationSettings activated() {
         return new ActivationSettings(true, false, true);
     }
 
-    static ActivationSettings activatedOpt() {
+    public static ActivationSettings activatedOpt() {
         return new ActivationSettings(true, true, true);
     }
 
-    static ActivationSettings deactivated() {
+    public static ActivationSettings activatedOptNoRecurse() {
+        return new ActivationSettings(true, true, false);
+    }
+
+    public static ActivationSettings deactivated() {
         return new ActivationSettings(false, false, false);
     }
 
-    static ActivationSettings deactivatedOpt() {
+    public static ActivationSettings deactivatedOpt() {
         return new ActivationSettings(false, true, false);
     }
 

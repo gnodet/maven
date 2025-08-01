@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 
+import java.util.stream.Stream;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.annotations.Experimental;
 import org.apache.maven.api.annotations.Immutable;
@@ -38,6 +39,29 @@ import org.apache.maven.api.annotations.Nullable;
 @Experimental
 @Immutable
 public interface MavenRequest {
+
+    String REACTOR_MAKE_UPSTREAM = "make-upstream";
+
+    String REACTOR_MAKE_DOWNSTREAM = "make-downstream";
+
+    String REACTOR_MAKE_BOTH = "make-both";
+
+    enum MakeBehavior {
+        DEFAULT(""),
+        UPSTREAM(REACTOR_MAKE_UPSTREAM),
+        DOWNSTREAM(REACTOR_MAKE_DOWNSTREAM),
+        BOTH(REACTOR_MAKE_BOTH);
+
+        private final String name;
+
+        MakeBehavior(String name) {
+            this.name = name;
+        }
+
+        public static MakeBehavior of(String name) {
+            return Stream.of(values()).filter(mb -> mb.name.equals(name)).findFirst().orElseThrow();
+        }
+    }
 
     @Nonnull
     Session getSession();
@@ -100,14 +124,6 @@ public interface MavenRequest {
     List<String> getExcludedProjects();
 
     /**
-     * Gets the project activation map.
-     *
-     * @return the project activation map
-     */
-    @Nonnull
-    ProjectActivation getProjectActivation();
-
-    /**
      * Gets the profile activation map.
      *
      * @return the profile activation map
@@ -143,4 +159,13 @@ public interface MavenRequest {
      * @return true if project is present, false otherwise
      */
     boolean isProjectPresent();
+
+    @Nonnull
+    MakeBehavior getMakeBehavior();
+
+    @Nullable
+    String getResumeFrom();
+
+    boolean isResume();
+
 }

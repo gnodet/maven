@@ -20,7 +20,6 @@ package org.apache.maven.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,11 +28,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.ProjectActivation;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.project.CycleDetectedException;
 import org.apache.maven.project.DuplicateProjectException;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectSorter;
 
 /**
@@ -42,13 +41,19 @@ import org.apache.maven.project.ProjectSorter;
  */
 public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
 
+    private final ProjectActivation projectActivation;
+
     private final ProjectSorter sorter;
 
-    private final List<MavenProject> allProjects;
+    private final List<Project> allProjects;
 
-    private final Map<MavenProject, Integer> order;
+    private final Map<Project, Integer> order;
 
-    private final Map<String, MavenProject> projects;
+    private final Map<String, Project> projects;
+
+    public DefaultProjectDependencyGraph(Collection<Project> projects) throws CycleDetectedException, DuplicateProjectException {
+        this(new ProjectActivation(List.of()), projects, projects);
+    }
 
     /**
      * Creates a new project dependency graph based on the specified projects.
@@ -57,66 +62,42 @@ public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
      * @throws DuplicateProjectException
      * @throws CycleDetectedException
      */
-    public DefaultProjectDependencyGraph(Collection<MavenProject> projects)
+    public DefaultProjectDependencyGraph(ProjectActivation projectActivation, Collection<Project> allProjects, Collection<Project> projects)
             throws CycleDetectedException, DuplicateProjectException {
-        this(projects, projects);
-    }
-
-    /**
-     * Creates a new project dependency graph based on the specified projects.
-     *
-     * @param allProjects All collected projects.
-     * @param projects    The projects to create the dependency graph with.
-     * @throws DuplicateProjectException
-     * @throws CycleDetectedException
-     * @since 3.5.0
-     * @deprecated Use {@link #DefaultProjectDependencyGraph(Collection, Collection)} instead.
-     */
-    @Deprecated
-    public DefaultProjectDependencyGraph(List<MavenProject> allProjects, Collection<MavenProject> projects)
-            throws CycleDetectedException, DuplicateProjectException {
-        this((Collection<MavenProject>) allProjects, projects);
-    }
-
-    /**
-     * Creates a new project dependency graph based on the specified projects.
-     *
-     * @param allProjects All collected projects.
-     * @param projects    The projects to create the dependency graph with.
-     * @throws DuplicateProjectException
-     * @throws CycleDetectedException
-     * @since 4.0.0
-     */
-    public DefaultProjectDependencyGraph(Collection<MavenProject> allProjects, Collection<MavenProject> projects)
-            throws CycleDetectedException, DuplicateProjectException {
-        this.allProjects = Collections.unmodifiableList(new ArrayList<>(allProjects));
+        this.projectActivation = projectActivation;
+        this.allProjects = List.copyOf(allProjects);
         this.sorter = new ProjectSorter(projects);
         this.order = new HashMap<>();
         this.projects = new HashMap<>();
-        List<MavenProject> sorted = this.sorter.getSortedProjects();
+        List<Project> sorted = this.sorter.getSortedProjects();
         for (int index = 0; index < sorted.size(); index++) {
-            MavenProject project = sorted.get(index);
+            Project project = sorted.get(index);
             String id = ProjectSorter.getId(project);
             this.projects.put(id, project);
             this.order.put(project, index);
         }
     }
 
+    @Override
+    public ProjectActivation getProjectActivation() {
+        return projectActivation;
+    }
+
     /**
      * @since 3.5.0
      */
     @Override
-    public List<MavenProject> getAllProjects() {
+    public List<Project> getAllProjects() {
         return this.allProjects;
     }
 
     @Override
-    public List<MavenProject> getSortedProjects() {
+    public List<Project> getSortedProjects() {
         return new ArrayList<>(sorter.getSortedProjects());
     }
 
     @Override
-    public List<MavenProject> getDownstreamProjects(MavenProject project, boolean transitive) {
+    public List<Project> getDownstreamProjects(Project project, boolean transitive) {
         Objects.requireNonNull(project, "project cannot be null");
 
         Set<String> projectIds = new HashSet<>();
@@ -135,7 +116,7 @@ public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
     }
 
     @Override
-    public List<MavenProject> getUpstreamProjects(MavenProject project, boolean transitive) {
+    public List<Project> getUpstreamProjects(Project project, boolean transitive) {
         Objects.requireNonNull(project, "project cannot be null");
 
         Set<String> projectIds = new HashSet<>();
@@ -153,7 +134,7 @@ public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
         }
     }
 
-    private List<MavenProject> getSortedProjects(Set<String> projectIds) {
+    private List<Project> getSortedProjects(Set<String> projectIds) {
         return projectIds.stream()
                 .map(projects::get)
                 .sorted(Comparator.comparingInt(order::get))

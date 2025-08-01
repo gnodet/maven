@@ -19,11 +19,11 @@
 package org.apache.maven.internal.impl;
 
 import java.util.List;
-
 import org.apache.maven.api.Project;
 import org.apache.maven.api.RemoteRepository;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.annotations.Nullable;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.impl.InternalSession;
 
@@ -41,6 +41,8 @@ public interface InternalMavenSession extends InternalSession {
 
     List<Project> getProjects(List<org.apache.maven.project.MavenProject> projects);
 
+    List<org.apache.maven.project.MavenProject> getMavenProjects(List<Project> projects);
+
     /**
      * May return null if the input project is null or is not part of the reactor.
      */
@@ -53,4 +55,6 @@ public interface InternalMavenSession extends InternalSession {
     org.apache.maven.artifact.repository.ArtifactRepository toArtifactRepository(RemoteRepository repository);
 
     MavenSession getMavenSession();
+
+    void setProjectDependencyGraph(ProjectDependencyGraph projectDependencyGraph);
 }

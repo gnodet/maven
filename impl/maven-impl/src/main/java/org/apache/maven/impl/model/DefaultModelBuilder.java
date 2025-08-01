@@ -638,6 +638,13 @@ public class DefaultModelBuilder implements ModelBuilder {
                         session.setCurrentTrace(trace);
                         try {
                             mbs.buildEffectiveModel(new LinkedHashSet<>());
+                            // Convert BOM packaging to POM
+                            if (Type.BOM.equals(r.getEffectiveModel().getPackaging())) {
+                                logger.info(
+                                        "The packaging attribute of the '{}' project is configured as 'bom' and changed to 'pom'",
+                                        r.getEffectiveModel().getId());
+                                r.setEffectiveModel(r.getEffectiveModel().withPackaging(Type.POM));
+                            }
                         } catch (ModelBuilderException e) {
                             // gathered with problem collector
                         } catch (RuntimeException t) {

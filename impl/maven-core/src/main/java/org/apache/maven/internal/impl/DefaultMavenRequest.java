@@ -21,14 +21,11 @@ package org.apache.maven.internal.impl;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
-
 import org.apache.maven.api.Session;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
-import org.apache.maven.api.exec.ActivationSettings;
 import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.exec.ProfileActivation;
-import org.apache.maven.api.exec.ProjectActivation;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.impl.InternalSession;
 
@@ -93,19 +90,6 @@ public class DefaultMavenRequest implements MavenRequest {
     }
 
     @Override
-    @Nonnull
-    public ProjectActivation getProjectActivation() {
-        return new ProjectActivation(delegate.getProjectActivation().getActivations().stream()
-                .map(projectActivationSettings -> new ProjectActivation.ProjectActivationSettings(
-                        projectActivationSettings.selector(),
-                        new ActivationSettings(
-                                projectActivationSettings.activationSettings().active(),
-                                projectActivationSettings.activationSettings().optional(),
-                                projectActivationSettings.activationSettings().recurse())))
-                .toList());
-    }
-
-    @Override
     public ProfileActivation getProfileActivation() {
         // return delegate.getProfileActivation();
         return null;
@@ -130,6 +114,21 @@ public class DefaultMavenRequest implements MavenRequest {
     @Override
     public boolean isProjectPresent() {
         return delegate.isProjectPresent();
+    }
+
+    @Override
+    public MakeBehavior getMakeBehavior() {
+        return delegate.getMakeBehavior() != null ? MakeBehavior.of(delegate.getMakeBehavior()) : MakeBehavior.DEFAULT;
+    }
+
+    @Override
+    public String getResumeFrom() {
+        return delegate.getResumeFrom();
+    }
+
+    @Override
+    public boolean isResume() {
+        return delegate.isResume();
     }
 
     /**

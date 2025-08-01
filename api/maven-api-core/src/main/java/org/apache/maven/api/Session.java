@@ -29,6 +29,7 @@ import org.apache.maven.api.annotations.Experimental;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.annotations.ThreadSafe;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.model.Repository;
 import org.apache.maven.api.services.ArtifactCoordinatesFactory;
 import org.apache.maven.api.services.DependencyCoordinatesFactory;
@@ -862,4 +863,6 @@ public interface Session extends ProtoSession {
      */
     @Nonnull
     PathScope requirePathScope(@Nonnull String id);
+
+    ProjectDependencyGraph getProjectDependencyGraph();
 }

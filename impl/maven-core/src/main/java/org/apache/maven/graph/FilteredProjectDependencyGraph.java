@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.maven.execution.ProjectDependencyGraph;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.ProjectActivation;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 
 /**
  * Provides a sub view of another dependency graph.
@@ -37,13 +37,13 @@ class FilteredProjectDependencyGraph implements ProjectDependencyGraph {
 
     private final ProjectDependencyGraph projectDependencyGraph;
 
-    private final Map<MavenProject, ?> whiteList;
+    private final Map<Project, ?> whiteList;
 
-    private final List<MavenProject> sortedProjects;
+    private final List<Project> sortedProjects;
 
-    private final Map<Key, List<MavenProject>> cache = new ConcurrentHashMap<>();
+    private final Map<Key, List<Project>> cache = new ConcurrentHashMap<>();
 
-    private record Key(MavenProject project, boolean transitive, boolean upstream) {}
+    private record Key(Project project, boolean transitive, boolean upstream) {}
 
     /**
      * Creates a new project dependency graph from the specified graph.
@@ -52,11 +52,11 @@ class FilteredProjectDependencyGraph implements ProjectDependencyGraph {
      * @param whiteList The projects on which the dependency view should focus, must not be {@code null}.
      */
     FilteredProjectDependencyGraph(
-            ProjectDependencyGraph projectDependencyGraph, Collection<? extends MavenProject> whiteList) {
+            ProjectDependencyGraph projectDependencyGraph, Collection<? extends Project> whiteList) {
         this.projectDependencyGraph =
                 Objects.requireNonNull(projectDependencyGraph, "projectDependencyGraph cannot be null");
         this.whiteList = new IdentityHashMap<>();
-        for (MavenProject project : whiteList) {
+        for (Project project : whiteList) {
             this.whiteList.put(project, null);
         }
         this.sortedProjects = projectDependencyGraph.getSortedProjects().stream()
@@ -64,25 +64,27 @@ class FilteredProjectDependencyGraph implements ProjectDependencyGraph {
                 .toList();
     }
 
-    /**
-     * @since 3.5.0
-     */
     @Override
-    public List<MavenProject> getAllProjects() {
+    public ProjectActivation getProjectActivation() {
+        return projectDependencyGraph.getProjectActivation();
+    }
+
+    @Override
+    public List<Project> getAllProjects() {
         return this.projectDependencyGraph.getAllProjects();
     }
 
     @Override
-    public List<MavenProject> getSortedProjects() {
-        return new ArrayList<>(sortedProjects);
+    public List<Project> getSortedProjects() {
+        return sortedProjects;
     }
 
     @Override
-    public List<MavenProject> getDownstreamProjects(MavenProject project, boolean transitive) {
+    public List<Project> getDownstreamProjects(Project project, boolean transitive) {
         Key key = new Key(project, transitive, false);
         // Do not use computeIfAbsent here, as the computation is recursive
         // and this is not supported by computeIfAbsent.
-        List<MavenProject> list = cache.get(key);
+        List<Project> list = cache.get(key);
         if (list == null) {
             list = applyFilter(projectDependencyGraph.getDownstreamProjects(project, transitive), transitive, false);
             cache.put(key, list);
@@ -91,11 +93,11 @@ class FilteredProjectDependencyGraph implements ProjectDependencyGraph {
     }
 
     @Override
-    public List<MavenProject> getUpstreamProjects(MavenProject project, boolean transitive) {
+    public List<Project> getUpstreamProjects(Project project, boolean transitive) {
         Key key = new Key(project, transitive, true);
         // Do not use computeIfAbsent here, as the computation is recursive
         // and this is not supported by computeIfAbsent.
-        List<MavenProject> list = cache.get(key);
+        List<Project> list = cache.get(key);
         if (list == null) {
             list = applyFilter(projectDependencyGraph.getUpstreamProjects(project, transitive), transitive, true);
             cache.put(key, list);
@@ -113,10 +115,10 @@ class FilteredProjectDependencyGraph implements ProjectDependencyGraph {
      * Original code would falsely report {@code a} project as "without dependencies", basically would lose link due
      * filtering. This causes build ordering issues in concurrent builders.
      */
-    private List<MavenProject> applyFilter(
-            Collection<? extends MavenProject> projects, boolean transitive, boolean upstream) {
-        List<MavenProject> filtered = new ArrayList<>(projects.size());
-        for (MavenProject project : projects) {
+    private List<Project> applyFilter(
+            Collection<? extends Project> projects, boolean transitive, boolean upstream) {
+        List<Project> filtered = new ArrayList<>(projects.size());
+        for (Project project : projects) {
             if (whiteList.containsKey(project)) {
                 filtered.add(project);
             } else if (!transitive) {

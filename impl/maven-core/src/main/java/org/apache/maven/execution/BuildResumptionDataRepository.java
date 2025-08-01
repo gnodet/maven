@@ -18,6 +18,7 @@
  */
 package org.apache.maven.execution;
 
+import org.apache.maven.api.Project;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -50,4 +51,25 @@ public interface BuildResumptionDataRepository {
      * @param rootProject The root project that is being built.
      */
     void removeResumptionData(MavenProject rootProject);
+
+    /**
+     * Persists any data needed to resume the build at a later point in time, using a new Maven invocation. This method
+     * may also decide it is not needed or meaningful to persist such data, and return <code>false</code> to indicate
+     * so.
+     *
+     * @param rootProject The root project that is being built.
+     * @param buildResumptionData Information needed to resume the build.
+     * @throws BuildResumptionPersistenceException When an error occurs while persisting data.
+     */
+    void persistResumptionData(Project rootProject, BuildResumptionData buildResumptionData)
+            throws BuildResumptionPersistenceException;
+
+    BuildResumptionData loadResumptionData(Project rootProject);
+
+    /**
+     * Removes previously stored resumption data.
+     * @param rootProject The root project that is being built.
+     */
+    void removeResumptionData(Project rootProject);
+
 }

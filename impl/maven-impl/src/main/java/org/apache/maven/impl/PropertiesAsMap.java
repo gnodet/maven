@@ -66,6 +66,16 @@ public class PropertiesAsMap extends AbstractMap<String, String> {
                                     public String setValue(String value) {
                                         return (String) e.setValue(value);
                                     }
+
+                                    @Override
+                                    public boolean equals(Object obj) {
+                                        return e.equals(obj);
+                                    }
+
+                                    @Override
+                                    public int hashCode() {
+                                        return e.hashCode();
+                                    }
                                 };
                                 break;
                             }

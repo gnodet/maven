@@ -18,10 +18,6 @@
  */
 package org.apache.maven;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,9 +33,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.api.MonotonicClock;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.exec.ActivationSettings;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Prerequisites;
 import org.apache.maven.api.model.Profile;
@@ -56,9 +57,9 @@ import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProfileActivation;
 import org.apache.maven.execution.ProjectActivation;
-import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.graph.GraphBuilder;
 import org.apache.maven.graph.ProjectSelector;
+import org.apache.maven.internal.impl.DefaultMavenRequest;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
@@ -215,6 +216,7 @@ public class DefaultMaven implements Maven {
         try (CloseableSession closeableSession = newCloseableSession(request, chainedWorkspaceReader)) {
             MavenSession session = new MavenSession(closeableSession, request, result);
             session.setSession(defaultSessionFactory.newSession(session));
+            session.getProjectBuildingRequest();
 
             sessionScope.seed(MavenSession.class, session);
             sessionScope.seed(Session.class, session.getSession());
@@ -577,7 +579,8 @@ public class DefaultMaven implements Maven {
         allOptionalSelectors.addAll(projectActivation.getRequiredActiveProjectSelectors());
         // We intentionally ignore the results of this method.
         // As a side effect it will log the optional projects that could not be resolved.
-        projectSelector.getOptionalProjectsBySelectors(request, session.getAllProjects(), allOptionalSelectors);
+        List<Project> allProjects = InternalMavenSession.from(session.getSession()).getProjects(session.getAllProjects());
+        projectSelector.getOptionalProjectsBySelectors(new DefaultMavenRequest(request), allProjects, allOptionalSelectors);
     }
 
     /**
@@ -640,7 +643,16 @@ public class DefaultMaven implements Maven {
     }
 
     private Result<? extends ProjectDependencyGraph> buildGraph(MavenSession session) {
-        Result<? extends ProjectDependencyGraph> graphResult = graphBuilder.build(session);
+        org.apache.maven.api.exec.ProjectActivation projectActivation = new org.apache.maven.api.exec.ProjectActivation(session.getRequest().getProjectActivation().getActivations().stream()
+                .map(pa -> new org.apache.maven.api.exec.ProjectActivation.ProjectActivationSettings(
+                        pa.selector(),
+                        new ActivationSettings(pa.activationSettings().active(),
+                                pa.activationSettings().optional(), pa.activationSettings().recurse())
+                )).toList());
+        Result<? extends ProjectDependencyGraph> graphResult = graphBuilder.build(
+                new DefaultMavenRequest(session.getRequest()),
+                projectActivation
+        );
         for (ModelProblem problem : graphResult.getProblems()) {
             if (problem.getSeverity() == ModelProblem.Severity.WARNING) {
                 logger.warn(problem.getMessage());
@@ -651,9 +663,31 @@ public class DefaultMaven implements Maven {
 
         if (!graphResult.hasErrors()) {
             ProjectDependencyGraph projectDependencyGraph = graphResult.get();
-            session.setProjects(projectDependencyGraph.getSortedProjects());
-            session.setAllProjects(projectDependencyGraph.getAllProjects());
-            session.setProjectDependencyGraph(projectDependencyGraph);
+            InternalMavenSession s = InternalMavenSession.from(session.getSession());
+            s.setProjectDependencyGraph(projectDependencyGraph);
+            session.setProjects(s.getMavenProjects(projectDependencyGraph.getSortedProjects()));
+            session.setAllProjects(s.getMavenProjects(projectDependencyGraph.getAllProjects()));
+            session.setProjectDependencyGraph(new org.apache.maven.execution.ProjectDependencyGraph() {
+                @Override
+                public List<MavenProject> getAllProjects() {
+                    return s.getMavenProjects(projectDependencyGraph.getAllProjects());
+                }
+
+                @Override
+                public List<MavenProject> getSortedProjects() {
+                    return s.getMavenProjects(projectDependencyGraph.getSortedProjects());
+                }
+
+                @Override
+                public List<MavenProject> getDownstreamProjects(MavenProject project, boolean transitive) {
+                    return s.getMavenProjects(projectDependencyGraph.getDownstreamProjects(s.getProject(project), transitive));
+                }
+
+                @Override
+                public List<MavenProject> getUpstreamProjects(MavenProject project, boolean transitive) {
+                    return s.getMavenProjects(projectDependencyGraph.getUpstreamProjects(s.getProject(project), transitive));
+                }
+            });
         }
 
         return graphResult;

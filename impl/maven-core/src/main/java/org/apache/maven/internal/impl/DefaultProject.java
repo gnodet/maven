@@ -201,9 +201,10 @@ public class DefaultProject implements Project {
 
     @Override
     public List<Project> getActiveSubprojects() {
-        return this.project.getCollectedProjects().stream()
+        List<MavenProject> subprojects = this.project.getCollectedProjects();
+        return subprojects != null ? subprojects.stream()
                 .map(session::getProject)
-                .toList();
+                .toList() : List.of();
     }
 
     @Nonnull

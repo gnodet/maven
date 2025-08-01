@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.api.plugin.testing.stubs;
+package org.apache.maven.graph;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,8 +135,7 @@ public class ProjectStub implements Project {
 
     @Override
     public List<ProducedArtifact> getArtifacts() {
-        ProducedArtifact pomArtifact = new ProducedArtifactStub(getGroupId(), getArtifactId(), "", getVersion(), "pom");
-        return mainArtifact != null ? Arrays.asList(pomArtifact, mainArtifact) : Arrays.asList(pomArtifact);
+        throw new UnsupportedOperationException();
     }
 
     @Nonnull

@@ -34,6 +34,7 @@ import org.apache.maven.api.Session;
 import org.apache.maven.api.Version;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.api.services.MavenException;
@@ -62,6 +63,7 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
     private final MavenRepositorySystem mavenRepositorySystem;
     private final RuntimeInformation runtimeInformation;
     private final Map<String, Project> allProjects = new ConcurrentHashMap<>();
+    private ProjectDependencyGraph projectDependencyGraph;
 
     @SuppressWarnings("checkstyle:ParameterNumber")
     public DefaultSession(
@@ -85,6 +87,16 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
     }
 
     @Override
+    public ProjectDependencyGraph getProjectDependencyGraph() {
+        return projectDependencyGraph;
+    }
+
+    @Override
+    public void setProjectDependencyGraph(ProjectDependencyGraph projectDependencyGraph) {
+        this.projectDependencyGraph = projectDependencyGraph;
+    }
+
+    @Override
     public MavenSession getMavenSession() {
         if (mavenSession == null) {
             throw new IllegalArgumentException("Found null mavenSession on session " + this);
@@ -95,6 +107,15 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
     @Override
     public List<Project> getProjects(List<MavenProject> projects) {
         return projects == null ? null : map(projects, this::getProject);
+    }
+
+    @Override
+    public List<MavenProject> getMavenProjects(List<Project> projects) {
+        return projects == null ? null : map(projects, this::getMavenProject);
+    }
+
+    public MavenProject getMavenProject(Project project) {
+        return ((DefaultProject) project).getProject();
     }
 
     @Override

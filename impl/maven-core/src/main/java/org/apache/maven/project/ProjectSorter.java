@@ -19,12 +19,11 @@
 package org.apache.maven.project;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import org.apache.maven.api.Project;
 import org.apache.maven.api.model.Build;
 import org.apache.maven.api.model.Dependency;
 import org.apache.maven.api.model.Extension;
@@ -37,11 +36,9 @@ import org.apache.maven.project.Graph.Vertex;
  * ProjectSorter
  */
 public class ProjectSorter {
-    private Graph graph;
+    private final Graph graph;
 
-    private List<MavenProject> sortedProjects;
-
-    private Map<String, MavenProject> projectMap;
+    private final List<Project> sortedProjects;
 
     /**
      * Sort a list of projects.
@@ -66,25 +63,25 @@ public class ProjectSorter {
     // In this case, both the verify and the report goals are called
     // in a different lifecycle. Though the compiler-plugin has a valid use case, although
     // that seems to work fine. We need to take versions and lifecycle into account.
-    public ProjectSorter(Collection<MavenProject> projects) throws CycleDetectedException, DuplicateProjectException {
+    public ProjectSorter(Collection<Project> projects) throws CycleDetectedException, DuplicateProjectException {
         graph = new Graph();
 
         // groupId:artifactId:version -> project
-        projectMap = new HashMap<>(projects.size() * 2);
+        Map<String, Project> projectMap = new HashMap<>(projects.size() * 2);
 
         // groupId:artifactId -> (version -> vertex)
         Map<String, Map<String, Vertex>> vertexMap = new HashMap<>(projects.size() * 2);
 
-        for (MavenProject project : projects) {
+        for (Project project : projects) {
             String projectId = getId(project);
 
-            MavenProject conflictingProject = projectMap.put(projectId, project);
+            Project conflictingProject = projectMap.put(projectId, project);
 
             if (conflictingProject != null) {
                 throw new DuplicateProjectException(
                         projectId,
-                        conflictingProject.getFile(),
-                        project.getFile(),
+                        conflictingProject.getPomPath().toFile(),
+                        project.getPomPath().toFile(),
                         "Project '" + projectId + "' is duplicated in the reactor");
             }
 
@@ -98,9 +95,9 @@ public class ProjectSorter {
         for (Vertex projectVertex : graph.getVertices()) {
             String projectId = projectVertex.getLabel();
 
-            MavenProject project = projectMap.get(projectId);
+            Project project = projectMap.get(projectId);
 
-            for (Dependency dependency : project.getModel().getDelegate().getDependencies()) {
+            for (Dependency dependency : project.getModel().getDependencies()) {
                 addEdge(
                         projectMap,
                         vertexMap,
@@ -113,7 +110,7 @@ public class ProjectSorter {
                         false);
             }
 
-            Parent parent = project.getModel().getDelegate().getParent();
+            Parent parent = project.getModel().getParent();
 
             if (parent != null) {
                 // Parent is added as an edge, but must not cause a cycle - so we remove any other edges it has
@@ -130,7 +127,7 @@ public class ProjectSorter {
                         false);
             }
 
-            Build build = project.getModel().getDelegate().getBuild();
+            Build build = project.getModel().getBuild();
             if (build != null) {
                 for (Plugin plugin : build.getPlugins()) {
                     addEdge(
@@ -173,18 +170,16 @@ public class ProjectSorter {
             }
         }
 
-        List<String> sortedProjectLabels = graph.visitAll();
-
-        this.sortedProjects = sortedProjectLabels.stream()
-                .map(id -> projectMap.get(id))
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        this.sortedProjects = graph.visitAll().stream()
+                .map(projectMap::get)
+                .toList();
     }
 
     @SuppressWarnings("checkstyle:parameternumber")
     private void addEdge(
-            Map<String, MavenProject> projectMap,
+            Map<String, Project> projectMap,
             Map<String, Map<String, Vertex>> vertexMap,
-            MavenProject project,
+            Project project,
             Vertex projectVertex,
             String groupId,
             String artifactId,
@@ -213,8 +208,8 @@ public class ProjectSorter {
     private void addEdge(
             Vertex fromVertex,
             Vertex toVertex,
-            MavenProject fromProject,
-            Map<String, MavenProject> projectMap,
+            Project fromProject,
+            Map<String, Project> projectMap,
             boolean force,
             boolean safe)
             throws CycleDetectedException {
@@ -222,10 +217,10 @@ public class ProjectSorter {
             return;
         }
 
-        if (fromProject != null) {
-            MavenProject toProject = projectMap.get(toVertex.getLabel());
-            fromProject.addProjectReference(toProject);
-        }
+        // if (fromProject != null) {
+        //     Project toProject = projectMap.get(toVertex.getLabel());
+        //     fromProject.addProjectReference(toProject);
+        // }
 
         if (force && toVertex.getChildren().contains(fromVertex)) {
             graph.removeEdge(toVertex, fromVertex);
@@ -246,14 +241,14 @@ public class ProjectSorter {
 
     // TODO !![jc; 28-jul-2005] check this; if we're using '-r' and there are aggregator tasks, this will result in
     // weirdness.
-    public MavenProject getTopLevelProject() {
+    public Project getTopLevelProject() {
         return sortedProjects.stream()
-                .filter(MavenProject::isExecutionRoot)
+                .filter(Project::isTopProject)
                 .findFirst()
                 .orElse(null);
     }
 
-    public List<MavenProject> getSortedProjects() {
+    public List<Project> getSortedProjects() {
         return sortedProjects;
     }
 
@@ -269,11 +264,8 @@ public class ProjectSorter {
         return graph.getVertex(id).getChildren().stream().map(Vertex::getLabel).collect(Collectors.toList());
     }
 
-    public static String getId(MavenProject project) {
+    public static String getId(Project project) {
         return ArtifactUtils.key(project.getGroupId(), project.getArtifactId(), project.getVersion());
     }
 
-    public Map<String, MavenProject> getProjectMap() {
-        return projectMap;
-    }
 }

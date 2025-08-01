@@ -19,31 +19,32 @@
 package org.apache.maven.graph;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.ActivationSettings;
+import org.apache.maven.api.exec.ProjectActivation;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
+import org.apache.maven.api.model.Dependency;
+import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.Parent;
 import org.apache.maven.api.services.ProjectBuilder;
 import org.apache.maven.api.services.model.ModelProcessor;
 import org.apache.maven.execution.BuildResumptionDataRepository;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.execution.ProjectActivation;
-import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.impl.model.DefaultModelProcessor;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Parent;
+import org.apache.maven.internal.impl.DefaultMavenRequest;
 import org.apache.maven.model.building.Result;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.project.collector.DefaultProjectsSelector;
 import org.apache.maven.project.collector.MultiModuleCollectionStrategy;
 import org.apache.maven.project.collector.PomlessCollectionStrategy;
@@ -110,7 +111,7 @@ class DefaultGraphBuilderTest {
     private final RequestPomCollectionStrategy requestPomCollectionStrategy =
             new RequestPomCollectionStrategy(projectsSelector);
 
-    private Map<String, MavenProject> artifactIdProjectMap;
+    private Map<String, Project> artifactIdProjectMap;
 
     public static Stream<Arguments> parameters() {
         return Stream.of(
@@ -293,14 +294,23 @@ class DefaultGraphBuilderTest {
             File parameterRequestedPom,
             boolean parameterRecursive) {
         // Given
-        ProjectActivation projectActivation = new ProjectActivation();
-        parameterActiveRequiredProjects.forEach(projectActivation::activateRequiredProject);
-        parameterActiveOptionalProjects.forEach(projectActivation::activateOptionalProject);
-        parameterInactiveRequiredProjects.forEach(projectActivation::deactivateRequiredProject);
-        parameterInactiveOptionalProjects.forEach(projectActivation::deactivateOptionalProject);
+        List<ProjectActivation.ProjectActivationSettings> pas = new ArrayList<>();
+        parameterActiveRequiredProjects.stream()
+                .map(p -> new ProjectActivation.ProjectActivationSettings(p, ActivationSettings.activated()))
+                .forEach(pas::add);
+        parameterActiveOptionalProjects.stream()
+                .map(p -> new ProjectActivation.ProjectActivationSettings(p, ActivationSettings.activatedOpt()))
+                .forEach(pas::add);
+        parameterInactiveRequiredProjects.stream()
+                .map(p -> new ProjectActivation.ProjectActivationSettings(p, ActivationSettings.deactivated()))
+                .forEach(pas::add);
+        parameterInactiveOptionalProjects.stream()
+                .map(p -> new ProjectActivation.ProjectActivationSettings(p, ActivationSettings.deactivatedOpt()))
+                .forEach(pas::add);
+        ProjectActivation projectActivation = new ProjectActivation(pas);
 
         when(mavenExecutionRequest.getRootDirectory()).thenReturn(Paths.get("."));
-        when(mavenExecutionRequest.getProjectActivation()).thenReturn(projectActivation);
+        //when(mavenExecutionRequest.getProjectActivation()).thenReturn(projectActivation);
         when(mavenExecutionRequest.getMakeBehavior()).thenReturn(parameterMakeBehavior);
         when(mavenExecutionRequest.getPom()).thenReturn(parameterRequestedPom);
         when(mavenExecutionRequest.isRecursive()).thenReturn(parameterRecursive);
@@ -309,7 +319,8 @@ class DefaultGraphBuilderTest {
         }
 
         // When
-        Result<ProjectDependencyGraph> result = graphBuilder.build(session);
+        Result<ProjectDependencyGraph> result = graphBuilder.build(
+                new DefaultMavenRequest(mavenExecutionRequest), projectActivation);
 
         // Then
         if (parameterExpectedResult instanceof SelectedProjectsResult selectedProjectsResult) {
@@ -317,8 +328,8 @@ class DefaultGraphBuilderTest {
                     .withFailMessage("Expected result not to have errors")
                     .isFalse();
             List<String> expectedProjectNames = selectedProjectsResult.projectNames;
-            List<MavenProject> actualReactorProjects = result.get().getSortedProjects();
-            List<MavenProject> expectedReactorProjects =
+            List<Project> actualReactorProjects = result.get().getSortedProjects();
+            List<Project> expectedReactorProjects =
                     expectedProjectNames.stream().map(artifactIdProjectMap::get).collect(toList());
             assertEquals(expectedReactorProjects, actualReactorProjects, parameterDescription);
         } else {
@@ -344,10 +355,10 @@ class DefaultGraphBuilderTest {
                 requestPomCollectionStrategy);
 
         // Create projects
-        MavenProject projectParent = getMavenProject(PARENT_MODULE);
-        MavenProject projectModuleD = getMavenProject(MODULE_D, projectParent, "bom");
+        ProjectStub projectParent = getMavenProject(PARENT_MODULE);
+        ProjectStub projectModuleD = getMavenProject(MODULE_D, projectParent, "bom");
 
-        projectParent.setCollectedProjects(singletonList(projectModuleD));
+        projectParent.setActiveSubprojects(singletonList(projectModuleD));
 
         // Set up needed mocks
         when(session.getRequest()).thenReturn(mavenExecutionRequest);
@@ -355,22 +366,22 @@ class DefaultGraphBuilderTest {
         //        when(mavenExecutionRequest.getProjectBuildingRequest()).thenReturn(mock(ProjectBuilderRequest.class));
         //        List<ProjectBuilderResult> projectBuilderResults =
         //                createProjectBuildingResultMocks(Stream.of(projectParent, projectModuleD)
-        //                        .collect(Collectors.toMap(MavenProject::getArtifactId, identity()))
+        //                        .collect(Collectors.toMap(Project::getArtifactId, identity()))
         //                        .values());
         //        when(projectBuilder.build(anyList(), anyBoolean(), any(ProjectBuilderRequest.class)))
         //                .thenReturn(projectBuildingResults);
 
-        ProjectActivation projectActivation = new ProjectActivation();
+        // ProjectActivation projectActivation = new ProjectActivation();
 
-        when(mavenExecutionRequest.getProjectActivation()).thenReturn(projectActivation);
+        // when(mavenExecutionRequest.getProjectActivation()).thenReturn(projectActivation);
         when(mavenExecutionRequest.getPom()).thenReturn(new File(PARENT_MODULE, "pom.xml"));
 
-        Result<ProjectDependencyGraph> result = graphBuilder.build(session);
+        Result<ProjectDependencyGraph> result = graphBuilder.build(new DefaultMavenRequest(mavenExecutionRequest), new ProjectActivation(List.of()));
 
         assertThat(result.hasErrors())
                 .withFailMessage("Expected result not to have errors")
                 .isFalse();
-        List<MavenProject> actualReactorProjects = result.get().getSortedProjects();
+        List<Project> actualReactorProjects = result.get().getSortedProjects();
         assertEquals(2, actualReactorProjects.size());
         assertEquals("pom", actualReactorProjects.get(1).getPackaging());
     }
@@ -384,13 +395,13 @@ class DefaultGraphBuilderTest {
                 requestPomCollectionStrategy);
 
         // Create projects
-        MavenProject projectParent = getMavenProject(PARENT_MODULE);
-        MavenProject projectIndependentModule = getMavenProject(INDEPENDENT_MODULE);
-        MavenProject projectModuleA = getMavenProject(MODULE_A, projectParent);
-        MavenProject projectModuleB = getMavenProject(MODULE_B, projectParent);
-        MavenProject projectModuleC = getMavenProject(MODULE_C, projectParent);
-        MavenProject projectModuleC1 = getMavenProject(MODULE_C_1, projectModuleC);
-        MavenProject projectModuleC2 = getMavenProject(MODULE_C_2, projectModuleC);
+        ProjectStub projectParent = getMavenProject(PARENT_MODULE);
+        ProjectStub projectIndependentModule = getMavenProject(INDEPENDENT_MODULE);
+        ProjectStub projectModuleA = getMavenProject(MODULE_A, projectParent);
+        ProjectStub projectModuleB = getMavenProject(MODULE_B, projectParent);
+        ProjectStub projectModuleC = getMavenProject(MODULE_C, projectParent);
+        ProjectStub projectModuleC1 = getMavenProject(MODULE_C_1, projectModuleC);
+        ProjectStub projectModuleC2 = getMavenProject(MODULE_C_2, projectModuleC);
 
         artifactIdProjectMap = Stream.of(
                         projectParent,
@@ -400,19 +411,19 @@ class DefaultGraphBuilderTest {
                         projectModuleC,
                         projectModuleC1,
                         projectModuleC2)
-                .collect(Collectors.toMap(MavenProject::getArtifactId, identity()));
+                .collect(Collectors.toMap(Project::getArtifactId, identity()));
 
         // Set dependencies and modules
-        projectModuleB.setDependencies(singletonList(toDependency(projectModuleA)));
-        projectModuleC2.setDependencies(singletonList(toDependency(projectModuleB)));
-        projectParent.setCollectedProjects(asList(
+        projectModuleB.setModel(projectModuleB.getModel().withDependencies(List.of(toDependency(projectModuleA))));
+        projectModuleC2.setModel(projectModuleB.getModel().withDependencies(List.of(toDependency(projectModuleB))));
+        projectParent.setActiveSubprojects(asList(
                 projectIndependentModule,
                 projectModuleA,
                 projectModuleB,
                 projectModuleC,
                 projectModuleC1,
                 projectModuleC2));
-        projectModuleC.setCollectedProjects(asList(projectModuleC1, projectModuleC2));
+        projectModuleC.setActiveSubprojects(asList(projectModuleC1, projectModuleC2));
 
         // Set up needed mocks
         when(session.getRequest()).thenReturn(mavenExecutionRequest);
@@ -425,51 +436,40 @@ class DefaultGraphBuilderTest {
         when(mavenExecutionRequest.getRootDirectory()).thenReturn(null);
     }
 
-    private MavenProject getMavenProject(String artifactId, MavenProject parentProject) {
-        MavenProject project = getMavenProject(artifactId);
-        Parent parent = new Parent();
-        parent.setGroupId(parentProject.getGroupId());
-        parent.setArtifactId(parentProject.getArtifactId());
-        project.getModel().setParent(parent);
+    private ProjectStub getMavenProject(String artifactId, Project parentProject) {
+        ProjectStub project = getMavenProject(artifactId);
+        project.setModel(project.getModel().withParent(Parent.newBuilder()
+                .groupId(parentProject.getGroupId())
+                .artifactId(parentProject.getArtifactId())
+                .build()));
         return project;
     }
 
-    private MavenProject getMavenProject(String artifactId) {
-        MavenProject mavenProject = new MavenProject();
-        mavenProject.setGroupId(GROUP_ID);
-        mavenProject.setArtifactId(artifactId);
-        mavenProject.setVersion("1.0");
-        mavenProject.setPomFile(new File(artifactId, "pom.xml"));
-        mavenProject.setCollectedProjects(new ArrayList<>());
+    private ProjectStub getMavenProject(String artifactId) {
+        ProjectStub mavenProject = new ProjectStub();
+        mavenProject.setModel(
+                Model.newBuilder()
+                        .groupId(GROUP_ID)
+                        .artifactId(artifactId)
+                        .version("1.0").build()
+        );
+        mavenProject.setPomPath(Path.of(artifactId, "pom.xml"));
         return mavenProject;
     }
 
-    private MavenProject getMavenProject(String artifactId, MavenProject parentProject, String packaging) {
-        MavenProject project = getMavenProject(artifactId);
-        Parent parent = new Parent();
-        parent.setGroupId(parentProject.getGroupId());
-        parent.setArtifactId(parentProject.getArtifactId());
-        project.getModel().setParent(parent);
-        project.setPackaging(packaging);
+    private ProjectStub getMavenProject(String artifactId, Project parentProject, String packaging) {
+        ProjectStub project = getMavenProject(artifactId, parentProject);
+        project.setModel(project.getModel()
+                .withPackaging(packaging));
         return project;
     }
 
-    private Dependency toDependency(MavenProject mavenProject) {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId(mavenProject.getGroupId());
-        dependency.setArtifactId(mavenProject.getArtifactId());
-        dependency.setVersion(mavenProject.getVersion());
-        return dependency;
-    }
-
-    private List<ProjectBuildingResult> createProjectBuildingResultMocks(Collection<MavenProject> projects) {
-        return projects.stream()
-                .map(project -> {
-                    ProjectBuildingResult result = mock(ProjectBuildingResult.class);
-                    when(result.getProject()).thenReturn(project);
-                    return result;
-                })
-                .collect(toList());
+    private Dependency toDependency(Project mavenProject) {
+        return Dependency.newBuilder()
+                .groupId(mavenProject.getGroupId())
+                .artifactId(mavenProject.getArtifactId())
+                .version(mavenProject.getVersion())
+                        .build();
     }
 
     static class ScenarioBuilder {

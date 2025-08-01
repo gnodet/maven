@@ -47,6 +47,7 @@ import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.di.SessionScoped;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.model.PluginContainer;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.ArtifactManager;
@@ -243,6 +244,11 @@ public class ApiRunner {
         @Override
         public List<Project> getProjects() {
             return List.of();
+        }
+
+        @Override
+        public ProjectDependencyGraph getProjectDependencyGraph() {
+            return null;
         }
 
         @Override

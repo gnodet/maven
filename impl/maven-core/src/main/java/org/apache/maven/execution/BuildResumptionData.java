@@ -29,8 +29,8 @@ public class BuildResumptionData {
      */
     private final List<String> remainingProjects;
 
-    public BuildResumptionData(final List<String> remainingProjects) {
-        this.remainingProjects = remainingProjects;
+    public BuildResumptionData(List<String> remainingProjects) {
+        this.remainingProjects = List.copyOf(remainingProjects);
     }
 
     /**

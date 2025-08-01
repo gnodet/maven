@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.maven.api.Project;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.CycleDetectedException;
@@ -61,7 +61,7 @@ public class ReactorManager {
 
     private Map<String, BuildSuccess> buildSuccessesByProject = new HashMap<>();
 
-    public ReactorManager(List<MavenProject> projects) throws CycleDetectedException, DuplicateProjectException {
+    public ReactorManager(List<Project> projects) throws CycleDetectedException, DuplicateProjectException {
         this.sorter = new ProjectSorter(projects);
     }
 
@@ -140,7 +140,7 @@ public class ReactorManager {
         return sorter.hasMultipleProjects();
     }
 
-    public List<MavenProject> getSortedProjects() {
+    public List<Project> getSortedProjects() {
         return sorter.getSortedProjects();
     }
 

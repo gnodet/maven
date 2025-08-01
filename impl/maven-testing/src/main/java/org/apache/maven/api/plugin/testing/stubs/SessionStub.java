@@ -52,6 +52,7 @@ import org.apache.maven.api.VersionConstraint;
 import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.model.Repository;
 import org.apache.maven.api.settings.Settings;
 import org.apache.maven.api.toolchain.ToolchainModel;
@@ -461,5 +462,10 @@ public class SessionStub implements Session {
     @Override
     public Collection<ToolchainModel> getToolchains() {
         return List.of();
+    }
+
+    @Override
+    public ProjectDependencyGraph getProjectDependencyGraph() {
+        return null;
     }
 }

@@ -18,18 +18,19 @@
  */
 package org.apache.maven.execution;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
-
+import javax.inject.Named;
+import javax.inject.Singleton;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +50,20 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
     @Override
     public void persistResumptionData(MavenProject rootProject, BuildResumptionData buildResumptionData)
             throws BuildResumptionPersistenceException {
+        persistResumptionData(rootProject.getModel().getDelegate(), buildResumptionData);
+    }
+
+    @Override
+    public void persistResumptionData(Project rootProject, BuildResumptionData buildResumptionData) throws BuildResumptionPersistenceException {
+        persistResumptionData(rootProject.getModel(), buildResumptionData);
+    }
+
+
+    public void persistResumptionData(Model model, BuildResumptionData buildResumptionData)
+        throws BuildResumptionPersistenceException {
         Properties properties = convertToProperties(buildResumptionData);
 
-        Path resumeProperties = Paths.get(rootProject.getBuild().getDirectory(), RESUME_PROPERTIES_FILENAME);
+        Path resumeProperties = Paths.get(model.getBuild().getDirectory(), RESUME_PROPERTIES_FILENAME);
         try {
             Files.createDirectories(resumeProperties.getParent());
             try (Writer writer = Files.newBufferedWriter(resumeProperties)) {
@@ -63,7 +75,7 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
         }
     }
 
-    private Properties convertToProperties(final BuildResumptionData buildResumptionData) {
+    private Properties convertToProperties(BuildResumptionData buildResumptionData) {
         Properties properties = new Properties();
 
         String value = String.join(PROPERTY_DELIMITER, buildResumptionData.getRemainingProjects());
@@ -74,14 +86,33 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
 
     @Override
     public void applyResumptionData(MavenExecutionRequest request, MavenProject rootProject) {
-        Properties properties =
-                loadResumptionFile(Paths.get(rootProject.getBuild().getDirectory()));
+        Model model = rootProject.getModel().getDelegate();
+        Properties properties = loadResumptionFile(model);
         applyResumptionProperties(request, properties);
     }
 
     @Override
+    public BuildResumptionData loadResumptionData(Project rootProject) {
+        Model model = rootProject.getModel();
+        Properties properties = loadResumptionFile(model);
+        String remainingProjects = properties.getProperty(REMAINING_PROJECTS);
+        List<String> projects = remainingProjects != null ? List.of(remainingProjects.split(PROPERTY_DELIMITER)) : List.of();
+        return new BuildResumptionData(projects);
+    }
+
+
+    @Override
     public void removeResumptionData(MavenProject rootProject) {
-        Path resumeProperties = Paths.get(rootProject.getBuild().getDirectory(), RESUME_PROPERTIES_FILENAME);
+        removeResumptionData(rootProject.getModel().getDelegate());
+    }
+
+    @Override
+    public void removeResumptionData(Project rootProject) {
+        removeResumptionData(rootProject.getModel());
+    }
+
+    private static void removeResumptionData(Model model) {
+        Path resumeProperties = Paths.get(model.getBuild().getDirectory(), RESUME_PROPERTIES_FILENAME);
         try {
             Files.deleteIfExists(resumeProperties);
         } catch (IOException e) {
@@ -89,8 +120,9 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
         }
     }
 
-    private Properties loadResumptionFile(Path rootBuildDirectory) {
+    private Properties loadResumptionFile(Model model) {
         Properties properties = new Properties();
+        Path rootBuildDirectory = Paths.get(model.getBuild().getDirectory());
         Path path = rootBuildDirectory.resolve(RESUME_PROPERTIES_FILENAME);
         if (!Files.exists(path)) {
             LOGGER.warn("The {} file does not exist. The --resume / -r feature will not work.", path);
@@ -117,4 +149,5 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
             LOGGER.info("Resuming from {} due to the --resume / -r feature.", propertyValue);
         }
     }
+
 }
