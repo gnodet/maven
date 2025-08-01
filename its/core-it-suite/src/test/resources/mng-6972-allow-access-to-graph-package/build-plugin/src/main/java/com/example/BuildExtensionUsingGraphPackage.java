@@ -24,7 +24,7 @@ import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectDependencyGraph;
-import org.apache.maven.graph.GraphBuilder;
+import org.apache.maven.api.graph.GraphBuilder;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.building.Result;
 import org.codehaus.plexus.component.annotations.Component;

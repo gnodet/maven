@@ -16,27 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.project.collector;
+package org.apache.maven.api.collector;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.maven.api.Project;
-import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.services.ProjectBuilderException;
 
 /**
- * Facade to select projects for a given set of pom.xml files.
+ * Describes strategies for finding projects that Maven could build.
  */
-public interface ProjectsSelector {
-    /**
-     * Select Maven projects from a list of POM files.
-     * @param files List of POM files.
-     * @param request The {@link MavenRequest}
-     * @return A list of projects that have been found in the specified POM files.
-     * @throws ProjectBuilderException In case the POMs are not used.
-     */
-    List<Project> selectProjects(@Nonnull List<Path> files, @Nonnull MavenRequest request)
-            throws ProjectBuilderException;
+public interface ProjectCollectionStrategy {
+
+    List<Project> collectProjects(MavenRequest request) throws ProjectBuilderException;
+
 }

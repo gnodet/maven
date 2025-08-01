@@ -21,7 +21,7 @@ package org.apache.maven.plugin;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.maven.model.Plugin;
+import org.apache.maven.api.model.Plugin;
 
 /**
  * Exception occurring trying to resolve a plugin.

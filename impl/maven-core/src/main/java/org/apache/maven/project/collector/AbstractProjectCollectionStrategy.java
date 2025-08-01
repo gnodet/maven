@@ -18,26 +18,7 @@
  */
 package org.apache.maven.project.collector;
 
-import java.util.List;
-
-import org.apache.maven.api.Project;
-import org.apache.maven.api.services.ProjectBuilderException;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.internal.impl.DefaultMavenRequest;
-import org.apache.maven.internal.impl.DefaultProject;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.api.collector.ProjectCollectionStrategy;
 
 public abstract class AbstractProjectCollectionStrategy implements ProjectCollectionStrategy {
-    @Override
-    public List<MavenProject> collectProjects(MavenExecutionRequest request) throws ProjectBuildingException {
-        try {
-            List<Project> projects = collectProjects(new DefaultMavenRequest(request));
-            return projects.stream()
-                    .map(project -> ((DefaultProject) project).getProject())
-                    .toList();
-        } catch (ProjectBuilderException e) {
-            throw new ProjectBuildingException(e.getProjectId(), e.getMessage(), e);
-        }
-    }
 }

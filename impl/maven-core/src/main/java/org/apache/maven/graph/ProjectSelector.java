@@ -85,7 +85,7 @@ public final class ProjectSelector {
     }
 
     /**
-     * @deprecated use {@link #getActiveProjects(MavenRequest, List, List)}
+     * @deprecated use {@link #getActiveProjects(MavenRequest, List, ProjectActivation)}
      */
     @Deprecated(since = "4.0.0")
     public Set<Project> getRequiredProjectsBySelectors(
@@ -111,7 +111,7 @@ public final class ProjectSelector {
     }
 
     /**
-     * @deprecated use {@link #getActiveProjects(MavenRequest, List, List)}
+     * @deprecated use {@link #getActiveProjects(MavenRequest, List, ProjectActivation)}
      */
     @Deprecated(since = "4.0.0")
     public Set<Project> getOptionalProjectsBySelectors(

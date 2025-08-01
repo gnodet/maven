@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.collector.ProjectsSelector;
 import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.api.services.ModelProblem;

@@ -31,12 +31,13 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.Project;
+import org.apache.maven.api.collector.ProjectsSelector;
 import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.api.services.ProjectBuilderException;
 import org.apache.maven.api.services.ProjectBuilderResult;
 import org.apache.maven.api.services.model.ModelProcessor;
-import org.apache.maven.model.Plugin;
+import org.apache.maven.api.model.Plugin;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugin.PluginResolutionException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;

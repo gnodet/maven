@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.graph;
+package org.apache.maven.api.graph;
 
 import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.api.exec.ProjectActivation;
 import org.apache.maven.api.exec.ProjectDependencyGraph;
-import org.apache.maven.model.building.Result;
+import org.apache.maven.api.Result;
 
 /**
  * Builds the {@link ProjectDependencyGraph inter-dependencies graph} between projects in the reactor.
