@@ -21,9 +21,6 @@ package org.apache.maven.execution;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.maven.model.Build;
-import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singleton;
@@ -85,18 +82,4 @@ class DefaultBuildResumptionDataRepositoryTest {
         assertThat(request.getProjectActivation().getOptionalActiveProjectSelectors(), is(empty()));
     }
 
-    @Test
-    void applyResumptionDataShouldLoadData() {
-        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-        Build build = new Build();
-        build.setDirectory("src/test/resources/org/apache/maven/execution/");
-        MavenProject rootProject = new MavenProject();
-        rootProject.setBuild(build);
-
-        repository.applyResumptionData(request, rootProject);
-
-        assertThat(
-                request.getProjectActivation().getOptionalActiveProjectSelectors(),
-                containsInAnyOrder("example:module-c"));
-    }
 }

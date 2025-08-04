@@ -16,14 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.execution;
+package org.apache.maven.api.exec;
+
+import java.util.Optional;
 
 /**
- * This exception will be thrown when something fails while persisting build resumption data.
- * @see BuildResumptionDataRepository#persistResumptionData
+ * Instances of this class are responsible for determining whether it makes sense to "resume" a build using
+ * the {@code --resume} flag.
  */
-public class BuildResumptionPersistenceException extends Exception {
-    public BuildResumptionPersistenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface BuildResumptionAnalyzer {
+    /**
+     * Construct an instance of {@link BuildResumptionData} based on the outcome of the current Maven build.
+     * @param result Outcome of the current Maven build.
+     * @return A {@link BuildResumptionData} instance or {@link Optional#empty()} if resuming the build is not possible.
+     */
+    Optional<BuildResumptionData> determineBuildResumptionData(MavenResult result);
 }

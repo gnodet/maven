@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -38,26 +39,30 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.Result;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.exec.ActivationSettings;
+import org.apache.maven.api.exec.BuildResumptionAnalyzer;
+import org.apache.maven.api.exec.BuildResumptionData;
+import org.apache.maven.api.exec.BuildResumptionDataRepository;
+import org.apache.maven.api.exec.BuildResumptionPersistenceException;
+import org.apache.maven.api.exec.MavenResult;
 import org.apache.maven.api.exec.ProjectDependencyGraph;
+import org.apache.maven.api.graph.GraphBuilder;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Prerequisites;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.artifact.ArtifactUtils;
-import org.apache.maven.execution.BuildResumptionAnalyzer;
-import org.apache.maven.execution.BuildResumptionDataRepository;
-import org.apache.maven.execution.BuildResumptionPersistenceException;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
+import org.apache.maven.execution.DefaultMavenResult;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProfileActivation;
 import org.apache.maven.execution.ProjectActivation;
-import org.apache.maven.api.graph.GraphBuilder;
 import org.apache.maven.graph.ProjectSelector;
 import org.apache.maven.internal.impl.DefaultMavenRequest;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
@@ -66,8 +71,7 @@ import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.lifecycle.internal.ExecutionEventCatapult;
 import org.apache.maven.lifecycle.internal.LifecycleStarter;
 import org.apache.maven.model.building.ModelProblem;
-import org.apache.maven.api.Result;
-import org.apache.maven.model.superpom.SuperPomProvider;
+import org.apache.maven.api.services.SuperPomProvider;
 import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.resolver.MavenChainedWorkspaceReader;
@@ -316,11 +320,12 @@ public class DefaultMaven implements Maven {
 
             if (session.getResult().hasExceptions()) {
                 addExceptionToResult(result, session.getResult().getExceptions().get(0));
-                persistResumptionData(result, session);
-                return result;
+                DefaultMavenResult r = new DefaultMavenResult(InternalMavenSession.from(session.getSession()), result);
+                return ((DefaultMavenResult) persistResumptionData(r, session.getSession()))
+                        .getMavenExecutionResult();
             } else {
-                session.getAllProjects().stream()
-                        .filter(MavenProject::isExecutionRoot)
+                session.getSession().getAllProjects().stream()
+                        .filter(Project::isRootProject)
                         .findFirst()
                         .ifPresent(buildResumptionDataRepository::removeResumptionData);
             }
@@ -382,25 +387,28 @@ public class DefaultMaven implements Maven {
         }
     }
 
-    private void persistResumptionData(MavenExecutionResult result, MavenSession session) {
+    private MavenResult persistResumptionData(MavenResult result, Session session) {
         boolean hasLifecycleExecutionExceptions =
                 result.getExceptions().stream().anyMatch(LifecycleExecutionException.class::isInstance);
 
         if (hasLifecycleExecutionExceptions) {
-            MavenProject rootProject = session.getAllProjects().stream()
-                    .filter(MavenProject::isExecutionRoot)
+            Project rootProject = session.getAllProjects().stream()
+                    .filter(Project::isRootProject)
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("No project in the session is execution root"));
 
-            buildResumptionAnalyzer.determineBuildResumptionData(result).ifPresent(resumption -> {
+            Optional<BuildResumptionData> data = buildResumptionAnalyzer.determineBuildResumptionData(result);
+            if (data.isPresent()) {
                 try {
-                    buildResumptionDataRepository.persistResumptionData(rootProject, resumption);
-                    result.setCanResume(true);
+                    buildResumptionDataRepository.persistResumptionData(rootProject, data.get());
+                    return result.withCanResume(true);
                 } catch (BuildResumptionPersistenceException e) {
                     logger.warn("Could not persist build resumption data", e);
+                    return result;
                 }
-            });
+            }
         }
+        return result;
     }
 
     /**
@@ -516,7 +524,7 @@ public class DefaultMaven implements Maven {
         for (MavenProject project : session.getProjects()) {
             superPomModels.computeIfAbsent(
                     project.getModelVersion(),
-                    v -> superPomProvider.getSuperModel(v).getDelegate());
+                    superPomProvider::getSuperPom);
             boolean isAdded = projectsIncludingParents.add(project);
             MavenProject parent = project.getParent();
             while (isAdded && parent != null) {

@@ -20,6 +20,7 @@ package org.apache.maven.api.exec;
 
 import java.util.List;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.annotations.Nonnull;
 
 /**
  * Describes the interdependencies between projects in the reactor.
@@ -35,6 +36,7 @@ public interface ProjectDependencyGraph {
      *
      * @since 3.5.0
      */
+    @Nonnull
     List<Project> getAllProjects();
 
     /**
@@ -43,6 +45,7 @@ public interface ProjectDependencyGraph {
      *
      * @return The projects in the build order, never {@code null}.
      */
+    @Nonnull
     List<Project> getSortedProjects();
 
     /**
@@ -54,6 +57,7 @@ public interface ProjectDependencyGraph {
      *            downstream projects.
      * @return The downstream projects in the build order, never {@code null}.
      */
+    @Nonnull
     List<Project> getDownstreamProjects(Project project, boolean transitive);
 
     /**
@@ -65,6 +69,7 @@ public interface ProjectDependencyGraph {
      *            upstream projects.
      * @return The upstream projects in the build order, never {@code null}.
      */
+    @Nonnull
     List<Project> getUpstreamProjects(Project project, boolean transitive);
 
 }

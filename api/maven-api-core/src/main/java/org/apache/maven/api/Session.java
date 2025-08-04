@@ -140,6 +140,11 @@ public interface Session extends ProtoSession {
     @Nonnull
     List<Project> getProjects();
 
+    @Nonnull
+    default List<Project> getAllProjects() {
+        return getProjectDependencyGraph().getAllProjects();
+    }
+
     /**
      * Returns the plugin context for mojo being executed and the specified
      * {@link Project}, never returns {@code null} as if context not present, creates it.

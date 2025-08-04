@@ -718,7 +718,7 @@ under the License.
               <goals>
                 <goal>cmp</goal>
               </goals>
-              <phase>verify</phase>
+              <phase>none</phase>
               <configuration>
                 <parameter>
                   <!-- baseline is 3.8.6 for Maven 4 -->

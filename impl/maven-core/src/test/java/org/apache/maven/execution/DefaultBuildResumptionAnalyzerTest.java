@@ -18,27 +18,47 @@
  */
 package org.apache.maven.execution;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.BuildResumptionData;
+import org.apache.maven.graph.ProjectStub;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
 
 class DefaultBuildResumptionAnalyzerTest {
     private final DefaultBuildResumptionAnalyzer analyzer = new DefaultBuildResumptionAnalyzer();
 
+    private InternalMavenSession session;
     private MavenExecutionResult executionResult;
+    private DefaultMavenResult result;
 
     @BeforeEach
     void before() {
+        session = Mockito.mock(InternalMavenSession.class);
+        when(session.getProjects(anyList())).thenAnswer(invocation -> {
+            List<MavenProject> projects = invocation.getArgument(0);
+            List<Project> prjs = new ArrayList<>(projects.size());
+            for (MavenProject project : projects) {
+                prjs.add(session.getProject(project));
+            }
+            return prjs;
+        });
         executionResult = new DefaultMavenExecutionResult();
+        result = new DefaultMavenResult(session, executionResult);
     }
 
     @Test
@@ -47,7 +67,7 @@ class DefaultBuildResumptionAnalyzerTest {
         MavenProject projectB = createFailedMavenProject("B");
         executionResult.setTopologicallySortedProjects(asList(projectA, projectB));
 
-        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(executionResult);
+        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(this.result);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get().getRemainingProjects(), is(asList("test:B")));
@@ -59,7 +79,7 @@ class DefaultBuildResumptionAnalyzerTest {
         MavenProject projectB = createMavenProject("B");
         executionResult.setTopologicallySortedProjects(asList(projectA, projectB));
 
-        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(executionResult);
+        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(this.result);
 
         assertThat(result.isPresent(), is(false));
     }
@@ -71,7 +91,7 @@ class DefaultBuildResumptionAnalyzerTest {
         MavenProject projectC = createSucceededMavenProject("C");
         executionResult.setTopologicallySortedProjects(asList(projectA, projectB, projectC));
 
-        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(executionResult);
+        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(this.result);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get().getRemainingProjects(), is(asList("test:B")));
@@ -85,7 +105,7 @@ class DefaultBuildResumptionAnalyzerTest {
         projectC.setDependencies(singletonList(toDependency(projectB)));
         executionResult.setTopologicallySortedProjects(asList(projectA, projectB, projectC));
 
-        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(executionResult);
+        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(this.result);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get().getRemainingProjects(), is(asList("test:B", "test:C")));
@@ -99,7 +119,7 @@ class DefaultBuildResumptionAnalyzerTest {
         MavenProject projectD = createFailedMavenProject("D");
         executionResult.setTopologicallySortedProjects(asList(projectA, projectB, projectC, projectD));
 
-        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(executionResult);
+        Optional<BuildResumptionData> result = analyzer.determineBuildResumptionData(this.result);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get().getRemainingProjects(), is(asList("test:B", "test:D")));
@@ -109,6 +129,9 @@ class DefaultBuildResumptionAnalyzerTest {
         MavenProject project = new MavenProject();
         project.setGroupId("test");
         project.setArtifactId(artifactId);
+        ProjectStub stub = new ProjectStub().setMavenModel(project.getModel());
+        when(session.getProject(project)).thenReturn(stub);
+        when(session.getMavenProject(stub)).thenReturn(project);
         return project;
     }
 

@@ -37,7 +37,7 @@ import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Parent;
 import org.apache.maven.api.services.ProjectBuilder;
 import org.apache.maven.api.services.model.ModelProcessor;
-import org.apache.maven.execution.BuildResumptionDataRepository;
+import org.apache.maven.api.exec.BuildResumptionDataRepository;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.impl.model.DefaultModelProcessor;

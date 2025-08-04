@@ -16,41 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.execution;
+package org.apache.maven.api.exec;
 
 import org.apache.maven.api.Project;
-import org.apache.maven.project.MavenProject;
 
 /**
- * Instances of this interface retrieve and store data for the --resume / -r feature. This data is used to ensure newer
+ * Instances of this interface retrieve and store data for the --resume / -r feature. This data is used to ensure newer
  * builds of the same project, that have the -r command-line flag, skip successfully built projects during earlier
  * invocations of Maven.
  */
 public interface BuildResumptionDataRepository {
-    /**
-     * Persists any data needed to resume the build at a later point in time, using a new Maven invocation. This method
-     * may also decide it is not needed or meaningful to persist such data, and return <code>false</code> to indicate
-     * so.
-     *
-     * @param rootProject The root project that is being built.
-     * @param buildResumptionData Information needed to resume the build.
-     * @throws BuildResumptionPersistenceException When an error occurs while persisting data.
-     */
-    void persistResumptionData(MavenProject rootProject, BuildResumptionData buildResumptionData)
-            throws BuildResumptionPersistenceException;
-
-    /**
-     * Uses previously stored resumption data to enrich an existing execution request.
-     * @param request The execution request that will be enriched.
-     * @param rootProject The root project that is being built.
-     */
-    void applyResumptionData(MavenExecutionRequest request, MavenProject rootProject);
-
-    /**
-     * Removes previously stored resumption data.
-     * @param rootProject The root project that is being built.
-     */
-    void removeResumptionData(MavenProject rootProject);
 
     /**
      * Persists any data needed to resume the build at a later point in time, using a new Maven invocation. This method

@@ -30,8 +30,10 @@ import java.util.stream.Stream;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.BuildResumptionData;
+import org.apache.maven.api.exec.BuildResumptionDataRepository;
+import org.apache.maven.api.exec.BuildResumptionPersistenceException;
 import org.apache.maven.api.model.Model;
-import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +48,6 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
     private static final String REMAINING_PROJECTS = "remainingProjects";
     private static final String PROPERTY_DELIMITER = ", ";
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBuildResumptionDataRepository.class);
-
-    @Override
-    public void persistResumptionData(MavenProject rootProject, BuildResumptionData buildResumptionData)
-            throws BuildResumptionPersistenceException {
-        persistResumptionData(rootProject.getModel().getDelegate(), buildResumptionData);
-    }
 
     @Override
     public void persistResumptionData(Project rootProject, BuildResumptionData buildResumptionData) throws BuildResumptionPersistenceException {
@@ -85,13 +81,6 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
     }
 
     @Override
-    public void applyResumptionData(MavenExecutionRequest request, MavenProject rootProject) {
-        Model model = rootProject.getModel().getDelegate();
-        Properties properties = loadResumptionFile(model);
-        applyResumptionProperties(request, properties);
-    }
-
-    @Override
     public BuildResumptionData loadResumptionData(Project rootProject) {
         Model model = rootProject.getModel();
         Properties properties = loadResumptionFile(model);
@@ -100,11 +89,6 @@ public class DefaultBuildResumptionDataRepository implements BuildResumptionData
         return new BuildResumptionData(projects);
     }
 
-
-    @Override
-    public void removeResumptionData(MavenProject rootProject) {
-        removeResumptionData(rootProject.getModel().getDelegate());
-    }
 
     @Override
     public void removeResumptionData(Project rootProject) {

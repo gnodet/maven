@@ -16,28 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.execution;
-
-import java.util.List;
+package org.apache.maven.api.exec;
 
 /**
- * This class holds the information required to enable resuming a Maven build with {@code --resume}.
+ * This exception will be thrown when something fails while persisting build resumption data.
+ * @see BuildResumptionDataRepository#persistResumptionData
  */
-public class BuildResumptionData {
-    /**
-     * The list of projects that remain to be built.
-     */
-    private final List<String> remainingProjects;
-
-    public BuildResumptionData(List<String> remainingProjects) {
-        this.remainingProjects = List.copyOf(remainingProjects);
-    }
-
-    /**
-     * Returns the projects that still need to be built when resuming.
-     * @return A list containing the group and artifact id of the projects.
-     */
-    public List<String> getRemainingProjects() {
-        return this.remainingProjects;
+public class BuildResumptionPersistenceException extends Exception {
+    public BuildResumptionPersistenceException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

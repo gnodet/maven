@@ -41,6 +41,8 @@ public interface InternalMavenSession extends InternalSession {
 
     List<Project> getProjects(List<org.apache.maven.project.MavenProject> projects);
 
+    org.apache.maven.project.MavenProject getMavenProject(Project project);
+
     List<org.apache.maven.project.MavenProject> getMavenProjects(List<Project> projects);
 
     /**

@@ -18,14 +18,17 @@
  */
 package org.apache.maven.execution;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.di.Named;
+import org.apache.maven.api.di.Singleton;
+import org.apache.maven.api.exec.BuildResumptionAnalyzer;
+import org.apache.maven.api.exec.BuildResumptionData;
+import org.apache.maven.api.exec.BuildSuccess;
+import org.apache.maven.api.exec.BuildFailure;
+import org.apache.maven.api.exec.MavenResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +41,12 @@ public class DefaultBuildResumptionAnalyzer implements BuildResumptionAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBuildResumptionAnalyzer.class);
 
     @Override
-    public Optional<BuildResumptionData> determineBuildResumptionData(final MavenExecutionResult result) {
-        if (!result.hasExceptions()) {
+    public Optional<BuildResumptionData> determineBuildResumptionData(final MavenResult result) {
+        if (result.getExceptions().isEmpty()) {
             return Optional.empty();
         }
 
-        List<MavenProject> sortedProjects = result.getTopologicallySortedProjects();
+        List<Project> sortedProjects = result.getTopologicallySortedProjects();
 
         boolean hasNoSuccess =
                 sortedProjects.stream().noneMatch(project -> result.getBuildSummary(project) instanceof BuildSuccess);

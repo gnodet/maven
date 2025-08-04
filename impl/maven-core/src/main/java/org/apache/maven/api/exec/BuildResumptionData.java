@@ -16,19 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.execution;
+package org.apache.maven.api.exec;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
- * Instances of this class are responsible for determining whether it makes sense to "resume" a build using
- * the {@code --resume} flag.
+ * This class holds the information required to enable resuming a Maven build with {@code --resume}.
  */
-public interface BuildResumptionAnalyzer {
+public class BuildResumptionData {
     /**
-     * Construct an instance of {@link BuildResumptionData} based on the outcome of the current Maven build.
-     * @param result Outcome of the current Maven build.
-     * @return A {@link BuildResumptionData} instance or {@link Optional#empty()} if resuming the build is not possible.
+     * The list of projects that remain to be built.
      */
-    Optional<BuildResumptionData> determineBuildResumptionData(MavenExecutionResult result);
+    private final List<String> remainingProjects;
+
+    public BuildResumptionData(List<String> remainingProjects) {
+        this.remainingProjects = List.copyOf(remainingProjects);
+    }
+
+    /**
+     * Returns the projects that still need to be built when resuming.
+     * @return A list containing the group and artifact id of the projects.
+     */
+    public List<String> getRemainingProjects() {
+        return this.remainingProjects;
+    }
 }
