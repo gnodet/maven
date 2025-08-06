@@ -18,8 +18,6 @@
  */
 package org.apache.maven.lifecycle.internal.concurrent;
 
-import javax.inject.Named;
-
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -29,9 +27,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
+import javax.inject.Named;
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.api.services.ProjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,13 +47,19 @@ import org.slf4j.LoggerFactory;
 public class BuildPlanLogger {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final ProjectManager projectManager;
+
+    public BuildPlanLogger(ProjectManager projectManager) {
+        this.projectManager = projectManager;
+    }
+
     public void writePlan(BuildPlan plan) {
         if (logger.isDebugEnabled()) {
             writePlan(logger::debug, plan);
         }
     }
 
-    public void writePlan(BuildPlan plan, MavenProject project) {
+    public void writePlan(BuildPlan plan, Project project) {
         if (logger.isDebugEnabled()) {
             writePlan(logger::debug, plan, project);
         }
@@ -63,11 +69,11 @@ public class BuildPlanLogger {
         plan.projects().forEach(project -> writePlan(writer, plan, project));
     }
 
-    public void writePlan(Consumer<String> writer, BuildPlan plan, MavenProject project) {
+    public void writePlan(Consumer<String> writer, BuildPlan plan, Project project) {
         writer.accept("=== PROJECT BUILD PLAN ================================================");
         writer.accept("Project:                     " + getKey(project));
-        writer.accept("Repositories (dependencies): " + project.getRemoteProjectRepositories());
-        writer.accept("Repositories (plugins):      " + project.getRemotePluginRepositories());
+        writer.accept("Repositories (dependencies): " + projectManager.getRemoteProjectRepositories(project));
+        writer.accept("Repositories (plugins):      " + projectManager.getRemotePluginRepositories(project));
 
         Optional<BuildStep> planStep = plan.step(project, BuildStep.PLAN);
         if (planStep.isPresent() && planStep.get().status.get() == BuildStep.PLANNING) {
@@ -113,7 +119,7 @@ public class BuildPlanLogger {
         }
     }
 
-    protected String phase(MavenProject currentProject, BuildStep step, Set<String> duplicateIds) {
+    protected String phase(Project currentProject, BuildStep step, Set<String> duplicateIds) {
         if (step.project == currentProject) {
             return step.name;
         } else {
@@ -127,8 +133,9 @@ public class BuildPlanLogger {
     }
 
     protected void mojo(Consumer<String> writer, MojoExecution mojoExecution) {
+        PluginDescriptor pluginDescriptor = mojoExecution.getPlugin().getDescriptor();
         String mojoExecId =
-                mojoExecution.getGroupId() + ':' + mojoExecution.getArtifactId() + ':' + mojoExecution.getVersion()
+                pluginDescriptor.getGroupId() + ':' + pluginDescriptor.getArtifactId() + ':' + pluginDescriptor.getVersion()
                         + ':' + mojoExecution.getGoal() + " (" + mojoExecution.getExecutionId() + ')';
 
         Map<String, List<MojoExecution>> forkedExecutions = mojoExecution.getForkedExecutions();
@@ -145,7 +152,7 @@ public class BuildPlanLogger {
         }
 
         writer.accept("\t\t-----------------------------------------------------------------------");
-        if (mojoExecution.getMojoDescriptor().isAggregator()) {
+        if (mojoExecution.getDescriptor().isAggregator()) {
             writer.accept("\t\tAggregator goal:        " + mojoExecId);
         } else {
             writer.accept("\t\tGoal:                   " + mojoExecId);
@@ -153,17 +160,17 @@ public class BuildPlanLogger {
         if (mojoExecution.getConfiguration() != null) {
             writer.accept("\t\tConfiguration:          " + mojoExecution.getConfiguration());
         }
-        if (mojoExecution.getMojoDescriptor().getDependencyCollectionRequired() != null) {
+        if (mojoExecution.getDescriptor().getDependencyCollection() != null) {
             writer.accept("\t\tDependencies (collect): "
-                    + mojoExecution.getMojoDescriptor().getDependencyCollectionRequired());
+                    + mojoExecution.getDescriptor().getDependencyCollection());
         }
-        if (mojoExecution.getMojoDescriptor().getDependencyResolutionRequired() != null) {
+        if (mojoExecution.getDescriptor().getDependencyResolution() != null) {
             writer.accept("\t\tDependencies (resolve): "
-                    + mojoExecution.getMojoDescriptor().getDependencyResolutionRequired());
+                    + mojoExecution.getDescriptor().getDependencyResolution());
         }
     }
 
-    protected String getKey(MavenProject project) {
+    protected String getKey(Project project) {
         return project.getGroupId() + ':' + project.getArtifactId() + ':' + project.getVersion();
     }
 }

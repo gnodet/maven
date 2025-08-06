@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.maven.api.Lifecycle;
 import org.apache.maven.api.model.Plugin;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
+//import org.apache.maven.plugin.descriptor.PluginDescriptor;
 
 class PluginLifecycle implements Lifecycle {
     private final org.apache.maven.api.plugin.descriptor.lifecycle.Lifecycle lifecycleOverlay;

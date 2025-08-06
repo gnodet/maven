@@ -18,17 +18,17 @@
  */
 package org.apache.maven.lifecycle.internal;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.api.Lifecycle;
+import org.apache.maven.api.Session;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleNotFoundException;
 import org.apache.maven.lifecycle.LifecyclePhaseNotFoundException;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
@@ -70,11 +70,12 @@ public class DefaultLifecycleTaskSegmentCalculator implements LifecycleTaskSegme
     }
 
     @Override
-    public List<TaskSegment> calculateTaskSegments(MavenSession session)
+    public List<TaskSegment> calculateTaskSegments(Session ses)
             throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,
                     MojoNotFoundException, NoPluginFoundForPrefixException, InvalidPluginDescriptorException,
                     PluginVersionResolutionException, LifecyclePhaseNotFoundException, LifecycleNotFoundException {
 
+        MavenSession session = InternalMavenSession.from(ses).getMavenSession();
         MavenProject rootProject = session.getTopLevelProject();
 
         List<String> tasks = requireNonNull(session.getGoals()); // session never returns null, but empty list
@@ -87,14 +88,17 @@ public class DefaultLifecycleTaskSegmentCalculator implements LifecycleTaskSegme
                     .collect(Collectors.toList());
         }
 
-        return calculateTaskSegments(session, tasks);
+        return calculateTaskSegments(ses, tasks);
     }
 
     @Override
-    public List<TaskSegment> calculateTaskSegments(MavenSession session, List<String> tasks)
+    public List<TaskSegment> calculateTaskSegments(Session ses, List<String> tasks)
             throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,
                     MojoNotFoundException, NoPluginFoundForPrefixException, InvalidPluginDescriptorException,
                     PluginVersionResolutionException {
+
+        MavenSession session = InternalMavenSession.from(ses).getMavenSession();
+
         List<TaskSegment> taskSegments = new ArrayList<>(tasks.size());
 
         TaskSegment currentSegment = null;
@@ -137,7 +141,8 @@ public class DefaultLifecycleTaskSegmentCalculator implements LifecycleTaskSegme
     }
 
     @Override
-    public boolean requiresProject(MavenSession session) {
+    public boolean requiresProject(Session ses) {
+        MavenSession session = InternalMavenSession.from(ses).getMavenSession();
         List<String> goals = session.getGoals();
         if (goals != null) {
             for (String goal : goals) {

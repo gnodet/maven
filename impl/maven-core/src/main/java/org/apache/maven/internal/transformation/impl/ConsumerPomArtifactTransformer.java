@@ -18,11 +18,6 @@
  */
 package org.apache.maven.internal.transformation.impl;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +27,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.xml.stream.XMLStreamException;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.feature.Features;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.services.ModelBuilderException;
@@ -68,7 +68,7 @@ class ConsumerPomArtifactTransformer extends TransformerSupport {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void injectTransformedArtifacts(RepositorySystemSession session, MavenProject project) throws IOException {
+    public void injectTransformedArtifacts(Session session, Project project) throws IOException {
         if (project.getFile() == null) {
             // If there is no build POM there is no reason to inject artifacts for the consumer POM.
             return;

@@ -19,7 +19,9 @@
 package org.apache.maven.plugin;
 
 import java.util.List;
-
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -45,6 +47,6 @@ public interface BuildPluginManager {
     ClassRealm getPluginRealm(MavenSession session, PluginDescriptor pluginDescriptor)
             throws PluginResolutionException, PluginManagerException;
 
-    void executeMojo(MavenSession session, MojoExecution execution)
+    void executeMojo(Session session, Project project, MojoExecution execution)
             throws MojoFailureException, MojoExecutionException, PluginConfigurationException, PluginManagerException;
 }

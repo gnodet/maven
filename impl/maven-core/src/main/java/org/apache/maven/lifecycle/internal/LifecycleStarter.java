@@ -18,7 +18,7 @@
  */
 package org.apache.maven.lifecycle.internal;
 
-import org.apache.maven.execution.MavenSession;
+import org.apache.maven.api.Session;
 
 /**
  * Starts the build life cycle
@@ -26,5 +26,5 @@ import org.apache.maven.execution.MavenSession;
  */
 public interface LifecycleStarter {
 
-    void execute(MavenSession session);
+    void execute(Session session);
 }

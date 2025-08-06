@@ -31,14 +31,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
 
 public class BuildPlan {
 
-    private final Map<MavenProject, Map<String, BuildStep>> plan = new LinkedHashMap<>();
-    private final Map<MavenProject, List<MavenProject>> projects;
+    private final Map<Project, Map<String, BuildStep>> plan = new LinkedHashMap<>();
+    private final Map<Project, List<Project>> projects;
     private final Map<String, String> aliases = new HashMap<>();
     private volatile Set<String> duplicateIds;
     private volatile List<BuildStep> sortedNodes;
@@ -47,11 +46,11 @@ public class BuildPlan {
         this.projects = null;
     }
 
-    public BuildPlan(Map<MavenProject, List<MavenProject>> projects) {
+    public BuildPlan(Map<Project, List<Project>> projects) {
         this.projects = projects;
     }
 
-    public Map<MavenProject, List<MavenProject>> getAllProjects() {
+    public Map<Project, List<Project>> getAllProjects() {
         return projects;
     }
 
@@ -59,15 +58,15 @@ public class BuildPlan {
         return aliases;
     }
 
-    public Stream<MavenProject> projects() {
+    public Stream<Project> projects() {
         return plan.keySet().stream();
     }
 
-    public void addProject(MavenProject project, Map<String, BuildStep> steps) {
+    public void addProject(Project project, Map<String, BuildStep> steps) {
         plan.put(project, steps);
     }
 
-    public void addStep(MavenProject project, String name, BuildStep step) {
+    public void addStep(Project project, String name, BuildStep step) {
         plan.get(project).put(name, step);
     }
 
@@ -75,17 +74,17 @@ public class BuildPlan {
         return plan.values().stream().flatMap(m -> m.values().stream());
     }
 
-    public Stream<BuildStep> steps(MavenProject project) {
+    public Stream<BuildStep> steps(Project project) {
         return Optional.ofNullable(plan.get(project))
                 .map(m -> m.values().stream())
                 .orElse(Stream.empty());
     }
 
-    public Optional<BuildStep> step(MavenProject project, String name) {
+    public Optional<BuildStep> step(Project project, String name) {
         return Optional.ofNullable(plan.get(project)).map(m -> m.get(name));
     }
 
-    public BuildStep requiredStep(MavenProject project, String name) {
+    public BuildStep requiredStep(Project project, String name) {
         return step(project, name).orElseThrow(() -> new NoSuchElementException("Step " + name + " not found"));
     }
 
@@ -126,7 +125,7 @@ public class BuildPlan {
             synchronized (this) {
                 if (duplicateIds == null) {
                     duplicateIds = projects()
-                            .map(MavenProject::getArtifactId)
+                            .map(Project::getArtifactId)
                             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                             .entrySet()
                             .stream()

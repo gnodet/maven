@@ -63,6 +63,30 @@ public interface MavenRequest {
         }
     }
 
+    String REACTOR_FAIL_FAST = "FAIL_FAST";
+
+    String REACTOR_FAIL_AT_END = "FAIL_AT_END";
+
+    String REACTOR_FAIL_NEVER = "FAIL_NEVER";
+
+    enum FailureBehavior {
+        FAIL_FAST(REACTOR_FAIL_FAST),
+
+        FAIL_AT_END(REACTOR_FAIL_AT_END),
+
+        FAIL_NEVER(REACTOR_FAIL_NEVER);
+
+        private final String name;
+
+        FailureBehavior(String name) {
+            this.name = name;
+        }
+
+        public static FailureBehavior of(String name) {
+            return Stream.of(values()).filter(fb -> fb.name.equals(name)).findFirst().orElseThrow();
+        }
+    }
+
     @Nonnull
     Session getSession();
 
@@ -162,6 +186,9 @@ public interface MavenRequest {
 
     @Nonnull
     MakeBehavior getMakeBehavior();
+
+    @Nonnull
+    FailureBehavior getFailureBehavior();
 
     @Nullable
     String getResumeFrom();

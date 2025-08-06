@@ -18,11 +18,11 @@
  */
 package org.apache.maven.internal.transformation;
 
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.nio.file.Path;
-
+import javax.xml.stream.XMLStreamException;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.services.ModelBuilderException;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystemSession;
@@ -39,7 +39,7 @@ public interface PomArtifactTransformer {
 
     DeployRequest remapDeployArtifacts(RepositorySystemSession session, DeployRequest request);
 
-    void injectTransformedArtifacts(RepositorySystemSession session, MavenProject currentProject) throws IOException;
+    void injectTransformedArtifacts(Session session, Project currentProject) throws IOException;
 
     void transform(MavenProject project, RepositorySystemSession session, Path src, Path tgt)
             throws ModelBuilderException, XMLStreamException, IOException;

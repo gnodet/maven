@@ -21,4 +21,7 @@ public interface MavenResult {
 
     List<Project> getTopologicallySortedProjects();
 
+    void addBuildSummary(BuildSummary buildFailure);
+
+    void addException(Throwable t);
 }

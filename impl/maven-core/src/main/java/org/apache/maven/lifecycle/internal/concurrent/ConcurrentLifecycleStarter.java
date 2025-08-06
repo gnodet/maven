@@ -18,18 +18,21 @@
  */
 package org.apache.maven.lifecycle.internal.concurrent;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.api.Lifecycle;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.impl.DefaultMavenRequest;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.MissingProjectException;
 import org.apache.maven.lifecycle.NoGoalSpecifiedException;
@@ -44,7 +47,6 @@ import org.apache.maven.lifecycle.internal.ReactorBuildStatus;
 import org.apache.maven.lifecycle.internal.ReactorContext;
 import org.apache.maven.lifecycle.internal.TaskSegment;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,17 +81,19 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
     }
 
     @Override
-    public void execute(MavenSession session) {
+    public void execute(Session sessionV4) {
+        MavenSession session = InternalMavenSession.from(sessionV4).getMavenSession();
+        MavenRequest request = new DefaultMavenRequest(session.getRequest());
         eventCatapult.fire(ExecutionEvent.Type.SessionStarted, session, null);
 
         try {
-            if (requiresProject(session) && projectIsNotPresent(session)) {
+            if (requiresProject(request) && projectIsNotPresent(request)) {
                 throw new MissingProjectException("The goal you specified requires a project to execute"
                         + " but there is no POM in this directory (" + session.getTopDirectory() + ")."
                         + " Please verify you invoked Maven from the correct directory.");
             }
 
-            List<TaskSegment> taskSegments = calculateTaskSegments(session);
+            List<TaskSegment> taskSegments = calculateTaskSegments(sessionV4, request);
             if (taskSegments.isEmpty()) {
                 throw new NoGoalSpecifiedException("No goals have been specified for this build."
                         + " You must specify a valid lifecycle phase or a goal in the format <plugin-prefix>:<goal> or"
@@ -97,7 +101,7 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
                         + " Available lifecycle phases are: " + defaultLifeCycles.getLifecyclePhaseList() + ".");
             }
 
-            int degreeOfConcurrency = session.getRequest().getDegreeOfConcurrency();
+            int degreeOfConcurrency = sessionV4.getDegreeOfConcurrency();
             if (degreeOfConcurrency > 1) {
                 logger.info("");
                 logger.info(String.format(
@@ -106,10 +110,10 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
             }
 
             ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
-            ReactorBuildStatus reactorBuildStatus = new ReactorBuildStatus(session.getProjectDependencyGraph());
+            ReactorBuildStatus reactorBuildStatus = new ReactorBuildStatus(sessionV4.getProjectDependencyGraph());
             ReactorContext reactorContext =
                     new ReactorContext(session.getResult(), oldContextClassLoader, reactorBuildStatus);
-            executor.execute(session, reactorContext, taskSegments);
+            executor.execute(sessionV4, reactorContext, taskSegments);
 
         } catch (Exception e) {
             session.getResult().addException(e);
@@ -118,16 +122,17 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
         }
     }
 
-    public List<TaskSegment> calculateTaskSegments(MavenSession session) throws Exception {
+    public List<TaskSegment> calculateTaskSegments(Session session, MavenRequest request) throws Exception {
 
-        MavenProject rootProject = session.getTopLevelProject();
+        Project rootProject = session.getTopDirectory();
 
-        List<String> tasks = requireNonNull(session.getGoals()); // session never returns null, but empty list
+        List<String> tasks = requireNonNull(request.getGoals()); // session never returns null, but empty list
 
+        String defaultGoal = rootProject.getModel().getBuild().getDefaultGoal();
         if (tasks.isEmpty()
-                && (rootProject.getDefaultGoal() != null
-                        && !rootProject.getDefaultGoal().isEmpty())) {
-            tasks = Stream.of(rootProject.getDefaultGoal().split("\\s+"))
+                && (defaultGoal != null
+                        && !defaultGoal.isEmpty())) {
+            tasks = Stream.of(defaultGoal.split("\\s+"))
                     .filter(g -> !g.isEmpty())
                     .collect(Collectors.toList());
         }
@@ -135,7 +140,7 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
         return calculateTaskSegments(session, tasks);
     }
 
-    public List<TaskSegment> calculateTaskSegments(MavenSession session, List<String> tasks) throws Exception {
+    public List<TaskSegment> calculateTaskSegments(Session session, List<String> tasks) throws Exception {
         List<TaskSegment> taskSegments = new ArrayList<>(tasks.size());
 
         TaskSegment currentSegment = null;
@@ -177,12 +182,12 @@ public class ConcurrentLifecycleStarter implements LifecycleStarter {
         return taskSegments;
     }
 
-    private boolean projectIsNotPresent(MavenSession session) {
-        return !session.getRequest().isProjectPresent();
+    private boolean projectIsNotPresent(MavenRequest request) {
+        return !request.isProjectPresent();
     }
 
-    private boolean requiresProject(MavenSession session) {
-        List<String> goals = session.getGoals();
+    private boolean requiresProject(MavenRequest request) {
+        List<String> goals = request.getGoals();
         if (goals != null) {
             for (String goal : goals) {
                 if (!isGoalSpecification(goal)) {

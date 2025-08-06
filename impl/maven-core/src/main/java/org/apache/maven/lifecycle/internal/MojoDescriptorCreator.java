@@ -18,16 +18,16 @@
  */
 package org.apache.maven.lifecycle.internal;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.xml.XmlNode;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -132,6 +132,14 @@ public class MojoDescriptorCreator {
     }
 
     // org.apache.maven.plugins:maven-remote-resources-plugin:1.0:process@executionId
+
+    public org.apache.maven.api.plugin.descriptor.MojoDescriptor getMojoDescriptor(String task, Session session, Project project)
+            throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,
+            MojoNotFoundException, NoPluginFoundForPrefixException, InvalidPluginDescriptorException,
+            PluginVersionResolutionException {
+        // TODO
+        return
+    }
 
     public MojoDescriptor getMojoDescriptor(String task, MavenSession session, MavenProject project)
             throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,

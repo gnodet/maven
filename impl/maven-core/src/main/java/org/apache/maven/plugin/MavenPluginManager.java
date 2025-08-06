@@ -84,6 +84,14 @@ public interface MavenPluginManager {
     void checkPrerequisites(PluginDescriptor pluginDescriptor) throws PluginIncompatibleException;
 
     /**
+     * Verifies that the specified plugin's prerequisites are met.
+     *
+     * @param pluginDescriptor The descriptor of the plugin to check, must not be {@code null}.
+     * @since 4.0.0
+     */
+    void checkPrerequisites(org.apache.maven.api.plugin.descriptor.PluginDescriptor pluginDescriptor) throws PluginIncompatibleException;
+
+    /**
      * Sets up the class realm for the specified plugin. Both the class realm and the plugin artifacts that constitute
      * it will be stored in the plugin descriptor.
      *

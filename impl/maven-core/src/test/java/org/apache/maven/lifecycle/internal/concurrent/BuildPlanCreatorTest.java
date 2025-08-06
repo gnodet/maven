@@ -18,16 +18,17 @@
  */
 package org.apache.maven.lifecycle.internal.concurrent;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
+import org.apache.maven.api.Project;
+import org.apache.maven.api.services.ProjectManager;
+import org.apache.maven.graph.ProjectStub;
 import org.apache.maven.internal.impl.DefaultLifecycleRegistry;
+import org.apache.maven.internal.impl.DefaultMojoExecution;
+import org.apache.maven.internal.impl.DefaultProjectManager;
 import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,43 +38,42 @@ class BuildPlanCreatorTest {
 
     @Test
     void testMulti() {
-        MavenProject project = new MavenProject();
-        project.setCollectedProjects(List.of());
-        Map<MavenProject, List<MavenProject>> projects = Collections.singletonMap(project, Collections.emptyList());
+        ProjectStub project = new ProjectStub();
+        project.setActiveSubprojects(List.of());
+        Map<Project, List<Project>> projects = Map.of(project, List.of());
 
         BuildPlan plan = calculateLifecycleMappings(projects, "package");
 
-        new BuildPlanLogger().writePlan(System.out::println, plan);
+        new BuildPlanLogger(null).writePlan(System.out::println, plan);
     }
 
     @Test
     void testCondense() {
-        MavenProject p1 = new MavenProject();
-        p1.setCollectedProjects(List.of());
+        ProjectStub p1 = new ProjectStub();
+        p1.setActiveSubprojects(List.of());
         p1.setArtifactId("p1");
-        MavenProject p2 = new MavenProject();
-        p2.setCollectedProjects(List.of());
+        ProjectStub p2 = new ProjectStub();
+        p2.setActiveSubprojects(List.of());
         p2.setArtifactId("p2");
-        Map<MavenProject, List<MavenProject>> projects = new HashMap<>();
-        projects.put(p1, Collections.emptyList());
-        projects.put(p2, Collections.singletonList(p1));
+        Map<Project, List<Project>> projects = Map.of(p1, List.of(), p2, List.of(p1));
 
         BuildPlan plan = calculateLifecycleMappings(projects, "verify");
         plan.then(calculateLifecycleMappings(projects, "install"));
 
         Stream.of(p1, p2).forEach(project -> {
-            plan.requiredStep(project, "after:resources").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "after:test-resources").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "compile").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "test-compile").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "test").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "package").addMojo(new MojoExecution(null), 0);
-            plan.requiredStep(project, "install").addMojo(new MojoExecution(null), 0);
+            plan.requiredStep(project, "after:resources").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "after:test-resources").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "compile").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "test-compile").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "test").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "package").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
+            plan.requiredStep(project, "install").addMojo(new DefaultMojoExecution(null, new MojoExecution(null)), 0);
         });
 
-        new BuildPlanLogger() {
+        ProjectManager manager = new DefaultProjectManager(null, null);
+        new BuildPlanLogger(manager) {
             @Override
-            protected void mojo(Consumer<String> writer, MojoExecution mojoExecution) {}
+            protected void mojo(Consumer<String> writer, org.apache.maven.api.MojoExecution mojoExecution) {}
         }.writePlan(System.out::println, plan);
 
         plan.allSteps().forEach(phase -> {
@@ -84,10 +84,10 @@ class BuildPlanCreatorTest {
 
     @Test
     void testAlias() {
-        MavenProject p1 = new MavenProject();
+        ProjectStub p1 = new ProjectStub();
         p1.setArtifactId("p1");
-        p1.setCollectedProjects(List.of());
-        Map<MavenProject, List<MavenProject>> projects = Collections.singletonMap(p1, Collections.emptyList());
+        p1.setActiveSubprojects(List.of());
+        Map<Project, List<Project>> projects = Map.of(p1, List.of());
 
         BuildPlan plan = calculateLifecycleMappings(projects, "generate-resources");
         assertNotNull(plan);
@@ -95,16 +95,16 @@ class BuildPlanCreatorTest {
 
     @Test
     void testAllPhase() {
-        MavenProject c1 = new MavenProject();
+        ProjectStub c1 = new ProjectStub();
         c1.setArtifactId("c1");
-        c1.setCollectedProjects(List.of());
-        MavenProject c2 = new MavenProject();
+        c1.setActiveSubprojects(List.of());
+        ProjectStub c2 = new ProjectStub();
         c2.setArtifactId("c2");
-        c2.setCollectedProjects(List.of());
-        MavenProject p = new MavenProject();
+        c2.setActiveSubprojects(List.of());
+        ProjectStub p = new ProjectStub();
         p.setArtifactId("p");
-        p.setCollectedProjects(List.of(c1, c2));
-        Map<MavenProject, List<MavenProject>> projects = Map.of(p, List.of(), c1, List.of(), c2, List.of());
+        p.setActiveSubprojects(List.of(c1, c2));
+        Map<Project, List<Project>> projects = Map.of(p, List.of(), c1, List.of(), c2, List.of());
 
         BuildPlan plan = calculateLifecycleMappings(projects, "all");
         assertNotNull(plan);
@@ -122,8 +122,8 @@ class BuildPlanCreatorTest {
     }
 
     @SuppressWarnings("checkstyle:UnusedLocalVariable")
-    private BuildPlan calculateLifecycleMappings(Map<MavenProject, List<MavenProject>> projects, String phase) {
-        DefaultLifecycleRegistry lifecycles = new DefaultLifecycleRegistry(Collections.emptyList());
+    private BuildPlan calculateLifecycleMappings(Map<Project, List<Project>> projects, String phase) {
+        DefaultLifecycleRegistry lifecycles = new DefaultLifecycleRegistry(List.of());
         BuildPlanExecutor builder = new BuildPlanExecutor(null, null, null, null, null, null, null, null, lifecycles);
         BuildPlanExecutor.BuildContext context = builder.new BuildContext();
         return context.calculateLifecycleMappings(projects, phase);
@@ -135,18 +135,18 @@ class BuildPlanCreatorTest {
         DefaultLifecycleRegistry lifecycles =
                 new DefaultLifecycleRegistry(Collections.emptyList(), Collections.emptyMap());
         BuildPlanCreator builder = new BuildPlanCreator(null, null, null, null, null, lifecycles);
-        MavenProject p1 = new MavenProject();
+        ProjectStub p1 = new ProjectStub();
         p1.setGroupId("g");
         p1.setArtifactId("p1");
         p1.getBuild().getPlugins().add(new Plugin(org.apache.maven.api.model.Plugin.newBuilder()
                 .groupId("g").artifactId("p2")
                 .
                 .build()))
-        MavenProject p2 = new MavenProject();
+        ProjectStub p2 = new ProjectStub();
         p2.setGroupId("g");
         p2.setArtifactId("p2");
 
-        Map<MavenProject, List<MavenProject>> projects = new HashMap<>();
+        Map<ProjectStub, List<ProjectStub>> projects = new HashMap<>();
         projects.put(p1, Collections.emptyList());
         projects.put(p2, Collections.singletonList(p1));
         Lifecycle lifecycle = lifecycles.require("default");

@@ -138,6 +138,10 @@ under the License.
         return groupId + ":" + artifactId + ":" + version;
     }
 
+    public boolean isV4Api() {
+        return namespaceUri != null && namespaceUri.startsWith("http://maven.apache.org/PLUGIN/");
+    }
+
           ]]></code>
         </codeSegment>
       </codeSegments>

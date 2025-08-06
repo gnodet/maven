@@ -21,10 +21,8 @@ package org.apache.maven.lifecycle.internal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-
-import org.apache.maven.execution.ProjectDependencyGraph;
-import org.apache.maven.lifecycle.internal.builder.BuilderCommon;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 
 /**
  * Contains status information that is global to an entire reactor build.
@@ -42,14 +40,14 @@ public class ReactorBuildStatus {
         this.projectDependencyGraph = projectDependencyGraph;
     }
 
-    public boolean isBlackListed(MavenProject project) {
-        return blackListedProjects.contains(BuilderCommon.getKey(project));
+    public boolean isBlackListed(Project project) {
+        return blackListedProjects.contains(project.gav());
     }
 
-    public void blackList(MavenProject project) {
-        if (blackListedProjects.add(BuilderCommon.getKey(project)) && projectDependencyGraph != null) {
-            for (MavenProject downstreamProject : projectDependencyGraph.getDownstreamProjects(project, true)) {
-                blackListedProjects.add(BuilderCommon.getKey(downstreamProject));
+    public void blackList(Project project) {
+        if (blackListedProjects.add(project.gav()) && projectDependencyGraph != null) {
+            for (Project downstreamProject : projectDependencyGraph.getDownstreamProjects(project, true)) {
+                blackListedProjects.add(downstreamProject.gav());
             }
         }
     }
@@ -62,7 +60,7 @@ public class ReactorBuildStatus {
         return halted;
     }
 
-    public boolean isHaltedOrBlacklisted(MavenProject mavenProject) {
-        return isBlackListed(mavenProject) || isHalted();
+    public boolean isHaltedOrBlacklisted(Project project) {
+        return isBlackListed(project) || isHalted();
     }
 }

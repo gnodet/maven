@@ -192,6 +192,11 @@ public interface Project {
         return getModel().getId();
     }
 
+    @Nonnull
+    default String gav() {
+        return getGroupId() + ":" + getArtifactId() + ":" + getVersion();
+    }
+
     /**
      * Returns a boolean indicating if the project is the top level project for
      * this reactor build.  The top level project may be different from the

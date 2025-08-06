@@ -18,16 +18,19 @@
  */
 package org.apache.maven.lifecycle.internal;
 
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import java.util.List;
-import java.util.Map;
-
+import org.apache.maven.api.Session;
+import org.apache.maven.api.exec.MavenRequest;
 import org.apache.maven.execution.ExecutionEvent;
+import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.impl.DefaultMavenRequest;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.DefaultLifecycles;
 import org.apache.maven.lifecycle.MissingProjectException;
 import org.apache.maven.lifecycle.NoGoalSpecifiedException;
@@ -74,21 +77,24 @@ public class DefaultLifecycleStarter implements LifecycleStarter {
     }
 
     @Override
-    public void execute(MavenSession session) {
+    public void execute(Session sessionV4) {
+        MavenSession session = InternalMavenSession.from(sessionV4).getMavenSession();
+
         eventCatapult.fire(ExecutionEvent.Type.SessionStarted, session, null);
 
         ReactorContext reactorContext = null;
         ProjectBuildList projectBuilds = null;
+        MavenExecutionRequest request = session.getRequest();
         MavenExecutionResult result = session.getResult();
 
         try {
-            if (buildExecutionRequiresProject(session) && projectIsNotPresent(session)) {
+            if (buildExecutionRequiresProject(sessionV4) && projectIsNotPresent(new DefaultMavenRequest(request))) {
                 throw new MissingProjectException("The goal you specified requires a project to execute"
-                        + " but there is no POM in this directory (" + session.getExecutionRootDirectory() + ")."
+                        + " but there is no POM in this directory (" + session.getTopDirectory() + ")."
                         + " Please verify you invoked Maven from the correct directory.");
             }
 
-            List<TaskSegment> taskSegments = lifecycleTaskSegmentCalculator.calculateTaskSegments(session);
+            List<TaskSegment> taskSegments = lifecycleTaskSegmentCalculator.calculateTaskSegments(sessionV4);
             projectBuilds = buildListCalculator.calculateProjectBuilds(session, taskSegments);
 
             if (projectBuilds.isEmpty()) {
@@ -103,7 +109,7 @@ public class DefaultLifecycleStarter implements LifecycleStarter {
             }
 
             ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
-            ReactorBuildStatus reactorBuildStatus = new ReactorBuildStatus(session.getProjectDependencyGraph());
+            ReactorBuildStatus reactorBuildStatus = new ReactorBuildStatus(sessionV4.getProjectDependencyGraph());
             reactorContext = new ReactorContext(result, oldContextClassLoader, reactorBuildStatus);
 
             String builderId = session.getRequest().getBuilderId();
@@ -113,7 +119,7 @@ public class DefaultLifecycleStarter implements LifecycleStarter {
                         String.format("The builder requested using id = %s cannot be" + " found", builderId));
             }
 
-            int degreeOfConcurrency = session.getRequest().getDegreeOfConcurrency();
+            int degreeOfConcurrency = sessionV4.getDegreeOfConcurrency();
             if (degreeOfConcurrency > 1) {
                 logger.info("");
                 logger.info(String.format(
@@ -129,11 +135,11 @@ public class DefaultLifecycleStarter implements LifecycleStarter {
         }
     }
 
-    private boolean buildExecutionRequiresProject(MavenSession session) {
+    private boolean buildExecutionRequiresProject(Session session) {
         return lifecycleTaskSegmentCalculator.requiresProject(session);
     }
 
-    private boolean projectIsNotPresent(MavenSession session) {
-        return !session.getRequest().isProjectPresent();
+    private boolean projectIsNotPresent(MavenRequest request) {
+        return !request.isProjectPresent();
     }
 }

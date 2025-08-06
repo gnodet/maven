@@ -21,7 +21,7 @@ package org.apache.maven.lifecycle.internal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeSet;
-
+import org.apache.maven.api.Project;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -35,7 +35,7 @@ import org.apache.maven.project.MavenProject;
 // TODO From a concurrency perspective, this class is not good. The combination of mutable/immutable state is not nice
 public class DependencyContext {
 
-    private final MavenProject project;
+    private final Project project;
 
     private final Collection<String> scopesToCollectForCurrentProject;
 
@@ -50,7 +50,7 @@ public class DependencyContext {
     private volatile int lastDependencyArtifactCount = -1;
 
     public DependencyContext(
-            MavenProject project, Collection<String> scopesToCollect, Collection<String> scopesToResolve) {
+            Project project, Collection<String> scopesToCollect, Collection<String> scopesToResolve) {
         this.project = project;
         scopesToCollectForCurrentProject = scopesToCollect;
         scopesToResolveForCurrentProject = scopesToResolve;
@@ -58,7 +58,7 @@ public class DependencyContext {
         scopesToResolveForAggregatedProjects = Collections.synchronizedSet(new TreeSet<>());
     }
 
-    public MavenProject getProject() {
+    public Project getProject() {
         return project;
     }
 

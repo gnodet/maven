@@ -18,15 +18,16 @@
  */
 package org.apache.maven.plugin;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.api.services.MavenException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.MojoExecutionEvent;
@@ -36,8 +37,7 @@ import org.apache.maven.internal.impl.DefaultLog;
 import org.apache.maven.internal.impl.DefaultMojoExecution;
 import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -94,17 +94,16 @@ public class DefaultBuildPluginManager implements BuildPluginManager {
     // ----------------------------------------------------------------------
 
     @Override
-    public void executeMojo(MavenSession session, MojoExecution mojoExecution)
+    public void executeMojo(Session session, Project project, MojoExecution mojoExecution)
             throws MojoFailureException, MojoExecutionException, PluginConfigurationException, PluginManagerException {
-        MavenProject project = session.getCurrentProject();
 
-        MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
+        MojoDescriptor mojoDescriptor = mojoExecution.getDescriptor();
 
         Mojo mojo = null;
 
         ClassRealm pluginRealm;
         try {
-            pluginRealm = getPluginRealm(session, mojoDescriptor.getPluginDescriptor());
+            pluginRealm = getPluginRealm(session, mojoExecution.getPlugin().getDescriptor());
         } catch (PluginResolutionException e) {
             throw new PluginExecutionException(mojoExecution, project, e);
         }
@@ -122,8 +121,8 @@ public class DefaultBuildPluginManager implements BuildPluginManager {
             scope.seed(
                     org.apache.maven.api.plugin.Log.class,
                     new DefaultLog(LoggerFactory.getLogger(
-                            mojoExecution.getMojoDescriptor().getFullGoalName())));
-            InternalMavenSession sessionV4 = InternalMavenSession.from(session.getSession());
+                            mojoExecution.getDescriptor().getFullGoalName())));
+            InternalMavenSession sessionV4 = InternalMavenSession.from(session);
             scope.seed(Project.class, sessionV4.getProject(project));
             scope.seed(org.apache.maven.api.MojoExecution.class, new DefaultMojoExecution(sessionV4, mojoExecution));
 
@@ -204,7 +203,7 @@ public class DefaultBuildPluginManager implements BuildPluginManager {
      * @throws PluginResolutionException
      */
     @Override
-    public ClassRealm getPluginRealm(MavenSession session, PluginDescriptor pluginDescriptor)
+    public ClassRealm getPluginRealm(Session session, PluginDescriptor pluginDescriptor)
             throws PluginResolutionException, PluginManagerException {
         ClassRealm pluginRealm = pluginDescriptor.getClassRealm();
         if (pluginRealm != null) {

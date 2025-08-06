@@ -140,6 +140,10 @@ public interface Session extends ProtoSession {
     @Nonnull
     List<Project> getProjects();
 
+    default Project getTopLevelProject() {
+        return getProjects().stream().filter(Project::isTopProject).findFirst().orElse(null);
+    }
+
     @Nonnull
     default List<Project> getAllProjects() {
         return getProjectDependencyGraph().getAllProjects();

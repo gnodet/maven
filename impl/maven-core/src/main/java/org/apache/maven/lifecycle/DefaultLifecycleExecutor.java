@@ -18,16 +18,16 @@
  */
 package org.apache.maven.lifecycle;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.impl.DefaultMojoExecution;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.internal.LifecycleExecutionPlanCalculator;
 import org.apache.maven.lifecycle.internal.LifecycleStarter;
 import org.apache.maven.lifecycle.internal.LifecycleTaskSegmentCalculator;
@@ -80,7 +80,7 @@ public class DefaultLifecycleExecutor implements LifecycleExecutor {
 
     @Override
     public void execute(MavenSession session) {
-        lifecycleStarter.execute(session);
+        lifecycleStarter.execute(session.getSession());
     }
 
     // These methods deal with construction intact Plugin object that look like they come from a standard
@@ -117,7 +117,7 @@ public class DefaultLifecycleExecutor implements LifecycleExecutor {
                     PluginManagerException, LifecyclePhaseNotFoundException, LifecycleNotFoundException,
                     PluginVersionResolutionException {
         List<TaskSegment> taskSegments =
-                lifecycleTaskSegmentCalculator.calculateTaskSegments(session, Arrays.asList(tasks));
+                lifecycleTaskSegmentCalculator.calculateTaskSegments(session.getSession(), Arrays.asList(tasks));
 
         TaskSegment mergedSegment = new TaskSegment(false);
 
@@ -151,6 +151,8 @@ public class DefaultLifecycleExecutor implements LifecycleExecutor {
     @Override
     public List<MavenProject> executeForkedExecutions(MojoExecution mojoExecution, MavenSession session)
             throws LifecycleExecutionException {
-        return mojoExecutor.executeForkedExecutions(mojoExecution, session);
+        InternalMavenSession sessionV4 = InternalMavenSession.from(session.getSession());
+        org.apache.maven.api.MojoExecution execution = new DefaultMojoExecution(sessionV4, mojoExecution);
+        return mojoExecutor.executeForkedExecutions(execution, session.getSession());
     }
 }

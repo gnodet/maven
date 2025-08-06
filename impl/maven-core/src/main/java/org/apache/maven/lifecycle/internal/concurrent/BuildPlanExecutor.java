@@ -18,10 +18,6 @@
  */
 package org.apache.maven.lifecycle.internal.concurrent;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,24 +36,31 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.stream.XMLStreamException;
 import org.apache.maven.api.Lifecycle;
 import org.apache.maven.api.MonotonicClock;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.exec.BuildFailure;
+import org.apache.maven.api.exec.BuildSuccess;
+import org.apache.maven.api.exec.MavenRequest;
+import org.apache.maven.api.exec.MavenRequest.FailureBehavior;
+import org.apache.maven.api.exec.MavenResult;
+import org.apache.maven.api.exec.ProjectDependencyGraph;
 import org.apache.maven.api.services.LifecycleRegistry;
 import org.apache.maven.api.services.MavenException;
+import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.api.xml.XmlNode;
 import org.apache.maven.api.xml.XmlService;
-import org.apache.maven.execution.BuildFailure;
-import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.ExecutionEvent;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.execution.ProjectExecutionEvent;
 import org.apache.maven.execution.ProjectExecutionListener;
 import org.apache.maven.impl.util.PhasingExecutor;
 import org.apache.maven.internal.MultilineMessageHelper;
 import org.apache.maven.internal.impl.DefaultLifecycleRegistry;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.internal.transformation.TransformerManager;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.lifecycle.LifecycleNotFoundException;
@@ -74,16 +77,15 @@ import org.apache.maven.lifecycle.internal.ReactorBuildStatus;
 import org.apache.maven.lifecycle.internal.ReactorContext;
 import org.apache.maven.lifecycle.internal.Task;
 import org.apache.maven.lifecycle.internal.TaskSegment;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginExecution;
+import org.apache.maven.api.model.Plugin;
+import org.apache.maven.api.model.PluginExecution;
 import org.apache.maven.plugin.MavenPluginManager;
-import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.api.MojoExecution;
 import org.apache.maven.plugin.MojoNotFoundException;
 import org.apache.maven.plugin.PluginDescriptorParsingException;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.api.plugin.descriptor.Parameter;
+import org.apache.maven.api.plugin.descriptor.PluginDescriptor;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.slf4j.Logger;
@@ -162,6 +164,7 @@ public class BuildPlanExecutor {
     private final MavenPluginManager mavenPluginManager;
     private final MojoDescriptorCreator mojoDescriptorCreator;
     private final LifecycleRegistry lifecycles;
+    private final ProjectManager projectManager;
 
     @Inject
     @SuppressWarnings("checkstyle:ParameterNumber")
@@ -174,7 +177,8 @@ public class BuildPlanExecutor {
             Map<String, MojoExecutionConfigurator> mojoExecutionConfigurators,
             MavenPluginManager mavenPluginManager,
             MojoDescriptorCreator mojoDescriptorCreator,
-            LifecycleRegistry lifecycles) {
+            LifecycleRegistry lifecycles,
+            ProjectManager projectManager) {
         this.mojoExecutor = mojoExecutor;
         this.eventCatapult = eventCatapult;
         this.projectExecutionListener = new CompoundProjectExecutionListener(listeners);
@@ -184,9 +188,10 @@ public class BuildPlanExecutor {
         this.mavenPluginManager = mavenPluginManager;
         this.mojoDescriptorCreator = mojoDescriptorCreator;
         this.lifecycles = lifecycles;
+        this.projectManager = projectManager;
     }
 
-    public void execute(MavenSession session, ReactorContext reactorContext, List<TaskSegment> taskSegments)
+    public void execute(Session session, ReactorContext reactorContext, List<TaskSegment> taskSegments)
             throws ExecutionException, InterruptedException {
         try (BuildContext ctx = new BuildContext(session, reactorContext, taskSegments)) {
             ctx.execute();
@@ -194,7 +199,9 @@ public class BuildPlanExecutor {
     }
 
     class BuildContext implements AutoCloseable {
-        final MavenSession session;
+        final Session session;
+        final MavenRequest request;
+        final MavenResult result;
         final ReactorContext reactorContext;
         final PhasingExecutor executor;
         final Map<Object, Clock> clocks = new ConcurrentHashMap<>();
@@ -202,11 +209,11 @@ public class BuildPlanExecutor {
         final int threads;
         BuildPlan plan;
 
-        BuildContext(MavenSession session, ReactorContext reactorContext, List<TaskSegment> taskSegments) {
+        BuildContext(Session session, ReactorContext reactorContext, List<TaskSegment> taskSegments) {
             this.session = session;
             this.reactorContext = reactorContext;
             this.threads = Math.min(
-                    session.getRequest().getDegreeOfConcurrency(),
+                    session.getDegreeOfConcurrency(),
                     session.getProjects().size());
             // Propagate the parallel flag to the root session
             session.setParallel(threads > 1);
@@ -226,23 +233,23 @@ public class BuildPlanExecutor {
 
         public BuildPlan buildInitialPlan(List<TaskSegment> taskSegments) {
             int nThreads = Math.min(
-                    session.getRequest().getDegreeOfConcurrency(),
+                    session.getDegreeOfConcurrency(),
                     session.getProjects().size());
             boolean parallel = nThreads > 1;
             // Propagate the parallel flag to the root session
             session.setParallel(parallel);
 
             ProjectDependencyGraph dependencyGraph = session.getProjectDependencyGraph();
-            MavenProject rootProject = session.getTopLevelProject();
+            Project rootProject = session.getTopLevelProject();
 
-            Map<MavenProject, List<MavenProject>> allProjects = new LinkedHashMap<>();
+            Map<Project, List<Project>> allProjects = new LinkedHashMap<>();
             dependencyGraph
                     .getSortedProjects()
                     .forEach(p -> allProjects.put(p, dependencyGraph.getUpstreamProjects(p, false)));
 
             BuildPlan plan = new BuildPlan(allProjects);
             for (TaskSegment taskSegment : taskSegments) {
-                Map<MavenProject, List<MavenProject>> projects = taskSegment.isAggregating()
+                Map<Project, List<Project>> projects = taskSegment.isAggregating()
                         ? Collections.singletonMap(rootProject, allProjects.get(rootProject))
                         : allProjects;
 
@@ -251,7 +258,7 @@ public class BuildPlanExecutor {
             }
 
             // Create plan, setup and teardown
-            for (MavenProject project : plan.getAllProjects().keySet()) {
+            for (Project project : plan.getAllProjects().keySet()) {
                 BuildStep pplan = new BuildStep(PLAN, project, null);
                 pplan.status.set(PLANNING); // the plan step always need planning
                 BuildStep setup = new BuildStep(SETUP, project, null);
@@ -276,7 +283,7 @@ public class BuildPlanExecutor {
             List<String> unversionedPlugins = buildPlan
                     .allSteps()
                     .flatMap(step -> step.mojos.values().stream().flatMap(map -> map.values().stream()))
-                    .map(MojoExecution::getPlugin)
+                    .map(execution -> execution.getPlugin().getModel())
                     .filter(p -> p.getLocation("version") != null
                             && p.getLocation("version").getSource() != null
                             && defaulModelId.equals(
@@ -295,7 +302,7 @@ public class BuildPlanExecutor {
                 Set<MojoExecution> unsafeExecutions = buildPlan
                         .allSteps()
                         .flatMap(step -> step.mojos.values().stream().flatMap(map -> map.values().stream()))
-                        .filter(execution -> !execution.getMojoDescriptor().isV4Api())
+                        .filter(execution -> !execution.getPlugin().getDescriptor().isV4Api())
                         .collect(Collectors.toSet());
                 if (!unsafeExecutions.isEmpty()) {
                     for (String s : MultilineMessageHelper.format(
@@ -308,20 +315,24 @@ public class BuildPlanExecutor {
                         logger.warn(s);
                     }
                     if (logger.isDebugEnabled()) {
-                        Set<MojoDescriptor> unsafeGoals = unsafeExecutions.stream()
-                                .map(MojoExecution::getMojoDescriptor)
-                                .collect(Collectors.toSet());
+                        List<String> unsafeGoals = unsafeExecutions.stream()
+                                .map(execution -> execution.getPlugin().getArtifact().gav() + ":" + execution.getGoal())
+                                .distinct()
+                                .sorted()
+                                .toList();
                         logger.warn("The following goals are not Maven 4 goals:");
-                        for (MojoDescriptor unsafeGoal : unsafeGoals) {
-                            logger.warn("  " + unsafeGoal.getId());
+                        for (String goal : unsafeGoals) {
+                            logger.warn("  " + goal);
                         }
                     } else {
-                        Set<Plugin> unsafePlugins = unsafeExecutions.stream()
-                                .map(MojoExecution::getPlugin)
-                                .collect(Collectors.toSet());
+                        List<String> unsafePlugins = unsafeExecutions.stream()
+                                .map(mojoExecution -> mojoExecution.getPlugin().getArtifact().gav())
+                                .distinct()
+                                .sorted()
+                                .toList();
                         logger.warn("The following plugins are not Maven 4 plugins:");
-                        for (Plugin unsafePlugin : unsafePlugins) {
-                            logger.warn("  " + unsafePlugin.getId());
+                        for (String plugin : unsafePlugins) {
+                            logger.warn("  " + plugin);
                         }
                         logger.warn("");
                         logger.warn("Enable verbose output (-X) to see precisely which goals are not marked as"
@@ -337,7 +348,7 @@ public class BuildPlanExecutor {
                 plan();
                 executePlan();
             } catch (Exception e) {
-                session.getResult().addException(e);
+                result.addException(e);
             }
         }
 
@@ -499,7 +510,7 @@ public class BuildPlanExecutor {
                     throw new IllegalStateException();
                 case SETUP:
                     attachToThread(step);
-                    transformerManager.injectTransformedArtifacts(session.getRepositorySession(), step.project);
+                    transformerManager.injectTransformedArtifacts(session, step.project);
                     projectExecutionListener.beforeProjectExecution(new ProjectExecutionEvent(session, step.project));
                     eventCatapult.fire(ExecutionEvent.Type.ProjectStarted, session, null);
                     break;
@@ -530,7 +541,7 @@ public class BuildPlanExecutor {
                             failure = new LifecycleExecutionException("Error building project");
                             failures.forEach(failure::addSuppressed);
                         }
-                        handleBuildError(reactorContext, session, step.project, failure);
+                        handleBuildError(reactorContext, session, request, result, step.project, failure);
                     } else if (allStepsExecuted) {
                         // If there were no failures, report success
                         projectExecutionListener.afterProjectExecutionSuccess(
@@ -581,7 +592,7 @@ public class BuildPlanExecutor {
                         .filter(step -> step.status.compareAndSet(PLANNING, SCHEDULED))
                         .collect(Collectors.toSet());
                 for (BuildStep step : planSteps) {
-                    MavenProject project = step.project;
+                    Project project = step.project;
                     for (Plugin plugin : project.getBuild().getPlugins()) {
                         for (PluginExecution execution : plugin.getExecutions()) {
                             for (String goal : execution.getGoals()) {
@@ -601,7 +612,7 @@ public class BuildPlanExecutor {
                                     n.addMojo(mojoExecution, execution.getPriority());
                                     if (mojoDescriptor.getDependencyCollectionRequired() != null
                                             || mojoDescriptor.getDependencyResolutionRequired() != null) {
-                                        for (MavenProject p :
+                                        for (Project p :
                                                 plan.getAllProjects().get(project)) {
                                             plan.step(p, AFTER + PACKAGE)
                                                     .ifPresent(a -> plan.requiredStep(project, resolvedPhase)
@@ -623,7 +634,7 @@ public class BuildPlanExecutor {
                 }
 
                 for (BuildStep step : planSteps) {
-                    MavenProject project = step.project;
+                    Project project = step.project;
                     buildPlanLogger.writePlan(plan, project);
                     step.status.compareAndSet(SCHEDULED, EXECUTED);
                 }
@@ -636,7 +647,7 @@ public class BuildPlanExecutor {
         }
 
         protected BuildPlan computeForkPlan(BuildStep step, MojoExecution execution, BuildPlan buildPlan) {
-            MojoDescriptor mojoDescriptor = execution.getMojoDescriptor();
+            MojoDescriptor mojoDescriptor = execution.getDescriptor();
             PluginDescriptor pluginDescriptor = mojoDescriptor.getPluginDescriptor();
             String forkedGoal = mojoDescriptor.getExecuteGoal();
             String phase = mojoDescriptor.getExecutePhase();
@@ -647,14 +658,14 @@ public class BuildPlanExecutor {
                     throw new MavenException(new MojoNotFoundException(forkedGoal, pluginDescriptor));
                 }
 
-                List<MavenProject> toFork = new ArrayList<>();
+                List<Project> toFork = new ArrayList<>();
                 toFork.add(step.project);
-                if (mojoDescriptor.isAggregator() && step.project.getCollectedProjects() != null) {
-                    toFork.addAll(step.project.getCollectedProjects());
+                if (mojoDescriptor.isAggregator() && step.project.getActiveSubprojects() != null) {
+                    toFork.addAll(step.project.getActiveSubprojects());
                 }
 
                 BuildPlan plan = new BuildPlan();
-                for (MavenProject project : toFork) {
+                for (Project project : toFork) {
                     BuildStep st = new BuildStep(forkedGoal, project, null);
                     MojoExecution mojoExecution = new MojoExecution(forkedMojoDescriptor, forkedGoal);
                     st.addMojo(mojoExecution, 0);
@@ -690,7 +701,7 @@ public class BuildPlanExecutor {
                             throw new MavenException(new LifecycleNotFoundException(forkedLifecycle));
                         }
                     } else {
-                        lifecycle = new PluginLifecycle(lifecycleOverlay, pluginDescriptor);
+                        lifecycle = new PluginLifecycle(lifecycleOverlay, pluginDescriptor.getPluginDescriptorV4());
                     }
                 } else {
                     if (execution.getLifecyclePhase() != null) {
@@ -712,7 +723,7 @@ public class BuildPlanExecutor {
 
                 String resolvedPhase = getResolvedPhase(lifecycle, phase);
 
-                Map<MavenProject, List<MavenProject>> map = Collections.singletonMap(
+                Map<Project, List<Project>> map = Collections.singletonMap(
                         step.project, plan.getAllProjects().get(step.project));
                 BuildPlan forkedPlan = calculateLifecycleMappings(map, lifecycle, resolvedPhase);
                 forkedPlan.then(buildPlan);
@@ -753,45 +764,47 @@ public class BuildPlanExecutor {
          *
          * @param buildContext The reactor context
          * @param session The Maven session
-         * @param mavenProject The project that failed
+         * @param project The project that failed
          * @param t The exception that caused the failure
          */
         protected void handleBuildError(
                 final ReactorContext buildContext,
-                final MavenSession session,
-                final MavenProject mavenProject,
+                final Session session,
+                final MavenRequest request,
+                final MavenResult result,
+                final Project project,
                 Throwable t) {
             // record the error and mark the project as failed
-            Clock clock = getClock(mavenProject);
-            buildContext.getResult().addException(t);
-            buildContext
-                    .getResult()
-                    .addBuildSummary(new BuildFailure(mavenProject, clock.execTime(), clock.wallTime(), t));
+            Clock clock = getClock(project);
+            result.addException(t);
+            result.addBuildSummary(new BuildFailure(project, clock.execTime(), clock.wallTime(), t));
 
             // notify listeners about "soft" project build failures only
             if (t instanceof Exception exception && !(t instanceof RuntimeException)) {
                 eventCatapult.fire(ExecutionEvent.Type.ProjectFailed, session, null, exception);
             }
 
+            FailureBehavior behavior = request.getFailureBehavior();
+
             // reactor failure modes
             if (t instanceof RuntimeException || !(t instanceof Exception)) {
                 // fail fast on RuntimeExceptions, Errors and "other" Throwables
                 // assume these are system errors and further build is meaningless
                 buildContext.getReactorBuildStatus().halt();
-            } else if (MavenExecutionRequest.REACTOR_FAIL_NEVER.equals(session.getReactorFailureBehavior())) {
+            } else if (request.getFailureBehavior() == FailureBehavior.FAIL_NEVER) {
                 // continue the build
-            } else if (MavenExecutionRequest.REACTOR_FAIL_AT_END.equals(session.getReactorFailureBehavior())) {
+            } else if (request.getFailureBehavior() == FailureBehavior.FAIL_AT_END) {
                 // continue the build but ban all projects that depend on the failed one
-                buildContext.getReactorBuildStatus().blackList(mavenProject);
-            } else if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(session.getReactorFailureBehavior())) {
+                buildContext.getReactorBuildStatus().blackList(project);
+            } else if (request.getFailureBehavior() == FailureBehavior.FAIL_FAST) {
                 buildContext.getReactorBuildStatus().halt();
             } else {
-                logger.error("invalid reactor failure behavior " + session.getReactorFailureBehavior());
+                logger.error("invalid reactor failure behavior " + request.getFailureBehavior());
                 buildContext.getReactorBuildStatus().halt();
             }
         }
 
-        public BuildPlan calculateMojoExecutions(Map<MavenProject, List<MavenProject>> projects, List<Task> tasks) {
+        public BuildPlan calculateMojoExecutions(Map<Project, List<Project>> projects, List<Task> tasks) {
             BuildPlan buildPlan = new BuildPlan(projects);
 
             for (Task task : tasks) {
@@ -807,7 +820,7 @@ public class BuildPlanExecutor {
                     }
 
                     step = new BuildPlan();
-                    for (MavenProject project : projects.keySet()) {
+                    for (Project project : projects.keySet()) {
                         BuildStep st = new BuildStep(pluginGoal, project, null);
                         MojoDescriptor mojoDescriptor = getMojoDescriptor(project, pluginGoal);
                         MojoExecution mojoExecution =
@@ -832,7 +845,7 @@ public class BuildPlanExecutor {
             return buildPlan;
         }
 
-        private MojoDescriptor getMojoDescriptor(MavenProject project, Plugin plugin, String goal) {
+        private MojoDescriptor getMojoDescriptor(Project project, Plugin plugin, String goal) {
             try {
                 return mavenPluginManager.getMojoDescriptor(
                         plugin, goal, project.getRemotePluginRepositories(), session.getRepositorySession());
@@ -843,7 +856,7 @@ public class BuildPlanExecutor {
             }
         }
 
-        private MojoDescriptor getMojoDescriptor(MavenProject project, String task) {
+        private MojoDescriptor getMojoDescriptor(Project project, String task) {
             try {
                 return mojoDescriptorCreator.getMojoDescriptor(task, session, project);
             } catch (MavenException e) {
@@ -854,7 +867,7 @@ public class BuildPlanExecutor {
         }
 
         public BuildPlan calculateLifecycleMappings(
-                Map<MavenProject, List<MavenProject>> projects, String lifecyclePhase) {
+                Map<Project, List<Project>> projects, String lifecyclePhase) {
 
             String resolvedPhase = getResolvedPhase(lifecyclePhase);
             String mainPhase = resolvedPhase.startsWith(BEFORE)
@@ -888,10 +901,10 @@ public class BuildPlanExecutor {
         }
 
         public BuildPlan calculateLifecycleMappings(
-                Map<MavenProject, List<MavenProject>> projects, Lifecycle lifecycle, String lifecyclePhase) {
+                Map<Project, List<Project>> projects, Lifecycle lifecycle, String lifecyclePhase) {
             BuildPlan plan = new BuildPlan(projects);
 
-            for (MavenProject project : projects.keySet()) {
+            for (Project project : projects.keySet()) {
                 // For each phase, create and sequence the pre, run and post steps
                 Map<String, BuildStep> steps = lifecycle
                         .allPhases()
@@ -943,7 +956,7 @@ public class BuildPlanExecutor {
             // Create inter project dependencies
             plan.allSteps().filter(step -> step.phase != null).forEach(step -> {
                 Lifecycle.Phase phase = step.phase;
-                MavenProject project = step.project;
+                Project project = step.project;
                 phase.links().stream().forEach(link -> {
                     BuildStep before = plan.requiredStep(project, BEFORE + phase.name());
                     BuildStep after = plan.requiredStep(project, AFTER + phase.name());
@@ -957,7 +970,7 @@ public class BuildPlanExecutor {
                                 .forEach(p -> plan.step(p, AFTER + n2).ifPresent(before::executeAfter));
                     } else if (pointer instanceof Lifecycle.ChildrenPointer) {
                         // For children: ensure bidirectional phase coordination
-                        project.getCollectedProjects().forEach(p -> {
+                        project.getActiveSubprojects().forEach(p -> {
                             // 1. Child's phase start waits for parent's phase start
                             plan.step(p, BEFORE + n2).ifPresent(before::executeBefore);
                             // 2. Parent's phase completion waits for child's phase completion
@@ -968,18 +981,18 @@ public class BuildPlanExecutor {
             });
 
             // Keep projects in reactors by GAV
-            Map<String, MavenProject> reactorGavs =
+            Map<String, Project> reactorGavs =
                     projects.keySet().stream().collect(Collectors.toMap(BuildPlanExecutor::gav, p -> p));
 
             // Go through all plugins
             List<Runnable> toResolve = new ArrayList<>();
             projects.keySet().forEach(project -> project.getBuild().getPlugins().forEach(plugin -> {
-                MavenProject pluginProject = reactorGavs.get(gav(plugin));
+                Project pluginProject = reactorGavs.get(gav(plugin));
                 if (pluginProject != null) {
                     // In order to plan the project, we need all its plugins...
                     plan.requiredStep(project, PLAN).executeAfter(plan.requiredStep(pluginProject, READY));
                 } else {
-                    toResolve.add(() -> resolvePlugin(session, project.getRemotePluginRepositories(), plugin));
+                    toResolve.add(() -> resolvePlugin(session, projectManager.getRemotePluginRepositories(project), plugin));
                 }
             }));
 
@@ -993,15 +1006,16 @@ public class BuildPlanExecutor {
         }
     }
 
-    private void resolvePlugin(MavenSession session, List<RemoteRepository> repositories, Plugin plugin) {
+    private void resolvePlugin(Session session, List<RemoteRepository> repositories, Plugin plugin) {
         try {
-            mavenPluginManager.getPluginDescriptor(plugin, repositories, session.getRepositorySession());
+            mavenPluginManager.getPluginDescriptor(plugin, repositories,
+                    InternalMavenSession.from(session).getSession());
         } catch (Exception e) {
             throw new MavenException(e);
         }
     }
 
-    private static String gav(MavenProject p) {
+    private static String gav(Project p) {
         return p.getGroupId() + ":" + p.getArtifactId() + ":" + p.getVersion();
     }
 
@@ -1017,16 +1031,11 @@ public class BuildPlanExecutor {
      * @param mojoExecution The mojo execution whose configuration should be finalized, must not be {@code null}.
      */
     private void finalizeMojoConfiguration(MojoExecution mojoExecution) {
-        MojoDescriptor mojoDescriptor = mojoExecution.getMojoDescriptor();
+        MojoDescriptor mojoDescriptor = mojoExecution.getDescriptor();
 
-        XmlNode executionConfiguration = mojoExecution.getConfiguration() != null
-                ? mojoExecution.getConfiguration().getDom()
-                : null;
-        if (executionConfiguration == null) {
-            executionConfiguration = XmlNode.newInstance("configuration");
-        }
+        XmlNode executionConfiguration = mojoExecution.getConfiguration().orElseGet(() -> XmlNode.newInstance("configuration"));
 
-        XmlNode defaultConfiguration = getMojoConfiguration(mojoDescriptor);
+        XmlNode defaultConfiguration = getMojoConfiguration();
 
         List<XmlNode> children = new ArrayList<>();
         if (mojoDescriptor.getParameters() != null) {
@@ -1072,15 +1081,11 @@ public class BuildPlanExecutor {
     }
 
     private XmlNode getMojoConfiguration(MojoDescriptor mojoDescriptor) {
-        if (mojoDescriptor.isV4Api()) {
-            return MojoDescriptorCreator.convert(mojoDescriptor.getMojoDescriptorV4());
-        } else {
-            return MojoDescriptorCreator.convert(mojoDescriptor).getDom();
-        }
+        return MojoDescriptorCreator.convert(mojoDescriptor);
     }
 
     private MojoExecutionConfigurator mojoExecutionConfigurator(MojoExecution mojoExecution) {
-        String configuratorId = mojoExecution.getMojoDescriptor().getComponentConfigurator();
+        String configuratorId = mojoExecution.getDescriptor().getComponentConfigurator();
         if (configuratorId == null) {
             configuratorId = "default";
         }
@@ -1097,7 +1102,7 @@ public class BuildPlanExecutor {
         return mojoExecutionConfigurator;
     }
 
-    public static void attachToThread(MavenProject currentProject) {
+    public static void attachToThread(Project currentProject) {
         ClassRealm projectRealm = currentProject.getClassRealm();
         if (projectRealm != null) {
             Thread.currentThread().setContextClassLoader(projectRealm);

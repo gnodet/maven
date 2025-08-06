@@ -18,21 +18,21 @@
  */
 package org.apache.maven.lifecycle.internal;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.api.MonotonicClock;
+import org.apache.maven.api.Project;
 import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectExecutionEvent;
 import org.apache.maven.execution.ProjectExecutionListener;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.internal.transformation.TransformerManager;
 import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.lifecycle.internal.builder.BuilderCommon;
@@ -86,14 +86,15 @@ public class LifecycleModuleBuilder {
 
         Instant buildStartTime = MonotonicClock.now();
 
+        Project project = InternalMavenSession.from(rootSession.getSession()).getProject(currentProject);
         try {
 
-            if (reactorContext.getReactorBuildStatus().isHaltedOrBlacklisted(currentProject)) {
+            if (reactorContext.getReactorBuildStatus().isHaltedOrBlacklisted(project)) {
                 eventCatapult.fire(ExecutionEvent.Type.ProjectSkipped, session, null);
                 return;
             }
 
-            transformerManager.injectTransformedArtifacts(session.getRepositorySession(), currentProject);
+            transformerManager.injectTransformedArtifacts(session.getRepositorySession(), project);
 
             BuilderCommon.attachToThread(currentProject);
 
@@ -107,7 +108,7 @@ public class LifecycleModuleBuilder {
 
             projectExecutionListener.beforeProjectLifecycleExecution(
                     new ProjectExecutionEvent(session, currentProject, mojoExecutions));
-            mojoExecutor.execute(session, mojoExecutions);
+            mojoExecutor.execute(session, currentProject, mojoExecutions);
 
             Instant buildEndTime = MonotonicClock.now();
 

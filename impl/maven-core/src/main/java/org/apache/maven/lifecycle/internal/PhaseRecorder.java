@@ -18,8 +18,8 @@
  */
 package org.apache.maven.lifecycle.internal;
 
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.MojoExecution;
 
 /**
  * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
@@ -28,9 +28,9 @@ import org.apache.maven.project.MavenProject;
 public class PhaseRecorder {
     private String lastLifecyclePhase;
 
-    private final MavenProject project;
+    private final Project project;
 
-    public PhaseRecorder(MavenProject project) {
+    public PhaseRecorder(Project project) {
         this.project = project;
     }
 

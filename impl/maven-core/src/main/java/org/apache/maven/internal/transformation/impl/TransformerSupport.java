@@ -18,14 +18,14 @@
  */
 package org.apache.maven.internal.transformation.impl;
 
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import javax.xml.stream.XMLStreamException;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.services.ModelBuilderException;
 import org.apache.maven.internal.transformation.PomArtifactTransformer;
@@ -55,7 +55,7 @@ abstract class TransformerSupport implements PomArtifactTransformer {
     }
 
     @Override
-    public void injectTransformedArtifacts(RepositorySystemSession session, MavenProject project) throws IOException {}
+    public void injectTransformedArtifacts(Session session, Project project) throws IOException {}
 
     @Override
     public void transform(MavenProject project, RepositorySystemSession session, Path src, Path tgt)

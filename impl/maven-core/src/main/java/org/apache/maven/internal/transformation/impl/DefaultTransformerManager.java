@@ -18,16 +18,15 @@
  */
 package org.apache.maven.internal.transformation.impl;
 
+import java.io.IOException;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import java.io.IOException;
-import java.util.Map;
-
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.apache.maven.internal.transformation.PomArtifactTransformer;
 import org.apache.maven.internal.transformation.TransformerManager;
-import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.installation.InstallRequest;
@@ -61,7 +60,7 @@ public class DefaultTransformerManager implements TransformerManager {
     }
 
     @Override
-    public void injectTransformedArtifacts(RepositorySystemSession repositorySession, MavenProject currentProject)
+    public void injectTransformedArtifacts(Session repositorySession, Project currentProject)
             throws IOException {
         for (PomArtifactTransformer transformer : transformers.values()) {
             transformer.injectTransformedArtifacts(repositorySession, currentProject);

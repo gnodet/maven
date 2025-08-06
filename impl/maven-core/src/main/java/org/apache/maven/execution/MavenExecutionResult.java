@@ -69,6 +69,13 @@ public interface MavenExecutionResult {
     void addBuildSummary(BuildSummary summary);
 
     /**
+     * Add the specified build summary.
+     *
+     * @param summary The build summary to add, must not be {@code null}.
+     */
+    void addBuildSummary(org.apache.maven.api.exec.BuildSummary summary);
+
+    /**
      * Indicates whether or not the build could be resumed by a second invocation of Maven.
      * @see BuildResumptionDataRepository
      * @return <code>true</code> when it is possible to resume the build, <code>false</code> otherwise.

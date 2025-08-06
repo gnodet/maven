@@ -28,12 +28,11 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
 import org.apache.maven.api.Lifecycle;
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
 
 public class BuildStep {
     public static final int CREATED = 0;
@@ -48,7 +47,7 @@ public class BuildStep {
     public static final String TEARDOWN = "$teardown$";
 
     @Nonnull
-    final MavenProject project;
+    final Project project;
 
     @Nonnull
     final String name;
@@ -63,7 +62,7 @@ public class BuildStep {
     final AtomicBoolean skip = new AtomicBoolean();
     volatile Exception exception;
 
-    public BuildStep(String name, MavenProject project, Lifecycle.Phase phase) {
+    public BuildStep(String name, Project project, Lifecycle.Phase phase) {
         this.name = Objects.requireNonNull(name, "name cannot be null");
         this.project = Objects.requireNonNull(project, "project cannot be null");
         this.phase = phase;

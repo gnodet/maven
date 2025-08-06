@@ -18,16 +18,15 @@
  */
 package org.apache.maven.lifecycle.internal.builder;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
-
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.maven.api.MonotonicClock;
+import org.apache.maven.api.Project;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.execution.ExecutionEvent;
@@ -35,6 +34,7 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.internal.MultilineMessageHelper;
 import org.apache.maven.internal.impl.DefaultLifecycleRegistry;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.lifecycle.LifecycleNotFoundException;
 import org.apache.maven.lifecycle.LifecyclePhaseNotFoundException;
@@ -189,7 +189,8 @@ public class BuilderCommon {
             // continue the build
         } else if (MavenExecutionRequest.REACTOR_FAIL_AT_END.equals(rootSession.getReactorFailureBehavior())) {
             // continue the build but ban all projects that depend on the failed one
-            buildContext.getReactorBuildStatus().blackList(mavenProject);
+            Project project = InternalMavenSession.from(currentSession.getSession()).getProject(mavenProject);
+            buildContext.getReactorBuildStatus().blackList(project);
         } else if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(rootSession.getReactorFailureBehavior())) {
             buildContext.getReactorBuildStatus().halt();
         } else {
@@ -209,6 +210,8 @@ public class BuilderCommon {
     // reason it isn't ? This localization is kind-of a code smell.
 
     public static String getKey(MavenProject project) {
+        // TODO replace with Project#getGav()
         return project.getGroupId() + ':' + project.getArtifactId() + ':' + project.getVersion();
     }
+
 }

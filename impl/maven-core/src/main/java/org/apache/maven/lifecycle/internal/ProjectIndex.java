@@ -21,9 +21,7 @@ package org.apache.maven.lifecycle.internal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.maven.lifecycle.internal.builder.BuilderCommon;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
 
 /**
  * <p>
@@ -36,24 +34,24 @@ import org.apache.maven.project.MavenProject;
 // TODO Kristian wonders if this class really is necessary and if it overlaps other concepts.
 public final class ProjectIndex {
 
-    private final Map<String, MavenProject> projects;
+    private final Map<String, Project> projects;
 
     private final Map<String, Integer> indices;
 
-    public ProjectIndex(List<MavenProject> projects) {
+    public ProjectIndex(List<Project> projects) {
         this.projects = new HashMap<>(projects.size() * 2);
         this.indices = new HashMap<>(projects.size() * 2);
 
         for (int i = 0; i < projects.size(); i++) {
-            MavenProject project = projects.get(i);
-            String key = BuilderCommon.getKey(project);
+            Project project = projects.get(i);
+            String key = project.gav();
 
             this.getProjects().put(key, project);
             this.getIndices().put(key, i);
         }
     }
 
-    public Map<String, MavenProject> getProjects() {
+    public Map<String, Project> getProjects() {
         return projects;
     }
 

@@ -19,8 +19,8 @@
 package org.apache.maven.internal.transformation;
 
 import java.io.IOException;
-
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.installation.InstallRequest;
@@ -35,6 +35,6 @@ public interface TransformerManager {
 
     DeployRequest remapDeployArtifacts(RepositorySystemSession session, DeployRequest request);
 
-    void injectTransformedArtifacts(RepositorySystemSession repositorySession, MavenProject currentProject)
+    void injectTransformedArtifacts(Session repositorySession, Project currentProject)
             throws IOException;
 }

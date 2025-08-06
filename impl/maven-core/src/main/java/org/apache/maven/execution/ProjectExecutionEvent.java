@@ -19,7 +19,10 @@
 package org.apache.maven.execution;
 
 import java.util.List;
-
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.internal.impl.DefaultMojoExecution;
+import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 
@@ -61,6 +64,26 @@ public class ProjectExecutionEvent {
         this.project = project;
         this.executionPlan = executionPlan;
         this.cause = cause;
+    }
+
+    public ProjectExecutionEvent(Session session, Project project) {
+        this(InternalMavenSession.from(session), project, null, null);
+    }
+
+    public ProjectExecutionEvent(Session session, Project project, Throwable cause) {
+        this(InternalMavenSession.from(session), project, null, cause);
+    }
+
+    public ProjectExecutionEvent(Session session, Project project, List<org.apache.maven.api.MojoExecution> executions) {
+        this(InternalMavenSession.from(session), project, executions, null);
+    }
+
+    public ProjectExecutionEvent(Session session, Project project, List<org.apache.maven.api.MojoExecution> executions, Throwable cause) {
+        this(InternalMavenSession.from(session), project, executions, cause);
+    }
+
+    public ProjectExecutionEvent(InternalMavenSession session, Project project, List<org.apache.maven.api.MojoExecution> executions, Throwable cause) {
+        this(session.getMavenSession(), session.getMavenProject(project), executions != null ? executions.stream().map(e -> ((DefaultMojoExecution) e).getDelegate()).toList() : null, cause);
     }
 
     public MavenSession getSession() {

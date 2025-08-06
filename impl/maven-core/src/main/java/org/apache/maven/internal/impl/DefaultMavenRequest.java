@@ -122,6 +122,11 @@ public class DefaultMavenRequest implements MavenRequest {
     }
 
     @Override
+    public FailureBehavior getFailureBehavior() {
+        return delegate.getReactorFailureBehavior() != null ? FailureBehavior.of(delegate.getReactorFailureBehavior()) : FailureBehavior.FAIL_FAST;
+    }
+
+    @Override
     public String getResumeFrom() {
         return delegate.getResumeFrom();
     }

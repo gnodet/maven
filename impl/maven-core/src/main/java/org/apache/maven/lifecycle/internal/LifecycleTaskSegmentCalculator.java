@@ -19,8 +19,7 @@
 package org.apache.maven.lifecycle.internal;
 
 import java.util.List;
-
-import org.apache.maven.execution.MavenSession;
+import org.apache.maven.api.Session;
 import org.apache.maven.lifecycle.LifecycleNotFoundException;
 import org.apache.maven.lifecycle.LifecyclePhaseNotFoundException;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
@@ -40,15 +39,15 @@ import org.apache.maven.plugin.version.PluginVersionResolutionException;
  * @since 3.0
  */
 public interface LifecycleTaskSegmentCalculator {
-    List<TaskSegment> calculateTaskSegments(MavenSession session)
+    List<TaskSegment> calculateTaskSegments(Session session)
             throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,
                     MojoNotFoundException, NoPluginFoundForPrefixException, InvalidPluginDescriptorException,
                     PluginVersionResolutionException, LifecyclePhaseNotFoundException, LifecycleNotFoundException;
 
-    List<TaskSegment> calculateTaskSegments(MavenSession session, List<String> tasks)
+    List<TaskSegment> calculateTaskSegments(Session session, List<String> tasks)
             throws PluginNotFoundException, PluginResolutionException, PluginDescriptorParsingException,
                     MojoNotFoundException, NoPluginFoundForPrefixException, InvalidPluginDescriptorException,
                     PluginVersionResolutionException;
 
-    boolean requiresProject(MavenSession session);
+    boolean requiresProject(Session session);
 }

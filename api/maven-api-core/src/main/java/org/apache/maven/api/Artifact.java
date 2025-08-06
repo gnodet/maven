@@ -59,6 +59,11 @@ public interface Artifact {
                 + getVersion();
     }
 
+    @Nonnull
+    default String gav() {
+        return getGroupId() + ":" + getArtifactId() + ":" + getVersion();
+    }
+
     /**
      * {@return the group identifier of the artifact}.
      *
