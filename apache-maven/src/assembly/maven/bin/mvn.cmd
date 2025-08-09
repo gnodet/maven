@@ -70,8 +70,10 @@ if not exist "%JAVACMD%" (
   goto error
 )
 
+set MODULE_PATH="%MAVEN_HOME%\modules"
+
 @REM Check Java version by testing the Java 17+ flag
-"%JAVACMD%" --enable-native-access=ALL-UNNAMED -version >nul 2>&1
+"%JAVACMD%" --module-path %MODULE_PATH% --add-modules org.jline.nativ --enable-native-access=org.jline.nativ -version >nul 2>&1
 if ERRORLEVEL 1 (
     echo Error: Apache Maven 4.x requires Java 17 or newer to run. >&2
     "%JAVACMD%" -version >&2
@@ -250,7 +252,9 @@ if "%MAVEN_MAIN_CLASS%"=="" @set MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenCl
 "%JAVACMD%" ^
   %MAVEN_OPTS% ^
   %MAVEN_DEBUG_OPTS% ^
-  --enable-native-access=ALL-UNNAMED ^
+  --module-path %MODULE_PATH% ^
+  --add-modules org.jline.nativ ^
+  --enable-native-access=org.jline.nativ ^
   -classpath %LAUNCHER_JAR% ^
   "-Dclassworlds.conf=%CLASSWORLDS_CONF%" ^
   "-Dmaven.home=%MAVEN_HOME%" ^

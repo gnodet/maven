@@ -107,7 +107,9 @@ else
   fi
 fi
 
-if ! "$JAVACMD" --enable-native-access=ALL-UNNAMED -version >/dev/null 2>&1; then
+MODULE_PATH="$MAVEN_HOME/modules"
+
+if ! "$JAVACMD" --module-path "$MODULE_PATH" --add-modules org.jline.nativ --enable-native-access=org.jline.nativ -version >/dev/null 2>&1; then
   echo "Error: Apache Maven 4.x requires Java 17 or newer to run." >&2
   "$JAVACMD" -version >&2
   echo "Please upgrade your Java installation or set JAVA_HOME to point to a compatible JDK." >&2
@@ -244,7 +246,9 @@ MAVEN_MAIN_CLASS=${MAVEN_MAIN_CLASS:=org.apache.maven.cling.MavenCling}
 cmd="\"$JAVACMD\" \
   $MAVEN_OPTS \
   $MAVEN_DEBUG_OPTS \
-  --enable-native-access=ALL-UNNAMED \
+  --module-path \"$MODULE_PATH\" \
+  --add-modules org.jline.nativ \
+  --enable-native-access=org.jline.nativ \
   -classpath \"$LAUNCHER_JAR\" \
   \"-Dclassworlds.conf=$CLASSWORLDS_CONF\" \
   \"-Dmaven.home=$MAVEN_HOME\" \

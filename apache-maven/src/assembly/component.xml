@@ -28,9 +28,35 @@ under the License.
     </dependencySet>
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>modules</outputDirectory>
+      <includes>
+        <!-- JLine modules that need native access -->
+        <include>org.jline:jline-native</include>
+        <include>org.jline:jline-terminal-jni</include>
+        <include>org.jline:jline-terminal</include>
+        <include>org.jline:jline-reader</include>
+        <include>org.jline:jline-style</include>
+        <include>org.jline:jline-builtins</include>
+        <include>org.jline:jline-console</include>
+        <include>org.jline:jline-console-ui</include>
+        <include>org.jline:jansi-core</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>lib</outputDirectory>
       <excludes>
         <exclude>org.codehaus.plexus:plexus-classworlds</exclude>
+        <!-- Exclude JLine modules that go to modules/ directory -->
+        <exclude>org.jline:jline-native</exclude>
+        <exclude>org.jline:jline-terminal-jni</exclude>
+        <exclude>org.jline:jline-terminal</exclude>
+        <exclude>org.jline:jline-reader</exclude>
+        <exclude>org.jline:jline-style</exclude>
+        <exclude>org.jline:jline-builtins</exclude>
+        <exclude>org.jline:jline-console</exclude>
+        <exclude>org.jline:jline-console-ui</exclude>
+        <exclude>org.jline:jansi-core</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
