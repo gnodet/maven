@@ -1935,14 +1935,43 @@ public class DefaultModelBuilder implements ModelBuilder {
         return subprojects;
     }
 
+    /**
+     * Checks if subprojects are explicitly defined in the model or any of its profiles.
+     * This method distinguishes between:
+     * 1. No subprojects/modules element present - returns false (should auto-discover)
+     * 2. Empty subprojects/modules element present - returns true (should NOT auto-discover)
+     * 3. Non-empty subprojects/modules - returns true (should NOT auto-discover)
+     */
     private static boolean hasSubprojectsDefined(Model model) {
-        return !hasSubprojectsDefined((ModelBase) model)
-                && model.getProfiles().stream().noneMatch(DefaultModelBuilder::hasSubprojectsDefined);
+        // Check if subprojects or modules are explicitly defined in the main model
+        if (hasSubprojectsElementDefined(model)) {
+            return true;
+        }
+
+        // Check if any profile has subprojects or modules explicitly defined
+        return model.getProfiles().stream().anyMatch(DefaultModelBuilder::hasSubprojectsElementDefined);
     }
 
+    /**
+     * Checks if a subprojects or modules element is explicitly defined in the XML,
+     * even if it's empty. Uses location tracking to distinguish between:
+     * - No element present: returns false
+     * - Empty element present: returns true
+     * - Non-empty element: returns true
+     */
     @SuppressWarnings("deprecation")
-    private static boolean hasSubprojectsDefined(ModelBase profile) {
-        return profile.getSubprojects().isEmpty() && profile.getModules().isEmpty();
+    private static boolean hasSubprojectsElementDefined(ModelBase modelBase) {
+        // Check if subprojects element is present in XML (even if empty)
+        if (modelBase.getLocation("subprojects") != null) {
+            return true;
+        }
+
+        // Check if modules element is present in XML (even if empty)
+        if (modelBase.getLocation("modules") != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
