@@ -68,6 +68,7 @@ import org.apache.maven.api.model.InputLocation;
 import org.apache.maven.api.model.InputSource;
 import org.apache.maven.api.model.Mixin;
 import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.ModelBase;
 import org.apache.maven.api.model.Parent;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.BuilderProblem;
@@ -1393,7 +1394,7 @@ public class DefaultModelBuilder implements ModelBuilder {
                 }
 
                 // subprojects discovery
-                if (getSubprojects(model).isEmpty()
+                if (!hasSubprojectsDefined(model)
                         // only discover subprojects if POM > 4.0.0
                         && !MODEL_VERSION_4_0_0.equals(model.getModelVersion())
                         // and if packaging is POM (we check type, but the session is not yet available,
@@ -1932,6 +1933,16 @@ public class DefaultModelBuilder implements ModelBuilder {
             subprojects = activated.getModules();
         }
         return subprojects;
+    }
+
+    private static boolean hasSubprojectsDefined(Model model) {
+        return !hasSubprojectsDefined((ModelBase) model)
+                && model.getProfiles().stream().noneMatch(DefaultModelBuilder::hasSubprojectsDefined);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean hasSubprojectsDefined(ModelBase profile) {
+        return profile.getSubprojects().isEmpty() && profile.getModules().isEmpty();
     }
 
     @Override
