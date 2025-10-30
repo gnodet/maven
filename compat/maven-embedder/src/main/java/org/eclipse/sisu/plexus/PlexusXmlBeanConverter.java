@@ -54,6 +54,7 @@ import org.eclipse.sisu.inject.TypeArguments;
 @Singleton
 @Priority(10)
 @Deprecated
+@SuppressWarnings("unchecked")
 public final class PlexusXmlBeanConverter implements PlexusBeanConverter {
     // ----------------------------------------------------------------------
     // Constants
@@ -139,6 +140,7 @@ public final class PlexusXmlBeanConverter implements PlexusBeanConverter {
      * @param parser The XML parser
      * @return Converted Properties instance
      */
+    @SuppressWarnings("unchecked")
     private static Properties parseProperties(final XmlPullParser parser) throws Exception {
         final Properties properties = newImplementation(parser, Properties.class);
         while (parser.nextTag() == XmlPullParser.START_TAG) {

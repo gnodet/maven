@@ -259,6 +259,7 @@ public class BootstrapCoreExtensionManager {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <T extends Service> T getService(Class<T> clazz) throws NoSuchElementException {
             if (clazz == ArtifactCoordinatesFactory.class) {
                 return (T) new DefaultArtifactCoordinatesFactory();
