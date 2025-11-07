@@ -26,14 +26,17 @@ import org.apache.maven.impl.resolver.artifact.FatArtifactTraverser;
 import org.apache.maven.impl.resolver.scopes.Maven3ScopeManagerConfiguration;
 import org.apache.maven.impl.resolver.scopes.Maven4ScopeManagerConfiguration;
 import org.apache.maven.impl.resolver.type.DefaultTypeProvider;
+import org.eclipse.aether.RepositoryException;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession.CloseableSession;
 import org.eclipse.aether.RepositorySystemSession.SessionBuilder;
 import org.eclipse.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.collection.DependencyGraphTransformationContext;
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.scope.InternalScopeManager;
 import org.eclipse.aether.internal.impl.scope.ManagedDependencyContextRefiner;
 import org.eclipse.aether.internal.impl.scope.ManagedScopeDeriver;
@@ -42,6 +45,7 @@ import org.eclipse.aether.internal.impl.scope.OptionalDependencySelector;
 import org.eclipse.aether.internal.impl.scope.ScopeDependencySelector;
 import org.eclipse.aether.internal.impl.scope.ScopeManagerImpl;
 import org.eclipse.aether.resolution.ArtifactDescriptorPolicy;
+import org.eclipse.aether.util.ConfigUtils;
 import org.eclipse.aether.util.artifact.DefaultArtifactTypeRegistry;
 import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.manager.TransitiveDependencyManager;
@@ -108,7 +112,7 @@ public class MavenSessionBuilderSupplier implements Supplier<SessionBuilder> {
     protected DependencyGraphTransformer getDependencyGraphTransformer() {
         return new ChainedDependencyGraphTransformer(
                 new ConflictResolver(
-                        new ConfigurableVersionSelector(), new ManagedScopeSelector(getScopeManager()),
+                        new ExtendedConfigurableVersionSelector(), new ManagedScopeSelector(getScopeManager()),
                         new SimpleOptionalitySelector(), new ManagedScopeDeriver(getScopeManager())),
                 new ManagedDependencyContextRefiner(getScopeManager()));
     }
@@ -158,5 +162,44 @@ public class MavenSessionBuilderSupplier implements Supplier<SessionBuilder> {
         SessionBuilder builder = repositorySystem.createSessionBuilder();
         configureSessionBuilder(builder);
         return builder;
+    }
+
+    public static class ExtendedConfigurableVersionSelector extends ConfigurableVersionSelector {
+
+        public static final String FLEXIBLE_SELECTION_STRATEGY = "flexible";
+
+        public static class Flexible implements SelectionStrategy {
+            @Override
+            public boolean isBetter(ConflictResolver.ConflictItem candidate, ConflictResolver.ConflictItem winner) {
+                if (candidate.getNode().getVersion().equals(winner.getNode().getVersion())) {
+                    return candidate.getDepth() < winner.getDepth();
+                } else {
+                    return candidate
+                                    .getNode()
+                                    .getVersion()
+                                    .compareTo(winner.getNode().getVersion())
+                            > 0;
+                }
+            }
+        }
+
+        public ExtendedConfigurableVersionSelector() {}
+
+        public ExtendedConfigurableVersionSelector(SelectionStrategy selectionStrategy) {
+            super(selectionStrategy);
+        }
+
+        @Override
+        public ConflictResolver.VersionSelector getInstance(
+                DependencyNode root, DependencyGraphTransformationContext context) throws RepositoryException {
+            if (selectionStrategy == null) {
+                String ss = ConfigUtils.getString(
+                        context.getSession(), DEFAULT_SELECTION_STRATEGY, CONFIG_PROP_SELECTION_STRATEGY);
+                if (FLEXIBLE_SELECTION_STRATEGY.equals(ss)) {
+                    return new ExtendedConfigurableVersionSelector(new Flexible());
+                }
+            }
+            return super.getInstance(root, context);
+        }
     }
 }
