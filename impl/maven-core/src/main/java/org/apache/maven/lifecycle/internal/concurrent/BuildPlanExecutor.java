@@ -268,6 +268,21 @@ public class BuildPlanExecutor {
                 Stream.of(pplan, setup, teardown).forEach(step -> plan.addStep(project, step.name, step));
             }
 
+            // Set up plugin dependencies: if a project uses a plugin from the reactor,
+            // the project's PLAN step must wait for the plugin project's READY phase
+            Map<String, MavenProject> reactorGavs =
+                    plan.getAllProjects().keySet().stream().collect(Collectors.toMap(BuildPlanExecutor::gav, p -> p));
+            for (MavenProject project : plan.getAllProjects().keySet()) {
+                for (Plugin plugin : project.getBuild().getPlugins()) {
+                    MavenProject pluginProject = reactorGavs.get(gav(plugin));
+                    if (pluginProject != null) {
+                        // In order to plan the project, we need all its plugins...
+                        plan.step(project, PLAN).ifPresent(planStep -> plan.step(pluginProject, READY)
+                                .ifPresent(planStep::executeAfter));
+                    }
+                }
+            }
+
             return plan;
         }
 
@@ -976,7 +991,11 @@ public class BuildPlanExecutor {
                 MavenProject pluginProject = reactorGavs.get(gav(plugin));
                 if (pluginProject != null) {
                     // In order to plan the project, we need all its plugins...
-                    plan.requiredStep(project, PLAN).executeAfter(plan.requiredStep(pluginProject, READY));
+                    // Note: PLAN step may not exist yet during calculateLifecycleMappings() call
+                    // as it's only created in buildInitialPlan() after all segments are calculated.
+                    // The dependency will be set up when the PLAN step is actually created.
+                    plan.step(project, PLAN).ifPresent(planStep -> plan.step(pluginProject, READY)
+                            .ifPresent(planStep::executeAfter));
                 } else {
                     toResolve.add(() -> resolvePlugin(session, project.getRemotePluginRepositories(), plugin));
                 }
