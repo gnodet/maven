@@ -126,61 +126,48 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
         Set<Path> modifiedPoms = new HashSet<>();
         Set<Path> errorPoms = new HashSet<>();
 
-        try {
-            // Phase 1: Write all modifications to temp directory (keeping project structure)
-            Path tempDir = createTempProjectStructure(context, pomMap);
+        // Phase 1: For each POM, build effective model from original paths and analyze plugins
+        Map<Path, Set<String>> pluginsNeedingManagement =
+                analyzePluginsUsingEffectiveModels(context, pomMap);
 
-            // Phase 2: For each POM, build effective model using the session and analyze plugins
-            Map<Path, Set<String>> pluginsNeedingManagement =
-                    analyzePluginsUsingEffectiveModels(context, pomMap, tempDir);
+        // Phase 2: Add plugin management to the last local parent in hierarchy
+        for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
+            Path pomPath = entry.getKey();
+            Document pomDocument = entry.getValue();
+            processedPoms.add(pomPath);
 
-            // Phase 3: Add plugin management to the last local parent in hierarchy
-            for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
-                Path pomPath = entry.getKey();
-                Document pomDocument = entry.getValue();
-                processedPoms.add(pomPath);
+            context.info(pomPath + " (checking for plugin upgrades)");
+            context.indent();
 
-                context.info(pomPath + " (checking for plugin upgrades)");
-                context.indent();
+            try {
+                boolean hasUpgrades = false;
 
-                try {
-                    boolean hasUpgrades = false;
+                // Apply direct plugin upgrades in the document
+                hasUpgrades |= upgradePluginsInDocument(pomDocument, context);
 
-                    // Apply direct plugin upgrades in the document
-                    hasUpgrades |= upgradePluginsInDocument(pomDocument, context);
-
-                    // Add plugin management based on effective model analysis
-                    // Note: pluginsNeedingManagement only contains entries for POMs that should receive plugin
-                    // management
-                    // (i.e., the "last local parent" for each plugin that needs management)
-                    Set<String> pluginsForThisPom = pluginsNeedingManagement.get(pomPath);
-                    if (pluginsForThisPom != null && !pluginsForThisPom.isEmpty()) {
-                        hasUpgrades |= addPluginManagementForEffectivePlugins(context, pomDocument, pluginsForThisPom);
-                        context.detail("Added plugin management to " + pomPath + " (target parent for "
-                                + pluginsForThisPom.size() + " plugins)");
-                    }
-
-                    if (hasUpgrades) {
-                        modifiedPoms.add(pomPath);
-                        context.success("Plugin upgrades applied");
-                    } else {
-                        context.success("No plugin upgrades needed");
-                    }
-                } catch (Exception e) {
-                    context.failure("Failed to upgrade plugins: " + e.getMessage());
-                    errorPoms.add(pomPath);
-                } finally {
-                    context.unindent();
+                // Add plugin management based on effective model analysis
+                // Note: pluginsNeedingManagement only contains entries for POMs that should receive plugin
+                // management
+                // (i.e., the "last local parent" for each plugin that needs management)
+                Set<String> pluginsForThisPom = pluginsNeedingManagement.get(pomPath);
+                if (pluginsForThisPom != null && !pluginsForThisPom.isEmpty()) {
+                    hasUpgrades |= addPluginManagementForEffectivePlugins(context, pomDocument, pluginsForThisPom);
+                    context.detail("Added plugin management to " + pomPath + " (target parent for "
+                            + pluginsForThisPom.size() + " plugins)");
                 }
+
+                if (hasUpgrades) {
+                    modifiedPoms.add(pomPath);
+                    context.success("Plugin upgrades applied");
+                } else {
+                    context.success("No plugin upgrades needed");
+                }
+            } catch (Exception e) {
+                context.failure("Failed to upgrade plugins: " + e.getMessage());
+                errorPoms.add(pomPath);
+            } finally {
+                context.unindent();
             }
-
-            // Clean up temp directory
-            cleanupTempDirectory(tempDir);
-
-        } catch (Exception e) {
-            context.failure("Failed to create temp project structure: " + e.getMessage());
-            // Mark all POMs as errors
-            errorPoms.addAll(pomMap.keySet());
         }
 
         return new UpgradeResult(processedPoms, modifiedPoms, errorPoms);
@@ -465,26 +452,19 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
      * Returns a map of POM path to the set of plugin keys that need management.
      */
     private Map<Path, Set<String>> analyzePluginsUsingEffectiveModels(
-            UpgradeContext context, Map<Path, Document> pomMap, Path tempDir) {
+            UpgradeContext context, Map<Path, Document> pomMap) {
         Map<Path, Set<String>> result = new HashMap<>();
         Map<String, PluginUpgrade> pluginUpgrades = getPluginUpgradesAsMap();
 
         for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
-            Path originalPomPath = entry.getKey();
+            Path pomPath = entry.getKey();
 
             try {
-                // Find the corresponding temp POM path
-                Path commonRoot = findCommonRoot(pomMap.keySet());
-                Path relativePath = commonRoot.relativize(originalPomPath);
-                Path tempPomPath = tempDir.resolve(relativePath);
-
-                // Build effective model using Maven 4 API
                 Set<String> pluginsNeedingUpgrade =
-                        analyzeEffectiveModelForPlugins(context, tempPomPath, pluginUpgrades);
+                        analyzeEffectiveModelForPlugins(context, pomPath, pluginUpgrades);
 
-                // Determine where to add plugin management (last local parent)
                 Path targetPomForManagement =
-                        findLastLocalParentForPluginManagement(context, tempPomPath, pomMap, tempDir, commonRoot);
+                        findLastLocalParentForPluginManagement(context, pomPath, pomMap);
 
                 if (targetPomForManagement != null) {
                     result.computeIfAbsent(targetPomForManagement, k -> new HashSet<>())
@@ -497,7 +477,7 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
                 }
 
             } catch (Exception e) {
-                context.warning("Failed to analyze effective model for " + originalPomPath + ": " + e.getMessage());
+                context.warning("Failed to analyze effective model for " + pomPath + ": " + e.getMessage());
             }
         }
 
@@ -584,37 +564,26 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
      * if so continue to its parent, else that's the target.
      */
     private Path findLastLocalParentForPluginManagement(
-            UpgradeContext context, Path tempPomPath, Map<Path, Document> pomMap, Path tempDir, Path commonRoot) {
+            UpgradeContext context, Path pomPath, Map<Path, Document> pomMap) {
 
-        Model effectiveModel = buildEffectiveModel(tempPomPath);
+        Model effectiveModel = buildEffectiveModel(pomPath);
 
-        // Convert the temp path back to the original path
-        Path relativePath = tempDir.relativize(tempPomPath);
-        Path currentOriginalPath = commonRoot.resolve(relativePath);
+        Path lastLocalParent = pomPath;
 
-        // Start with current POM as the candidate
-        Path lastLocalParent = currentOriginalPath;
-
-        // Walk up the parent hierarchy
         Model currentModel = effectiveModel;
         while (currentModel.getParent() != null) {
             Parent parent = currentModel.getParent();
 
-            // Check if this parent is in our local pomMap
             Path parentPath = findParentInPomMap(parent, pomMap);
             if (parentPath != null) {
-                // Parent is local, so it becomes our new candidate
                 lastLocalParent = parentPath;
-
-                Path parentTempPath = tempDir.resolve(commonRoot.relativize(parentPath));
-                currentModel = buildEffectiveModel(parentTempPath);
+                currentModel = buildEffectiveModel(parentPath);
             } else {
-                // Parent is external, stop here
                 break;
             }
         }
 
-        context.debug("Last local parent for " + currentOriginalPath + " is " + lastLocalParent);
+        context.debug("Last local parent for " + pomPath + " is " + lastLocalParent);
         return lastLocalParent;
     }
 

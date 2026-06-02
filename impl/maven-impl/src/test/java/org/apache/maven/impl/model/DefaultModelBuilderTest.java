@@ -215,6 +215,18 @@ class DefaultModelBuilderTest {
     }
 
     @Test
+    public void testCiFriendlyVersion() {
+        ModelBuilderRequest request = ModelBuilderRequest.builder()
+                .session(session)
+                .requestType(ModelBuilderRequest.RequestType.BUILD_PROJECT)
+                .source(Sources.buildSource(getPom("ci-friendly-version")))
+                .build();
+        ModelBuilderResult result = builder.newSession().build(request);
+        assertNotNull(result);
+        assertEquals("1.0.0-SNAPSHOT", result.getEffectiveModel().getVersion());
+    }
+
+    @Test
     public void testMissingDependencyGroupIdInference() throws Exception {
         // Test that dependencies with missing groupId but present version are inferred correctly in model 4.1.0
 
