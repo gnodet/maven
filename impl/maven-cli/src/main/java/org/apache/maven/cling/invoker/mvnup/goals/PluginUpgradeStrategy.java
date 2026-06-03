@@ -127,8 +127,7 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
         Set<Path> errorPoms = new HashSet<>();
 
         // Phase 1: For each POM, build effective model from original paths and analyze plugins
-        Map<Path, Set<String>> pluginsNeedingManagement =
-                analyzePluginsUsingEffectiveModels(context, pomMap);
+        Map<Path, Set<String>> pluginsNeedingManagement = analyzePluginsUsingEffectiveModels(context, pomMap);
 
         // Phase 2: Add plugin management to the last local parent in hierarchy
         for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
@@ -460,11 +459,9 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
             Path pomPath = entry.getKey();
 
             try {
-                Set<String> pluginsNeedingUpgrade =
-                        analyzeEffectiveModelForPlugins(context, pomPath, pluginUpgrades);
+                Set<String> pluginsNeedingUpgrade = analyzeEffectiveModelForPlugins(context, pomPath, pluginUpgrades);
 
-                Path targetPomForManagement =
-                        findLastLocalParentForPluginManagement(context, pomPath, pomMap);
+                Path targetPomForManagement = findLastLocalParentForPluginManagement(context, pomPath, pomMap);
 
                 if (targetPomForManagement != null) {
                     result.computeIfAbsent(targetPomForManagement, k -> new HashSet<>())
