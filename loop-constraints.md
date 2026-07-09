@@ -11,13 +11,11 @@
 - Never review draft PRs
 - Never review bot PRs (dependabot, renovate, github-actions)
 - Max 3 PRs per loop iteration
-- Max 2000 lines changed per PR (skip larger, flag for manual)
 
 ## Review Quality
 - Always run verifier sub-agent before posting findings
 - Never post findings that the verifier marked as false positives
 - Always check git history (git log, git blame) before flagging issues
-- Never auto-approve PRs > 100 lines — record verdict only
 
 ## Paths (never flag as issues unless genuine security concern)
 - Generated code in `src/main/java-generated/` — ignore formatting/style findings

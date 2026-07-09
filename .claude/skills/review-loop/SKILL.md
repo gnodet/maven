@@ -97,7 +97,7 @@ Each verifier:
 ### 7. Post Reviews to GitHub
 For each PR with verified findings:
 
-If verdict is APPROVE and PR ≤ 100 lines:
+If verdict is APPROVE:
     gh api repos/apache/maven/pulls/<NUMBER>/reviews \
       --method POST \
       -f event=APPROVE \
@@ -110,7 +110,7 @@ If verdict is CHANGES_REQUESTED or has confirmed findings:
       -f body="<findings + suggestions + attribution>"
 
 **IMPORTANT**: Never post `event=REQUEST_CHANGES` — always use `COMMENT` for
-findings. Only use `APPROVE` for clean small PRs.
+findings.
 
 ### 8. Update State
 Update `STATE.md`:

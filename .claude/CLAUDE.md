@@ -14,7 +14,6 @@ guideline. Track state across runs in `STATE.md`.
 - **Cadence:** Run via `/loop` — recommended: `/loop 1h /review-loop`
 - **Level:** L2 — reviews are posted to GitHub with inline comments
 - **Max PRs per run:** 3
-- **Max diff size:** 2000 lines (larger PRs flagged for manual review)
 
 ## Architecture
 
@@ -34,7 +33,6 @@ No worktrees are used — reviews are read-only. Diffs come from `gh pr diff`.
 - NEVER merge, close, or label PRs
 - NEVER review draft PRs
 - NEVER post unverified findings — always run the verifier sub-agent first
-- NEVER auto-approve large PRs (> 100 lines) — only record in state
 - ALWAYS include AI attribution in reviews
 - ALWAYS update STATE.md after each review
 - ALWAYS follow oss-helper review-pr.md for the actual review logic
