@@ -33,3 +33,16 @@ Append one entry per run. Prune entries older than 30 days.
   "outcome": "reviews-posted"
 }
 ```
+
+```json
+{
+  "run_id": "2026-07-09T21:05:00Z",
+  "pattern": "pr-babysitter",
+  "duration_s": 600,
+  "items_found": 3,
+  "actions_taken": 3,
+  "escalations": 0,
+  "tokens_estimate": 450000,
+  "outcome": "reviews-posted"
+}
+```
