@@ -2,9 +2,9 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-09T23:15:00Z
+- **Timestamp:** 2026-07-09T23:31:00Z
 - **PRs checked:** 30
-- **Reviews posted:** 9
+- **Reviews posted:** 12
 
 ## Reviewed PRs
 
@@ -21,6 +21,9 @@
 | #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-09 | COMMENT | Review posted; medium: dedup last-wins vs Maven 3 first-wins docs, low: quote edge case, regex scope, binary extensions list |
 | #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09 | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
 | #11904 | Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin | rbygrave | 2026-07-09 | COMMENT | Review posted; high: CI broken (IT compilation error), 6/7 findings false positive |
+| #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-09 | COMMENT | Review posted; correct fix for #11147, minor: unnecessary list copy, duplicated loop logic |
+| #12410 | reject path-traversal segments in coordinate ids and versions | jmestwa-coder | 2026-07-09 | COMMENT | Re-review: all prior concerns addressed, tests added, CI passes, javadoc wording debate ongoing |
+| #11818 | Add @Nullable annotations and NullAway profile for Maven 4 API | gnodet | 2026-07-09 | COMMENT | Review posted; medium: getSource() @Nonnull→@Nullable may break callers, low: getRepositoryMerging() same pattern |
 
 ## Skipped PRs
 
