@@ -61,8 +61,8 @@ Remove from the list:
 ### 4. Triage and Prioritize
 Sort by priority:
 1. High: REVIEW_REQUIRED with no activity, or >7 days old without review
-2. Medium: Recent updates, moderate size (<500 lines)
-3. Low: Large PRs (>500 lines), or already have reviews from others
+2. Medium: Recent updates
+3. Low: PRs that already have reviews from others
 
 Select top 3 for review.
 
