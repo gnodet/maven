@@ -50,6 +50,8 @@ import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.BUILD;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.DEPENDENCIES;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.DEPENDENCY;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.DEPENDENCY_MANAGEMENT;
+import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.MODULE;
+import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.MODULES;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.PARENT;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.PLUGIN;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.PLUGINS;
@@ -62,6 +64,9 @@ import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.PROPERTIES;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.RELATIVE_PATH;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.REPOSITORIES;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.REPOSITORY;
+import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.SUBPROJECT;
+import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.SUBPROJECTS;
+import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.VERSION;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Files.DEFAULT_PARENT_RELATIVE_PATH;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Plugins.DEFAULT_MAVEN_PLUGIN_GROUP_ID;
 import static eu.maveniverse.domtrip.maven.MavenPomElements.Plugins.MAVEN_PLUGIN_PREFIX;
@@ -80,6 +85,15 @@ public class CompatibilityFixStrategy extends AbstractUpgradeStrategy {
     private static final Set<String> VALID_COMBINE_SELF_VALUES = Set.of(COMBINE_OVERRIDE, COMBINE_MERGE, "remove");
 
     private static final Set<String> VALID_COMBINE_CHILDREN_VALUES = Set.of(COMBINE_APPEND, COMBINE_MERGE);
+
+    /**
+     * Known incompatible plugins where even the latest version fails with Maven 4.
+     * Maps plugin key (groupId:artifactId) to a description of the incompatibility.
+     * <p>
+     * Note: plugins that have a fixed version available should be added to
+     * {@link PluginUpgradeStrategy} instead, so mvnup can auto-upgrade them.
+     */
+    private static final Map<String, String> KNOWN_INCOMPATIBLE_PLUGINS = Map.of();
 
     @Override
     public boolean isApplicable(UpgradeContext context) {
@@ -151,6 +165,12 @@ public class CompatibilityFixStrategy extends AbstractUpgradeStrategy {
                 hasIssues |= fixIncorrectParentRelativePaths(pomDocument, pomPath, pomMap, context);
                 hasIssues |= fixUndefinedPropertyExpressions(pomDocument, allDefinedProperties, context);
                 hasIssues |= fixUndefinedPropertyExpressionsInRepositories(pomDocument, allDefinedProperties, context);
+
+                // Warning-only checks: emit warnings for issues that cannot be auto-fixed
+                // These do not modify the POM and do not affect hasIssues
+                warnAboutIncompatiblePlugins(pomDocument, context);
+                warnAboutPropertyInterpolatedModulePaths(pomDocument, context);
+                warnAboutCiFriendlyMissingDependencyVersions(pomDocument, context);
 
                 if (hasIssues) {
                     context.success("Maven 4 compatibility issues fixed");
@@ -815,5 +835,149 @@ public class CompatibilityFixStrategy extends AbstractUpgradeStrategy {
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+
+    // ---- Warning-only checks for Maven 4 compatibility issues that cannot be auto-fixed ----
+
+    /**
+     * Warns about plugins known to be incompatible with Maven 4 even at their latest version.
+     * These plugins call methods on immutable API objects or use removed internal APIs
+     * and require upstream fixes before they can work with Maven 4.
+     *
+     * @see <a href="https://github.com/apache/maven/issues/12432">#12432</a>
+     */
+    private void warnAboutIncompatiblePlugins(Document pomDocument, UpgradeContext context) {
+        Element root = pomDocument.root();
+
+        Stream<Element> pluginContainers = Stream.concat(
+                // Root level build
+                root.childElement(BUILD).stream()
+                        .flatMap(build -> Stream.concat(
+                                build.childElement(PLUGINS).stream(),
+                                build.childElement(PLUGIN_MANAGEMENT).stream()
+                                        .flatMap(pm -> pm.childElement(PLUGINS).stream()))),
+                // Profile builds
+                root.childElement(PROFILES).stream()
+                        .flatMap(profiles -> profiles.childElements(PROFILE))
+                        .flatMap(profile -> profile.childElement(BUILD).stream())
+                        .flatMap(build -> Stream.concat(
+                                build.childElement(PLUGINS).stream(),
+                                build.childElement(PLUGIN_MANAGEMENT).stream()
+                                        .flatMap(pm -> pm.childElement(PLUGINS).stream()))));
+
+        pluginContainers.forEach(pluginsElement -> pluginsElement
+                .childElements(PLUGIN)
+                .forEach(pluginElement -> {
+                    String groupId = pluginElement.childText(MavenPomElements.Elements.GROUP_ID);
+                    String artifactId = pluginElement.childText(MavenPomElements.Elements.ARTIFACT_ID);
+
+                    if (groupId == null && artifactId != null && artifactId.startsWith(MAVEN_PLUGIN_PREFIX)) {
+                        groupId = DEFAULT_MAVEN_PLUGIN_GROUP_ID;
+                    }
+
+                    if (groupId != null && artifactId != null) {
+                        String pluginKey = groupId + ":" + artifactId;
+                        String warning = KNOWN_INCOMPATIBLE_PLUGINS.get(pluginKey);
+                        if (warning != null) {
+                            context.warning("Known Maven 4 incompatibility: " + pluginKey + " — " + warning);
+                        }
+                    }
+                }));
+    }
+
+    /**
+     * Warns about {@code <module>} (or {@code <subproject>}) elements that contain property
+     * expressions ({@code ${...}}). Maven 4 validates module paths during POM parsing,
+     * before profiles can set property values, so these paths are rejected as non-existent.
+     *
+     * @see <a href="https://github.com/apache/maven/issues/12434">#12434</a>
+     */
+    private void warnAboutPropertyInterpolatedModulePaths(Document pomDocument, UpgradeContext context) {
+        Element root = pomDocument.root();
+
+        // Check root-level modules/subprojects
+        Stream.concat(
+                        root.childElement(MODULES).stream().flatMap(m -> m.childElements(MODULE)),
+                        root.childElement(SUBPROJECTS).stream().flatMap(s -> s.childElements(SUBPROJECT)))
+                .forEach(moduleElement -> {
+                    String path = moduleElement.textContentTrimmed();
+                    if (path != null && EXPRESSION_PATTERN.matcher(path).find()) {
+                        context.warning("Module path '" + path
+                                + "' contains a property expression. Maven 4 validates module paths"
+                                + " before property interpolation, which will cause a build failure"
+                                + " if the expression cannot be resolved at parse time.");
+                    }
+                });
+
+        // Check profile-level modules/subprojects
+        root.childElement(PROFILES)
+                .ifPresent(profiles -> profiles.childElements(PROFILE).forEach(profile -> {
+                    Stream.concat(
+                                    profile.childElement(MODULES).stream().flatMap(m -> m.childElements(MODULE)),
+                                    profile.childElement(SUBPROJECTS).stream()
+                                            .flatMap(s -> s.childElements(SUBPROJECT)))
+                            .forEach(moduleElement -> {
+                                String path = moduleElement.textContentTrimmed();
+                                if (path != null
+                                        && EXPRESSION_PATTERN.matcher(path).find()) {
+                                    context.warning("Profile module path '" + path
+                                            + "' contains a property expression. Maven 4 validates module"
+                                            + " paths before profile-driven property interpolation, which"
+                                            + " will cause a build failure when no profile is active.");
+                                }
+                            });
+                }));
+    }
+
+    /**
+     * Warns about CI-friendly projects using {@code ${revision}} (or {@code ${sha1}},
+     * {@code ${changelist}}) where child module dependencies lack explicit {@code <version>}
+     * elements and rely on {@code dependencyManagement} inherited from the parent.
+     * Maven 4 validates dependency completeness before fully resolving the parent's
+     * {@code dependencyManagement} chain when the parent's own version is a CI-friendly
+     * expression.
+     *
+     * @see <a href="https://github.com/apache/maven/issues/12435">#12435</a>
+     */
+    private void warnAboutCiFriendlyMissingDependencyVersions(Document pomDocument, UpgradeContext context) {
+        Element root = pomDocument.root();
+
+        // Only check if this POM has a parent with a CI-friendly version
+        Element parentElement = root.childElement(PARENT).orElse(null);
+        if (parentElement == null) {
+            return;
+        }
+        String parentVersion = parentElement.childText(VERSION);
+        if (parentVersion == null || !isCiFriendlyExpression(parentVersion)) {
+            return;
+        }
+
+        // Check for dependencies without explicit versions
+        List<String> versionlessDeps = root.childElement(DEPENDENCIES).stream()
+                .flatMap(deps -> deps.childElements(DEPENDENCY))
+                .filter(dep -> dep.childElement(VERSION).isEmpty())
+                .map(dep -> {
+                    String gid = dep.childText(MavenPomElements.Elements.GROUP_ID);
+                    String aid = dep.childText(MavenPomElements.Elements.ARTIFACT_ID);
+                    return (gid != null ? gid : "?") + ":" + (aid != null ? aid : "?");
+                })
+                .toList();
+
+        if (!versionlessDeps.isEmpty()) {
+            context.warning("This module uses CI-friendly version '" + parentVersion
+                    + "' in its parent and has " + versionlessDeps.size()
+                    + " dependencies without explicit <version> elements (e.g., "
+                    + versionlessDeps.get(0)
+                    + "). Maven 4 may fail with 'dependencies.dependency.version is missing'"
+                    + " because dependency management inheritance is validated before the"
+                    + " CI-friendly parent version is fully resolved.");
+        }
+    }
+
+    /**
+     * Checks if a version string is a CI-friendly expression.
+     */
+    private static boolean isCiFriendlyExpression(String version) {
+        return version.contains("${revision}") || version.contains("${sha1}") || version.contains("${changelist}");
     }
 }
