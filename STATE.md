@@ -2,9 +2,9 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-09T21:05:00Z
+- **Timestamp:** 2026-07-09T23:15:00Z
 - **PRs checked:** 30
-- **Reviews posted:** 6
+- **Reviews posted:** 9
 
 ## Reviewed PRs
 
@@ -18,6 +18,9 @@
 | #11743 | [MNG-11449] Add Mockito javaagent for maven-cli tests | arturobernalg | 2026-07-09 | COMMENT | Review posted; PR superseded by #12369 (merged 2026-07-03) |
 | #12330 | In failed build limit reactor summary to only failed modules | slawekjaranowski | 2026-07-09 | COMMENT | Review posted; ellipsis gap in multi-failure scenario, suggested fix |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09 | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
+| #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-09 | COMMENT | Review posted; medium: dedup last-wins vs Maven 3 first-wins docs, low: quote edge case, regex scope, binary extensions list |
+| #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09 | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
+| #11904 | Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin | rbygrave | 2026-07-09 | COMMENT | Review posted; high: CI broken (IT compilation error), 6/7 findings false positive |
 
 ## Skipped PRs
 
