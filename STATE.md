@@ -25,6 +25,17 @@
 | #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-09 | COMMENT | Review posted; correct fix for #11147, minor: unnecessary list copy, duplicated loop logic |
 | #12410 | reject path-traversal segments in coordinate ids and versions | jmestwa-coder | 2026-07-09 | COMMENT | Re-review: all prior concerns addressed, tests added, CI passes, javadoc wording debate ongoing |
 | #11818 | Add @Nullable annotations and NullAway profile for Maven 4 API | gnodet | 2026-07-09 | COMMENT | Review posted; medium: getSource() @Nonnull→@Nullable may break callers, low: getRepositoryMerging() same pattern |
+| #12418 | [MNG-8425] Fix mvnenc init saving invalid master source configuration | Hiteshsai007 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-07-07); no new commits since; will re-review when author pushes updates |
+| #12332 | [MNG-8768] Add executable() function for conditional profile activation based on PATH | Hiteshsai007 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-06-23); no new commits since; will re-review when author pushes updates |
+| #12145 | Avoid final logger injection in EventSpyDispatcher | Will-thom | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-25); no new commits since; will re-review when author pushes updates |
+| #12135 | [MNG-11642] Add JPMS module support to Maven 4 | gnodet | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-07-03); no new commits since; will re-review when author pushes updates |
+| #12069 | Fix site lifecycle reactor dependency resolution | Will-thom | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-23); no new commits since; will re-review when author pushes updates |
+| #11926 | Warn when profile ID matches a lifecycle phase name | utafrali | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
+| #11692 | docs: fix broken reference links | amahi1568 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-23); no new commits since; will re-review when author pushes updates |
+| #11686 | docs: clarify deprecation of RELEASE and LATEST version constants | amahi1568 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
+| #11682 | Improve README documentation clarity | amahi1568 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
+| #11609 | Bug: make all collected args use single quote | cstamas | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
+| #11509 | Add tests | TheRealHaui | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-06-07); no new commits since; will re-review when author pushes updates |
 
 ## Skipped PRs
 
