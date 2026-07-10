@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:23:41Z
+- **Timestamp:** 2026-07-10T02:34:58Z
 - **PRs checked:** 61
-- **Reviews posted:** 36
-- **Note:** Reviewed 3 PRs: #144 (plugin depMgmt, 8.5yr stale), #1125 (plugin resolution, Guava + outdated versions), #281 (nearest-first ordering, needs rebase). ~23 PRs still need review.
+- **Reviews posted:** 39
+- **Note:** Reviewed 3 PRs: #995 (mvn --status, 3yr stale, CLIng rewrite needed), #147 (BOM relocation imports, 8yr stale, cycle detection bugs), #143 (PluginMgmt lifecycle binding, 8.5yr stale, API-breaking changes). ~20 PRs still need review.
 
 ## Reviewed PRs
 
@@ -61,6 +61,9 @@
 | #144 | Update DefaultPluginManager (MNG-2893) | ChristianSchulte | 2026-07-10T02:23:20Z | COMMENT | 1 high + 2 medium; 8.5 years old, stale paths, possibly already addressed by session factory config |
 | #1125 | Plugin Dependency Resolution improvement | cstamas | 2026-07-10T02:23:33Z | COMMENT | 5 high; hardcoded outdated versions (sisu 0.3.5, classworlds 2.6.0), Guava import (no dep), API migration needed |
 | #281 | Dependency order should be nearest first | belingueres | 2026-07-10T02:23:41Z | COMMENT | 2 high; stale paths, test file conflict, behavioral change needs full IT validation |
+| #995 | New flag to verify Maven installation status | mthmulders | 2026-07-10T02:34:25Z | COMMENT | 4 high + 4 medium; 3yr stale, all paths moved, MavenCli deprecated, TransporterProvider gone, needs CLIng rewrite |
+| #147 | Dependency management import relocations | ChristianSchulte | 2026-07-10T02:34:42Z | COMMENT | 3 high + 2 medium; 8yr stale, cycle detection bugs (infinite recursion), null relocation fields, no tests |
+| #143 | Declared execution in PluginMgmt lifecycle binding | ChristianSchulte | 2026-07-10T02:34:58Z | COMMENT | 5 high + 3 medium; 8.5yr stale, all paths moved, Plexus→JSR-330 migration, API-breaking interface/exception changes |
 
 ## Skipped PRs
 
