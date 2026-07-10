@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T05:58:46Z
+- **Timestamp:** 2026-07-10T06:28:25Z
 - **PRs checked:** 61
-- **Reviews posted:** 51
-- **Note:** Re-reviewed 3 PRs with new commits: #12419 (formatting fix, APPROVE), #12417 (BOM properties — improved but still no tests, COMMENT), #12416 (prior concerns addressed, APPROVE).
+- **Reviews posted:** 52
+- **Note:** Re-reviewed #12416 — author addressed assertion feedback (assertEquals instead of assertNotNull). APPROVE.
 
 ## Reviewed PRs
 
@@ -22,7 +22,7 @@
 | #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-10T01:15:41Z | COMMENT | Re-review posted; 1 low finding confirmed (Javadoc inconsistency) |
 | #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
 | #11904 | Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin | rbygrave | 2026-07-09T00:00:00Z | COMMENT | Review posted; high: CI broken (IT compilation error), 6/7 findings false positive |
-| #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-10T05:58:46Z | APPROVE | Re-review: both prior concerns addressed (list copy flag, inferDependencies helper). elharo's CHANGES_REQUESTED also addressed. |
+| #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-10T06:28:25Z | APPROVE | 3rd review: author addressed assertion feedback — assertEquals("1.0-SNAPSHOT") instead of assertNotNull. Clean PR. |
 | #12410 | reject path-traversal segments in coordinate ids and versions | jmestwa-coder | 2026-07-09T00:00:00Z | COMMENT | Re-review: all prior concerns addressed, tests added, CI passes, javadoc wording debate ongoing |
 | #11818 | Add @Nullable annotations and NullAway profile for Maven 4 API | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted; medium: getSource() @Nonnull→@Nullable may break callers, low: getRepositoryMerging() same pattern |
 | #12418 | [MNG-8425] Fix mvnenc init saving invalid master source configuration | Hiteshsai007 | 2026-07-09T00:00:00Z | COMMENT | AI review on GitHub (prior session, 2026-07-07); no new commits since; will re-review when author pushes updates |
