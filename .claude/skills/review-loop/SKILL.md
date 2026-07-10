@@ -114,8 +114,10 @@ findings.
 
 ### 8. Update State
 Update `STATE.md`:
-- Set Last Run timestamp to now
-- Add reviewed PRs to Reviewed table with verdict and notes
+- Set Last Run timestamp to now (full ISO 8601, e.g. `2026-07-09T15:30:00Z`)
+- Add reviewed PRs to Reviewed table with verdict and notes.
+  **Reviewed column must be a full ISO 8601 timestamp** (e.g. `2026-07-09T15:30:00Z`),
+  not a bare date. This is how the precondition detects same-day post-review commits.
 - Add newly skipped PRs to Skipped table
 - Clear Review Queue of processed PRs
 - Update PRs checked count
