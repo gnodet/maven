@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T03:09:28Z
+- **Timestamp:** 2026-07-10T05:58:46Z
 - **PRs checked:** 61
-- **Reviews posted:** 48
-- **Note:** Reviewed final 3 PRs: #2277 (modernize codebase, toList mutability concern), #1774 (cascading profiles, ReportSet merge bug found), #71 (mirrors in profiles, 10yr stale). ALL open PRs have now been reviewed.
+- **Reviews posted:** 51
+- **Note:** Re-reviewed 3 PRs with new commits: #12419 (formatting fix, APPROVE), #12417 (BOM properties — improved but still no tests, COMMENT), #12416 (prior concerns addressed, APPROVE).
 
 ## Reviewed PRs
 
@@ -13,16 +13,16 @@
 
 | PR | Title | Author | Reviewed | Verdict | Notes |
 |----|-------|--------|----------|---------|-------|
-| #12419 | Avoid IllegalStateException on duplicate profile ids in DefaultModelBuilder | mvanhorn | 2026-07-09T00:00:00Z | APPROVE | Review posted; correct fix using positional indexing instead of map |
+| #12419 | Avoid IllegalStateException on duplicate profile ids in DefaultModelBuilder | mvanhorn | 2026-07-10T05:58:12Z | APPROVE | Re-review: new commit is Spotless formatting only, no logic change. Core fix remains correct. |
 | #11770 | feat: Improve the matching of required versions | nielsbasjes | 2026-07-09T00:00:00Z | COMMENT | Review posted; regex bug, pattern precompilation, missing tests — reinforces prior feedback |
-| #12417 | [MNG-8432] Inherit properties from imported BOMs | Hiteshsai007 | 2026-07-09T00:00:00Z | COMMENT | Review posted; CI failure (double interpolation), semantic concerns, no tests |
+| #12417 | [MNG-8432] Inherit properties from imported BOMs | Hiteshsai007 | 2026-07-10T05:58:32Z | COMMENT | Re-review: double-interpolation fixed, opt-in flag added. Still no tests, no CI, BOM filter condition bug (pre-existing). 2 high + 1 medium + 1 low confirmed (2 FPs dropped). |
 | #11743 | [MNG-11449] Add Mockito javaagent for maven-cli tests | arturobernalg | 2026-07-09T00:00:00Z | COMMENT | Review posted; PR superseded by #12369 (merged 2026-07-03) |
 | #12330 | In failed build limit reactor summary to only failed modules | slawekjaranowski | 2026-07-09T00:00:00Z | COMMENT | Review posted; ellipsis gap in multi-failure scenario, suggested fix |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
 | #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-10T01:15:41Z | COMMENT | Re-review posted; 1 low finding confirmed (Javadoc inconsistency) |
 | #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
 | #11904 | Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin | rbygrave | 2026-07-09T00:00:00Z | COMMENT | Review posted; high: CI broken (IT compilation error), 6/7 findings false positive |
-| #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-09T00:00:00Z | COMMENT | Review posted; correct fix for #11147, minor: unnecessary list copy, duplicated loop logic |
+| #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-10T05:58:46Z | APPROVE | Re-review: both prior concerns addressed (list copy flag, inferDependencies helper). elharo's CHANGES_REQUESTED also addressed. |
 | #12410 | reject path-traversal segments in coordinate ids and versions | jmestwa-coder | 2026-07-09T00:00:00Z | COMMENT | Re-review: all prior concerns addressed, tests added, CI passes, javadoc wording debate ongoing |
 | #11818 | Add @Nullable annotations and NullAway profile for Maven 4 API | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted; medium: getSource() @Nonnull→@Nullable may break callers, low: getRepositoryMerging() same pattern |
 | #12418 | [MNG-8425] Fix mvnenc init saving invalid master source configuration | Hiteshsai007 | 2026-07-09T00:00:00Z | COMMENT | AI review on GitHub (prior session, 2026-07-07); no new commits since; will re-review when author pushes updates |
