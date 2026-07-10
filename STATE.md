@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T01:23:44Z
+- **Timestamp:** 2026-07-10T01:32:44Z
 - **PRs checked:** 61
-- **Reviews posted:** 18
-- **Note:** Reviewed 3 PRs: #2333 (new, clean impl), #10971 (new, LGTM), #11186 (new, needs rework). ~41 PRs still need review.
+- **Reviews posted:** 21
+- **Note:** Reviewed 3 PRs: #11185 (namespace validation, needs rework), #10906 (MSYS path fix, has bugs), #669 (stale, recommend close). ~38 PRs still need review.
 
 ## Reviewed PRs
 
@@ -42,6 +42,9 @@
 | #2333 | [MNG-5913] Allow defining aliases for existing server configurations | slawekjaranowski | 2026-07-10T01:23:25Z | COMMENT | Review posted; clean implementation, no code issues — open policy discussion on backward compat |
 | #10971 | Add test for prefixed Maven elements | elharo | 2026-07-10T01:23:31Z | COMMENT | Review posted; LGTM, no findings |
 | #11186 | Issue #10985: Maven allows random namespaces on project | raupachz | 2026-07-10T01:23:44Z | COMMENT | Review posted; 2 high + 1 medium + 1 low — backward compat break, no tests, PR #11185 is better alternative |
+| #11185 | Disallow arbitrary namespaces in Maven and Metadata readers | arturobernalg | 2026-07-10T01:32:16Z | COMMENT | Review posted; 3 high + 1 medium + 1 low — hardcoded tags in shared template, broken formatting, needs modello-based approach |
+| #10906 | [MNG-8018] Fix MSYS/Git-Bash path mis-detection on Windows | arturobernalg | 2026-07-10T01:32:35Z | COMMENT | Review posted; 2 high + 3 medium + 3 low — System.out.println in prod, over-broad path detection, divergent impls |
+| #669 | Use try-with-resources | garydgregory | 2026-07-10T01:32:44Z | COMMENT | Review posted; 4+ year old PR, 2/4 files obsolete, paths stale, recommend close and reopen with 2 valid conversions |
 | #11102 | Add --processes to list running Maven builds | arturobernalg | 2026-07-10T00:00:00Z | COMMENT | AI review on GitHub (prior session, 2026-06-07); no new commits since; will re-review when author pushes updates |
 
 ## Skipped PRs
