@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:34:58Z
+- **Timestamp:** 2026-07-10T02:42:39Z
 - **PRs checked:** 61
-- **Reviews posted:** 39
-- **Note:** Reviewed 3 PRs: #995 (mvn --status, 3yr stale, CLIng rewrite needed), #147 (BOM relocation imports, 8yr stale, cycle detection bugs), #143 (PluginMgmt lifecycle binding, 8.5yr stale, API-breaking changes). ~20 PRs still need review.
+- **Reviews posted:** 42
+- **Note:** Reviewed 3 PRs: #277 (IGNORE_MISSING policy, semantic concern), #159 (import-scoped deps, issue already closed), #314 (conditional version overwrite, code refactored). ~6 truly unreviewed PRs remain.
 
 ## Reviewed PRs
 
@@ -64,6 +64,9 @@
 | #995 | New flag to verify Maven installation status | mthmulders | 2026-07-10T02:34:25Z | COMMENT | 4 high + 4 medium; 3yr stale, all paths moved, MavenCli deprecated, TransporterProvider gone, needs CLIng rewrite |
 | #147 | Dependency management import relocations | ChristianSchulte | 2026-07-10T02:34:42Z | COMMENT | 3 high + 2 medium; 8yr stale, cycle detection bugs (infinite recursion), null relocation fields, no tests |
 | #143 | Declared execution in PluginMgmt lifecycle binding | ChristianSchulte | 2026-07-10T02:34:58Z | COMMENT | 5 high + 3 medium; 8.5yr stale, all paths moved, Plexus→JSR-330 migration, API-breaking interface/exception changes |
+| #277 | IGNORE_MISSING policy for unreachable repos | suztomo | 2026-07-10T02:42:16Z | COMMENT | 3 high + 2 medium; stale paths, Wagon dep, semantic concern (DNS ≠ missing), unresolved CHANGES_REQUESTED |
+| #159 | Import-scoped dependency resolution | clarkperkins | 2026-07-10T02:42:28Z | COMMENT | 3 high; issue MNG-4347 already closed, both paths stale, Maven 4 architecture eliminates the bug class. Recommend close. |
+| #314 | Conditional overwrite version | zhaoyunxing92 | 2026-07-10T02:42:39Z | COMMENT | 3 high + 2 medium; stale path, code refactored into ModelVersionProcessor, projectDir approach questionable, no tests |
 
 ## Skipped PRs
 
