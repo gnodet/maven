@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:14:11Z
+- **Timestamp:** 2026-07-10T02:23:41Z
 - **PRs checked:** 61
-- **Reviews posted:** 33
-- **Note:** Reviewed 3 PRs: #1437 (ConsumerPomFile, needs tests), #1435 (banned projects, bug found), #298 (model problems, critically stale 7 years). ~26 PRs still need review.
+- **Reviews posted:** 36
+- **Note:** Reviewed 3 PRs: #144 (plugin depMgmt, 8.5yr stale), #1125 (plugin resolution, Guava + outdated versions), #281 (nearest-first ordering, needs rebase). ~23 PRs still need review.
 
 ## Reviewed PRs
 
@@ -58,6 +58,9 @@
 | #1437 | Add ConsumerPomFile methods | laeubi | 2026-07-10T02:13:49Z | COMMENT | 1 medium (no tests); code follows patterns, design discussion with rmannibucau unresolved, targets 3.9.x |
 | #1435 | Add failing projects if banned from reactor | laeubi | 2026-07-10T02:14:01Z | COMMENT | 1 high bug (`message += message` instead of `reason += message`) + 1 medium; targets 3.9.x, gnodet arch feedback unaddressed |
 | #298 | Remember if Maven model problems encountered | wilx | 2026-07-10T02:14:11Z | COMMENT | 2 high + 1 medium; 7 years old, method deleted (MNG-7646), file moved (MNG-8346), needs complete rewrite |
+| #144 | Update DefaultPluginManager (MNG-2893) | ChristianSchulte | 2026-07-10T02:23:20Z | COMMENT | 1 high + 2 medium; 8.5 years old, stale paths, possibly already addressed by session factory config |
+| #1125 | Plugin Dependency Resolution improvement | cstamas | 2026-07-10T02:23:33Z | COMMENT | 5 high; hardcoded outdated versions (sisu 0.3.5, classworlds 2.6.0), Guava import (no dep), API migration needed |
+| #281 | Dependency order should be nearest first | belingueres | 2026-07-10T02:23:41Z | COMMENT | 2 high; stale paths, test file conflict, behavioral change needs full IT validation |
 
 ## Skipped PRs
 
