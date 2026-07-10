@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T13:39:10Z
+- **Timestamp:** 2026-07-10T17:31:03Z
 - **PRs checked:** 60
-- **Reviews posted:** 56
-- **Note:** Reviewed new PR #12463 (remove dangling javadoc). APPROVE — clean redundant doc removal.
+- **Reviews posted:** 57
+- **Note:** Re-reviewed #12454 — revert of retry loop, fix moved to #12464. COMMENT, own PR, no issues.
 
 ## Reviewed PRs
 
@@ -19,7 +19,7 @@
 | #11743 | [MNG-11449] Add Mockito javaagent for maven-cli tests | arturobernalg | 2026-07-09T00:00:00Z | COMMENT | Review posted; PR superseded by #12369 (merged 2026-07-03) |
 | #12330 | In failed build limit reactor summary to only failed modules | slawekjaranowski | 2026-07-09T00:00:00Z | COMMENT | Review posted; ellipsis gap in multi-failure scenario, suggested fix |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
-| #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-10T01:15:41Z | COMMENT | Re-review posted; 1 low finding confirmed (Javadoc inconsistency) |
+| #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-10T17:31:03Z | COMMENT | 3rd review: clean revert of retry loop (fix moved to #12464). Own PR, no issues. |
 | #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
 | #11904 | Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin | rbygrave | 2026-07-09T00:00:00Z | COMMENT | Review posted; high: CI broken (IT compilation error), 6/7 findings false positive |
 | #12416 | Fix BOM version resolution for sibling modules in dependencyManagement | Hiteshsai007 | 2026-07-10T06:28:25Z | APPROVE | 3rd review: author addressed assertion feedback — assertEquals("1.0-SNAPSHOT") instead of assertNotNull. Clean PR. |
