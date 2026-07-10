@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T09:09:36Z
-- **PRs checked:** 63
-- **Reviews posted:** 54
-- **Note:** Reviewed 2 new PRs: #12459 and #12460 (actions/setup-java bump, COMMENT — own PRs). CI green on both.
+- **Timestamp:** 2026-07-10T09:45:39Z
+- **PRs checked:** 64
+- **Reviews posted:** 55
+- **Note:** Reviewed new PR #12461 (MNG-8432 IT using mixins). Verifier caught 8/10 FPs from reviewer — API assumptions wrong. 2 LOW observations posted.
 
 ## Reviewed PRs
 
@@ -75,6 +75,7 @@
 | #71 | Mirror definitions inside profiles | nitram509 | 2026-07-10T03:09:28Z | COMMENT | 2 high + 3 medium; 10yr stale, all paths moved, feature still wanted but not in Maven 4. Inactive profiles lost in createFrom(). |
 | #12459 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.9.x) | gnodet | 2026-07-10T09:09:27Z | COMMENT | Own PR, LGTM. Clean version bump + show-download-progress for ITs. CI green. |
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
+| #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 
 ## Skipped PRs
 
