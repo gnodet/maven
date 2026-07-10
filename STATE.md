@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:01:41Z
+- **Timestamp:** 2026-07-10T02:14:11Z
 - **PRs checked:** 61
-- **Reviews posted:** 30
-- **Note:** Reviewed 3 PRs: #1511 (reactor GAV, needs rebase + configurable), #1035 (branch protection, superseded), #964 (Tycho artifact type, needs committer decision). ~29 PRs still need review.
+- **Reviews posted:** 33
+- **Note:** Reviewed 3 PRs: #1437 (ConsumerPomFile, needs tests), #1435 (banned projects, bug found), #298 (model problems, critically stale 7 years). ~26 PRs still need review.
 
 ## Reviewed PRs
 
@@ -55,6 +55,9 @@
 | #1511 | Also print groupId and version in Reactor Build Order | chenchc6 | 2026-07-10T02:01:20Z | COMMENT | 2 high + 1 medium + 1 low; stale paths (MNG-8346), unaddressed gnodet review (make configurable), name dropped |
 | #1035 | Protect master and maven-3.9.x branches | elharo | 2026-07-10T02:01:27Z | COMMENT | Superseded; branch protection already enabled for 8 branches via later commits. Recommend close. |
 | #964 | Add artifact-type for Tycho | laeubi | 2026-07-10T02:01:41Z | COMMENT | Stale 3+ years; committer objection (rmannibucau -1), JIRA closed, file doesn't exist on master. Needs decision. |
+| #1437 | Add ConsumerPomFile methods | laeubi | 2026-07-10T02:13:49Z | COMMENT | 1 medium (no tests); code follows patterns, design discussion with rmannibucau unresolved, targets 3.9.x |
+| #1435 | Add failing projects if banned from reactor | laeubi | 2026-07-10T02:14:01Z | COMMENT | 1 high bug (`message += message` instead of `reason += message`) + 1 medium; targets 3.9.x, gnodet arch feedback unaddressed |
+| #298 | Remember if Maven model problems encountered | wilx | 2026-07-10T02:14:11Z | COMMENT | 2 high + 1 medium; 7 years old, method deleted (MNG-7646), file moved (MNG-8346), needs complete rewrite |
 
 ## Skipped PRs
 
