@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:54:43Z
+- **Timestamp:** 2026-07-10T03:09:28Z
 - **PRs checked:** 61
-- **Reviews posted:** 45
-- **Note:** Reviewed 3 PRs: #982 (PS1 3.9.x, syntax bugs), #878 (PS1 master, needs complete rewrite), #33 (qualityManagement, 11yr oldest PR). 3 truly unreviewed PRs remain (#2277, #1774, #71).
+- **Reviews posted:** 48
+- **Note:** Reviewed final 3 PRs: #2277 (modernize codebase, toList mutability concern), #1774 (cascading profiles, ReportSet merge bug found), #71 (mirrors in profiles, 10yr stale). ALL open PRs have now been reviewed.
 
 ## Reviewed PRs
 
@@ -70,6 +70,9 @@
 | #982 | Implement powershell mvn command (3.9.x) | JurrianFahner | 2026-07-10T02:54:11Z | COMMENT | 2 high + 5 medium; syntax error (unbalanced parens), Test-Path null, MAVEN_ARGS/DEBUG_OPTS scope bugs. #878 must merge first. |
 | #878 | Implement powershell command (master) | JurrianFahner | 2026-07-10T02:54:37Z | COMMENT | 7 high + 6 medium; stale assembly paths, missing Maven 4.x features (native-access, mainClass, jline, Java 17 check), syntax error, needs complete rewrite |
 | #33 | Add qualityManagement POM element | xaviou | 2026-07-10T02:54:43Z | COMMENT | 5 high + 3 medium; oldest PR (11yr), 6263 commits behind, dead code target, needs Maven 4 immutable model architecture |
+| #2277 | Modernize codebase with Java improvements | gnodet | 2026-07-10T03:08:53Z | COMMENT | 2 medium; toList() mutability risk (ImplUtils.map, getProjects), elharo CHANGES_REQUESTED to split. File paths current. |
+| #1774 | Cascading profile activation | gnodet | 2026-07-10T03:09:14Z | COMMENT | 1 bug (ReportSet merge discarded) + NPE risk + behavioral changes (CI-friendly parent removed, WARNING→ERROR). Bundles unrelated changes. |
+| #71 | Mirror definitions inside profiles | nitram509 | 2026-07-10T03:09:28Z | COMMENT | 2 high + 3 medium; 10yr stale, all paths moved, feature still wanted but not in Maven 4. Inactive profiles lost in createFrom(). |
 
 ## Skipped PRs
 
