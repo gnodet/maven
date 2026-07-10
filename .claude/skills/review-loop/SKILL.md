@@ -47,7 +47,7 @@ Read `STATE.md` from the repository root. Parse:
 ### 2. Fetch Open PRs
     gh pr list --repo apache/maven \
       --search "is:pr is:open -is:draft" \
-      --limit 30 \
+      --limit 100 \
       --json number,title,author,createdAt,updatedAt,labels,reviewDecision,additions,deletions,changedFiles
 
 ### 3. Filter PRs

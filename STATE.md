@@ -36,6 +36,8 @@
 | #11682 | Improve README documentation clarity | amahi1568 | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
 | #11609 | Bug: make all collected args use single quote | cstamas | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-05-21); no new commits since; will re-review when author pushes updates |
 | #11509 | Add tests | TheRealHaui | 2026-07-09 | COMMENT | AI review on GitHub (prior session, 2026-06-07); no new commits since; will re-review when author pushes updates |
+| #11410 | tests(maven#10389): Adding DefaultDependencyResolverResultTest | vijaykriishna | 2026-07-10 | COMMENT | AI review on GitHub (prior session, 2026-06-07); no new commits since; will re-review when author pushes updates |
+| #11102 | Add --processes to list running Maven builds | arturobernalg | 2026-07-10 | COMMENT | AI review on GitHub (prior session, 2026-06-07); no new commits since; will re-review when author pushes updates |
 
 ## Skipped PRs
 

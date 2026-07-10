@@ -17,7 +17,7 @@ STATE_FILE="${1:-STATE.md}"
 #    Output: one "number|updatedAt" per line.
 candidates=$(gh pr list --repo "$REPO" \
   --search "is:pr is:open -is:draft" \
-  --limit 30 \
+  --limit 100 \
   --json number,author,updatedAt,labels \
   --jq '[
     .[] |
