@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T01:47:59Z
+- **Timestamp:** 2026-07-10T01:55:22Z
 - **PRs checked:** 61
-- **Reviews posted:** 24
-- **Note:** Reviewed 3 PRs: #11146 (PROJECTBASEDIR backport, APPROVE), #10952 (namespace fix, community decided against), #2106 (exclusion scope, blocked — companion PR wontfix). ~35 PRs still need review.
+- **Reviews posted:** 27
+- **Note:** Reviewed 3 PRs: #2023 (model docs, needs rebase + fix "Returns" prefix), #1538 (test, stale paths + JUnit mix), #793 (Log deprecation, needs rebase). ~32 PRs still need review.
 
 ## Reviewed PRs
 
@@ -49,6 +49,9 @@
 | #11146 | Add support for MAVEN_PROJECTBASEDIR substitution | mguillem | 2026-07-10T01:47:22Z | APPROVE | Clean backport of MNG-8598 to 3.9.x; 1 low finding (tokens=* in for /F loop), CI green |
 | #10952 | Keep Maven Namespace the same | elharo | 2026-07-10T01:47:43Z | COMMENT | 2 medium + 1 low findings; community decided against approach for 4.0; shade-plugin blocker; backward compat concern |
 | #2106 | Add exclusion scope to repo | XenoAmess | 2026-07-10T01:47:59Z | COMMENT | 3 high + 1 medium + 1 low; companion resolver PR wontfix, won't compile, no tests, stale 17 months |
+| #2023 | Clean up model description and API doc | elharo | 2026-07-10T01:55:05Z | COMMENT | 3 high + 1 medium; "Returns" prefix wrong for Modello, artifactId definition error, merge conflicts, prior review unaddressed |
+| #1538 | Add test case for dependency exclusions | yuehcw | 2026-07-10T01:55:11Z | COMMENT | 2 high + 3 medium; JUnit 4/5 import mix, stale paths (MNG-8346), unrelated change bundled |
+| #793 | Log shouldn't have been deprecated | rmannibucau | 2026-07-10T01:55:22Z | COMMENT | 1 high (stale paths); 4 files moved to compat/ by MNG-8346, needs rebase and community re-discussion |
 
 ## Skipped PRs
 
