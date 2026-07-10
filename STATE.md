@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T06:28:25Z
-- **PRs checked:** 61
-- **Reviews posted:** 52
-- **Note:** Re-reviewed #12416 — author addressed assertion feedback (assertEquals instead of assertNotNull). APPROVE.
+- **Timestamp:** 2026-07-10T09:09:36Z
+- **PRs checked:** 63
+- **Reviews posted:** 54
+- **Note:** Reviewed 2 new PRs: #12459 and #12460 (actions/setup-java bump, COMMENT — own PRs). CI green on both.
 
 ## Reviewed PRs
 
@@ -73,6 +73,8 @@
 | #2277 | Modernize codebase with Java improvements | gnodet | 2026-07-10T03:08:53Z | COMMENT | 2 medium; toList() mutability risk (ImplUtils.map, getProjects), elharo CHANGES_REQUESTED to split. File paths current. |
 | #1774 | Cascading profile activation | gnodet | 2026-07-10T03:09:14Z | COMMENT | 1 bug (ReportSet merge discarded) + NPE risk + behavioral changes (CI-friendly parent removed, WARNING→ERROR). Bundles unrelated changes. |
 | #71 | Mirror definitions inside profiles | nitram509 | 2026-07-10T03:09:28Z | COMMENT | 2 high + 3 medium; 10yr stale, all paths moved, feature still wanted but not in Maven 4. Inactive profiles lost in createFrom(). |
+| #12459 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.9.x) | gnodet | 2026-07-10T09:09:27Z | COMMENT | Own PR, LGTM. Clean version bump + show-download-progress for ITs. CI green. |
+| #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 
 ## Skipped PRs
 
