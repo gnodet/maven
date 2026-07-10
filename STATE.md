@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T09:45:39Z
-- **PRs checked:** 64
-- **Reviews posted:** 55
-- **Note:** Reviewed new PR #12461 (MNG-8432 IT using mixins). Verifier caught 8/10 FPs from reviewer — API assumptions wrong. 2 LOW observations posted.
+- **Timestamp:** 2026-07-10T13:39:10Z
+- **PRs checked:** 60
+- **Reviews posted:** 56
+- **Note:** Reviewed new PR #12463 (remove dangling javadoc). APPROVE — clean redundant doc removal.
 
 ## Reviewed PRs
 
@@ -76,6 +76,7 @@
 | #12459 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.9.x) | gnodet | 2026-07-10T09:09:27Z | COMMENT | Own PR, LGTM. Clean version bump + show-download-progress for ITs. CI green. |
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
+| #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
 
 ## Skipped PRs
 
