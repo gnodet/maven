@@ -3,7 +3,7 @@
 # Exits 0 (and prints actionable PR count) if there is work to do.
 # Exits 1 if no actionable PRs found — the loop should skip this iteration.
 #
-# Costs: 1 GitHub API call (no LLM tokens).
+# Costs: 1 GitHub API call + 1 per candidate that looks updated (no LLM tokens).
 # Usage: ./check-pr-work.sh [path/to/STATE.md]
 #
 # Dependencies: gh CLI only (uses gh's built-in --jq, no standalone jq needed).
@@ -76,7 +76,14 @@ while IFS='|' read -r pr_num pr_updated; do
         review_ts="${review_ts}T00:00:00Z"
       fi
       if [[ "$pr_updated" > "$review_ts" ]]; then
-        needs_review=$((needs_review + 1))
+        # updatedAt is newer than review — but that could be a comment/label
+        # bump rather than a new commit. Check the last commit date to be sure.
+        last_commit_ts=$(gh api "repos/$REPO/pulls/$pr_num/commits" \
+          --jq '.[-1].commit.committer.date' 2>/dev/null || true)
+        if [ -n "$last_commit_ts" ] && [[ "$last_commit_ts" > "$review_ts" ]]; then
+          needs_review=$((needs_review + 1))
+        fi
+        # else: updatedAt bumped by non-commit activity — skip
       fi
     fi
   else
