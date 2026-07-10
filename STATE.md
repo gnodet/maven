@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T02:42:39Z
+- **Timestamp:** 2026-07-10T02:54:43Z
 - **PRs checked:** 61
-- **Reviews posted:** 42
-- **Note:** Reviewed 3 PRs: #277 (IGNORE_MISSING policy, semantic concern), #159 (import-scoped deps, issue already closed), #314 (conditional version overwrite, code refactored). ~6 truly unreviewed PRs remain.
+- **Reviews posted:** 45
+- **Note:** Reviewed 3 PRs: #982 (PS1 3.9.x, syntax bugs), #878 (PS1 master, needs complete rewrite), #33 (qualityManagement, 11yr oldest PR). 3 truly unreviewed PRs remain (#2277, #1774, #71).
 
 ## Reviewed PRs
 
@@ -67,6 +67,9 @@
 | #277 | IGNORE_MISSING policy for unreachable repos | suztomo | 2026-07-10T02:42:16Z | COMMENT | 3 high + 2 medium; stale paths, Wagon dep, semantic concern (DNS ≠ missing), unresolved CHANGES_REQUESTED |
 | #159 | Import-scoped dependency resolution | clarkperkins | 2026-07-10T02:42:28Z | COMMENT | 3 high; issue MNG-4347 already closed, both paths stale, Maven 4 architecture eliminates the bug class. Recommend close. |
 | #314 | Conditional overwrite version | zhaoyunxing92 | 2026-07-10T02:42:39Z | COMMENT | 3 high + 2 medium; stale path, code refactored into ModelVersionProcessor, projectDir approach questionable, no tests |
+| #982 | Implement powershell mvn command (3.9.x) | JurrianFahner | 2026-07-10T02:54:11Z | COMMENT | 2 high + 5 medium; syntax error (unbalanced parens), Test-Path null, MAVEN_ARGS/DEBUG_OPTS scope bugs. #878 must merge first. |
+| #878 | Implement powershell command (master) | JurrianFahner | 2026-07-10T02:54:37Z | COMMENT | 7 high + 6 medium; stale assembly paths, missing Maven 4.x features (native-access, mainClass, jline, Java 17 check), syntax error, needs complete rewrite |
+| #33 | Add qualityManagement POM element | xaviou | 2026-07-10T02:54:43Z | COMMENT | 5 high + 3 medium; oldest PR (11yr), 6263 commits behind, dead code target, needs Maven 4 immutable model architecture |
 
 ## Skipped PRs
 
