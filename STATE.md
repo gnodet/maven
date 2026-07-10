@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T01:55:22Z
+- **Timestamp:** 2026-07-10T02:01:41Z
 - **PRs checked:** 61
-- **Reviews posted:** 27
-- **Note:** Reviewed 3 PRs: #2023 (model docs, needs rebase + fix "Returns" prefix), #1538 (test, stale paths + JUnit mix), #793 (Log deprecation, needs rebase). ~32 PRs still need review.
+- **Reviews posted:** 30
+- **Note:** Reviewed 3 PRs: #1511 (reactor GAV, needs rebase + configurable), #1035 (branch protection, superseded), #964 (Tycho artifact type, needs committer decision). ~29 PRs still need review.
 
 ## Reviewed PRs
 
@@ -52,6 +52,9 @@
 | #2023 | Clean up model description and API doc | elharo | 2026-07-10T01:55:05Z | COMMENT | 3 high + 1 medium; "Returns" prefix wrong for Modello, artifactId definition error, merge conflicts, prior review unaddressed |
 | #1538 | Add test case for dependency exclusions | yuehcw | 2026-07-10T01:55:11Z | COMMENT | 2 high + 3 medium; JUnit 4/5 import mix, stale paths (MNG-8346), unrelated change bundled |
 | #793 | Log shouldn't have been deprecated | rmannibucau | 2026-07-10T01:55:22Z | COMMENT | 1 high (stale paths); 4 files moved to compat/ by MNG-8346, needs rebase and community re-discussion |
+| #1511 | Also print groupId and version in Reactor Build Order | chenchc6 | 2026-07-10T02:01:20Z | COMMENT | 2 high + 1 medium + 1 low; stale paths (MNG-8346), unaddressed gnodet review (make configurable), name dropped |
+| #1035 | Protect master and maven-3.9.x branches | elharo | 2026-07-10T02:01:27Z | COMMENT | Superseded; branch protection already enabled for 8 branches via later commits. Recommend close. |
+| #964 | Add artifact-type for Tycho | laeubi | 2026-07-10T02:01:41Z | COMMENT | Stale 3+ years; committer objection (rmannibucau -1), JIRA closed, file doesn't exist on master. Needs decision. |
 
 ## Skipped PRs
 
