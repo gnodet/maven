@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-10T17:51:16Z
-- **PRs checked:** 61
-- **Reviews posted:** 58
-- **Note:** Reviewed new PR #12465 (skip MAVEN_ARGS for sub-tools). COMMENT, own PR, no issues.
+- **Timestamp:** 2026-07-11T15:11:17Z
+- **PRs checked:** 60
+- **Reviews posted:** 59
+- **Note:** Reviewed new PR #12466 (backport of #12465 to 4.0.x). COMMENT, own PR, no issues.
 
 ## Reviewed PRs
 
@@ -77,6 +77,7 @@
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
+| #12466 | Fix #12464: Skip MAVEN_ARGS for non-default main classes (backport to 4.0.x) | gnodet | 2026-07-11T15:11:17Z | COMMENT | Own PR, LGTM. Clean backport of #12465, identical diff. Both Unix + Windows updated. |
 | #12465 | Skip MAVEN_ARGS for non-default main classes | gnodet | 2026-07-10T17:51:16Z | COMMENT | Own PR, LGTM. Clean shell-level fix for #12464, complements #12454 revert. Both Unix + Windows updated. |
 
 ## Skipped PRs
