@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-11T16:04:59Z
-- **PRs checked:** 60
-- **Reviews posted:** 60
-- **Note:** Re-reviewed PR #12330 (reactor summary). APPROVE, all prior feedback addressed.
+- **Timestamp:** 2026-07-11T16:56:08Z
+- **PRs checked:** 58
+- **Reviews posted:** 62
+- **Note:** Reviewed 2 new backport PRs (#12467, #12468). Both COMMENT, own PRs, no issues.
 
 ## Reviewed PRs
 
@@ -77,6 +77,8 @@
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
+| #12468 | Backport #12446: Fix deadlock in AbstractRequestCache | gnodet | 2026-07-11T16:56:04Z | COMMENT | Own PR, LGTM. Clean backport of deadlock fix — files bit-identical to master. All 5 tests + 3 helpers included. |
+| #12467 | Backport #12454: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-11T16:56:08Z | COMMENT | Own PR, LGTM. Clean squashed backport of 18 commits. 4 new strategies, Quarkus detection, comprehensive tests. |
 | #12466 | Fix #12464: Skip MAVEN_ARGS for non-default main classes (backport to 4.0.x) | gnodet | 2026-07-11T15:11:17Z | COMMENT | Own PR, LGTM. Clean backport of #12465, identical diff. Both Unix + Windows updated. |
 | #12465 | Skip MAVEN_ARGS for non-default main classes | gnodet | 2026-07-10T17:51:16Z | COMMENT | Own PR, LGTM. Clean shell-level fix for #12464, complements #12454 revert. Both Unix + Windows updated. |
 
