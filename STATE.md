@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-11T17:02:03Z
-- **PRs checked:** 59
-- **Reviews posted:** 63
-- **Note:** Reviewed new backport PR #12469 (reactor summary to 4.0.x). APPROVE, byte-identical to merged #12330.
+- **Timestamp:** 2026-07-11T17:44:58Z
+- **PRs checked:** 60
+- **Reviews posted:** 64
+- **Note:** Reviewed new PR #12470 (reactor summary ellipsis improvements for 3.10.x). APPROVE, fixes real bug in #12330's isExecutionRoot() logic.
 
 ## Reviewed PRs
 
@@ -77,6 +77,7 @@
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
+| #12470 | In failed build limit reactor summary to only failed modules - improvements | slawekjaranowski | 2026-07-11T17:44:58Z | APPROVE | Fixes ellipsis bug in #12330: replaces isExecutionRoot() with lastWasSkipped flag for correct boundary detection. New test for separated failures. |
 | #12469 | In failed build limit reactor summary to only failed modules (4.0.x) | slawekjaranowski | 2026-07-11T17:02:03Z | APPROVE | Clean backport of #12330 to 4.0.x. Byte-identical diff. lastWasSkipped logic, formatBuildTime, 4 test scenarios. |
 | #12468 | Backport #12446: Fix deadlock in AbstractRequestCache | gnodet | 2026-07-11T16:56:04Z | COMMENT | Own PR, LGTM. Clean backport of deadlock fix — files bit-identical to master. All 5 tests + 3 helpers included. |
 | #12467 | Backport #12454: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-11T16:56:08Z | COMMENT | Own PR, LGTM. Clean squashed backport of 18 commits. 4 new strategies, Quarkus detection, comprehensive tests. |
