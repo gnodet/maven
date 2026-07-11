@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-11T15:11:17Z
+- **Timestamp:** 2026-07-11T16:04:59Z
 - **PRs checked:** 60
-- **Reviews posted:** 59
-- **Note:** Reviewed new PR #12466 (backport of #12465 to 4.0.x). COMMENT, own PR, no issues.
+- **Reviews posted:** 60
+- **Note:** Re-reviewed PR #12330 (reactor summary). APPROVE, all prior feedback addressed.
 
 ## Reviewed PRs
 
@@ -17,7 +17,7 @@
 | #11770 | feat: Improve the matching of required versions | nielsbasjes | 2026-07-09T00:00:00Z | COMMENT | Review posted; regex bug, pattern precompilation, missing tests — reinforces prior feedback |
 | #12417 | [MNG-8432] Inherit properties from imported BOMs | Hiteshsai007 | 2026-07-10T05:58:32Z | COMMENT | Re-review: double-interpolation fixed, opt-in flag added. Still no tests, no CI, BOM filter condition bug (pre-existing). 2 high + 1 medium + 1 low confirmed (2 FPs dropped). |
 | #11743 | [MNG-11449] Add Mockito javaagent for maven-cli tests | arturobernalg | 2026-07-09T00:00:00Z | COMMENT | Review posted; PR superseded by #12369 (merged 2026-07-03) |
-| #12330 | In failed build limit reactor summary to only failed modules | slawekjaranowski | 2026-07-09T00:00:00Z | COMMENT | Review posted; ellipsis gap in multi-failure scenario, suggested fix |
+| #12330 | In failed build limit reactor summary to only failed modules | slawekjaranowski | 2026-07-11T16:04:59Z | APPROVE | Re-review: all prior feedback addressed — ellipsis gap fixed with lastWasSkipped, test visibility corrected, new separated-failure test added. |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
 | #12454 | Fix #12430: mvnup upgrade strategies and compatibility improvements | gnodet | 2026-07-10T17:31:03Z | COMMENT | 3rd review: clean revert of retry loop (fix moved to #12464). Own PR, no issues. |
 | #12377 | Remove Profile getSource / setSource | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); LGTM — clean API removal, backward compat preserved |
