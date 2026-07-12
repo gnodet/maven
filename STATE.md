@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-12T15:20:45Z
+- **Timestamp:** 2026-07-12T16:47:01Z
 - **PRs checked:** 58
-- **Reviews posted:** 69
-- **Note:** Reviewed #12473 (backport of merged #2333 server aliases to 4.0.x). APPROVE, identical code.
+- **Reviews posted:** 70
+- **Note:** Reviewed #12475 (backport of merged #2333 server aliases to 3.10.x). APPROVE, clean adaptation for Maven 3 model classes.
 
 ## Reviewed PRs
 
@@ -77,6 +77,7 @@
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
+| #12475 | [MNG-5913] Server aliases backport to 3.10.x | slawekjaranowski | 2026-07-12T16:47:01Z | APPROVE | Backport of merged #2333 (master → 3.10.x). Clean adaptation: clone() instead of newBuilder(), Collectors.toList(), model v1.3.0. |
 | #12473 | [MNG-5913] Server aliases backport to 4.0.x | slawekjaranowski | 2026-07-12T15:20:45Z | APPROVE | Cherry-pick of merged #2333 (master → 4.0.x). Identical code, 20 files, 641+/15−. |
 | #12471 | Fix Javadoc about default value | arend-von-reinersdorff | 2026-07-11T21:50:29Z | APPROVE | Correct fix: moves "(default)" from true to false for MAVEN_CONSUMER_POM_FLATTEN, matching @Config annotation and runtime. |
 | #12470 | In failed build limit reactor summary to only failed modules - improvements | slawekjaranowski | 2026-07-11T17:44:58Z | APPROVE | Fixes ellipsis bug in #12330: replaces isExecutionRoot() with lastWasSkipped flag for correct boundary detection. New test for separated failures. |
