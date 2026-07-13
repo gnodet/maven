@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-13T19:49:15Z
-- **PRs checked:** 61
-- **Reviews posted:** 74
-- **Note:** Reviewed 3 PRs: #12486 (incomplete --print-build-order, COMMENT with 4 findings), #12482 (Plexus XML doc fix, APPROVE), #12483 (UT checkout fix, APPROVE).
+- **Timestamp:** 2026-07-13T21:09:03Z
+- **PRs checked:** 58
+- **Reviews posted:** 75
+- **Note:** Re-reviewed #12486 after author fixed @Nonnull + Javadoc. 2/4 findings resolved, 2 remain (not wired, no tests). COMMENT.
 
 ## Reviewed PRs
 
@@ -77,7 +77,7 @@
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
 | #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
-| #12486 | MNG-7884: Add --print-build-order option | AbdelHamdyGhanem | 2026-07-13T19:49:06Z | COMMENT | Incomplete: option parsed but not wired (silently no-op). Missing @Nonnull, no tests, Javadoc style. 1 high + 2 medium + 1 low confirmed. |
+| #12486 | MNG-7884: Add --print-build-order option | AbdelHamdyGhanem | 2026-07-13T21:09:03Z | COMMENT | Re-review: author fixed @Nonnull + Javadoc. Still not wired (no-op) and no tests. 1 high + 1 medium remain. |
 | #12483 | Fix UT: do not use checkout directly | cstamas | 2026-07-13T19:49:15Z | APPROVE | Correct 1-line fix: src/test/resources → target/test-classes for test isolation. |
 | #12482 | Drop mention of Plexus XML | cstamas | 2026-07-13T19:49:10Z | APPROVE | Clean doc fix removing stale META-INF/plexus/default-bindings.xml reference. |
 | #12480 | Use hardened XmlService in extractModelId | gnodet | 2026-07-13T15:41:28Z | COMMENT | Own PR. XXE hardening: replaces raw XMLInputFactory with XmlService.newXMLInputFactory(). Removes dead InputFactoryHolder. New DOCTYPE test. |
