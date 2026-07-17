@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-17T12:30:00Z
+- **Timestamp:** 2026-07-17T14:00:00Z
 - **PRs checked:** 58
-- **Reviews posted:** 76
-- **Note:** 1 review posted (#12478 — missed from Jul 13 batch). 4 new dependabot PRs (setup-java 5.5.0→5.6.0) skipped. #12481 is draft, correctly excluded. No new commits on previously-reviewed PRs.
+- **Reviews posted:** 77
+- **Note:** Re-review of #12461 — new commit addressed prior feedback (string matching → maven-it-plugin-expression). APPROVED.
 
 ## Reviewed PRs
 
@@ -76,7 +76,7 @@
 | #71 | Mirror definitions inside profiles | nitram509 | 2026-07-10T03:09:28Z | COMMENT | 2 high + 3 medium; 10yr stale, all paths moved, feature still wanted but not in Maven 4. Inactive profiles lost in createFrom(). |
 | #12459 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.9.x) | gnodet | 2026-07-10T09:09:27Z | COMMENT | Own PR, LGTM. Clean version bump + show-download-progress for ITs. CI green. |
 | #12460 | Bump actions/setup-java from 5.4.0 to 5.5.0 (3.10.x) | gnodet | 2026-07-10T09:09:36Z | COMMENT | Own PR, LGTM. Same as #12459 for maven-3.10.x. CI green. |
-| #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-10T09:45:39Z | COMMENT | 2 low observations (partial overlap with existing test, string matching). Verifier caught 8/10 FPs. Clean test. |
+| #12461 | Integration test for MNG-8432 using mixins | Hiteshsai007 | 2026-07-17T14:00:00Z | APPROVE | Re-review: new commit replaced string matching with maven-it-plugin-expression pattern. Follows core-it-suite conventions. Clean. |
 | #12463 | Remove dangling javadoc comments | elharo | 2026-07-10T13:39:10Z | APPROVE | Clean removal of redundant inline javadoc on record components. @param tags already present. |
 | #12486 | MNG-7884: Add --print-build-order option | AbdelHamdyGhanem | 2026-07-13T21:09:03Z | COMMENT | Re-review: author fixed @Nonnull + Javadoc. Still not wired (no-op) and no tests. 1 high + 1 medium remain. |
 | #12483 | Fix UT: do not use checkout directly | cstamas | 2026-07-13T19:49:15Z | APPROVE | Correct 1-line fix: src/test/resources → target/test-classes for test isolation. |
