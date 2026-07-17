@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-13T21:09:03Z
+- **Timestamp:** 2026-07-17T12:30:00Z
 - **PRs checked:** 58
-- **Reviews posted:** 75
-- **Note:** Re-reviewed #12486 after author fixed @Nonnull + Javadoc. 2/4 findings resolved, 2 remain (not wired, no tests). COMMENT.
+- **Reviews posted:** 76
+- **Note:** 1 review posted (#12478 — missed from Jul 13 batch). 4 new dependabot PRs (setup-java 5.5.0→5.6.0) skipped. #12481 is draft, correctly excluded. No new commits on previously-reviewed PRs.
 
 ## Reviewed PRs
 
@@ -13,6 +13,7 @@
 
 | PR | Title | Author | Reviewed | Verdict | Notes |
 |----|-------|--------|----------|---------|-------|
+| #12478 | Add cross-thread deadlock regression test for #12472 | gnodet | 2026-07-17T12:30:00Z | COMMENT | Own PR. Excellent regression test using CyclicBarrier. 2 low findings (assertion precision). LGTM. |
 | #12419 | Avoid IllegalStateException on duplicate profile ids in DefaultModelBuilder | mvanhorn | 2026-07-10T05:58:12Z | APPROVE | Re-review: new commit is Spotless formatting only, no logic change. Core fix remains correct. |
 | #11770 | feat: Improve the matching of required versions | nielsbasjes | 2026-07-09T00:00:00Z | COMMENT | Review posted; regex bug, pattern precompilation, missing tests — reinforces prior feedback |
 | #12417 | [MNG-8432] Inherit properties from imported BOMs | Hiteshsai007 | 2026-07-10T05:58:32Z | COMMENT | Re-review: double-interpolation fixed, opt-in flag added. Still no tests, no CI, BOM filter condition bug (pre-existing). 2 high + 1 medium + 1 low confirmed (2 FPs dropped). |
@@ -97,6 +98,21 @@
 
 | PR | Reason | Since |
 |----|--------|-------|
+| #12501 | Bot PR (dependabot), setup-java 5.5.0→5.6.0 | 2026-07-17 |
+| #12500 | Bot PR (dependabot), setup-java 5.5.0→5.6.0 | 2026-07-17 |
+| #12499 | Bot PR (dependabot), setup-java 5.5.0→5.6.0 | 2026-07-17 |
+| #12498 | Bot PR (dependabot), setup-java 5.5.0→5.6.0 | 2026-07-17 |
+| #12481 | Draft PR | 2026-07-17 |
+| #12496 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12495 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12494 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12493 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12492 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12491 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12490 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12489 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12488 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
+| #12487 | Bot PR (dependabot), GH Actions bump | 2026-07-14 |
 | #12477 | Bot PR (dependabot), dependencies label | 2026-07-13 |
 | #12458 | Bot PR (dependabot), dependencies label | 2026-07-10 |
 | #12457 | Bot PR (dependabot), dependencies label | 2026-07-10 |
