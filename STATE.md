@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-07-17T15:30:00Z
+- **Timestamp:** 2026-07-18T13:30:00Z
 - **PRs checked:** 58
-- **Reviews posted:** 78
-- **Note:** Review of new PR #12502 — test refactoring to maven-it-plugin-expression pattern. Own PR, LGTM.
+- **Reviews posted:** 79
+- **Note:** Review of new PR #12503 (scope preservation fix for 3.10.x). APPROVED with Spotless formatting note.
 
 ## Reviewed PRs
 
@@ -13,6 +13,7 @@
 
 | PR | Title | Author | Reviewed | Verdict | Notes |
 |----|-------|--------|----------|---------|-------|
+| #12503 | Preserve dependency scope in plugin artifacts - fix #12497 | slawekjaranowski | 2026-07-18T13:30:00Z | APPROVE | Correct regression fix for 3.10.x. Null-safe Optional chain. 1 Spotless fix needed, 2 suggestions (Javadoc, test). |
 | #12502 | Refactor MNG-11133 test to use maven-it-plugin-expression | gnodet | 2026-07-17T15:30:00Z | COMMENT | Own PR. Clean test refactoring — effective-pom string matching → expression plugin. No findings. LGTM. |
 | #12478 | Add cross-thread deadlock regression test for #12472 | gnodet | 2026-07-17T12:30:00Z | COMMENT | Own PR. Excellent regression test using CyclicBarrier. 2 low findings (assertion precision). LGTM. |
 | #12419 | Avoid IllegalStateException on duplicate profile ids in DefaultModelBuilder | mvanhorn | 2026-07-10T05:58:12Z | APPROVE | Re-review: new commit is Spotless formatting only, no logic change. Core fix remains correct. |
