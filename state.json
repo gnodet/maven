@@ -1,0 +1,61 @@
+{
+  "reviewed_prs": [
+    {
+      "number": 964,
+      "title": "[MNG-7669] Add artifact-type for Tycho",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-23T17:18:45Z",
+      "verdict": "COMMENT",
+      "notes": "Already reviewed by AI. Governance concerns, file removed in Maven 4, closed JIRA.",
+      "interactions": [
+        {
+          "at": "2026-07-23T17:18:45Z",
+          "verdict": "COMMENT",
+          "notes": "Already reviewed by AI. Governance concerns, file removed in Maven 4, closed JIRA."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 982,
+      "title": "[MNG-7541] Implement powershell mvn command",
+      "author": "JurrianFahner",
+      "reviewed_at": "2026-07-23T17:18:45Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Already reviewed by AI. Fatal parse error, env var scope bugs, missing exit code, 3+ years stale.",
+      "interactions": [
+        {
+          "at": "2026-07-23T17:18:45Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Already reviewed by AI. Fatal parse error, env var scope bugs, missing exit code, 3+ years stale."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 995,
+      "title": "[MNG-6869] New flag to verify Maven installation status",
+      "author": "mthmulders",
+      "reviewed_at": "2026-07-23T17:18:45Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Already reviewed by AI. Cannot compile against current master, needs complete rewrite for Maven 4.",
+      "interactions": [
+        {
+          "at": "2026-07-23T17:18:45Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Already reviewed by AI. Cannot compile against current master, needs complete rewrite for Maven 4."
+        }
+      ],
+      "review_count": 1
+    }
+  ],
+  "skipped_prs": [],
+  "last_run": {
+    "timestamp": "2026-07-23T17:18:45Z",
+    "prs_checked": 3,
+    "reviews_posted": 0,
+    "tokens_estimate": 0
+  },
+  "paused": false,
+  "review_queue": []
+}
