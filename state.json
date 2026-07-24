@@ -143,16 +143,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11682,
+      "title": "Improve README documentation clarity",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "3/3 findings verified: wording inconsistent with current website, mailing list discussion not held, governance question.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "3/3 findings verified: wording inconsistent with current website, mailing list discussion not held, governance question."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11609,
+      "title": "Bug: make all collected args use single quote",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "2/2 findings verified: superseded by merged PR #11983, single-quote injection bug. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "2/2 findings verified: superseded by merged PR #11983, single-quote injection bug. Should be closed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11410,
+      "title": "tests(maven#10389): Adding DefaultDependencyResolverResultTest",
+      "author": "vijaykriishna",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "3/6 findings verified (3 FP removed by verifier): temp file cleanup, duplicated construction block, unnecessary cast. Valuable test coverage overall.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "3/6 findings verified (3 FP removed by verifier): temp file cleanup, duplicated construction block, unnecessary cast. Valuable test coverage overall."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T14:12:18Z",
+    "timestamp": "2026-07-24T14:22:09Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-06-22T16:05:26Z"
+  "last_reviewed_updated_at": "2026-06-22T16:05:53Z"
 }
