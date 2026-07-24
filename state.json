@@ -697,17 +697,65 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 1538,
+      "title": "Add test case for dependency exclusions in DependencyTest",
+      "author": "yuehcw",
+      "reviewed_at": "2026-07-24T23:00:40Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "7 verified findings: JUnit 4 regression, stale paths, duplicate merged change, visibility violations, missing JIRA ref, shallow tests. Appears abandoned since May 2024.",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "7 verified findings: JUnit 4 regression, stale paths, duplicate merged change, visibility violations, missing JIRA ref, shallow tests. Appears abandoned since May 2024."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12538,
+      "title": "Fix #12536: Handle Ctrl+C on Windows terminals",
+      "author": "JackMyers001",
+      "reviewed_at": "2026-07-24T23:00:40Z",
+      "verdict": "APPROVE",
+      "notes": "Clean minimal fix for Windows Ctrl+C regression. Correctly gated to Windows, proper exit code, embedded guard.",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "APPROVE",
+          "notes": "Clean minimal fix for Windows Ctrl+C regression. Correctly gated to Windows, proper exit code, embedded guard."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12532,
+      "title": "Fix #12530: add mvnup upgrade strategies for Maven 4",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T23:00:40Z",
+      "verdict": "APPROVE",
+      "notes": "4 new mvnup strategies, 31 tests, solid coverage. Minor: unused param, map rebuilds. Posted as COMMENT (operator PR).",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "APPROVE",
+          "notes": "4 new mvnup strategies, 31 tests, solid coverage. Minor: unused param, map rebuilds. Posted as COMMENT (operator PR)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T21:22:14Z",
+    "timestamp": "2026-07-24T23:00:40Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-24T21:11:57Z",
+  "last_reviewed_updated_at": "2026-07-24T21:11:46Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
