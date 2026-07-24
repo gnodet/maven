@@ -239,16 +239,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12418,
+      "title": "[MNG-8425] Fix mvnenc init saving invalid master source configuration",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-24T15:28:28Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix for invalid master-source config saved by mvnenc init",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for invalid master-source config saved by mvnenc init"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11743,
+      "title": "[MNG-11449] Add Mockito javaagent for maven-cli tests",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T15:28:28Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Superseded by PR #12369 (merged); argLine override shadows parent, eager interpolation bug, redundant test",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Superseded by PR #12369 (merged); argLine override shadows parent, eager interpolation bug, redundant test"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11770,
+      "title": "feat: Improve the matching of required versions",
+      "author": "nielsbasjes",
+      "reviewed_at": "2026-07-24T15:28:28Z",
+      "verdict": "COMMENT",
+      "notes": "Regex bug: major.minor pattern uses [0-9] instead of [0-9]+ breaking JDK 11/17/21; missing multi-digit tests",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "COMMENT",
+          "notes": "Regex bug: major.minor pattern uses [0-9] instead of [0-9]+ breaking JDK 11/17/21; missing multi-digit tests"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T15:01:58Z",
+    "timestamp": "2026-07-24T15:28:32Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-03T10:08:27Z"
+  "last_reviewed_updated_at": "2026-07-09T21:05:15Z"
 }
