@@ -575,16 +575,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12410,
+      "title": "reject path-traversal segments in coordinate ids and versions",
+      "author": "jmestwa-coder",
+      "reviewed_at": "2026-07-24T17:44:35Z",
+      "verdict": "APPROVE",
+      "notes": "Clean security fix. Rejects . and .. as coordinate IDs/versions to prevent path-traversal. Tests comprehensive, CI green.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:35Z",
+          "verdict": "APPROVE",
+          "notes": "Clean security fix. Rejects . and .. as coordinate IDs/versions to prevent path-traversal. Tests comprehensive, CI green."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12480,
+      "title": "Use hardened XmlService.newXMLInputFactory() consistently in extractModelId",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:44:35Z",
+      "verdict": "APPROVE",
+      "notes": "XXE hardening gap fix. Replaces raw XMLInputFactory.newFactory() with hardened XmlService.newXMLInputFactory(). Dead code removal. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:35Z",
+          "verdict": "APPROVE",
+          "notes": "XXE hardening gap fix. Replaces raw XMLInputFactory.newFactory() with hardened XmlService.newXMLInputFactory(). Dead code removal. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12486,
+      "title": "MNG-7884: Add --print-build-order option",
+      "author": "AbdelHamdyGhanem",
+      "reviewed_at": "2026-07-24T17:44:36Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "3/3 confirmed. Feature incomplete: option parsed but never consumed, no tests. PR not marked as draft despite In Progress label.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:36Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "3/3 confirmed. Feature incomplete: option parsed but never consumed, no tests. PR not marked as draft despite In Progress label."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T17:27:53Z",
+    "timestamp": "2026-07-24T17:44:36Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-12T11:29:37Z"
+  "last_reviewed_updated_at": "2026-07-13T21:09:03Z"
 }
