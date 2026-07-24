@@ -191,16 +191,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11509,
+      "title": "Add tests",
+      "author": "TheRealHaui",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "COMMENT",
+      "notes": "6/6 findings verified: missing assertion in extension test, dependency set bug, incomplete coverage (type/classifier/scope/exclusions/hashCode), wildcard import, mixed test concerns.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "COMMENT",
+          "notes": "6/6 findings verified: missing assertion in extension test, dependency set bug, incomplete coverage (type/classifier/scope/exclusions/hashCode), wildcard import, mixed test concerns."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12332,
+      "title": "[MNG-8768] Add executable() function for conditional profile activation based on PATH",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "APPROVE",
+      "notes": "Approved. Well-implemented feature, thorough test coverage, 4 review rounds addressed. Minor non-blocking items noted.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "APPROVE",
+          "notes": "Approved. Well-implemented feature, thorough test coverage, 4 review rounds addressed. Minor non-blocking items noted."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12135,
+      "title": "[MNG-11642] Add JPMS module support to Maven 4",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "COMMENT",
+      "notes": "Self-authored PR (cannot self-approve). JPMS migration looks solid, all CI passes, no blocking issues found.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "COMMENT",
+          "notes": "Self-authored PR (cannot self-approve). JPMS migration looks solid, all CI passes, no blocking issues found."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T14:22:09Z",
+    "timestamp": "2026-07-24T15:01:58Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-06-22T16:05:53Z"
+  "last_reviewed_updated_at": "2026-07-03T10:08:27Z"
 }
