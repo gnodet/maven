@@ -335,16 +335,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11502,
+      "title": "Added additional tests to ProjectModelResolverTest",
+      "author": "TheRealHaui",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "APPROVE",
+      "notes": "Clean test-only PR; version range error path coverage; CI green",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "APPROVE",
+          "notes": "Clean test-only PR; version range error path coverage; CI green"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11405,
+      "title": "Introduce TempFileService and lifecycle cleanup participant",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "COMMENT",
+      "notes": "7 convention violations confirmed; stale PR (8+ months); prior CHANGES_REQUESTED unaddressed",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "COMMENT",
+          "notes": "7 convention violations confirmed; stale PR (8+ months); prior CHANGES_REQUESTED unaddressed"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11186,
+      "title": "Issue #10985: Maven allows random namespaces on project",
+      "author": "raupachz",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Regression: empty NS accepted for 4.1.0+; validation level gating unaddressed; no tests",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Regression: empty NS accepted for 4.1.0+; validation level gating unaddressed; no tests"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T15:51:29Z",
+    "timestamp": "2026-07-24T16:05:43Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-09T23:31:13Z"
+  "last_reviewed_updated_at": "2026-07-10T01:23:44Z"
 }
