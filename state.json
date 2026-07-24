@@ -431,16 +431,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 1511,
+      "title": "[MNG-7883] Also print groupId and version in the Reactor Build Order",
+      "author": "chenchc6",
+      "reviewed_at": "2026-07-24T16:43:11Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "5 findings confirmed: stale paths after MNG-8346, unaddressed maintainer feedback on configurability, name replacement vs augmentation, no test updates, padding collapse risk.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:11Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "5 findings confirmed: stale paths after MNG-8346, unaddressed maintainer feedback on configurability, name replacement vs augmentation, no test updates, padding collapse risk."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1437,
+      "title": "[MNG-8072] add ConsumerPomFile methods",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-24T16:43:11Z",
+      "verdict": "COMMENT",
+      "notes": "3 confirmed, 1 FP (silent fallback intentional). Missing tests (2yr unaddressed), no Javadoc/@since. Unresolved design discussion on 3.9.x vs Maven 4 approach.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:11Z",
+          "verdict": "COMMENT",
+          "notes": "3 confirmed, 1 FP (silent fallback intentional). Missing tests (2yr unaddressed), no Javadoc/@since. Unresolved design discussion on 3.9.x vs Maven 4 approach."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1435,
+      "title": "[MNG-8069] add failing projects if a project is banned from reactor",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-24T16:43:12Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "2 findings confirmed: variable assignment bug (message instead of reason at line 282), typo lead->led.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:12Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "2 findings confirmed: variable assignment bug (message instead of reason at line 282), typo lead->led."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T16:33:50Z",
+    "timestamp": "2026-07-24T16:43:17Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T01:55:11Z"
+  "last_reviewed_updated_at": "2026-07-10T02:14:01Z"
 }
