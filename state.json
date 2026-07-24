@@ -47,15 +47,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12145,
+      "title": "Avoid final logger injection in EventSpyDispatcher",
+      "author": "Will-thom",
+      "reviewed_at": "2026-07-24T13:23:52Z",
+      "verdict": "COMMENT",
+      "notes": "All 4 findings verified: closed underlying issue, incomplete scope (1/40 files), test tests implementation details not behavior, missing license acknowledgment.",
+      "interactions": [
+        {
+          "at": "2026-07-24T13:23:52Z",
+          "verdict": "COMMENT",
+          "notes": "All 4 findings verified: closed underlying issue, incomplete scope (1/40 files), test tests implementation details not behavior, missing license acknowledgment."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12069,
+      "title": "Fix site lifecycle reactor dependency resolution",
+      "author": "Will-thom",
+      "reviewed_at": "2026-07-24T13:23:54Z",
+      "verdict": "COMMENT",
+      "notes": "4/6 findings verified: empty JAR masks real problem, lifecycle coupling in ReactorReader, cleanup inconsistency, test gap. 2 false positives removed (JAR-only scope consistent, lazy init pre-existing).",
+      "interactions": [
+        {
+          "at": "2026-07-24T13:23:54Z",
+          "verdict": "COMMENT",
+          "notes": "4/6 findings verified: empty JAR masks real problem, lifecycle coupling in ReactorReader, cleanup inconsistency, test gap. 2 false positives removed (JAR-only scope consistent, lazy init pre-existing)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11926,
+      "title": "Warn when profile ID matches a lifecycle phase name",
+      "author": "utafrali",
+      "reviewed_at": "2026-07-24T13:23:56Z",
+      "verdict": "COMMENT",
+      "notes": "4/5 findings verified: hardcoded phase list missing 9 Maven 4 phases, extension-contributed phases not coverable, test maintenance side-effect, vague warning message. 1 false positive removed (null check is necessary, not redundant).",
+      "interactions": [
+        {
+          "at": "2026-07-24T13:23:56Z",
+          "verdict": "COMMENT",
+          "notes": "4/5 findings verified: hardcoded phase list missing 9 Maven 4 phases, extension-contributed phases not coverable, test maintenance side-effect, vague warning message. 1 false positive removed (null check is necessary, not redundant)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-23T17:18:45Z",
+    "timestamp": "2026-07-24T13:24:03Z",
     "prs_checked": 3,
-    "reviews_posted": 0,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
-  "review_queue": []
+  "review_queue": [],
+  "last_reviewed_updated_at": "2026-06-22T16:04:44Z"
 }
