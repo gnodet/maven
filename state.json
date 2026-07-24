@@ -95,16 +95,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11102,
+      "title": "Add --processes to list running Maven builds",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T14:12:17Z",
+      "verdict": "COMMENT",
+      "notes": "11/11 findings verified: duplicate option registration, comment-code contradiction, --processes/--projects ambiguity, System.out bypass, wrong method placement, error logging on success, PID recycling, redundant hasOption, global JVM state coupling.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:17Z",
+          "verdict": "COMMENT",
+          "notes": "11/11 findings verified: duplicate option registration, comment-code contradiction, --processes/--projects ambiguity, System.out bypass, wrong method placement, error logging on success, PID recycling, redundant hasOption, global JVM state coupling."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11692,
+      "title": "docs: fix broken reference links",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:12:17Z",
+      "verdict": "COMMENT",
+      "notes": "1/1 finding verified: PR would break working ref/4-LATEST links by replacing with ref/4.0.0 which returns 404. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:17Z",
+          "verdict": "COMMENT",
+          "notes": "1/1 finding verified: PR would break working ref/4-LATEST links by replacing with ref/4.0.0 which returns 404. Should be closed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11686,
+      "title": "docs: clarify deprecation of RELEASE and LATEST version constants",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:12:18Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 findings verified: superseded by merged PR #11584, incorrect since value, poor migration advice, formatting issues. CONFLICTING merge state. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:18Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 findings verified: superseded by merged PR #11584, incorrect since value, poor migration advice, formatting issues. CONFLICTING merge state. Should be closed."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T13:24:03Z",
+    "timestamp": "2026-07-24T14:12:18Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-06-22T16:04:44Z"
+  "last_reviewed_updated_at": "2026-06-22T16:05:26Z"
 }
