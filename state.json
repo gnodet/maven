@@ -479,16 +479,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 2277,
+      "title": "Modernize codebase with Java improvements",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "COMMENT",
+      "notes": "3/6 confirmed, 3 FPs. Two high regressions in DefaultLifecycleRegistry: WrappedPhase.plugins() returns ALL plugins, WrappedLifecycle.phases() drops fix #11796. toList() mutability concern.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "COMMENT",
+          "notes": "3/6 confirmed, 3 FPs. Two high regressions in DefaultLifecycleRegistry: WrappedPhase.plugins() returns ALL plugins, WrappedLifecycle.phases() drops fix #11796. toList() mutability concern."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1774,
+      "title": "[MNG-3309] Cascading profile activation",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 high findings confirmed. Reverts 5 merged bug fixes (targetPath, consumer POM repos, CI-friendly interpolation, versionContainsExpression, exception handler HTTPS). Likely rebase conflict artifacts.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 high findings confirmed. Reverts 5 merged bug fixes (targetPath, consumer POM repos, CI-friendly interpolation, versionContainsExpression, exception handler HTTPS). Likely rebase conflict artifacts."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 10971,
+      "title": "Add test for prefixed Maven elements",
+      "author": "elharo",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "APPROVE",
+      "notes": "Clean test-only PR. Useful regression test for XML namespace-prefixed POM elements. Minor assertion message suggestion.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "APPROVE",
+          "notes": "Clean test-only PR. Useful regression test for XML namespace-prefixed POM elements. Minor assertion message suggestion."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T16:43:17Z",
+    "timestamp": "2026-07-24T17:18:23Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T02:14:01Z"
+  "last_reviewed_updated_at": "2026-07-10T12:52:30Z"
 }
