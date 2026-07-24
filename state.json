@@ -383,16 +383,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11185,
+      "title": "Disallow arbitrary namespaces in Maven and Metadata readers",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Velocity template breaks indentation in all generated StAX readers; 4/5 confirmed, 1 FP",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Velocity template breaks indentation in all generated StAX readers; 4/5 confirmed, 1 FP"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 10906,
+      "title": "[MNG-8018] Fix MSYS/Git-Bash path mis-detection on Windows",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Debug System.out.println leftover; over-broad path conversion breaks non-MSYS paths; 7/7 confirmed",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Debug System.out.println leftover; over-broad path conversion breaks non-MSYS paths; 7/7 confirmed"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11146,
+      "title": "Add support for MAVEN_PROJECTBASEDIR substitution (backport of MNG-8598)",
+      "author": "mguillem",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of MNG-8598; CI green; already approved by maintainer",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of MNG-8598; CI green; already approved by maintainer"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T16:05:43Z",
+    "timestamp": "2026-07-24T16:21:33Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T01:23:44Z"
+  "last_reviewed_updated_at": "2026-07-10T01:47:22Z"
 }
