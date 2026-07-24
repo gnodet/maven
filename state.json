@@ -527,16 +527,64 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12402,
+      "title": "WIP: Try to use RAT 0.18",
+      "author": "ottlinger",
+      "reviewed_at": "2026-07-24T17:27:53Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12471,
+      "title": "Fix Javadoc about default value",
+      "author": "arend-von-reinersdorff",
+      "reviewed_at": "2026-07-24T17:27:53Z",
+      "verdict": "APPROVE",
+      "notes": "Correct Javadoc fix. @Config annotation and Features.consumerPomFlatten() both use false as default.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "APPROVE",
+          "notes": "Correct Javadoc fix. @Config annotation and Features.consumerPomFlatten() both use false as default."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12416,
+      "title": "Fix BOM version resolution for sibling modules in dependencyManagement",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-24T17:27:53Z",
+      "verdict": "COMMENT",
+      "notes": "Core fix correct (inferDependencies helper). CI failing due to Spotless formatting violations in 3 locations.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "COMMENT",
+          "notes": "Core fix correct (inferDependencies helper). CI failing due to Spotless formatting violations in 3 locations."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T17:18:23Z",
+    "timestamp": "2026-07-24T17:27:53Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T12:52:30Z"
+  "last_reviewed_updated_at": "2026-07-12T11:29:37Z"
 }
