@@ -878,17 +878,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12540,
+      "title": "Reduce unnecessary immutable object allocations in model building",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-25T11:42:28Z",
+      "verdict": "COMMENT",
+      "notes": "Performance optimization: 28% less GC pause, shared-builder pattern. Found 2 embedded bug fixes (report plugin expansion was silently discarded, MojoExtension null model). SPI interface changes acceptable for pre-release Maven 4.",
+      "interactions": [
+        {
+          "at": "2026-07-25T11:42:28Z",
+          "verdict": "COMMENT",
+          "notes": "Performance optimization: 28% less GC pause, shared-builder pattern. Found 2 embedded bug fixes (report plugin expansion was silently discarded, MojoExtension null model). SPI interface changes acceptable for pre-release Maven 4."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T07:39:59Z",
+    "timestamp": "2026-07-25T11:42:29Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-15T02:13:19Z",
+  "last_reviewed_updated_at": "2026-07-25T11:23:07Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
