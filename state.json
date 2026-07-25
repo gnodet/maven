@@ -862,17 +862,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 281,
+      "title": "[MNG-6357] Dependency order should be nearest first",
+      "author": "belingueres",
+      "reviewed_at": "2026-07-25T07:39:57Z",
+      "verdict": "COMMENT",
+      "notes": "7-year-old MNG-6357. Files relocated by MNG-8346, 21+ commits of drift on RepositoryUtils.java, missing required system-property fallback. MNG-6357 may be superseded by MNG-7852.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:39:57Z",
+          "verdict": "COMMENT",
+          "notes": "7-year-old MNG-6357. Files relocated by MNG-8346, 21+ commits of drift on RepositoryUtils.java, missing required system-property fallback. MNG-6357 may be superseded by MNG-7852."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T07:33:34Z",
-    "prs_checked": 3,
-    "reviews_posted": 3,
+    "timestamp": "2026-07-25T07:39:59Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T02:54:37Z",
+  "last_reviewed_updated_at": "2026-07-15T02:13:19Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
