@@ -734,14 +734,35 @@
       "number": 12532,
       "title": "Fix #12530: add mvnup upgrade strategies for Maven 4",
       "author": "gnodet",
-      "reviewed_at": "2026-07-24T23:00:40Z",
+      "reviewed_at": "2026-07-25T07:06:48Z",
       "verdict": "APPROVE",
-      "notes": "4 new mvnup strategies, 31 tests, solid coverage. Minor: unused param, map rebuilds. Posted as COMMENT (operator PR).",
+      "notes": "Re-review: all 3 prior items addressed (unused param, static map, dedup). Minor: getPluginUpgradesMap still rebuilds. Posted as COMMENT (operator PR).",
       "interactions": [
         {
           "at": "2026-07-24T23:00:40Z",
           "verdict": "APPROVE",
           "notes": "4 new mvnup strategies, 31 tests, solid coverage. Minor: unused param, map rebuilds. Posted as COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-25T07:06:48Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: all 3 prior items addressed (unused param, static map, dedup). Minor: getPluginUpgradesMap still rebuilds. Posted as COMMENT (operator PR)."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 12535,
+      "title": "Fix #12534: Wire up @After annotation processing",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-25T07:06:49Z",
+      "verdict": "COMMENT",
+      "notes": "4 verified findings: IT plugin missing @After type attr (compile error), DEPENDENCIES scope TODO missing, PR description claims non-existent tests, simulation-style test. Posted as COMMENT (operator PR).",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:06:49Z",
+          "verdict": "COMMENT",
+          "notes": "4 verified findings: IT plugin missing @After type attr (compile error), DEPENDENCIES scope TODO missing, PR description claims non-existent tests, simulation-style test. Posted as COMMENT (operator PR)."
         }
       ],
       "review_count": 1
@@ -749,13 +770,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-24T23:00:40Z",
-    "prs_checked": 3,
-    "reviews_posted": 3,
+    "timestamp": "2026-07-25T07:06:49Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-24T21:11:46Z",
+  "last_reviewed_updated_at": "2026-07-25T05:54:34Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
