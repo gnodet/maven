@@ -766,17 +766,65 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 669,
+      "title": "Use try-with-resources",
+      "author": "garydgregory",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "COMMENT",
+      "notes": "4 findings verified: stale paths (MNG-8346), 2 obsolete conversions (StringBuilder rewrite, StreamSupplier), 4 AuthenticationContext patterns still valid. Recommend close and fresh PR.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "COMMENT",
+          "notes": "4 findings verified: stale paths (MNG-8346), 2 obsolete conversions (StringBuilder rewrite, StreamSupplier), 4 AuthenticationContext patterns still valid. Recommend close and fresh PR."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 793,
+      "title": "[MNG-7532] Log shouldn't have been deprecated",
+      "author": "rmannibucau",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "COMMENT",
+      "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "COMMENT",
+          "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 298,
+      "title": "[MNG-6797] Remember if Maven model problems were encountered",
+      "author": "wilx",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "4 findings verified: target code refactored away (MNG-7646), stale paths (MNG-8346), naming issue unaddressed, missing IT. 7 years old.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "4 findings verified: target code refactored away (MNG-7646), stale paths (MNG-8346), naming issue unaddressed, missing IT. 7 years old."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T07:06:49Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-07-25T07:23:28Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-25T05:54:34Z",
+  "last_reviewed_updated_at": "2026-07-10T02:14:11Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
