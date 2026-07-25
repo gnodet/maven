@@ -894,17 +894,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 277,
+      "title": "[MNG-6732] DefaultArtifactDescriptorReader.loadPom to check IGNORE_MISSING",
+      "author": "suztomo",
+      "reviewed_at": "2026-07-25T18:43:28Z",
+      "verdict": "COMMENT",
+      "notes": "7-year-old MNG-6732. Path relocated by MNG-8346 to compat/ and impl/. Fix too narrow (only UnknownHostException). Test uses Wagon classes not in Maven 4. Underlying issue still valid but needs fresh implementation.",
+      "interactions": [
+        {
+          "at": "2026-07-25T18:43:28Z",
+          "verdict": "COMMENT",
+          "notes": "7-year-old MNG-6732. Path relocated by MNG-8346 to compat/ and impl/. Fix too narrow (only UnknownHostException). Test uses Wagon classes not in Maven 4. Underlying issue still valid but needs fresh implementation."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T11:42:29Z",
+    "timestamp": "2026-07-25T18:43:28Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-25T11:23:07Z",
+  "last_reviewed_updated_at": "2026-07-10T02:42:16Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
