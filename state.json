@@ -814,17 +814,65 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 1125,
+      "title": "Rework DI in plugin dependencies resolution to avoid scope issues",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-25T07:33:28Z",
+      "verdict": "COMMENT",
+      "notes": "3-year-old MNG-7097 PoC. File relocated by MNG-8346, imports Guava (not in deps), uses old JavaScopes API, hardcodes stale sisu/classworlds versions. Needs complete rewrite.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:28Z",
+          "verdict": "COMMENT",
+          "notes": "3-year-old MNG-7097 PoC. File relocated by MNG-8346, imports Guava (not in deps), uses old JavaScopes API, hardcodes stale sisu/classworlds versions. Needs complete rewrite."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 314,
+      "title": "Overwrite version related properties only for project that request it",
+      "author": "zhaoyunxing92",
+      "reviewed_at": "2026-07-25T07:33:28Z",
+      "verdict": "COMMENT",
+      "notes": "6-year-old MNG-6846. File relocated by MNG-8346, target code extracted to DefaultModelVersionProcessor, projectDir!=null approach unsound and superseded by Maven 4 rootDirectory.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:28Z",
+          "verdict": "COMMENT",
+          "notes": "6-year-old MNG-6846. File relocated by MNG-8346, target code extracted to DefaultModelVersionProcessor, projectDir!=null approach unsound and superseded by Maven 4 rootDirectory."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 878,
+      "title": "powershell support",
+      "author": "JurrianFahner",
+      "reviewed_at": "2026-07-25T07:33:29Z",
+      "verdict": "COMMENT",
+      "notes": "3.5-year-old PowerShell support. shared/ dir removed, component.xml concatenation removed, uses obsolete jansi (master: jline), init.ps1 has syntax error. Needs complete rewrite for Maven 4.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:29Z",
+          "verdict": "COMMENT",
+          "notes": "3.5-year-old PowerShell support. shared/ dir removed, component.xml concatenation removed, uses obsolete jansi (master: jline), init.ps1 has syntax error. Needs complete rewrite for Maven 4."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T07:23:28Z",
+    "timestamp": "2026-07-25T07:33:34Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T02:14:11Z",
+  "last_reviewed_updated_at": "2026-07-10T02:54:37Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
