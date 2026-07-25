@@ -910,17 +910,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 159,
+      "title": "[MNG-4347] import-scoped dependencies of direct dependencies are not resolved",
+      "author": "clarkperkins",
+      "reviewed_at": "2026-07-25T18:52:30Z",
+      "verdict": "COMMENT",
+      "notes": "8-year-old PR. MNG-4347 closed as COMPLETED 2026-03-23. Paths relocated by MNG-8346. Maven 4 architecture eliminates the root cause. Already reviewed 2026-07-10.",
+      "interactions": [
+        {
+          "at": "2026-07-25T18:52:30Z",
+          "verdict": "COMMENT",
+          "notes": "8-year-old PR. MNG-4347 closed as COMPLETED 2026-03-23. Paths relocated by MNG-8346. Maven 4 architecture eliminates the root cause. Already reviewed 2026-07-10."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T18:43:28Z",
+    "timestamp": "2026-07-25T18:52:30Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T02:42:16Z",
+  "last_reviewed_updated_at": "2026-07-10T02:42:29Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
