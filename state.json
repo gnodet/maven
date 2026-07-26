@@ -276,9 +276,9 @@
       "number": 11770,
       "title": "feat: Improve the matching of required versions",
       "author": "nielsbasjes",
-      "reviewed_at": "2026-07-26T07:38:26Z",
+      "reviewed_at": "2026-07-26T07:42:39Z",
       "verdict": "APPROVE",
-      "notes": "Re-review #5: All issues fixed \u2014 regex bug resolved ([0-9] -> [0-9]+), multi-digit tests added, patterns precompiled. APPROVED.",
+      "notes": "Spotless formatting commit only (3f347583). APPROVE still valid. Author noted AI suggestion was missing ^ and $ anchors \u2014 fair point.",
       "interactions": [
         {
           "at": "2026-07-24T15:28:28Z",
@@ -294,9 +294,14 @@
           "at": "2026-07-26T07:38:26Z",
           "verdict": "APPROVE",
           "notes": "Re-review #5: All issues fixed \u2014 regex bug resolved ([0-9] -> [0-9]+), multi-digit tests added, patterns precompiled. APPROVED."
+        },
+        {
+          "at": "2026-07-26T07:42:39Z",
+          "verdict": "APPROVE",
+          "notes": "Spotless formatting commit only (3f347583). APPROVE still valid. Author noted AI suggestion was missing ^ and $ anchors \u2014 fair point."
         }
       ],
-      "review_count": 3
+      "review_count": 4
     },
     {
       "number": 12377,
@@ -961,13 +966,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-26T07:38:27Z",
+    "timestamp": "2026-07-26T07:42:39Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-26T07:36:03Z",
+  "last_reviewed_updated_at": "2026-07-26T07:41:43Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
