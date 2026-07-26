@@ -926,17 +926,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12541,
+      "title": "[MNG-7541] Add Maven 4 PowerShell launcher",
+      "author": "wilx",
+      "reviewed_at": "2026-07-26T00:37:47Z",
+      "verdict": "APPROVE",
+      "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior.",
+      "interactions": [
+        {
+          "at": "2026-07-26T00:37:47Z",
+          "verdict": "APPROVE",
+          "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-25T18:52:30Z",
+    "timestamp": "2026-07-26T00:37:47Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-10T02:42:29Z",
+  "last_reviewed_updated_at": "2026-07-25T23:37:57Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
