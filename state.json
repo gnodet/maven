@@ -898,9 +898,9 @@
       "number": 12540,
       "title": "Reduce unnecessary immutable object allocations in model building",
       "author": "gnodet",
-      "reviewed_at": "2026-07-26T04:42:24Z",
+      "reviewed_at": "2026-07-26T07:59:15Z",
       "verdict": "COMMENT",
-      "notes": "Re-review: new commits address elharo feedback (JDK class names), merger template fix. 2 low findings (timing log level, cache inefficiency). Effectively APPROVE quality.",
+      "notes": "Re-review #3: New commit 357cf692 \u2014 short-circuit interpolation for strings without $. Clean optimization, APPROVE quality.",
       "interactions": [
         {
           "at": "2026-07-25T11:42:28Z",
@@ -911,9 +911,14 @@
           "at": "2026-07-26T04:42:24Z",
           "verdict": "COMMENT",
           "notes": "Re-review: new commits address elharo feedback (JDK class names), merger template fix. 2 low findings (timing log level, cache inefficiency). Effectively APPROVE quality."
+        },
+        {
+          "at": "2026-07-26T07:59:15Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #3: New commit 357cf692 \u2014 short-circuit interpolation for strings without $. Clean optimization, APPROVE quality."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     },
     {
       "number": 277,
@@ -966,13 +971,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-26T07:42:39Z",
+    "timestamp": "2026-07-26T07:59:15Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-26T07:41:43Z",
+  "last_reviewed_updated_at": "2026-07-26T07:55:34Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
