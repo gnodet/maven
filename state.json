@@ -276,17 +276,22 @@
       "number": 11770,
       "title": "feat: Improve the matching of required versions",
       "author": "nielsbasjes",
-      "reviewed_at": "2026-07-24T15:28:28Z",
-      "verdict": "COMMENT",
-      "notes": "Regex bug: major.minor pattern uses [0-9] instead of [0-9]+ breaking JDK 11/17/21; missing multi-digit tests",
+      "reviewed_at": "2026-07-26T07:35:18Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Re-review #4: regex bug STILL not fixed (single digit [0-9] vs [0-9]+). Author addressed precompilation but missed regex fix. 3/3 findings confirmed, 0% FP.",
       "interactions": [
         {
           "at": "2026-07-24T15:28:28Z",
           "verdict": "COMMENT",
           "notes": "Regex bug: major.minor pattern uses [0-9] instead of [0-9]+ breaking JDK 11/17/21; missing multi-digit tests"
+        },
+        {
+          "at": "2026-07-26T07:35:18Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Re-review #4: regex bug STILL not fixed (single digit [0-9] vs [0-9]+). Author addressed precompilation but missed regex fix. 3/3 findings confirmed, 0% FP."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12377,
@@ -951,13 +956,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-26T04:42:28Z",
+    "timestamp": "2026-07-26T07:35:19Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-26T00:32:58Z",
+  "last_reviewed_updated_at": "2026-07-26T07:30:45Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
