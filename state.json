@@ -883,17 +883,22 @@
       "number": 12540,
       "title": "Reduce unnecessary immutable object allocations in model building",
       "author": "gnodet",
-      "reviewed_at": "2026-07-25T11:42:28Z",
+      "reviewed_at": "2026-07-26T04:42:24Z",
       "verdict": "COMMENT",
-      "notes": "Performance optimization: 28% less GC pause, shared-builder pattern. Found 2 embedded bug fixes (report plugin expansion was silently discarded, MojoExtension null model). SPI interface changes acceptable for pre-release Maven 4.",
+      "notes": "Re-review: new commits address elharo feedback (JDK class names), merger template fix. 2 low findings (timing log level, cache inefficiency). Effectively APPROVE quality.",
       "interactions": [
         {
           "at": "2026-07-25T11:42:28Z",
           "verdict": "COMMENT",
           "notes": "Performance optimization: 28% less GC pause, shared-builder pattern. Found 2 embedded bug fixes (report plugin expansion was silently discarded, MojoExtension null model). SPI interface changes acceptable for pre-release Maven 4."
+        },
+        {
+          "at": "2026-07-26T04:42:24Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: new commits address elharo feedback (JDK class names), merger template fix. 2 low findings (timing log level, cache inefficiency). Effectively APPROVE quality."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 277,
@@ -946,13 +951,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-26T00:37:47Z",
+    "timestamp": "2026-07-26T04:42:28Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-25T23:37:57Z",
+  "last_reviewed_updated_at": "2026-07-26T00:32:58Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
