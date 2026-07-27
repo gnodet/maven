@@ -918,9 +918,9 @@
       "number": 12540,
       "title": "Reduce unnecessary immutable object allocations in model building",
       "author": "gnodet",
-      "reviewed_at": "2026-07-26T07:59:15Z",
+      "reviewed_at": "2026-07-27T11:03:13Z",
       "verdict": "COMMENT",
-      "notes": "Re-review #3: New commit 357cf692 \u2014 short-circuit interpolation for strings without $. Clean optimization, APPROVE quality.",
+      "notes": "Re-review #4: Confirmed regression \u2014 rootDirectory hoisting breaks per-module root (root=true). 1 high finding verified, 1 low FP removed. Other optimizations sound.",
       "interactions": [
         {
           "at": "2026-07-25T11:42:28Z",
@@ -936,9 +936,14 @@
           "at": "2026-07-26T07:59:15Z",
           "verdict": "COMMENT",
           "notes": "Re-review #3: New commit 357cf692 \u2014 short-circuit interpolation for strings without $. Clean optimization, APPROVE quality."
+        },
+        {
+          "at": "2026-07-27T11:03:13Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #4: Confirmed regression \u2014 rootDirectory hoisting breaks per-module root (root=true). 1 high finding verified, 1 low FP removed. Other optimizations sound."
         }
       ],
-      "review_count": 3
+      "review_count": 4
     },
     {
       "number": 277,
@@ -991,13 +996,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T08:36:09Z",
+    "timestamp": "2026-07-27T11:03:13Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-27T08:34:00Z",
+  "last_reviewed_updated_at": "2026-07-27T10:48:47Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
