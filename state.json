@@ -918,9 +918,9 @@
       "number": 12540,
       "title": "Reduce unnecessary immutable object allocations in model building",
       "author": "gnodet",
-      "reviewed_at": "2026-07-27T11:03:13Z",
+      "reviewed_at": "2026-07-27T13:11:04Z",
       "verdict": "COMMENT",
-      "notes": "Re-review #4: Confirmed regression \u2014 rootDirectory hoisting breaks per-module root (root=true). 1 high finding verified, 1 low FP removed. Other optimizations sound.",
+      "notes": "Re-review #5: rootLocator regression fixed (4a51d64d). findRoot() back in per-module loop. Effectively APPROVE.",
       "interactions": [
         {
           "at": "2026-07-25T11:42:28Z",
@@ -941,9 +941,14 @@
           "at": "2026-07-27T11:03:13Z",
           "verdict": "COMMENT",
           "notes": "Re-review #4: Confirmed regression \u2014 rootDirectory hoisting breaks per-module root (root=true). 1 high finding verified, 1 low FP removed. Other optimizations sound."
+        },
+        {
+          "at": "2026-07-27T13:11:04Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #5: rootLocator regression fixed (4a51d64d). findRoot() back in per-module loop. Effectively APPROVE."
         }
       ],
-      "review_count": 4
+      "review_count": 5
     },
     {
       "number": 277,
@@ -996,7 +1001,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T11:03:13Z",
+    "timestamp": "2026-07-27T13:11:04Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
