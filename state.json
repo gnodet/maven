@@ -1140,17 +1140,65 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 920,
+      "title": "Add installation option with aqua to README",
+      "author": "tadayosi",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "COMMENT",
+      "notes": "Documentation change adding aqua install method. Two confirmed issues: dollar-sign prompt prefix inconsistency and missing aqua init prerequisite note.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "COMMENT",
+          "notes": "Documentation change adding aqua install method. Two confirmed issues: dollar-sign prompt prefix inconsistency and missing aqua init prerequisite note."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1558,
+      "title": "Fix flaky awaitIdle in integration tests",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix adding polling sleep and increasing timeout for flaky test. LGTM. Posted as COMMENT because self-approval not allowed.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix adding polling sleep and increasing timeout for flaky test. LGTM. Posted as COMMENT because self-approval not allowed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1562,
+      "title": "Backport: Add zsh support to completion script",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "COMMENT",
+      "notes": "Shell changes correct but backport is ahead of unmerged original PR #1559. Missing zsh test. 2 of 4 findings verified, 2 false positives suppressed.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "COMMENT",
+          "notes": "Shell changes correct but backport is ahead of unmerged original PR #1559. Missing zsh test. 2 of 4 findings verified, 2 false positives suppressed."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T23:15:51Z",
+    "timestamp": "2026-07-27T23:17:52Z",
     "prs_checked": 0,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-27T15:29:24Z",
+  "last_reviewed_updated_at": "2026-03-17T13:44:58Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
