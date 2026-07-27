@@ -770,9 +770,9 @@
       "number": 12535,
       "title": "Fix #12534: Wire up @After annotation processing",
       "author": "gnodet",
-      "reviewed_at": "2026-07-27T07:46:06Z",
+      "reviewed_at": "2026-07-27T08:36:09Z",
       "verdict": "COMMENT",
-      "notes": "Squash rebase (11 commits -> 1). No code changes. State timestamp updated.",
+      "notes": "Re-review: Both prior findings resolved \u2014 filterByScope tests added, provided-scope behavior documented. Effectively APPROVE.",
       "interactions": [
         {
           "at": "2026-07-25T07:06:49Z",
@@ -793,9 +793,14 @@
           "at": "2026-07-27T07:46:06Z",
           "verdict": "COMMENT",
           "notes": "Squash rebase (11 commits -> 1). No code changes. State timestamp updated."
+        },
+        {
+          "at": "2026-07-27T08:36:09Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: Both prior findings resolved \u2014 filterByScope tests added, provided-scope behavior documented. Effectively APPROVE."
         }
       ],
-      "review_count": 4
+      "review_count": 5
     },
     {
       "number": 669,
@@ -986,13 +991,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T07:46:07Z",
+    "timestamp": "2026-07-27T08:36:09Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-27T07:12:35Z",
+  "last_reviewed_updated_at": "2026-07-27T08:34:00Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
