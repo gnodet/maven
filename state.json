@@ -770,17 +770,22 @@
       "number": 12535,
       "title": "Fix #12534: Wire up @After annotation processing",
       "author": "gnodet",
-      "reviewed_at": "2026-07-25T07:06:49Z",
+      "reviewed_at": "2026-07-27T06:48:45Z",
       "verdict": "COMMENT",
-      "notes": "4 verified findings: IT plugin missing @After type attr (compile error), DEPENDENCIES scope TODO missing, PR description claims non-existent tests, simulation-style test. Posted as COMMENT (operator PR).",
+      "notes": "Re-review: All 4 prior findings resolved \u2014 default Type.PROJECT, scope TODO, PR description, simulation test. Effectively APPROVE.",
       "interactions": [
         {
           "at": "2026-07-25T07:06:49Z",
           "verdict": "COMMENT",
           "notes": "4 verified findings: IT plugin missing @After type attr (compile error), DEPENDENCIES scope TODO missing, PR description claims non-existent tests, simulation-style test. Posted as COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-27T06:48:45Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: All 4 prior findings resolved \u2014 default Type.PROJECT, scope TODO, PR description, simulation test. Effectively APPROVE."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 669,
@@ -971,13 +976,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-26T07:59:15Z",
+    "timestamp": "2026-07-27T06:48:45Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-26T07:55:34Z",
+  "last_reviewed_updated_at": "2026-07-27T06:44:49Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
