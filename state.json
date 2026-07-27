@@ -1007,17 +1007,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12546,
+      "title": "Convert paths for MSYS2 and jvm.config placeholders in bin/mvn",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-27T15:36:27Z",
+      "verdict": "COMMENT",
+      "notes": "First review: 3 low findings \u2014 debug echo backslash risk on Windows paths (x2), test not wired into CI. Core changes correct.",
+      "interactions": [
+        {
+          "at": "2026-07-27T15:36:27Z",
+          "verdict": "COMMENT",
+          "notes": "First review: 3 low findings \u2014 debug echo backslash risk on Windows paths (x2), test not wired into CI. Core changes correct."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T14:52:51Z",
+    "timestamp": "2026-07-27T15:36:27Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-27T14:48:00Z",
+  "last_reviewed_updated_at": "2026-07-27T15:29:24Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
