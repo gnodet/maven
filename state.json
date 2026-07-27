@@ -1092,23 +1092,28 @@
       "number": 12553,
       "title": "[MNG-8507] Forward port: Reduce allocation pressure in model building pipeline",
       "author": "gnodet",
-      "reviewed_at": "2026-07-27T19:36:03Z",
+      "reviewed_at": "2026-07-27T19:49:04Z",
       "verdict": "APPROVE",
-      "notes": "Clean forward port of MNG-8507 allocation optimizations. 2 low informational notes. Posted as COMMENT (self-authored).",
+      "notes": "Author addressed review notes (downcast comment + Flex Mojos comment restored). No re-review needed.",
       "interactions": [
         {
           "at": "2026-07-27T19:36:03Z",
           "verdict": "APPROVE",
           "notes": "Clean forward port of MNG-8507 allocation optimizations. 2 low informational notes. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-27T19:49:04Z",
+          "verdict": "APPROVE",
+          "notes": "Author addressed review notes (downcast comment + Flex Mojos comment restored). No re-review needed."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-27T19:44:11Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-27T19:49:04Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
