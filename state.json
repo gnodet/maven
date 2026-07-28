@@ -547,17 +547,22 @@
       "number": 12402,
       "title": "WIP: Try to use RAT 0.18",
       "author": "ottlinger",
-      "reviewed_at": "2026-07-24T17:27:53Z",
+      "reviewed_at": "2026-07-28T10:07:58Z",
       "verdict": "COMMENT",
-      "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request.",
+      "notes": "Follow-up acknowledging author responses to prior review findings. No new code changes.",
       "interactions": [
         {
           "at": "2026-07-24T17:27:53Z",
           "verdict": "COMMENT",
           "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request."
+        },
+        {
+          "at": "2026-07-28T10:07:58Z",
+          "verdict": "COMMENT",
+          "notes": "Follow-up acknowledging author responses to prior review findings. No new code changes."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12471,
@@ -1411,7 +1416,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T10:03:06Z",
+    "timestamp": "2026-07-28T10:08:02Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
