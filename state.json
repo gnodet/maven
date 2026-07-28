@@ -1369,17 +1369,22 @@
       "number": 12566,
       "title": "[Backport 4.0.x] Fix #12534: Wire up @After annotation processing in Maven core",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T09:38:11Z",
+      "reviewed_at": "2026-07-28T10:20:09Z",
       "verdict": "APPROVE",
-      "notes": "Clean backport of #12535 - @After annotation wiring. Posted as COMMENT (self-authored).",
+      "notes": "New commit: trivial unused import removal. Prior APPROVE stands.",
       "interactions": [
         {
           "at": "2026-07-28T09:38:11Z",
           "verdict": "APPROVE",
           "notes": "Clean backport of #12535 - @After annotation wiring. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-28T10:20:09Z",
+          "verdict": "APPROVE",
+          "notes": "New commit: trivial unused import removal. Prior APPROVE stands."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12567,
@@ -1416,8 +1421,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T10:15:24Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-28T10:20:09Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
