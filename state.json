@@ -1281,9 +1281,9 @@
       "number": 12556,
       "title": "[4.0.x] Bump Sisu to 1.1.0 and fix extension realm visibility for JSR330 filtering",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T15:14:34Z",
+      "reviewed_at": "2026-07-28T18:02:23Z",
       "verdict": "APPROVE",
-      "notes": "Maintainer cstamas approved. No action needed.",
+      "notes": "Maintainer rmannibucau approved. No action needed.",
       "interactions": [
         {
           "at": "2026-07-28T07:11:11Z",
@@ -1309,9 +1309,14 @@
           "at": "2026-07-28T15:14:34Z",
           "verdict": "APPROVE",
           "notes": "Maintainer cstamas approved. No action needed."
+        },
+        {
+          "at": "2026-07-28T18:02:23Z",
+          "verdict": "APPROVE",
+          "notes": "Maintainer rmannibucau approved. No action needed."
         }
       ],
-      "review_count": 5
+      "review_count": 6
     },
     {
       "number": 33,
@@ -1389,9 +1394,9 @@
       "number": 12566,
       "title": "[Backport 4.0.x] Fix #12534: Wire up @After annotation processing in Maven core",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T15:17:01Z",
+      "reviewed_at": "2026-07-28T18:02:23Z",
       "verdict": "APPROVE",
-      "notes": "Maintainer cstamas approved. No action needed.",
+      "notes": "Maintainer rmannibucau approved. No action needed.",
       "interactions": [
         {
           "at": "2026-07-28T09:38:11Z",
@@ -1417,9 +1422,14 @@
           "at": "2026-07-28T15:17:01Z",
           "verdict": "APPROVE",
           "notes": "Maintainer cstamas approved. No action needed."
+        },
+        {
+          "at": "2026-07-28T18:02:23Z",
+          "verdict": "APPROVE",
+          "notes": "Maintainer rmannibucau approved. No action needed."
         }
       ],
-      "review_count": 5
+      "review_count": 6
     },
     {
       "number": 12567,
@@ -1472,8 +1482,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T17:57:43Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-28T18:02:23Z",
+    "prs_checked": 2,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
