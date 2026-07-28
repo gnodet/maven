@@ -1478,13 +1478,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12573,
+      "title": "[maven-4.0.x] improve doc about deprecating plugin descriptor's requirement",
+      "author": "hboutemy",
+      "reviewed_at": "2026-07-28T19:31:05Z",
+      "verdict": "APPROVE",
+      "notes": "Documentation-only backport of PR #12555, deprecation docs for plugin descriptor requirements",
+      "interactions": [
+        {
+          "at": "2026-07-28T19:31:05Z",
+          "verdict": "APPROVE",
+          "notes": "Documentation-only backport of PR #12555, deprecation docs for plugin descriptor requirements"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T19:25:12Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-28T19:31:12Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
