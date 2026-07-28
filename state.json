@@ -1384,9 +1384,9 @@
       "number": 12566,
       "title": "[Backport 4.0.x] Fix #12534: Wire up @After annotation processing in Maven core",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T10:44:06Z",
+      "reviewed_at": "2026-07-28T12:40:25Z",
       "verdict": "APPROVE",
-      "notes": "New commit: adapts IT to 4.0.x API (constructor version range, File vs Path). Test-only, prior APPROVE stands.",
+      "notes": "New commit: fix IT plugin POM to use 4.0.x API version (4.0.0-SNAPSHOT not 4.1.0-SNAPSHOT). Test resource only, prior APPROVE stands.",
       "interactions": [
         {
           "at": "2026-07-28T09:38:11Z",
@@ -1402,9 +1402,14 @@
           "at": "2026-07-28T10:44:06Z",
           "verdict": "APPROVE",
           "notes": "New commit: adapts IT to 4.0.x API (constructor version range, File vs Path). Test-only, prior APPROVE stands."
+        },
+        {
+          "at": "2026-07-28T12:40:25Z",
+          "verdict": "APPROVE",
+          "notes": "New commit: fix IT plugin POM to use 4.0.x API version (4.0.0-SNAPSHOT not 4.1.0-SNAPSHOT). Test resource only, prior APPROVE stands."
         }
       ],
-      "review_count": 3
+      "review_count": 4
     },
     {
       "number": 12567,
@@ -1457,8 +1462,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T11:55:24Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-28T12:40:25Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
