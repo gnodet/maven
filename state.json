@@ -1312,13 +1312,29 @@
       "verdict": "COMMENT",
       "reviewed_at": "2026-07-10T02:34:42Z",
       "notes": "Backfilled - reviewed in prior session (July 10 batch)"
+    },
+    {
+      "number": 12564,
+      "title": "[Backport 4.0.x] [MNG-8425] Fix mvnenc init saving invalid master source configuration",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-28T07:40:05Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12418 - mvnenc init prefix fix with tests. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-28T07:40:05Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12418 - mvnenc init prefix fix with tests. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T07:31:54Z",
-    "prs_checked": 5,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-28T07:40:05Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
