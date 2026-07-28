@@ -1,49 +1,1253 @@
 {
   "reviewed_prs": [
     {
-      "number": 1648,
-      "title": "Fix stdin behaviour when piping to mvnd",
-      "author": "SapiensAnatis",
-      "reviewed_at": "2026-07-28T07:07:45Z",
+      "number": 964,
+      "title": "[MNG-7669] Add artifact-type for Tycho",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-23T17:18:45Z",
+      "verdict": "COMMENT",
+      "notes": "Already reviewed by AI. Governance concerns, file removed in Maven 4, closed JIRA.",
+      "interactions": [
+        {
+          "at": "2026-07-23T17:18:45Z",
+          "verdict": "COMMENT",
+          "notes": "Already reviewed by AI. Governance concerns, file removed in Maven 4, closed JIRA."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 982,
+      "title": "[MNG-7541] Implement powershell mvn command",
+      "author": "JurrianFahner",
+      "reviewed_at": "2026-07-23T17:18:45Z",
       "verdict": "REQUEST_CHANGES",
-      "notes": "Missing getClassOrder() cases for new message types causes runtime crash. Missing null guard in handleAvailableLength(). Unused imports.",
+      "notes": "Already reviewed by AI. Fatal parse error, env var scope bugs, missing exit code, 3+ years stale.",
       "interactions": [
         {
-          "at": "2026-07-28T07:07:45Z",
+          "at": "2026-07-23T17:18:45Z",
           "verdict": "REQUEST_CHANGES",
-          "notes": "Missing getClassOrder() cases for new message types causes runtime crash. Missing null guard in handleAvailableLength(). Unused imports."
+          "notes": "Already reviewed by AI. Fatal parse error, env var scope bugs, missing exit code, 3+ years stale."
         }
       ],
       "review_count": 1
     },
     {
-      "number": 1655,
-      "title": "Fix(#1555): stale plugin descriptor for rebuilt reactor plugins",
-      "author": "HarshMehta112",
-      "reviewed_at": "2026-07-28T07:07:45Z",
-      "verdict": "COMMENT",
-      "notes": "Daemon fix correct. Test naming convention violation: @MvndNativeTest class named *Test.java instead of *NativeIT.java.",
+      "number": 995,
+      "title": "[MNG-6869] New flag to verify Maven installation status",
+      "author": "mthmulders",
+      "reviewed_at": "2026-07-23T17:18:45Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Already reviewed by AI. Cannot compile against current master, needs complete rewrite for Maven 4.",
       "interactions": [
         {
-          "at": "2026-07-28T07:07:45Z",
-          "verdict": "COMMENT",
-          "notes": "Daemon fix correct. Test naming convention violation: @MvndNativeTest class named *Test.java instead of *NativeIT.java."
+          "at": "2026-07-23T17:18:45Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Already reviewed by AI. Cannot compile against current master, needs complete rewrite for Maven 4."
         }
       ],
       "review_count": 1
     },
     {
-      "number": 1667,
-      "title": "Visual improvements to worker lines with live test-progress suffix (2.x)",
-      "author": "ammachado",
-      "reviewed_at": "2026-07-28T07:07:45Z",
+      "number": 12145,
+      "title": "Avoid final logger injection in EventSpyDispatcher",
+      "author": "Will-thom",
+      "reviewed_at": "2026-07-24T13:23:52Z",
       "verdict": "COMMENT",
-      "notes": "Message priority ordering concern for PROJECT_TEST_PROGRESS. Removed plugin version from display reverses prior design decision.",
+      "notes": "All 4 findings verified: closed underlying issue, incomplete scope (1/40 files), test tests implementation details not behavior, missing license acknowledgment.",
       "interactions": [
         {
-          "at": "2026-07-28T07:07:45Z",
+          "at": "2026-07-24T13:23:52Z",
           "verdict": "COMMENT",
-          "notes": "Message priority ordering concern for PROJECT_TEST_PROGRESS. Removed plugin version from display reverses prior design decision."
+          "notes": "All 4 findings verified: closed underlying issue, incomplete scope (1/40 files), test tests implementation details not behavior, missing license acknowledgment."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12069,
+      "title": "Fix site lifecycle reactor dependency resolution",
+      "author": "Will-thom",
+      "reviewed_at": "2026-07-24T13:23:54Z",
+      "verdict": "COMMENT",
+      "notes": "4/6 findings verified: empty JAR masks real problem, lifecycle coupling in ReactorReader, cleanup inconsistency, test gap. 2 false positives removed (JAR-only scope consistent, lazy init pre-existing).",
+      "interactions": [
+        {
+          "at": "2026-07-24T13:23:54Z",
+          "verdict": "COMMENT",
+          "notes": "4/6 findings verified: empty JAR masks real problem, lifecycle coupling in ReactorReader, cleanup inconsistency, test gap. 2 false positives removed (JAR-only scope consistent, lazy init pre-existing)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11926,
+      "title": "Warn when profile ID matches a lifecycle phase name",
+      "author": "utafrali",
+      "reviewed_at": "2026-07-24T13:23:56Z",
+      "verdict": "COMMENT",
+      "notes": "4/5 findings verified: hardcoded phase list missing 9 Maven 4 phases, extension-contributed phases not coverable, test maintenance side-effect, vague warning message. 1 false positive removed (null check is necessary, not redundant).",
+      "interactions": [
+        {
+          "at": "2026-07-24T13:23:56Z",
+          "verdict": "COMMENT",
+          "notes": "4/5 findings verified: hardcoded phase list missing 9 Maven 4 phases, extension-contributed phases not coverable, test maintenance side-effect, vague warning message. 1 false positive removed (null check is necessary, not redundant)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11102,
+      "title": "Add --processes to list running Maven builds",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T14:12:17Z",
+      "verdict": "COMMENT",
+      "notes": "11/11 findings verified: duplicate option registration, comment-code contradiction, --processes/--projects ambiguity, System.out bypass, wrong method placement, error logging on success, PID recycling, redundant hasOption, global JVM state coupling.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:17Z",
+          "verdict": "COMMENT",
+          "notes": "11/11 findings verified: duplicate option registration, comment-code contradiction, --processes/--projects ambiguity, System.out bypass, wrong method placement, error logging on success, PID recycling, redundant hasOption, global JVM state coupling."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11692,
+      "title": "docs: fix broken reference links",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:12:17Z",
+      "verdict": "COMMENT",
+      "notes": "1/1 finding verified: PR would break working ref/4-LATEST links by replacing with ref/4.0.0 which returns 404. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:17Z",
+          "verdict": "COMMENT",
+          "notes": "1/1 finding verified: PR would break working ref/4-LATEST links by replacing with ref/4.0.0 which returns 404. Should be closed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11686,
+      "title": "docs: clarify deprecation of RELEASE and LATEST version constants",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:12:18Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 findings verified: superseded by merged PR #11584, incorrect since value, poor migration advice, formatting issues. CONFLICTING merge state. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:12:18Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 findings verified: superseded by merged PR #11584, incorrect since value, poor migration advice, formatting issues. CONFLICTING merge state. Should be closed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11682,
+      "title": "Improve README documentation clarity",
+      "author": "amahi1568",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "3/3 findings verified: wording inconsistent with current website, mailing list discussion not held, governance question.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "3/3 findings verified: wording inconsistent with current website, mailing list discussion not held, governance question."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11609,
+      "title": "Bug: make all collected args use single quote",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "2/2 findings verified: superseded by merged PR #11983, single-quote injection bug. Should be closed.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "2/2 findings verified: superseded by merged PR #11983, single-quote injection bug. Should be closed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11410,
+      "title": "tests(maven#10389): Adding DefaultDependencyResolverResultTest",
+      "author": "vijaykriishna",
+      "reviewed_at": "2026-07-24T14:22:09Z",
+      "verdict": "COMMENT",
+      "notes": "3/6 findings verified (3 FP removed by verifier): temp file cleanup, duplicated construction block, unnecessary cast. Valuable test coverage overall.",
+      "interactions": [
+        {
+          "at": "2026-07-24T14:22:09Z",
+          "verdict": "COMMENT",
+          "notes": "3/6 findings verified (3 FP removed by verifier): temp file cleanup, duplicated construction block, unnecessary cast. Valuable test coverage overall."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11509,
+      "title": "Add tests",
+      "author": "TheRealHaui",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "COMMENT",
+      "notes": "6/6 findings verified: missing assertion in extension test, dependency set bug, incomplete coverage (type/classifier/scope/exclusions/hashCode), wildcard import, mixed test concerns.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "COMMENT",
+          "notes": "6/6 findings verified: missing assertion in extension test, dependency set bug, incomplete coverage (type/classifier/scope/exclusions/hashCode), wildcard import, mixed test concerns."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12332,
+      "title": "[MNG-8768] Add executable() function for conditional profile activation based on PATH",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "APPROVE",
+      "notes": "Approved. Well-implemented feature, thorough test coverage, 4 review rounds addressed. Minor non-blocking items noted.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "APPROVE",
+          "notes": "Approved. Well-implemented feature, thorough test coverage, 4 review rounds addressed. Minor non-blocking items noted."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12135,
+      "title": "[MNG-11642] Add JPMS module support to Maven 4",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T15:01:57Z",
+      "verdict": "COMMENT",
+      "notes": "Self-authored PR (cannot self-approve). JPMS migration looks solid, all CI passes, no blocking issues found.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:01:57Z",
+          "verdict": "COMMENT",
+          "notes": "Self-authored PR (cannot self-approve). JPMS migration looks solid, all CI passes, no blocking issues found."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12418,
+      "title": "[MNG-8425] Fix mvnenc init saving invalid master source configuration",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-24T15:28:28Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix for invalid master-source config saved by mvnenc init",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for invalid master-source config saved by mvnenc init"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11743,
+      "title": "[MNG-11449] Add Mockito javaagent for maven-cli tests",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T15:28:28Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Superseded by PR #12369 (merged); argLine override shadows parent, eager interpolation bug, redundant test",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Superseded by PR #12369 (merged); argLine override shadows parent, eager interpolation bug, redundant test"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11770,
+      "title": "feat: Improve the matching of required versions",
+      "author": "nielsbasjes",
+      "reviewed_at": "2026-07-26T07:42:39Z",
+      "verdict": "APPROVE",
+      "notes": "Spotless formatting commit only (3f347583). APPROVE still valid. Author noted AI suggestion was missing ^ and $ anchors \u2014 fair point.",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:28:28Z",
+          "verdict": "COMMENT",
+          "notes": "Regex bug: major.minor pattern uses [0-9] instead of [0-9]+ breaking JDK 11/17/21; missing multi-digit tests"
+        },
+        {
+          "at": "2026-07-26T07:35:18Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Re-review #4: regex bug STILL not fixed (single digit [0-9] vs [0-9]+). Author addressed precompilation but missed regex fix. 3/3 findings confirmed, 0% FP."
+        },
+        {
+          "at": "2026-07-26T07:38:26Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review #5: All issues fixed \u2014 regex bug resolved ([0-9] -> [0-9]+), multi-digit tests added, patterns precompiled. APPROVED."
+        },
+        {
+          "at": "2026-07-26T07:42:39Z",
+          "verdict": "APPROVE",
+          "notes": "Spotless formatting commit only (3f347583). APPROVE still valid. Author noted AI suggestion was missing ^ and $ anchors \u2014 fair point."
+        }
+      ],
+      "review_count": 4
+    },
+    {
+      "number": 12377,
+      "title": "Remove Profile getSource / setSource",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T15:51:29Z",
+      "verdict": "COMMENT",
+      "notes": "APPROVE downgraded to COMMENT (self-authored); compat behavior change noted",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:51:29Z",
+          "verdict": "COMMENT",
+          "notes": "APPROVE downgraded to COMMENT (self-authored); compat behavior change noted"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11904,
+      "title": "Feat: Add id attribute (gav) support to Dependency, Exclusion, Mixin",
+      "author": "rbygrave",
+      "reviewed_at": "2026-07-24T15:51:29Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "IT compilation error (super(String) removed); missing mixin validation tests; dedup key inconsistency",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:51:29Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "IT compilation error (super(String) removed); missing mixin validation tests; dedup key inconsistency"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11818,
+      "title": "Add @Nullable annotations and NullAway profile for Maven 4 API",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T15:51:29Z",
+      "verdict": "COMMENT",
+      "notes": "getSource() @Nonnull\u2192@Nullable without null guards at call sites; 2/5 findings were FPs",
+      "interactions": [
+        {
+          "at": "2026-07-24T15:51:29Z",
+          "verdict": "COMMENT",
+          "notes": "getSource() @Nonnull\u2192@Nullable without null guards at call sites; 2/5 findings were FPs"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11502,
+      "title": "Added additional tests to ProjectModelResolverTest",
+      "author": "TheRealHaui",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "APPROVE",
+      "notes": "Clean test-only PR; version range error path coverage; CI green",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "APPROVE",
+          "notes": "Clean test-only PR; version range error path coverage; CI green"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11405,
+      "title": "Introduce TempFileService and lifecycle cleanup participant",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "COMMENT",
+      "notes": "7 convention violations confirmed; stale PR (8+ months); prior CHANGES_REQUESTED unaddressed",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "COMMENT",
+          "notes": "7 convention violations confirmed; stale PR (8+ months); prior CHANGES_REQUESTED unaddressed"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11186,
+      "title": "Issue #10985: Maven allows random namespaces on project",
+      "author": "raupachz",
+      "reviewed_at": "2026-07-24T16:05:43Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Regression: empty NS accepted for 4.1.0+; validation level gating unaddressed; no tests",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:05:43Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Regression: empty NS accepted for 4.1.0+; validation level gating unaddressed; no tests"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11185,
+      "title": "Disallow arbitrary namespaces in Maven and Metadata readers",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Velocity template breaks indentation in all generated StAX readers; 4/5 confirmed, 1 FP",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Velocity template breaks indentation in all generated StAX readers; 4/5 confirmed, 1 FP"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 10906,
+      "title": "[MNG-8018] Fix MSYS/Git-Bash path mis-detection on Windows",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "Debug System.out.println leftover; over-broad path conversion breaks non-MSYS paths; 7/7 confirmed",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Debug System.out.println leftover; over-broad path conversion breaks non-MSYS paths; 7/7 confirmed"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 11146,
+      "title": "Add support for MAVEN_PROJECTBASEDIR substitution (backport of MNG-8598)",
+      "author": "mguillem",
+      "reviewed_at": "2026-07-24T16:21:33Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of MNG-8598; CI green; already approved by maintainer",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:21:33Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of MNG-8598; CI green; already approved by maintainer"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1511,
+      "title": "[MNG-7883] Also print groupId and version in the Reactor Build Order",
+      "author": "chenchc6",
+      "reviewed_at": "2026-07-24T16:43:11Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "5 findings confirmed: stale paths after MNG-8346, unaddressed maintainer feedback on configurability, name replacement vs augmentation, no test updates, padding collapse risk.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:11Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "5 findings confirmed: stale paths after MNG-8346, unaddressed maintainer feedback on configurability, name replacement vs augmentation, no test updates, padding collapse risk."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1437,
+      "title": "[MNG-8072] add ConsumerPomFile methods",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-24T16:43:11Z",
+      "verdict": "COMMENT",
+      "notes": "3 confirmed, 1 FP (silent fallback intentional). Missing tests (2yr unaddressed), no Javadoc/@since. Unresolved design discussion on 3.9.x vs Maven 4 approach.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:11Z",
+          "verdict": "COMMENT",
+          "notes": "3 confirmed, 1 FP (silent fallback intentional). Missing tests (2yr unaddressed), no Javadoc/@since. Unresolved design discussion on 3.9.x vs Maven 4 approach."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1435,
+      "title": "[MNG-8069] add failing projects if a project is banned from reactor",
+      "author": "laeubi",
+      "reviewed_at": "2026-07-24T16:43:12Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "2 findings confirmed: variable assignment bug (message instead of reason at line 282), typo lead->led.",
+      "interactions": [
+        {
+          "at": "2026-07-24T16:43:12Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "2 findings confirmed: variable assignment bug (message instead of reason at line 282), typo lead->led."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 2277,
+      "title": "Modernize codebase with Java improvements",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "COMMENT",
+      "notes": "3/6 confirmed, 3 FPs. Two high regressions in DefaultLifecycleRegistry: WrappedPhase.plugins() returns ALL plugins, WrappedLifecycle.phases() drops fix #11796. toList() mutability concern.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "COMMENT",
+          "notes": "3/6 confirmed, 3 FPs. Two high regressions in DefaultLifecycleRegistry: WrappedPhase.plugins() returns ALL plugins, WrappedLifecycle.phases() drops fix #11796. toList() mutability concern."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1774,
+      "title": "[MNG-3309] Cascading profile activation",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 high findings confirmed. Reverts 5 merged bug fixes (targetPath, consumer POM repos, CI-friendly interpolation, versionContainsExpression, exception handler HTTPS). Likely rebase conflict artifacts.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 high findings confirmed. Reverts 5 merged bug fixes (targetPath, consumer POM repos, CI-friendly interpolation, versionContainsExpression, exception handler HTTPS). Likely rebase conflict artifacts."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 10971,
+      "title": "Add test for prefixed Maven elements",
+      "author": "elharo",
+      "reviewed_at": "2026-07-24T17:18:18Z",
+      "verdict": "APPROVE",
+      "notes": "Clean test-only PR. Useful regression test for XML namespace-prefixed POM elements. Minor assertion message suggestion.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:18:18Z",
+          "verdict": "APPROVE",
+          "notes": "Clean test-only PR. Useful regression test for XML namespace-prefixed POM elements. Minor assertion message suggestion."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12402,
+      "title": "WIP: Try to use RAT 0.18",
+      "author": "ottlinger",
+      "reviewed_at": "2026-07-24T17:27:53Z",
+      "verdict": "COMMENT",
+      "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "COMMENT",
+          "notes": "5/5 confirmed. .mvn exclusion removed, hardcoded version, Spotless CI failure, exclusion pattern semantics, broad standard exclusions. WIP help request."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12471,
+      "title": "Fix Javadoc about default value",
+      "author": "arend-von-reinersdorff",
+      "reviewed_at": "2026-07-24T17:27:53Z",
+      "verdict": "APPROVE",
+      "notes": "Correct Javadoc fix. @Config annotation and Features.consumerPomFlatten() both use false as default.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "APPROVE",
+          "notes": "Correct Javadoc fix. @Config annotation and Features.consumerPomFlatten() both use false as default."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12416,
+      "title": "[MSHARED-1407] InferDependencies",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-27T14:52:51Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: All 3 prior findings resolved \u2014 indentation fixed, formatting cleaned, test preserved. APPROVE.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:27:53Z",
+          "verdict": "COMMENT",
+          "notes": "Core fix correct (inferDependencies helper). CI failing due to Spotless formatting violations in 3 locations."
+        },
+        {
+          "at": "2026-07-24T19:08:36Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Re-review: 3 verified issues \u2014 8-space indentation, out-of-scope formatting, missing test from rebase. Core fix correct."
+        },
+        {
+          "at": "2026-07-27T14:52:51Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: All 3 prior findings resolved \u2014 indentation fixed, formatting cleaned, test preserved. APPROVE."
+        }
+      ],
+      "review_count": 3
+    },
+    {
+      "number": 12410,
+      "title": "reject path-traversal segments in coordinate ids and versions",
+      "author": "jmestwa-coder",
+      "reviewed_at": "2026-07-24T17:44:35Z",
+      "verdict": "APPROVE",
+      "notes": "Clean security fix. Rejects . and .. as coordinate IDs/versions to prevent path-traversal. Tests comprehensive, CI green.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:35Z",
+          "verdict": "APPROVE",
+          "notes": "Clean security fix. Rejects . and .. as coordinate IDs/versions to prevent path-traversal. Tests comprehensive, CI green."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12480,
+      "title": "Use hardened XmlService.newXMLInputFactory() consistently in extractModelId",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T17:44:35Z",
+      "verdict": "APPROVE",
+      "notes": "XXE hardening gap fix. Replaces raw XMLInputFactory.newFactory() with hardened XmlService.newXMLInputFactory(). Dead code removal. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:35Z",
+          "verdict": "APPROVE",
+          "notes": "XXE hardening gap fix. Replaces raw XMLInputFactory.newFactory() with hardened XmlService.newXMLInputFactory(). Dead code removal. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12486,
+      "title": "MNG-7884: Add --print-build-order option",
+      "author": "AbdelHamdyGhanem",
+      "reviewed_at": "2026-07-24T17:44:36Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "3/3 confirmed. Feature incomplete: option parsed but never consumed, no tests. PR not marked as draft despite In Progress label.",
+      "interactions": [
+        {
+          "at": "2026-07-24T17:44:36Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "3/3 confirmed. Feature incomplete: option parsed but never consumed, no tests. PR not marked as draft despite In Progress label."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12520,
+      "title": "Resolver validation",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-24T19:08:36Z",
+      "verdict": "APPROVE",
+      "notes": "Clean validation level feature. Minor: no tests for new constructor, enum could be package-private.",
+      "interactions": [
+        {
+          "at": "2026-07-24T19:08:36Z",
+          "verdict": "APPROVE",
+          "notes": "Clean validation level feature. Minor: no tests for new constructor, enum could be package-private."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12533,
+      "title": "Filter NO_REPOSITORY sentinel from exceptions map",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-24T21:22:14Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: previous feedback fully addressed (List.copyOf, isMissing guard). Minor: map not wrapped. Posted as COMMENT (operator PR).",
+      "interactions": [
+        {
+          "at": "2026-07-24T19:08:36Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for #12531. Minor: allExceptions not unmodifiable, isMissing vacuous truth. Posted as COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-24T21:22:14Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: previous feedback fully addressed (List.copyOf, isMissing guard). Minor: map not wrapped. Posted as COMMENT (operator PR)."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 10952,
+      "title": "[MNG-8537] Keep Maven Namespace the same",
+      "author": "elharo",
+      "reviewed_at": "2026-07-24T21:22:14Z",
+      "verdict": "COMMENT",
+      "notes": "6 verified findings: disabled IT, strict validation backward compat risk, dead code, misleading constants, assertion mismatch, loosened test. Community deferred to 5.0.",
+      "interactions": [
+        {
+          "at": "2026-07-24T21:22:14Z",
+          "verdict": "COMMENT",
+          "notes": "6 verified findings: disabled IT, strict validation backward compat risk, dead code, misleading constants, assertion mismatch, loosened test. Community deferred to 5.0."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 2023,
+      "title": "[MNG-8489] Clean up model description and API doc",
+      "author": "elharo",
+      "reviewed_at": "2026-07-24T21:22:14Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "5 verified findings: Returns prefix wrong for Modello, factual artifactId error, defaultGoal drops phases, enforcer pointer lost, unmergeable. gnodet review unaddressed 18mo.",
+      "interactions": [
+        {
+          "at": "2026-07-24T21:22:14Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "5 verified findings: Returns prefix wrong for Modello, factual artifactId error, defaultGoal drops phases, enforcer pointer lost, unmergeable. gnodet review unaddressed 18mo."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1538,
+      "title": "Add test case for dependency exclusions in DependencyTest",
+      "author": "yuehcw",
+      "reviewed_at": "2026-07-24T23:00:40Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "7 verified findings: JUnit 4 regression, stale paths, duplicate merged change, visibility violations, missing JIRA ref, shallow tests. Appears abandoned since May 2024.",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "7 verified findings: JUnit 4 regression, stale paths, duplicate merged change, visibility violations, missing JIRA ref, shallow tests. Appears abandoned since May 2024."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12538,
+      "title": "Fix #12536: Handle Ctrl+C on Windows terminals",
+      "author": "JackMyers001",
+      "reviewed_at": "2026-07-24T23:00:40Z",
+      "verdict": "APPROVE",
+      "notes": "Clean minimal fix for Windows Ctrl+C regression. Correctly gated to Windows, proper exit code, embedded guard.",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "APPROVE",
+          "notes": "Clean minimal fix for Windows Ctrl+C regression. Correctly gated to Windows, proper exit code, embedded guard."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12532,
+      "title": "Fix #12530: add mvnup upgrade strategies for Maven 4",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-25T07:06:48Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: all 3 prior items addressed (unused param, static map, dedup). Minor: getPluginUpgradesMap still rebuilds. Posted as COMMENT (operator PR).",
+      "interactions": [
+        {
+          "at": "2026-07-24T23:00:40Z",
+          "verdict": "APPROVE",
+          "notes": "4 new mvnup strategies, 31 tests, solid coverage. Minor: unused param, map rebuilds. Posted as COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-25T07:06:48Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: all 3 prior items addressed (unused param, static map, dedup). Minor: getPluginUpgradesMap still rebuilds. Posted as COMMENT (operator PR)."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 12535,
+      "title": "Fix #12534: Wire up @After annotation processing",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T08:36:09Z",
+      "verdict": "COMMENT",
+      "notes": "Re-review: Both prior findings resolved \u2014 filterByScope tests added, provided-scope behavior documented. Effectively APPROVE.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:06:49Z",
+          "verdict": "COMMENT",
+          "notes": "4 verified findings: IT plugin missing @After type attr (compile error), DEPENDENCIES scope TODO missing, PR description claims non-existent tests, simulation-style test. Posted as COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-27T06:48:45Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: All 4 prior findings resolved \u2014 default Type.PROJECT, scope TODO, PR description, simulation test. Effectively APPROVE."
+        },
+        {
+          "at": "2026-07-27T07:31:22Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: 11 new commits incl scope filtering. 2 verified findings: filterByScope untested, provided-scope behavioral change. Posted COMMENT (operator PR)."
+        },
+        {
+          "at": "2026-07-27T07:46:06Z",
+          "verdict": "COMMENT",
+          "notes": "Squash rebase (11 commits -> 1). No code changes. State timestamp updated."
+        },
+        {
+          "at": "2026-07-27T08:36:09Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: Both prior findings resolved \u2014 filterByScope tests added, provided-scope behavior documented. Effectively APPROVE."
+        }
+      ],
+      "review_count": 5
+    },
+    {
+      "number": 669,
+      "title": "Use try-with-resources",
+      "author": "garydgregory",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "COMMENT",
+      "notes": "4 findings verified: stale paths (MNG-8346), 2 obsolete conversions (StringBuilder rewrite, StreamSupplier), 4 AuthenticationContext patterns still valid. Recommend close and fresh PR.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "COMMENT",
+          "notes": "4 findings verified: stale paths (MNG-8346), 2 obsolete conversions (StringBuilder rewrite, StreamSupplier), 4 AuthenticationContext patterns still valid. Recommend close and fresh PR."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 793,
+      "title": "[MNG-7532] Log shouldn't have been deprecated",
+      "author": "rmannibucau",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "COMMENT",
+      "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "COMMENT",
+          "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 298,
+      "title": "[MNG-6797] Remember if Maven model problems were encountered",
+      "author": "wilx",
+      "reviewed_at": "2026-07-25T07:23:28Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "4 findings verified: target code refactored away (MNG-7646), stale paths (MNG-8346), naming issue unaddressed, missing IT. 7 years old.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:23:28Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "4 findings verified: target code refactored away (MNG-7646), stale paths (MNG-8346), naming issue unaddressed, missing IT. 7 years old."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1125,
+      "title": "Rework DI in plugin dependencies resolution to avoid scope issues",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-25T07:33:28Z",
+      "verdict": "COMMENT",
+      "notes": "3-year-old MNG-7097 PoC. File relocated by MNG-8346, imports Guava (not in deps), uses old JavaScopes API, hardcodes stale sisu/classworlds versions. Needs complete rewrite.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:28Z",
+          "verdict": "COMMENT",
+          "notes": "3-year-old MNG-7097 PoC. File relocated by MNG-8346, imports Guava (not in deps), uses old JavaScopes API, hardcodes stale sisu/classworlds versions. Needs complete rewrite."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 314,
+      "title": "Overwrite version related properties only for project that request it",
+      "author": "zhaoyunxing92",
+      "reviewed_at": "2026-07-25T07:33:28Z",
+      "verdict": "COMMENT",
+      "notes": "6-year-old MNG-6846. File relocated by MNG-8346, target code extracted to DefaultModelVersionProcessor, projectDir!=null approach unsound and superseded by Maven 4 rootDirectory.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:28Z",
+          "verdict": "COMMENT",
+          "notes": "6-year-old MNG-6846. File relocated by MNG-8346, target code extracted to DefaultModelVersionProcessor, projectDir!=null approach unsound and superseded by Maven 4 rootDirectory."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 878,
+      "title": "powershell support",
+      "author": "JurrianFahner",
+      "reviewed_at": "2026-07-25T07:33:29Z",
+      "verdict": "COMMENT",
+      "notes": "3.5-year-old PowerShell support. shared/ dir removed, component.xml concatenation removed, uses obsolete jansi (master: jline), init.ps1 has syntax error. Needs complete rewrite for Maven 4.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:33:29Z",
+          "verdict": "COMMENT",
+          "notes": "3.5-year-old PowerShell support. shared/ dir removed, component.xml concatenation removed, uses obsolete jansi (master: jline), init.ps1 has syntax error. Needs complete rewrite for Maven 4."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 281,
+      "title": "[MNG-6357] Dependency order should be nearest first",
+      "author": "belingueres",
+      "reviewed_at": "2026-07-25T07:39:57Z",
+      "verdict": "COMMENT",
+      "notes": "7-year-old MNG-6357. Files relocated by MNG-8346, 21+ commits of drift on RepositoryUtils.java, missing required system-property fallback. MNG-6357 may be superseded by MNG-7852.",
+      "interactions": [
+        {
+          "at": "2026-07-25T07:39:57Z",
+          "verdict": "COMMENT",
+          "notes": "7-year-old MNG-6357. Files relocated by MNG-8346, 21+ commits of drift on RepositoryUtils.java, missing required system-property fallback. MNG-6357 may be superseded by MNG-7852."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12540,
+      "title": "Reduce unnecessary immutable object allocations in model building",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T13:29:12Z",
+      "verdict": "COMMENT",
+      "notes": "elharo APPROVED after rootLocator fix. No action needed. State timestamp updated.",
+      "interactions": [
+        {
+          "at": "2026-07-25T11:42:28Z",
+          "verdict": "COMMENT",
+          "notes": "Performance optimization: 28% less GC pause, shared-builder pattern. Found 2 embedded bug fixes (report plugin expansion was silently discarded, MojoExtension null model). SPI interface changes acceptable for pre-release Maven 4."
+        },
+        {
+          "at": "2026-07-26T04:42:24Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: new commits address elharo feedback (JDK class names), merger template fix. 2 low findings (timing log level, cache inefficiency). Effectively APPROVE quality."
+        },
+        {
+          "at": "2026-07-26T07:59:15Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #3: New commit 357cf692 \u2014 short-circuit interpolation for strings without $. Clean optimization, APPROVE quality."
+        },
+        {
+          "at": "2026-07-27T11:03:13Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #4: Confirmed regression \u2014 rootDirectory hoisting breaks per-module root (root=true). 1 high finding verified, 1 low FP removed. Other optimizations sound."
+        },
+        {
+          "at": "2026-07-27T13:11:04Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review #5: rootLocator regression fixed (4a51d64d). findRoot() back in per-module loop. Effectively APPROVE."
+        },
+        {
+          "at": "2026-07-27T13:29:12Z",
+          "verdict": "COMMENT",
+          "notes": "elharo APPROVED after rootLocator fix. No action needed. State timestamp updated."
+        }
+      ],
+      "review_count": 6
+    },
+    {
+      "number": 277,
+      "title": "[MNG-6732] DefaultArtifactDescriptorReader.loadPom to check IGNORE_MISSING",
+      "author": "suztomo",
+      "reviewed_at": "2026-07-25T18:43:28Z",
+      "verdict": "COMMENT",
+      "notes": "7-year-old MNG-6732. Path relocated by MNG-8346 to compat/ and impl/. Fix too narrow (only UnknownHostException). Test uses Wagon classes not in Maven 4. Underlying issue still valid but needs fresh implementation.",
+      "interactions": [
+        {
+          "at": "2026-07-25T18:43:28Z",
+          "verdict": "COMMENT",
+          "notes": "7-year-old MNG-6732. Path relocated by MNG-8346 to compat/ and impl/. Fix too narrow (only UnknownHostException). Test uses Wagon classes not in Maven 4. Underlying issue still valid but needs fresh implementation."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 159,
+      "title": "[MNG-4347] import-scoped dependencies of direct dependencies are not resolved",
+      "author": "clarkperkins",
+      "reviewed_at": "2026-07-25T18:52:30Z",
+      "verdict": "COMMENT",
+      "notes": "8-year-old PR. MNG-4347 closed as COMPLETED 2026-03-23. Paths relocated by MNG-8346. Maven 4 architecture eliminates the root cause. Already reviewed 2026-07-10.",
+      "interactions": [
+        {
+          "at": "2026-07-25T18:52:30Z",
+          "verdict": "COMMENT",
+          "notes": "8-year-old PR. MNG-4347 closed as COMPLETED 2026-03-23. Paths relocated by MNG-8346. Maven 4 architecture eliminates the root cause. Already reviewed 2026-07-10."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12541,
+      "title": "[MNG-7541] Add Maven 4 PowerShell launcher",
+      "author": "wilx",
+      "reviewed_at": "2026-07-26T00:37:47Z",
+      "verdict": "APPROVE",
+      "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior.",
+      "interactions": [
+        {
+          "at": "2026-07-26T00:37:47Z",
+          "verdict": "APPROVE",
+          "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12546,
+      "title": "Convert paths for MSYS2 and jvm.config placeholders in bin/mvn",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-07-28T05:48:13Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: author addressed all 3 prior concerns (printf, test wiring). Posted APPROVE.",
+      "interactions": [
+        {
+          "at": "2026-07-27T15:36:27Z",
+          "verdict": "COMMENT",
+          "notes": "First review: 3 low findings \u2014 debug echo backslash risk on Windows paths (x2), test not wired into CI. Core changes correct."
+        },
+        {
+          "at": "2026-07-28T05:48:13Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author addressed all 3 prior concerns (printf, test wiring). Posted APPROVE."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 12550,
+      "title": "Backport #12538: Handle Ctrl+C on Windows terminals",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T18:24:56Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of Ctrl+C signal handler fix to maven-4.0.x. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-27T18:24:56Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of Ctrl+C signal handler fix to maven-4.0.x. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12547,
+      "title": "Deps: Bump to Eclipse Sisu 1.1.0",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-27T18:58:54Z",
+      "verdict": "APPROVE",
+      "notes": "Straightforward Sisu 1.1.0 bump fixing #12522 bean visibility. Companion PRs on master/4.0.x.",
+      "interactions": [
+        {
+          "at": "2026-07-27T18:58:54Z",
+          "verdict": "APPROVE",
+          "notes": "Straightforward Sisu 1.1.0 bump fixing #12522 bean visibility. Companion PRs on master/4.0.x."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12548,
+      "title": "Introduce validation control",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-27T18:58:54Z",
+      "verdict": "COMMENT",
+      "notes": "Backport of #12520 to maven-4.0.x. Case-sensitivity mismatch: docs say lowercase but Enum.valueOf needs uppercase. 1 verified finding posted.",
+      "interactions": [
+        {
+          "at": "2026-07-27T18:58:54Z",
+          "verdict": "COMMENT",
+          "notes": "Backport of #12520 to maven-4.0.x. Case-sensitivity mismatch: docs say lowercase but Enum.valueOf needs uppercase. 1 verified finding posted."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12549,
+      "title": "Introduce validation control",
+      "author": "cstamas",
+      "reviewed_at": "2026-07-27T18:58:54Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12520 to maven-3.10.x with correct Java/module adaptations. Cross-referenced case-sensitivity concern from #12548.",
+      "interactions": [
+        {
+          "at": "2026-07-27T18:58:54Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12520 to maven-3.10.x with correct Java/module adaptations. Cross-referenced case-sensitivity concern from #12548."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12553,
+      "title": "[MNG-8507] Forward port: Reduce allocation pressure in model building pipeline",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T19:49:04Z",
+      "verdict": "APPROVE",
+      "notes": "Author addressed review notes (downcast comment + Flex Mojos comment restored). No re-review needed.",
+      "interactions": [
+        {
+          "at": "2026-07-27T19:36:03Z",
+          "verdict": "APPROVE",
+          "notes": "Clean forward port of MNG-8507 allocation optimizations. 2 low informational notes. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-27T19:49:04Z",
+          "verdict": "APPROVE",
+          "notes": "Author addressed review notes (downcast comment + Flex Mojos comment restored). No re-review needed."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 12555,
+      "title": "improve doc about deprecating plugin descriptor's requirement",
+      "author": "hboutemy",
+      "reviewed_at": "2026-07-28T05:48:13Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: slawekjaranowski also approved. No duplicate review posted.",
+      "interactions": [
+        {
+          "at": "2026-07-27T22:31:53Z",
+          "verdict": "APPROVE",
+          "notes": "Documentation improvement: deprecation notices for requirements/Requirement with JSR 330 migration links."
+        },
+        {
+          "at": "2026-07-28T05:36:53Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: slachiewicz also approved, no new concerns. No duplicate review posted."
+        },
+        {
+          "at": "2026-07-28T05:48:13Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: slawekjaranowski also approved. No duplicate review posted."
+        }
+      ],
+      "review_count": 3
+    },
+    {
+      "number": 12554,
+      "title": "Bump Sisu to 1.1.0 and fix extension realm visibility for JSR330 filtering",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T22:37:34Z",
+      "verdict": "APPROVE",
+      "notes": "Sisu 1.1.0 bump + reverse ClassRealm import fix for extension visibility. Supersedes #12551/#12552. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-27T22:37:34Z",
+          "verdict": "APPROVE",
+          "notes": "Sisu 1.1.0 bump + reverse ClassRealm import fix for extension visibility. Supersedes #12551/#12552. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 920,
+      "title": "Add installation option with aqua to README",
+      "author": "tadayosi",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "COMMENT",
+      "notes": "Documentation change adding aqua install method. Two confirmed issues: dollar-sign prompt prefix inconsistency and missing aqua init prerequisite note.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "COMMENT",
+          "notes": "Documentation change adding aqua install method. Two confirmed issues: dollar-sign prompt prefix inconsistency and missing aqua init prerequisite note."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1558,
+      "title": "Fix flaky awaitIdle in integration tests",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix adding polling sleep and increasing timeout for flaky test. LGTM. Posted as COMMENT because self-approval not allowed.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix adding polling sleep and increasing timeout for flaky test. LGTM. Posted as COMMENT because self-approval not allowed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 1562,
+      "title": "Backport: Add zsh support to completion script",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-27T23:17:44Z",
+      "verdict": "COMMENT",
+      "notes": "Shell changes correct but backport is ahead of unmerged original PR #1559. Missing zsh test. 2 of 4 findings verified, 2 false positives suppressed.",
+      "interactions": [
+        {
+          "at": "2026-07-27T23:17:44Z",
+          "verdict": "COMMENT",
+          "notes": "Shell changes correct but backport is ahead of unmerged original PR #1559. Missing zsh test. 2 of 4 findings verified, 2 false positives suppressed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12560,
+      "title": "[Backport 4.0.x] Fix #12530: add mvnup upgrade strategies for Maven 4 known compatibility issues",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-28T05:56:07Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12532. Posted as COMMENT (self-authored). Byte-identical to original.",
+      "interactions": [
+        {
+          "at": "2026-07-28T05:56:07Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12532. Posted as COMMENT (self-authored). Byte-identical to original."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12561,
+      "title": "[Backport 4.0.x] Fix #12531: filter NO_REPOSITORY sentinel from mapped exceptions in ArtifactResolverResult",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-28T06:03:26Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12533. Posted as COMMENT (self-authored). Fixes NO_REPOSITORY sentinel leak and vacuous-truth isMissing() bug.",
+      "interactions": [
+        {
+          "at": "2026-07-28T06:03:26Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12533. Posted as COMMENT (self-authored). Fixes NO_REPOSITORY sentinel leak and vacuous-truth isMissing() bug."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12562,
+      "title": "[Backport 4.0.x] Fix Javadoc about default value of consumer POM flattening",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-28T06:25:18Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12471. Javadoc-only fix. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-28T06:25:18Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12471. Javadoc-only fix. Posted as COMMENT (self-authored)."
         }
       ],
       "review_count": 1
@@ -52,12 +1256,12 @@
       "number": 12556,
       "title": "[4.0.x] Bump Sisu to 1.1.0 and fix extension realm visibility for JSR330 filtering",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T07:08:56Z",
+      "reviewed_at": "2026-07-28T07:11:11Z",
       "verdict": "APPROVE",
       "notes": "Clean backport of #12554. Sisu 1.1.0 bump + realm visibility fix. All CI green. Posted as COMMENT (self-authored).",
       "interactions": [
         {
-          "at": "2026-07-28T07:08:56Z",
+          "at": "2026-07-28T07:11:11Z",
           "verdict": "APPROVE",
           "notes": "Clean backport of #12554. Sisu 1.1.0 bump + realm visibility fix. All CI green. Posted as COMMENT (self-authored)."
         }
@@ -67,12 +1271,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T07:08:56Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-07-28T07:11:41Z",
+    "prs_checked": 0,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-07-02T19:03:03Z"
+  "last_reviewed_updated_at": "2026-03-17T13:44:58Z",
+  "triage_cursor": "2026-07-24T18:12:47Z"
 }
