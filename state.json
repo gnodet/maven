@@ -1113,17 +1113,22 @@
       "number": 12555,
       "title": "improve doc about deprecating plugin descriptor's requirement",
       "author": "hboutemy",
-      "reviewed_at": "2026-07-27T22:31:53Z",
+      "reviewed_at": "2026-07-28T05:36:53Z",
       "verdict": "APPROVE",
-      "notes": "Documentation improvement: deprecation notices for requirements/Requirement with JSR 330 migration links.",
+      "notes": "Re-review: slachiewicz also approved, no new concerns. No duplicate review posted.",
       "interactions": [
         {
           "at": "2026-07-27T22:31:53Z",
           "verdict": "APPROVE",
           "notes": "Documentation improvement: deprecation notices for requirements/Requirement with JSR 330 migration links."
+        },
+        {
+          "at": "2026-07-28T05:36:53Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: slachiewicz also approved, no new concerns. No duplicate review posted."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12554,
@@ -1192,8 +1197,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T03:13:08Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-28T05:36:59Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
