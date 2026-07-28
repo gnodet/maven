@@ -1437,13 +1437,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12569,
+      "title": "[Backport 4.0.x] [MNG-11147] Fix BOM version inference for sibling modules in dependencyManagement",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-28T11:04:58Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12416 to 4.0.x. Content-identical to original. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-28T11:04:58Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12416 to 4.0.x. Content-identical to original. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T10:58:42Z",
+    "timestamp": "2026-07-28T11:04:58Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
