@@ -1499,23 +1499,28 @@
       "number": 12577,
       "title": "Add validation for Plexus-based plugin dependency injection",
       "author": "slawekjaranowski",
-      "reviewed_at": "2026-07-28T20:40:10Z",
+      "reviewed_at": "2026-07-28T21:16:55Z",
       "verdict": "COMMENT",
-      "notes": "Javadoc syntax in runtime warning message + grammar error; validation logic and tests are solid",
+      "notes": "Author applied review suggestions (grammar fix + javadoc syntax removal). No new issues.",
       "interactions": [
         {
           "at": "2026-07-28T20:40:10Z",
           "verdict": "COMMENT",
           "notes": "Javadoc syntax in runtime warning message + grammar error; validation logic and tests are solid"
+        },
+        {
+          "at": "2026-07-28T21:16:55Z",
+          "verdict": "COMMENT",
+          "notes": "Author applied review suggestions (grammar fix + javadoc syntax removal). No new issues."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T20:45:28Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-28T21:17:02Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
