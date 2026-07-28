@@ -1154,17 +1154,22 @@
       "number": 12554,
       "title": "Bump Sisu to 1.1.0 and fix extension realm visibility for JSR330 filtering",
       "author": "gnodet",
-      "reviewed_at": "2026-07-27T22:37:34Z",
+      "reviewed_at": "2026-07-28T08:29:45Z",
       "verdict": "APPROVE",
-      "notes": "Sisu 1.1.0 bump + reverse ClassRealm import fix for extension visibility. Supersedes #12551/#12552. Posted as COMMENT (self-authored).",
+      "notes": "Re-review: new commit adds IT for GH-12522 regression. Prior APPROVE stands.",
       "interactions": [
         {
           "at": "2026-07-27T22:37:34Z",
           "verdict": "APPROVE",
           "notes": "Sisu 1.1.0 bump + reverse ClassRealm import fix for extension visibility. Supersedes #12551/#12552. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-28T08:29:45Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit adds IT for GH-12522 regression. Prior APPROVE stands."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 920,
@@ -1266,17 +1271,22 @@
       "number": 12556,
       "title": "[4.0.x] Bump Sisu to 1.1.0 and fix extension realm visibility for JSR330 filtering",
       "author": "gnodet",
-      "reviewed_at": "2026-07-28T07:11:11Z",
+      "reviewed_at": "2026-07-28T08:29:45Z",
       "verdict": "APPROVE",
-      "notes": "Clean backport of #12554. Sisu 1.1.0 bump + realm visibility fix. All CI green. Posted as COMMENT (self-authored).",
+      "notes": "Re-review: new commit adds IT for GH-12522 regression (backport of test). Prior APPROVE stands.",
       "interactions": [
         {
           "at": "2026-07-28T07:11:11Z",
           "verdict": "APPROVE",
           "notes": "Clean backport of #12554. Sisu 1.1.0 bump + realm visibility fix. All CI green. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-28T08:29:45Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit adds IT for GH-12522 regression (backport of test). Prior APPROVE stands."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 33,
@@ -1337,9 +1347,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-28T07:47:44Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-07-28T08:29:45Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
