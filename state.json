@@ -847,7 +847,8 @@
           "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-29T16:00:03Z"
     },
     {
       "number": 298,
@@ -1543,8 +1544,8 @@
       "title": "fix #12583: Inverted file existence check in DefaultTransport.put()",
       "author": "elharo",
       "reviewed_at": "2026-07-29T14:12:07Z",
-      "verdict": "COMMENT",
-      "notes": "Bug fix correct (adds missing ! negation). Needs rebase, unused @TempDir param, tests could use verify().",
+      "verdict": "APPROVE",
+      "notes": "Re-review: all 3 findings addressed. Rebased, unused param removed, verify() added. APPROVED.",
       "interactions": [
         {
           "at": "2026-07-29T14:12:07Z",
@@ -1553,7 +1554,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-29T14:31:19Z"
+      "last_reviewed_at": "2026-07-29T16:02:06Z"
     },
     {
       "number": 12613,
@@ -1606,9 +1607,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T15:54:11Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T16:02:06Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
