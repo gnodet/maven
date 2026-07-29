@@ -1552,12 +1552,13 @@
           "notes": "Bug fix correct (adds missing ! negation). Needs rebase, unused @TempDir param, tests could use verify()."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-29T14:31:19Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T14:28:24Z",
+    "timestamp": "2026-07-29T14:31:24Z",
     "prs_checked": 0,
     "reviews_posted": 0,
     "tokens_estimate": 0
