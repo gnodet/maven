@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-29T20:41:51Z"
+      "last_reviewed_at": "2026-07-29T22:14:16Z"
     },
     {
       "number": 12612,
@@ -1719,13 +1719,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12623,
+      "title": "Remove an optimization on PathSelector producing false negatives",
+      "author": "desruisseaux",
+      "reviewed_at": "2026-07-29T22:17:53Z",
+      "verdict": "APPROVE",
+      "notes": "Removes unsafe include-based directory pre-filtering from DirectoryPrefiltering. Correctness over performance - directory filtering now only uses excludes.",
+      "interactions": [
+        {
+          "at": "2026-07-29T22:17:53Z",
+          "verdict": "APPROVE",
+          "notes": "Removes unsafe include-based directory pre-filtering from DirectoryPrefiltering. Correctness over performance - directory filtering now only uses excludes."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T20:41:51Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T22:17:56Z",
+    "prs_checked": 2,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
