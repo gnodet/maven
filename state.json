@@ -1520,23 +1520,28 @@
       "number": 12581,
       "title": "[ci][gh][workflow] explicit action hash and permissions",
       "author": "rmannibucau",
-      "reviewed_at": "2026-07-29T08:27:41Z",
+      "reviewed_at": "2026-07-29T09:09:04Z",
       "verdict": "APPROVE",
-      "notes": "Security hardening: adds permissions:{}, pins reusable workflow refs to commit hash, adds zizmor annotation",
+      "notes": "Re-check: slawekjaranowski CHANGES_REQUESTED - project intentionally uses branch refs for shared actions to avoid updating 100+ repos. No re-review needed - project policy decision.",
       "interactions": [
         {
           "at": "2026-07-29T08:27:41Z",
           "verdict": "APPROVE",
           "notes": "Security hardening: adds permissions:{}, pins reusable workflow refs to commit hash, adds zizmor annotation"
+        },
+        {
+          "at": "2026-07-29T09:09:04Z",
+          "verdict": "APPROVE",
+          "notes": "Re-check: slawekjaranowski CHANGES_REQUESTED - project intentionally uses branch refs for shared actions to avoid updating 100+ repos. No re-review needed - project policy decision."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T08:45:09Z",
-    "prs_checked": 0,
+    "timestamp": "2026-07-29T09:09:09Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
