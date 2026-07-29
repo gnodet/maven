@@ -1554,13 +1554,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-07-29T14:31:19Z"
+    },
+    {
+      "number": 12613,
+      "title": "Add Apache license headers to fix ATR concerns",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-29T14:42:59Z",
+      "verdict": "APPROVE",
+      "notes": "Mechanical addition of ASF license headers across 87 files for ATR release review. All correct. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-29T14:42:59Z",
+          "verdict": "APPROVE",
+          "notes": "Mechanical addition of ASF license headers across 87 files for ATR release review. All correct. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T14:31:24Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T14:42:59Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
