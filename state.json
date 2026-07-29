@@ -837,17 +837,22 @@
       "number": 793,
       "title": "[MNG-7532] Log shouldn't have been deprecated",
       "author": "rmannibucau",
-      "reviewed_at": "2026-07-25T07:23:28Z",
-      "verdict": "COMMENT",
-      "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved.",
+      "reviewed_at": "2026-07-29T16:37:52Z",
+      "verdict": "APPROVE",
+      "notes": "Rebase resolved stale file paths (MNG-8346). Diff identical to original \u2014 removes @Deprecated from Log/Mojo compat classes. Now mergeable.",
       "interactions": [
         {
           "at": "2026-07-25T07:23:28Z",
           "verdict": "COMMENT",
           "notes": "3 findings verified: stale paths (MNG-8346), deprecation still present, Maven 4 has replacement Log API. Community consensus unresolved."
+        },
+        {
+          "at": "2026-07-29T16:37:52Z",
+          "verdict": "APPROVE",
+          "notes": "Rebase resolved stale file paths (MNG-8346). Diff identical to original \u2014 removes @Deprecated from Log/Mojo compat classes. Now mergeable."
         }
       ],
-      "review_count": 1,
+      "review_count": 2,
       "last_reviewed_at": "2026-07-29T16:00:03Z"
     },
     {
@@ -1537,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-29T16:31:35Z"
+      "last_reviewed_at": "2026-07-29T16:34:31Z"
     },
     {
       "number": 12612,
@@ -1554,7 +1559,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-29T16:31:35Z"
+      "last_reviewed_at": "2026-07-29T16:34:31Z"
     },
     {
       "number": 12613,
@@ -1628,9 +1633,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T16:31:35Z",
-    "prs_checked": 2,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T16:37:52Z",
+    "prs_checked": 3,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
