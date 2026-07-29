@@ -1570,13 +1570,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12614,
+      "title": "[Forward port] mvnup: skip dedup inside plugin <configuration> elements",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-29T15:34:16Z",
+      "verdict": "APPROVE",
+      "notes": "Clean forward port of #12582. Correctly skips dedup in plugin config elements. Well tested. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-29T15:34:16Z",
+          "verdict": "APPROVE",
+          "notes": "Clean forward port of #12582. Correctly skips dedup in plugin config elements. Well tested. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T15:11:11Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T15:34:16Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
