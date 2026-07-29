@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-29T20:11:52Z"
+      "last_reviewed_at": "2026-07-29T20:23:26Z"
     },
     {
       "number": 12612,
@@ -1618,17 +1618,22 @@
       "number": 12616,
       "title": "Fail on misconfigured plugin-requested toolchains",
       "author": "wilx",
-      "reviewed_at": "2026-07-29T16:19:02Z",
+      "reviewed_at": "2026-07-29T20:25:10Z",
       "verdict": "APPROVE",
-      "notes": "Well-scoped fix: changes misconfigured toolchain handling from silent to fail-fast IllegalStateException, aligning with Maven 4 behavior",
+      "notes": "Re-review: author added missing @throws Javadoc to getToolchainFromBuildContext(). All feedback addressed.",
       "interactions": [
         {
           "at": "2026-07-29T16:19:02Z",
           "verdict": "APPROVE",
           "notes": "Well-scoped fix: changes misconfigured toolchain handling from silent to fail-fast IllegalStateException, aligning with Maven 4 behavior"
+        },
+        {
+          "at": "2026-07-29T20:25:10Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author added missing @throws Javadoc to getToolchainFromBuildContext(). All feedback addressed."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12617,
@@ -1718,9 +1723,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T20:11:52Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T20:25:14Z",
+    "prs_checked": 2,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
