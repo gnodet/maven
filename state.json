@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-29T22:14:16Z"
+      "last_reviewed_at": "2026-07-29T22:20:08Z"
     },
     {
       "number": 12612,
@@ -1739,9 +1739,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T22:17:56Z",
-    "prs_checked": 2,
-    "reviews_posted": 1,
+    "timestamp": "2026-07-29T22:20:08Z",
+    "prs_checked": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
