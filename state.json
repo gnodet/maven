@@ -1586,13 +1586,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12615,
+      "title": "Forward port: Add Apache license headers to fix ATR concerns",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-29T15:46:37Z",
+      "verdict": "APPROVE",
+      "notes": "Forward port of #12613. Mechanical ASF license headers on 87 files. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-29T15:46:37Z",
+          "verdict": "APPROVE",
+          "notes": "Forward port of #12613. Mechanical ASF license headers on 87 files. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T15:36:38Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-29T15:46:37Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
