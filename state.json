@@ -1537,7 +1537,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-29T11:52:48Z"
+      "last_reviewed_at": "2026-07-29T16:08:16Z"
     },
     {
       "number": 12612,
@@ -1554,7 +1554,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-29T16:02:06Z"
+      "last_reviewed_at": "2026-07-29T16:08:16Z"
     },
     {
       "number": 12613,
@@ -1576,17 +1576,22 @@
       "number": 12614,
       "title": "[Forward port] mvnup: skip dedup inside plugin <configuration> elements",
       "author": "gnodet",
-      "reviewed_at": "2026-07-29T15:34:16Z",
+      "reviewed_at": "2026-07-29T16:11:20Z",
       "verdict": "APPROVE",
-      "notes": "Clean forward port of #12582. Correctly skips dedup in plugin config elements. Well tested. Posted as COMMENT (self-authored).",
+      "notes": "Re-review: new commit uses resource filtering for IT. Clean change. Posted as COMMENT (self-authored).",
       "interactions": [
         {
           "at": "2026-07-29T15:34:16Z",
           "verdict": "APPROVE",
           "notes": "Clean forward port of #12582. Correctly skips dedup in plugin config elements. Well tested. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-29T16:11:20Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit uses resource filtering for IT. Clean change. Posted as COMMENT (self-authored)."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12615,
@@ -1607,8 +1612,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-29T16:02:06Z",
-    "prs_checked": 1,
+    "timestamp": "2026-07-29T16:11:20Z",
+    "prs_checked": 3,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
