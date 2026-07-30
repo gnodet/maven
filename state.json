@@ -1547,7 +1547,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T16:58:25Z"
+      "last_reviewed_at": "2026-07-30T17:07:47Z"
     },
     {
       "number": 12612,
@@ -1852,7 +1852,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T16:58:25Z"
+      "last_reviewed_at": "2026-07-30T17:07:47Z"
     },
     {
       "number": 12630,
@@ -1960,13 +1960,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12638,
+      "title": "docs: fix text quality issues in configuring.md and cache-configuration.md",
+      "author": "elharo",
+      "reviewed_at": "2026-07-30T17:14:46Z",
+      "verdict": "COMMENT",
+      "notes": "Text fixes good. Noted: maven.conf should be maven.installation.conf, missing project-level config docs, wrong issue references.",
+      "interactions": [
+        {
+          "at": "2026-07-30T17:14:46Z",
+          "verdict": "COMMENT",
+          "notes": "Text fixes good. Noted: maven.conf should be maven.installation.conf, missing project-level config docs, wrong issue references."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T17:05:08Z",
-    "prs_checked": 5,
-    "reviews_posted": 3,
+    "timestamp": "2026-07-30T17:14:46Z",
+    "prs_checked": 3,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
