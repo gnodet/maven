@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T12:52:05Z"
+      "last_reviewed_at": "2026-07-30T13:04:41Z"
     },
     {
       "number": 12612,
@@ -1794,17 +1794,22 @@
       "number": 12627,
       "title": "[backport maven-4.0.x] Fix BOM consumer POM leaving property references unresolved",
       "author": "gnodet",
-      "reviewed_at": "2026-07-30T11:56:07Z",
+      "reviewed_at": "2026-07-30T13:08:25Z",
       "verdict": "APPROVE",
-      "notes": "Clean backport of #12625 to maven-4.0.x. Byte-for-byte identical diff. Posted as COMMENT (self-authored).",
+      "notes": "Re-review: new commit adapts IT for maven-4.0.x API. Still LGTM. Posted as COMMENT (self-authored).",
       "interactions": [
         {
           "at": "2026-07-30T11:56:07Z",
           "verdict": "APPROVE",
           "notes": "Clean backport of #12625 to maven-4.0.x. Byte-for-byte identical diff. Posted as COMMENT (self-authored)."
+        },
+        {
+          "at": "2026-07-30T13:08:25Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit adapts IT for maven-4.0.x API. Still LGTM. Posted as COMMENT (self-authored)."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12628,
@@ -1846,7 +1851,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T12:56:36Z",
+    "timestamp": "2026-07-30T13:08:25Z",
     "prs_checked": 2,
     "reviews_posted": 1,
     "tokens_estimate": 0
