@@ -1505,9 +1505,9 @@
       "number": 12577,
       "title": "Add validation for Plexus-based plugin dependency injection",
       "author": "slawekjaranowski",
-      "reviewed_at": "2026-07-30T16:46:04Z",
+      "reviewed_at": "2026-07-30T17:35:41Z",
       "verdict": "APPROVE",
-      "notes": "Re-review: author addressed prior feedback (Javadoc syntax in runtime string, grammar). Validation logic correct, tests adequate.",
+      "notes": "Re-review: new commit adds requireNonNull(pluginValidationManager), addressing prior observation.",
       "interactions": [
         {
           "at": "2026-07-28T20:40:10Z",
@@ -1523,9 +1523,14 @@
           "at": "2026-07-30T16:46:04Z",
           "verdict": "APPROVE",
           "notes": "Re-review: author addressed prior feedback (Javadoc syntax in runtime string, grammar). Validation logic correct, tests adequate."
+        },
+        {
+          "at": "2026-07-30T17:35:41Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit adds requireNonNull(pluginValidationManager), addressing prior observation."
         }
       ],
-      "review_count": 3
+      "review_count": 4
     },
     {
       "number": 12581,
@@ -1547,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T17:22:31Z"
+      "last_reviewed_at": "2026-07-30T17:33:21Z"
     },
     {
       "number": 12612,
@@ -1852,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T17:22:31Z"
+      "last_reviewed_at": "2026-07-30T17:33:21Z"
     },
     {
       "number": 12630,
@@ -1943,7 +1948,8 @@
           "notes": "FAQ states Java 8 but Maven 4.x requires Java 17. License header format inconsistent. Wrong issue reference."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-30T17:33:21Z"
     },
     {
       "number": 12637,
@@ -2001,9 +2007,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T17:29:41Z",
+    "timestamp": "2026-07-30T17:35:41Z",
     "prs_checked": 4,
-    "reviews_posted": 2,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
