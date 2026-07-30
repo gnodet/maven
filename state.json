@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T21:18:50Z"
+      "last_reviewed_at": "2026-07-30T21:24:16Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T21:18:50Z"
+      "last_reviewed_at": "2026-07-30T21:24:16Z"
     },
     {
       "number": 12630,
@@ -1937,7 +1937,8 @@
           "notes": "Re-review: author still commenting out 14 valid HTTP 200 links. Only index.xml fix (maven-configuration.html 404) is correct."
         }
       ],
-      "review_count": 2
+      "review_count": 2,
+      "last_reviewed_at": "2026-07-30T21:24:16Z"
     },
     {
       "number": 12636,
@@ -2023,8 +2024,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T21:18:50Z",
-    "prs_checked": 2,
+    "timestamp": "2026-07-30T21:24:16Z",
+    "prs_checked": 3,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
