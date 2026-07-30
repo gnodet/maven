@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T20:48:46Z"
+      "last_reviewed_at": "2026-07-30T20:52:25Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T20:48:46Z"
+      "last_reviewed_at": "2026-07-30T20:52:25Z"
     },
     {
       "number": 12630,
@@ -1949,23 +1949,28 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T20:48:46Z"
+      "last_reviewed_at": "2026-07-30T20:52:25Z"
     },
     {
       "number": 12637,
       "title": "docs: clarify commented FAQ link status with comment",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T17:05:08Z",
-      "verdict": "COMMENT",
-      "notes": "Adding comment to 15-year-old dead code; suggest removing line entirely. Wrong issue reference in PR body.",
+      "reviewed_at": "2026-07-30T20:53:51Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: author removed dead commented-out FAQ link entirely per our feedback.",
       "interactions": [
         {
           "at": "2026-07-30T17:05:08Z",
           "verdict": "COMMENT",
           "notes": "Adding comment to 15-year-old dead code; suggest removing line entirely. Wrong issue reference in PR body."
+        },
+        {
+          "at": "2026-07-30T20:53:51Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author removed dead commented-out FAQ link entirely per our feedback."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12638,
@@ -2013,9 +2018,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T20:48:46Z",
-    "prs_checked": 3,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T20:53:51Z",
+    "prs_checked": 4,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
