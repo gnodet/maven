@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T12:09:59Z"
+      "last_reviewed_at": "2026-07-30T12:16:39Z"
     },
     {
       "number": 12612,
@@ -1810,22 +1810,27 @@
       "number": 12628,
       "title": "Fix #12609: ProtoSession.Builder.newBuilder() NPE on unset property maps",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T12:12:36Z",
+      "reviewed_at": "2026-07-30T12:19:34Z",
       "verdict": "APPROVE",
-      "notes": "Clean NPE fix initializing userProperties/systemProperties to Map.of() in Builder. One minor test suggestion.",
+      "notes": "Re-review: 3 new commits were test-only improvements. Still LGTM.",
       "interactions": [
         {
           "at": "2026-07-30T12:12:36Z",
           "verdict": "APPROVE",
           "notes": "Clean NPE fix initializing userProperties/systemProperties to Map.of() in Builder. One minor test suggestion."
+        },
+        {
+          "at": "2026-07-30T12:19:34Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: 3 new commits were test-only improvements. Still LGTM."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T12:12:37Z",
+    "timestamp": "2026-07-30T12:19:34Z",
     "prs_checked": 2,
     "reviews_posted": 1,
     "tokens_estimate": 0
