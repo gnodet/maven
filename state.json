@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T19:41:25Z"
+      "last_reviewed_at": "2026-07-30T20:40:58Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T19:41:25Z"
+      "last_reviewed_at": "2026-07-30T20:40:58Z"
     },
     {
       "number": 12630,
@@ -1949,7 +1949,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T19:41:25Z"
+      "last_reviewed_at": "2026-07-30T20:40:58Z"
     },
     {
       "number": 12637,
@@ -2008,12 +2008,12 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T19:41:25Z"
+      "last_reviewed_at": "2026-07-30T20:40:58Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T19:41:25Z",
+    "timestamp": "2026-07-30T20:40:58Z",
     "prs_checked": 4,
     "reviews_posted": 0,
     "tokens_estimate": 0
