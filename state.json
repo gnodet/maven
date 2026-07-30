@@ -1547,7 +1547,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T17:17:50Z"
+      "last_reviewed_at": "2026-07-30T17:22:31Z"
     },
     {
       "number": 12612,
@@ -1852,7 +1852,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T17:17:50Z"
+      "last_reviewed_at": "2026-07-30T17:22:31Z"
     },
     {
       "number": 12630,
@@ -1965,14 +1965,35 @@
       "number": 12638,
       "title": "docs: fix text quality issues in configuring.md and cache-configuration.md",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T17:14:46Z",
-      "verdict": "COMMENT",
-      "notes": "Text fixes good. Noted: maven.conf should be maven.installation.conf, missing project-level config docs, wrong issue references.",
+      "reviewed_at": "2026-07-30T17:29:41Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: author addressed prior feedback (maven.conf\u2192maven.installation.conf). Text fixes correct.",
       "interactions": [
         {
           "at": "2026-07-30T17:14:46Z",
           "verdict": "COMMENT",
           "notes": "Text fixes good. Noted: maven.conf should be maven.installation.conf, missing project-level config docs, wrong issue references."
+        },
+        {
+          "at": "2026-07-30T17:29:41Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author addressed prior feedback (maven.conf\u2192maven.installation.conf). Text fixes correct."
+        }
+      ],
+      "review_count": 2
+    },
+    {
+      "number": 12639,
+      "title": "Replace custom GraphLogger with DependencyGraphDumper in dependency resolution",
+      "author": "slawekjaranowski",
+      "reviewed_at": "2026-07-30T17:29:41Z",
+      "verdict": "APPROVE",
+      "notes": "Clean refactoring removing ~166 lines of duplicated GraphLogger code, replaced with library-provided DependencyGraphDumper.",
+      "interactions": [
+        {
+          "at": "2026-07-30T17:29:41Z",
+          "verdict": "APPROVE",
+          "notes": "Clean refactoring removing ~166 lines of duplicated GraphLogger code, replaced with library-provided DependencyGraphDumper."
         }
       ],
       "review_count": 1
@@ -1980,9 +2001,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T17:17:50Z",
-    "prs_checked": 2,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T17:29:41Z",
+    "prs_checked": 4,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
