@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T17:38:36Z"
+      "last_reviewed_at": "2026-07-30T17:56:10Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T17:38:36Z"
+      "last_reviewed_at": "2026-07-30T17:56:10Z"
     },
     {
       "number": 12630,
@@ -1949,7 +1949,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T17:38:36Z"
+      "last_reviewed_at": "2026-07-30T17:56:10Z"
     },
     {
       "number": 12637,
@@ -2002,13 +2002,14 @@
           "notes": "Clean refactoring removing ~166 lines of duplicated GraphLogger code, replaced with library-provided DependencyGraphDumper."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-30T17:56:10Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T17:38:36Z",
-    "prs_checked": 3,
+    "timestamp": "2026-07-30T17:56:10Z",
+    "prs_checked": 4,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
