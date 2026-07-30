@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T04:55:37Z"
+      "last_reviewed_at": "2026-07-30T04:58:15Z"
     },
     {
       "number": 12612,
@@ -1741,13 +1741,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-07-30T04:48:05Z"
+    },
+    {
+      "number": 12624,
+      "title": "Forward-port: Remove PathSelector include-based directory pre-filtering optimization",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-30T04:59:57Z",
+      "verdict": "APPROVE",
+      "notes": "Clean forward-port of #12623 from maven-4.0.x to master. Identical diffs. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-07-30T04:59:57Z",
+          "verdict": "APPROVE",
+          "notes": "Clean forward-port of #12623 from maven-4.0.x to master. Identical diffs. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T04:55:37Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T04:59:57Z",
+    "prs_checked": 2,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
