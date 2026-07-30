@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T13:36:50Z"
+      "last_reviewed_at": "2026-07-30T13:48:35Z"
     },
     {
       "number": 12612,
@@ -1847,7 +1847,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T13:36:50Z"
+      "last_reviewed_at": "2026-07-30T13:48:35Z"
     },
     {
       "number": 12630,
@@ -1869,11 +1869,27 @@
         }
       ],
       "review_count": 2
+    },
+    {
+      "number": 12631,
+      "title": "Fix #12604: DefaultSettingsBuilder dead Windows drive-relative path handling",
+      "author": "elharo",
+      "reviewed_at": "2026-07-30T13:53:18Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix replacing dead condition with broader relative-path resolution guard. Follows established codebase conventions.",
+      "interactions": [
+        {
+          "at": "2026-07-30T13:53:18Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix replacing dead condition with broader relative-path resolution guard. Follows established codebase conventions."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T13:45:17Z",
+    "timestamp": "2026-07-30T13:53:19Z",
     "prs_checked": 3,
     "reviews_posted": 1,
     "tokens_estimate": 0
