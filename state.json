@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T15:46:20Z"
+      "last_reviewed_at": "2026-07-30T15:52:37Z"
     },
     {
       "number": 12612,
@@ -1847,7 +1847,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T15:46:20Z"
+      "last_reviewed_at": "2026-07-30T15:52:37Z"
     },
     {
       "number": 12630,
@@ -1885,30 +1885,35 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T15:46:20Z"
+      "last_reviewed_at": "2026-07-30T15:52:37Z"
     },
     {
       "number": 12632,
       "title": "MNG-7531: Prevent NPE in inheritance assembler",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T14:04:06Z",
-      "verdict": "REQUEST_CHANGES",
-      "notes": "Production fix correct but test rewrite deletes existing testPluginConfiguration() coverage for Maven 4 impl assembler.",
+      "reviewed_at": "2026-07-30T15:56:33Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: author restored deleted tests, ported 7 additional tests from compat module, NPE fix correct and minimal",
       "interactions": [
         {
           "at": "2026-07-30T14:04:06Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "Production fix correct but test rewrite deletes existing testPluginConfiguration() coverage for Maven 4 impl assembler."
+        },
+        {
+          "at": "2026-07-30T15:56:33Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author restored deleted tests, ported 7 additional tests from compat module, NPE fix correct and minimal"
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T15:46:20Z",
-    "prs_checked": 3,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T15:56:33Z",
+    "prs_checked": 4,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
