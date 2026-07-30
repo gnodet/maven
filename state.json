@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T20:56:18Z"
+      "last_reviewed_at": "2026-07-30T21:13:12Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T20:56:18Z"
+      "last_reviewed_at": "2026-07-30T21:13:12Z"
     },
     {
       "number": 12630,
@@ -1922,17 +1922,22 @@
       "number": 12635,
       "title": "docs: fix broken links to non-generated documentation",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T17:05:08Z",
+      "reviewed_at": "2026-07-30T21:16:43Z",
       "verdict": "REQUEST_CHANGES",
-      "notes": "index.xml fix correct (maven-configuration.html 404), but site.xml comments out 14 valid links (all HTTP 200). Links were fixed by PMC member weeks ago.",
+      "notes": "Re-review: author still commenting out 14 valid HTTP 200 links. Only index.xml fix (maven-configuration.html 404) is correct.",
       "interactions": [
         {
           "at": "2026-07-30T17:05:08Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "index.xml fix correct (maven-configuration.html 404), but site.xml comments out 14 valid links (all HTTP 200). Links were fixed by PMC member weeks ago."
+        },
+        {
+          "at": "2026-07-30T21:16:43Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Re-review: author still commenting out 14 valid HTTP 200 links. Only index.xml fix (maven-configuration.html 404) is correct."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12636,
@@ -2018,9 +2023,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T20:56:18Z",
-    "prs_checked": 2,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T21:16:44Z",
+    "prs_checked": 3,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
