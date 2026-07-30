@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T13:04:41Z"
+      "last_reviewed_at": "2026-07-30T13:16:39Z"
     },
     {
       "number": 12612,
@@ -1846,13 +1846,30 @@
           "notes": "Correct fix for session scope thread-local leak. Moves construction inside outer try block."
         }
       ],
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-30T13:16:39Z"
+    },
+    {
+      "number": 12630,
+      "title": "Fix #12605: DefaultProjectBuildingHelper synchronized bottleneck in parallel builds",
+      "author": "elharo",
+      "reviewed_at": "2026-07-30T13:23:08Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "TOCTOU race: removing synchronized exposes get-create-put race that crashes parallel builds with IllegalStateException.",
+      "interactions": [
+        {
+          "at": "2026-07-30T13:23:08Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "TOCTOU race: removing synchronized exposes get-create-put race that crashes parallel builds with IllegalStateException."
+        }
+      ],
       "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T13:08:25Z",
-    "prs_checked": 2,
+    "timestamp": "2026-07-30T13:23:08Z",
+    "prs_checked": 3,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
