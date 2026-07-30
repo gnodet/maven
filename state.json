@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T13:28:41Z"
+      "last_reviewed_at": "2026-07-30T13:36:50Z"
     },
     {
       "number": 12612,
@@ -1847,30 +1847,35 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T13:28:41Z"
+      "last_reviewed_at": "2026-07-30T13:36:50Z"
     },
     {
       "number": 12630,
       "title": "Fix #12605: DefaultProjectBuildingHelper synchronized bottleneck in parallel builds",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T13:23:08Z",
+      "reviewed_at": "2026-07-30T13:45:17Z",
       "verdict": "REQUEST_CHANGES",
-      "notes": "TOCTOU race: removing synchronized exposes get-create-put race that crashes parallel builds with IllegalStateException.",
+      "notes": "Re-review: TOCTOU race still unaddressed, new checkstyle commit introduced compilation error and typo.",
       "interactions": [
         {
           "at": "2026-07-30T13:23:08Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "TOCTOU race: removing synchronized exposes get-create-put race that crashes parallel builds with IllegalStateException."
+        },
+        {
+          "at": "2026-07-30T13:45:17Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "Re-review: TOCTOU race still unaddressed, new checkstyle commit introduced compilation error and typo."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T13:28:41Z",
-    "prs_checked": 2,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T13:45:17Z",
+    "prs_checked": 3,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
