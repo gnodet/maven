@@ -1505,9 +1505,9 @@
       "number": 12577,
       "title": "Add validation for Plexus-based plugin dependency injection",
       "author": "slawekjaranowski",
-      "reviewed_at": "2026-07-28T21:16:55Z",
-      "verdict": "COMMENT",
-      "notes": "Author applied review suggestions (grammar fix + javadoc syntax removal). No new issues.",
+      "reviewed_at": "2026-07-30T16:46:04Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: author addressed prior feedback (Javadoc syntax in runtime string, grammar). Validation logic correct, tests adequate.",
       "interactions": [
         {
           "at": "2026-07-28T20:40:10Z",
@@ -1518,9 +1518,14 @@
           "at": "2026-07-28T21:16:55Z",
           "verdict": "COMMENT",
           "notes": "Author applied review suggestions (grammar fix + javadoc syntax removal). No new issues."
+        },
+        {
+          "at": "2026-07-30T16:46:04Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: author addressed prior feedback (Javadoc syntax in runtime string, grammar). Validation logic correct, tests adequate."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     },
     {
       "number": 12581,
@@ -1542,7 +1547,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T16:36:44Z"
+      "last_reviewed_at": "2026-07-30T16:42:22Z"
     },
     {
       "number": 12612,
@@ -1847,7 +1852,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T16:36:44Z"
+      "last_reviewed_at": "2026-07-30T16:42:22Z"
     },
     {
       "number": 12630,
@@ -1885,7 +1890,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T16:36:44Z"
+      "last_reviewed_at": "2026-07-30T16:42:22Z"
     },
     {
       "number": 12632,
@@ -1911,9 +1916,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T16:36:44Z",
-    "prs_checked": 3,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-30T16:46:04Z",
+    "prs_checked": 4,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
