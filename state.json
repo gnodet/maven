@@ -1542,7 +1542,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-30T14:07:00Z"
+      "last_reviewed_at": "2026-07-30T14:14:56Z"
     },
     {
       "number": 12612,
@@ -1847,7 +1847,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-30T14:07:00Z"
+      "last_reviewed_at": "2026-07-30T14:14:56Z"
     },
     {
       "number": 12630,
@@ -1884,7 +1884,8 @@
           "notes": "Clean fix replacing dead condition with broader relative-path resolution guard. Follows established codebase conventions."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-30T14:14:56Z"
     },
     {
       "number": 12632,
@@ -1905,8 +1906,8 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-30T14:07:00Z",
-    "prs_checked": 2,
+    "timestamp": "2026-07-30T14:14:56Z",
+    "prs_checked": 3,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
