@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12377,
@@ -1023,7 +1023,8 @@
           "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12546,
@@ -1553,7 +1554,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12612,
@@ -1858,7 +1859,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12630,
@@ -1939,7 +1940,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12636,
@@ -1983,7 +1984,7 @@
         }
       ],
       "review_count": 3,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12638,
@@ -2043,7 +2044,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12641,
@@ -2060,7 +2061,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12649,
@@ -2077,7 +2078,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     },
     {
       "number": 12651,
@@ -2094,13 +2095,13 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T18:40:38Z"
+      "last_reviewed_at": "2026-07-31T19:45:41Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-31T18:40:38Z",
-    "prs_checked": 8,
+    "timestamp": "2026-07-31T19:45:41Z",
+    "prs_checked": 9,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
