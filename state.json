@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-07-31T11:17:23Z"
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     },
     {
       "number": 12377,
@@ -1553,7 +1553,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T11:17:23Z"
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     },
     {
       "number": 12612,
@@ -1858,7 +1858,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T11:17:23Z"
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     },
     {
       "number": 12630,
@@ -1939,7 +1939,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T11:17:23Z"
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     },
     {
       "number": 12636,
@@ -1982,7 +1982,8 @@
           "notes": "Re-review: new commit removes blank line in site.xml. Trivial whitespace cleanup, APPROVE maintained."
         }
       ],
-      "review_count": 3
+      "review_count": 3,
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     },
     {
       "number": 12638,
@@ -2058,14 +2059,14 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T11:17:23Z"
+      "last_reviewed_at": "2026-07-31T11:19:48Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-31T11:17:27Z",
+    "timestamp": "2026-07-31T11:19:54Z",
     "prs_checked": 6,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
