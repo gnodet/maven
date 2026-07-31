@@ -1552,7 +1552,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T06:50:58Z"
+      "last_reviewed_at": "2026-07-31T06:53:25Z"
     },
     {
       "number": 12612,
@@ -1857,7 +1857,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T06:50:58Z"
+      "last_reviewed_at": "2026-07-31T06:53:25Z"
     },
     {
       "number": 12630,
@@ -1938,7 +1938,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T06:50:58Z"
+      "last_reviewed_at": "2026-07-31T06:53:25Z"
     },
     {
       "number": 12636,
@@ -2020,13 +2020,45 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-07-30T20:45:29Z"
+    },
+    {
+      "number": 12642,
+      "title": "consistency on Maven 4 vs 3 vs 2 references",
+      "author": "hboutemy",
+      "reviewed_at": "2026-07-31T06:57:31Z",
+      "verdict": "REQUEST_CHANGES",
+      "notes": "CLUSTER_PATTERNS key renames break switch statement hyperlinks and rank constraint nodes in ReactorGraph.java.",
+      "interactions": [
+        {
+          "at": "2026-07-31T06:57:31Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "CLUSTER_PATTERNS key renames break switch statement hyperlinks and rank constraint nodes in ReactorGraph.java."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12641,
+      "title": "Fix #12640: BOM consumer POM must not include inherited dependency management",
+      "author": "gnodet",
+      "reviewed_at": "2026-07-31T06:58:29Z",
+      "verdict": "APPROVE",
+      "notes": "Self-authored PR. Hybrid raw+effective model approach correctly fixes inheritance leak without regressing property resolution. Posted as COMMENT (can't self-approve).",
+      "interactions": [
+        {
+          "at": "2026-07-31T06:58:29Z",
+          "verdict": "APPROVE",
+          "notes": "Self-authored PR. Hybrid raw+effective model approach correctly fixes inheritance leak without regressing property resolution. Posted as COMMENT (can't self-approve)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-31T06:50:58Z",
-    "prs_checked": 3,
-    "reviews_posted": 0,
+    "timestamp": "2026-07-31T06:58:29Z",
+    "prs_checked": 5,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
