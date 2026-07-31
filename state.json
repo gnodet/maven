@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12377,
@@ -1553,7 +1553,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12612,
@@ -1858,7 +1858,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12630,
@@ -1939,7 +1939,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12636,
@@ -1983,7 +1983,7 @@
         }
       ],
       "review_count": 3,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12638,
@@ -2043,7 +2043,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12641,
@@ -2060,7 +2060,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-07-31T14:00:10Z"
+      "last_reviewed_at": "2026-07-31T14:10:13Z"
     },
     {
       "number": 12649,
@@ -2077,12 +2077,28 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12651,
+      "title": "Add validation for Plexus-based plugin dependency injection",
+      "author": "slawekjaranowski",
+      "reviewed_at": "2026-07-31T14:10:07Z",
+      "verdict": "APPROVE",
+      "notes": "Cherry-pick of #12577 to maven-3.10.x. Clean backport with test properly adapted for 3.10.x MojoDescriptor API.",
+      "interactions": [
+        {
+          "at": "2026-07-31T14:10:07Z",
+          "verdict": "APPROVE",
+          "notes": "Cherry-pick of #12577 to maven-3.10.x. Clean backport with test properly adapted for 3.10.x MojoDescriptor API."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-07-31T14:00:15Z",
-    "prs_checked": 6,
+    "timestamp": "2026-07-31T14:10:16Z",
+    "prs_checked": 8,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
