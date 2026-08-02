@@ -1556,6 +1556,7 @@ public class DefaultModelBuilder implements ModelBuilder {
                                 .path(modelSource.getPath())
                                 .rootDirectory(rootDirectory)
                                 .inputStream(is)
+                                .addLocationInformation(request.isLocationTracking())
                                 .transformer(new InterningTransformer(session))
                                 .build());
                     } catch (XmlReaderException e) {
@@ -1569,6 +1570,7 @@ public class DefaultModelBuilder implements ModelBuilder {
                                     .path(modelSource.getPath())
                                     .rootDirectory(rootDirectory)
                                     .inputStream(is)
+                                    .addLocationInformation(request.isLocationTracking())
                                     .transformer(new InterningTransformer(session))
                                     .build());
                         } catch (XmlReaderException ne) {
@@ -2155,6 +2157,7 @@ public class DefaultModelBuilder implements ModelBuilder {
                 ModelBuilderRequest importRequest = ModelBuilderRequest.builder()
                         .session(request.getSession())
                         .requestType(ModelBuilderRequest.RequestType.CONSUMER_DEPENDENCY)
+                        .locationTracking(request.isLocationTracking())
                         .systemProperties(request.getSystemProperties())
                         .userProperties(request.getUserProperties())
                         .source(importSource)
