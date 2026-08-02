@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12377,
@@ -1024,7 +1024,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12546,
@@ -1554,7 +1554,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12612,
@@ -1859,7 +1859,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12630,
@@ -1940,7 +1940,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12636,
@@ -2061,7 +2061,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-02T01:36:35Z"
+      "last_reviewed_at": "2026-08-02T02:36:45Z"
     },
     {
       "number": 12649,
@@ -2096,13 +2096,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-01T15:42:23Z"
+    },
+    {
+      "number": 12656,
+      "title": "Fix SubList.get() accepting an index equal to its own size",
+      "author": "renechoi",
+      "reviewed_at": "2026-08-02T02:39:46Z",
+      "verdict": "APPROVE",
+      "notes": "Clean off-by-one fix in SubList.get() bounds check with thorough tests",
+      "interactions": [
+        {
+          "at": "2026-08-02T02:39:46Z",
+          "verdict": "APPROVE",
+          "notes": "Clean off-by-one fix in SubList.get() bounds check with thorough tests"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-02T01:36:35Z",
-    "prs_checked": 6,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-02T02:39:46Z",
+    "prs_checked": 7,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
