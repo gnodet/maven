@@ -276,7 +276,7 @@
       "number": 11770,
       "title": "feat: Improve the matching of required versions",
       "author": "nielsbasjes",
-      "reviewed_at": "2026-07-26T07:42:39Z",
+      "reviewed_at": "2026-08-03T07:14:56Z",
       "verdict": "APPROVE",
       "notes": "Spotless formatting commit only (3f347583). APPROVE still valid. Author noted AI suggestion was missing ^ and $ anchors \u2014 fair point.",
       "interactions": [
@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-08-03T07:07:32Z"
+      "last_reviewed_at": "2026-08-03T07:14:56Z"
     },
     {
       "number": 12377,
@@ -1013,7 +1013,7 @@
       "number": 12541,
       "title": "[MNG-7541] Add Maven 4 PowerShell launcher",
       "author": "wilx",
-      "reviewed_at": "2026-07-26T00:37:47Z",
+      "reviewed_at": "2026-08-03T07:14:56Z",
       "verdict": "APPROVE",
       "notes": "Well-crafted PowerShell launcher with complete wrapper set (mvn/mvnDebug/mvnenc/mvnsh/mvnup/mvnyjp.ps1), thorough test coverage, proper CI integration. Correctly mirrors bash/cmd behavior.",
       "interactions": [
@@ -1024,7 +1024,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T07:07:32Z"
+      "last_reviewed_at": "2026-08-03T07:14:56Z"
     },
     {
       "number": 12546,
@@ -1538,7 +1538,7 @@
       "number": 12581,
       "title": "[ci][gh][workflow] explicit action hash and permissions",
       "author": "rmannibucau",
-      "reviewed_at": "2026-07-29T09:09:04Z",
+      "reviewed_at": "2026-08-03T07:14:56Z",
       "verdict": "APPROVE",
       "notes": "Re-check: slawekjaranowski CHANGES_REQUESTED - project intentionally uses branch refs for shared actions to avoid updating 100+ repos. No re-review needed - project policy decision.",
       "interactions": [
@@ -1554,7 +1554,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-03T07:07:32Z"
+      "last_reviewed_at": "2026-08-03T07:14:56Z"
     },
     {
       "number": 12612,
@@ -1848,7 +1848,7 @@
       "number": 12629,
       "title": "Fix #12607: DefaultMaven session scope leak on constructor exception",
       "author": "elharo",
-      "reviewed_at": "2026-07-30T12:56:36Z",
+      "reviewed_at": "2026-08-03T07:14:56Z",
       "verdict": "APPROVE",
       "notes": "Correct fix for session scope thread-local leak. Moves construction inside outer try block.",
       "interactions": [
@@ -1859,7 +1859,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T07:07:32Z"
+      "last_reviewed_at": "2026-08-03T07:14:56Z"
     },
     {
       "number": 12630,
@@ -2050,7 +2050,7 @@
       "number": 12641,
       "title": "Fix #12640: BOM consumer POM must not include inherited dependency management",
       "author": "gnodet",
-      "reviewed_at": "2026-07-31T06:58:29Z",
+      "reviewed_at": "2026-08-03T07:14:56Z",
       "verdict": "APPROVE",
       "notes": "Self-authored PR. Hybrid raw+effective model approach correctly fixes inheritance leak without regressing property resolution. Posted as COMMENT (can't self-approve).",
       "interactions": [
@@ -2061,7 +2061,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T07:07:32Z"
+      "last_reviewed_at": "2026-08-03T07:14:56Z"
     },
     {
       "number": 12649,
@@ -2225,13 +2225,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12653,
+      "title": "Optimize model building pipeline: defer Dependency.build() and reduce allocations",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-03T07:22:34Z",
+      "verdict": "APPROVE",
+      "notes": "Well-structured optimization deferring Model.build() and reducing allocations. All changes maintain semantic equivalence.",
+      "interactions": [
+        {
+          "at": "2026-08-03T07:22:34Z",
+          "verdict": "APPROVE",
+          "notes": "Well-structured optimization deferring Model.build() and reducing allocations. All changes maintain semantic equivalence."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-03T07:07:32Z",
-    "prs_checked": 8,
-    "reviews_posted": 3,
+    "timestamp": "2026-08-03T07:22:38Z",
+    "prs_checked": 6,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
