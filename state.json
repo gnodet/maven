@@ -302,7 +302,7 @@
         }
       ],
       "review_count": 4,
-      "last_reviewed_at": "2026-08-03T06:47:38Z"
+      "last_reviewed_at": "2026-08-03T07:07:32Z"
     },
     {
       "number": 12377,
@@ -1024,7 +1024,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T06:47:38Z"
+      "last_reviewed_at": "2026-08-03T07:07:32Z"
     },
     {
       "number": 12546,
@@ -1554,7 +1554,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-03T06:47:38Z"
+      "last_reviewed_at": "2026-08-03T07:07:32Z"
     },
     {
       "number": 12612,
@@ -1859,7 +1859,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T06:47:38Z"
+      "last_reviewed_at": "2026-08-03T07:07:32Z"
     },
     {
       "number": 12630,
@@ -2061,7 +2061,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-03T06:47:38Z"
+      "last_reviewed_at": "2026-08-03T07:07:32Z"
     },
     {
       "number": 12649,
@@ -2177,13 +2177,61 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12652,
+      "title": "Optimize reactor sort, model pool, and phase comparator performance",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-03T07:07:32Z",
+      "verdict": "APPROVE",
+      "notes": "O(1) HashMap lookups replacing O(n) linear scans. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-08-03T07:07:32Z",
+          "verdict": "APPROVE",
+          "notes": "O(1) HashMap lookups replacing O(n) linear scans. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12654,
+      "title": "Add AsyncDrainWriter to eliminate PrintWriter lock contention",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-03T07:07:32Z",
+      "verdict": "APPROVE",
+      "notes": "Lock-free drain algorithm. Suggested adding unit tests. Posted as COMMENT (self-authored).",
+      "interactions": [
+        {
+          "at": "2026-08-03T07:07:32Z",
+          "verdict": "APPROVE",
+          "notes": "Lock-free drain algorithm. Suggested adding unit tests. Posted as COMMENT (self-authored)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12655,
+      "title": "Wire ModelBuilderRequest.isLocationTracking() to XML parser",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-03T07:07:32Z",
+      "verdict": "COMMENT",
+      "notes": "locationTracking default change (false->true) confirmed; @since tag incorrect. Posted as COMMENT.",
+      "interactions": [
+        {
+          "at": "2026-08-03T07:07:32Z",
+          "verdict": "COMMENT",
+          "notes": "locationTracking default change (false->true) confirmed; @since tag incorrect. Posted as COMMENT."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-03T06:47:38Z",
-    "prs_checked": 5,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-03T07:07:32Z",
+    "prs_checked": 8,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
