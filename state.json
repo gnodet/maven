@@ -2167,7 +2167,7 @@
       "number": 12662,
       "title": "Enable PathConflictResolver by default",
       "author": "gnodet",
-      "reviewed_at": "2026-08-02T23:56:33Z",
+      "reviewed_at": "2026-08-03T13:06:13Z",
       "verdict": "APPROVE",
       "notes": "Clean perf improvement: O(N) path resolver replaces O(N^2) classic. Posted as COMMENT (self-authored PR).",
       "interactions": [
@@ -2177,7 +2177,8 @@
           "notes": "Clean perf improvement: O(N) path resolver replaces O(N^2) classic. Posted as COMMENT (self-authored PR)."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-03T13:06:13Z"
     },
     {
       "number": 12652,
@@ -2247,7 +2248,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-03T10:36:07Z",
+    "timestamp": "2026-08-03T13:06:13Z",
     "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
