@@ -2260,13 +2260,45 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12674,
+      "title": "Build the wrapper job with Maven 4.0.0-rc-6",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-04T01:28:10Z",
+      "verdict": "APPROVE",
+      "notes": "Straightforward wrapper version bump rc-5 to rc-6 on master. Version verified on Maven Central.",
+      "interactions": [
+        {
+          "at": "2026-08-04T01:28:10Z",
+          "verdict": "APPROVE",
+          "notes": "Straightforward wrapper version bump rc-5 to rc-6 on master. Version verified on Maven Central."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12675,
+      "title": "Build the wrapper job with Maven 4.0.0-rc-6",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-04T01:28:11Z",
+      "verdict": "COMMENT",
+      "notes": "Same version bump on maven-4.0.x. CI broken due to Google mirror not syncing rc-6 (404 after 5 days).",
+      "interactions": [
+        {
+          "at": "2026-08-04T01:28:11Z",
+          "verdict": "COMMENT",
+          "notes": "Same version bump on maven-4.0.x. CI broken due to Google mirror not syncing rc-6 (404 after 5 days)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-03T23:54:38Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-04T01:28:11Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
