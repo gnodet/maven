@@ -2312,13 +2312,29 @@
         }
       ],
       "review_count": 3
+    },
+    {
+      "number": 12677,
+      "title": "Build and deploy through the wrapper on Jenkins",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-04T11:04:24Z",
+      "verdict": "APPROVE",
+      "notes": "Aligns Jenkins deploy step with build step using Maven wrapper. Version bumps match master.",
+      "interactions": [
+        {
+          "at": "2026-08-04T11:04:24Z",
+          "verdict": "APPROVE",
+          "notes": "Aligns Jenkins deploy step with build step using Maven wrapper. Version bumps match master."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-04T10:59:24Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-04T11:04:24Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
