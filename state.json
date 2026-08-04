@@ -2265,40 +2265,50 @@
       "number": 12674,
       "title": "Build the wrapper job with Maven 4.0.0-rc-6",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-04T01:28:10Z",
+      "reviewed_at": "2026-08-04T10:45:44Z",
       "verdict": "APPROVE",
-      "notes": "Straightforward wrapper version bump rc-5 to rc-6 on master. Version verified on Maven Central.",
+      "notes": "Re-review: new commit removes MVNW_REPOURL to fix Google mirror lag. Well-targeted fix.",
       "interactions": [
         {
           "at": "2026-08-04T01:28:10Z",
           "verdict": "APPROVE",
           "notes": "Straightforward wrapper version bump rc-5 to rc-6 on master. Version verified on Maven Central."
+        },
+        {
+          "at": "2026-08-04T10:45:44Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit removes MVNW_REPOURL to fix Google mirror lag. Well-targeted fix."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12675,
       "title": "Build the wrapper job with Maven 4.0.0-rc-6",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-04T01:28:11Z",
-      "verdict": "COMMENT",
-      "notes": "Same version bump on maven-4.0.x. CI broken due to Google mirror not syncing rc-6 (404 after 5 days).",
+      "reviewed_at": "2026-08-04T10:45:44Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: same mirror fix as #12674 on maven-4.0.x. Addresses CI issue from previous review.",
       "interactions": [
         {
           "at": "2026-08-04T01:28:11Z",
           "verdict": "COMMENT",
           "notes": "Same version bump on maven-4.0.x. CI broken due to Google mirror not syncing rc-6 (404 after 5 days)."
+        },
+        {
+          "at": "2026-08-04T10:45:44Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: same mirror fix as #12674 on maven-4.0.x. Addresses CI issue from previous review."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-04T01:36:40Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-04T10:45:44Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
