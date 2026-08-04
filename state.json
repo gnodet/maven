@@ -2265,9 +2265,9 @@
       "number": 12674,
       "title": "Build the wrapper job with Maven 4.0.0-rc-6",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-04T10:45:44Z",
+      "reviewed_at": "2026-08-04T10:59:23Z",
       "verdict": "APPROVE",
-      "notes": "Re-review: new commit removes MVNW_REPOURL to fix Google mirror lag. Well-targeted fix.",
+      "notes": "Re-review v3: also comments out Mimir mirror for dependency resolution. Logical completion of mirror-lag fix.",
       "interactions": [
         {
           "at": "2026-08-04T01:28:10Z",
@@ -2278,17 +2278,22 @@
           "at": "2026-08-04T10:45:44Z",
           "verdict": "APPROVE",
           "notes": "Re-review: new commit removes MVNW_REPOURL to fix Google mirror lag. Well-targeted fix."
+        },
+        {
+          "at": "2026-08-04T10:59:23Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review v3: also comments out Mimir mirror for dependency resolution. Logical completion of mirror-lag fix."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     },
     {
       "number": 12675,
       "title": "Build the wrapper job with Maven 4.0.0-rc-6",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-04T10:45:44Z",
+      "reviewed_at": "2026-08-04T10:59:24Z",
       "verdict": "APPROVE",
-      "notes": "Re-review: same mirror fix as #12674 on maven-4.0.x. Addresses CI issue from previous review.",
+      "notes": "Re-review v3: same Mimir mirror fix as #12674 on maven-4.0.x. Both wrapper and dependency paths now use Central.",
       "interactions": [
         {
           "at": "2026-08-04T01:28:11Z",
@@ -2299,14 +2304,19 @@
           "at": "2026-08-04T10:45:44Z",
           "verdict": "APPROVE",
           "notes": "Re-review: same mirror fix as #12674 on maven-4.0.x. Addresses CI issue from previous review."
+        },
+        {
+          "at": "2026-08-04T10:59:24Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review v3: same Mimir mirror fix as #12674 on maven-4.0.x. Both wrapper and dependency paths now use Central."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-04T10:45:44Z",
+    "timestamp": "2026-08-04T10:59:24Z",
     "prs_checked": 2,
     "reviews_posted": 2,
     "tokens_estimate": 0
