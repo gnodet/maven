@@ -2355,17 +2355,22 @@
       "number": 12682,
       "title": "Port the site documentation from APT to Markdown",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-06T00:35:14Z",
-      "verdict": "COMMENT",
-      "notes": "5 verified conversion artifacts: spurious HTML anchors in property refs, lost structure in Properties subsection, XML elements as emphasis, leading spaces in links, unknown code fence language.",
+      "reviewed_at": "2026-08-06T17:45:36Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: all 5 previous conversion artifacts fixed in new commits. Approved.",
       "interactions": [
         {
           "at": "2026-08-06T00:35:14Z",
           "verdict": "COMMENT",
           "notes": "5 verified conversion artifacts: spurious HTML anchors in property refs, lost structure in Properties subsection, XML elements as emphasis, leading spaces in links, unknown code fence language."
+        },
+        {
+          "at": "2026-08-06T17:45:36Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: all 5 previous conversion artifacts fixed in new commits. Approved."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12683,
@@ -2415,13 +2420,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-06T09:21:06Z"
+    },
+    {
+      "number": 12686,
+      "title": "[MNG-8765] Pre-interpolate plugin configuration before type conversion",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-06T17:45:36Z",
+      "verdict": "COMMENT",
+      "notes": "Fundamental bug: interpolated values lost due to XmlPlexusConfiguration immutable XmlNode design. Tests don't cover actual failure scenario. 4 findings, all verified.",
+      "interactions": [
+        {
+          "at": "2026-08-06T17:45:36Z",
+          "verdict": "COMMENT",
+          "notes": "Fundamental bug: interpolated values lost due to XmlPlexusConfiguration immutable XmlNode design. Tests don't cover actual failure scenario. 4 findings, all verified."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-06T09:21:11Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-06T17:45:36Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
