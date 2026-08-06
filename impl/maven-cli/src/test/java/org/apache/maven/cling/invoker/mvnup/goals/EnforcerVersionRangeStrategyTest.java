@@ -640,4 +640,272 @@ class EnforcerVersionRangeStrategyTest {
             assertFalse(xml.contains(",4)"), "No ranges with upper bound at 4 should remain");
         }
     }
+
+    @Nested
+    @DisplayName("Overlapping Range Merging")
+    class OverlappingRangeMergingTests {
+
+        @Test
+        @DisplayName("should merge contained sub-range — datasketches case")
+        void shouldMergeContainedSubRange() {
+            // [1.8,1.9) is fully contained within [1.8,9)
+            assertEquals(
+                    "[1.8,9),[11,12)",
+                    EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.8,1.9),[1.8,9),[11,12)"));
+        }
+
+        @Test
+        @DisplayName("should merge two overlapping ranges")
+        void shouldMergeTwoOverlapping() {
+            assertEquals("[1.0,4.0)", EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,3.0),[2.0,4.0)"));
+        }
+
+        @Test
+        @DisplayName("should merge fully identical ranges")
+        void shouldMergeIdenticalRanges() {
+            assertEquals("[1.8,9)", EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.8,9),[1.8,9)"));
+        }
+
+        @Test
+        @DisplayName("should not merge non-overlapping ranges")
+        void shouldNotMergeNonOverlapping() {
+            assertNull(EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,2.0),[3.0,4.0)"));
+        }
+
+        @Test
+        @DisplayName("should not modify single range")
+        void shouldNotModifySingleRange() {
+            assertNull(EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,2.0)"));
+        }
+
+        @Test
+        @DisplayName("should merge adjacent inclusive ranges")
+        void shouldMergeAdjacentInclusiveRanges() {
+            // [1.0,2.0] and [2.0,3.0) overlap at 2.0 (included by both)
+            assertEquals("[1.0,3.0)", EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,2.0],[2.0,3.0)"));
+        }
+
+        @Test
+        @DisplayName("should not merge adjacent exclusive ranges")
+        void shouldNotMergeAdjacentExclusiveRanges() {
+            // [1.0,2.0) and [2.0,3.0) do NOT overlap — 2.0 excluded by first
+            assertNull(EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,2.0),[2.0,3.0)"));
+        }
+
+        @Test
+        @DisplayName("should merge three overlapping ranges into one")
+        void shouldMergeThreeIntoOne() {
+            assertEquals(
+                    "[1.0,6.0)", EnforcerVersionRangeStrategy.mergeOverlappingRanges("[1.0,3.0),[2.0,5.0),[4.0,6.0)"));
+        }
+
+        @Test
+        @DisplayName("should handle unsorted input ranges")
+        void shouldHandleUnsortedRanges() {
+            // Same as datasketches but in different order
+            assertEquals(
+                    "[1.8,9),[11,12)",
+                    EnforcerVersionRangeStrategy.mergeOverlappingRanges("[11,12),[1.8,9),[1.8,1.9)"));
+        }
+    }
+
+    @Nested
+    @DisplayName("Version Comparison")
+    class VersionComparisonTests {
+
+        @Test
+        @DisplayName("should compare simple versions")
+        void shouldCompareSimpleVersions() {
+            assertTrue(EnforcerVersionRangeStrategy.compareVersions("1.8", "1.9") < 0);
+            assertTrue(EnforcerVersionRangeStrategy.compareVersions("1.9", "9") < 0);
+            assertTrue(EnforcerVersionRangeStrategy.compareVersions("9", "11") < 0);
+            assertEquals(0, EnforcerVersionRangeStrategy.compareVersions("1.8", "1.8"));
+        }
+
+        @Test
+        @DisplayName("should treat missing segments as zero")
+        void shouldTreatMissingSegmentsAsZero() {
+            assertEquals(0, EnforcerVersionRangeStrategy.compareVersions("1.8", "1.8.0"));
+            assertEquals(0, EnforcerVersionRangeStrategy.compareVersions("3", "3.0.0"));
+        }
+    }
+
+    @Nested
+    @DisplayName("RequireJavaVersion")
+    class RequireJavaVersionTests {
+
+        @Test
+        @DisplayName("should merge overlapping requireJavaVersion ranges in POM")
+        void shouldMergeOverlappingJavaVersionRanges() {
+            String pomXml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>test</groupId>
+                    <artifactId>test</artifactId>
+                    <version>1.0.0</version>
+                    <build>
+                        <plugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-enforcer-plugin</artifactId>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <version>[1.8,1.9),[1.8,9),[11,12)</version>
+                                        </requireJavaVersion>
+                                    </rules>
+                                </configuration>
+                            </plugin>
+                        </plugins>
+                    </build>
+                </project>
+                """;
+
+            Document document = Document.of(pomXml);
+            Map<Path, Document> pomMap = Map.of(Paths.get("pom.xml"), document);
+
+            UpgradeContext context = createMockContext();
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertTrue(result.success());
+            assertTrue(result.modifiedCount() > 0, "Overlapping ranges should be merged");
+
+            String xml = DomUtils.toXml(document);
+            assertTrue(xml.contains("[1.8,9),[11,12)"), "Ranges should be merged to [1.8,9),[11,12)");
+            assertFalse(xml.contains("[1.8,1.9)"), "Contained sub-range should be removed");
+        }
+
+        @Test
+        @DisplayName("should not modify non-overlapping requireJavaVersion ranges")
+        void shouldNotModifyNonOverlappingJavaVersionRanges() {
+            String pomXml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>test</groupId>
+                    <artifactId>test</artifactId>
+                    <version>1.0.0</version>
+                    <build>
+                        <plugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-enforcer-plugin</artifactId>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <version>[11,12),[17,18)</version>
+                                        </requireJavaVersion>
+                                    </rules>
+                                </configuration>
+                            </plugin>
+                        </plugins>
+                    </build>
+                </project>
+                """;
+
+            Document document = Document.of(pomXml);
+            Map<Path, Document> pomMap = Map.of(Paths.get("pom.xml"), document);
+
+            UpgradeContext context = createMockContext();
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertTrue(result.success());
+            assertEquals(0, result.modifiedCount(), "Non-overlapping ranges should not be modified");
+        }
+
+        @Test
+        @DisplayName("should merge requireJavaVersion in execution configuration")
+        void shouldMergeInExecutionConfiguration() {
+            String pomXml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>test</groupId>
+                    <artifactId>test</artifactId>
+                    <version>1.0.0</version>
+                    <build>
+                        <plugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-enforcer-plugin</artifactId>
+                                <executions>
+                                    <execution>
+                                        <id>enforce-java</id>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                        <configuration>
+                                            <rules>
+                                                <requireJavaVersion>
+                                                    <version>[1.8,1.9),[1.8,9),[11,12)</version>
+                                                </requireJavaVersion>
+                                            </rules>
+                                        </configuration>
+                                    </execution>
+                                </executions>
+                            </plugin>
+                        </plugins>
+                    </build>
+                </project>
+                """;
+
+            Document document = Document.of(pomXml);
+            Map<Path, Document> pomMap = Map.of(Paths.get("pom.xml"), document);
+
+            UpgradeContext context = createMockContext();
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertTrue(result.success());
+            assertTrue(result.modifiedCount() > 0);
+
+            String xml = DomUtils.toXml(document);
+            assertTrue(xml.contains("[1.8,9),[11,12)"));
+        }
+
+        @Test
+        @DisplayName("should handle both requireMavenVersion and requireJavaVersion in same rules")
+        void shouldHandleBothRuleTypes() {
+            String pomXml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>test</groupId>
+                    <artifactId>test</artifactId>
+                    <version>1.0.0</version>
+                    <build>
+                        <plugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-enforcer-plugin</artifactId>
+                                <configuration>
+                                    <rules>
+                                        <requireMavenVersion>
+                                            <version>[3.8.8,4)</version>
+                                        </requireMavenVersion>
+                                        <requireJavaVersion>
+                                            <version>[1.8,1.9),[1.8,9),[11,12)</version>
+                                        </requireJavaVersion>
+                                    </rules>
+                                </configuration>
+                            </plugin>
+                        </plugins>
+                    </build>
+                </project>
+                """;
+
+            Document document = Document.of(pomXml);
+            Map<Path, Document> pomMap = Map.of(Paths.get("pom.xml"), document);
+
+            UpgradeContext context = createMockContext();
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertTrue(result.success());
+            assertTrue(result.modifiedCount() > 0);
+
+            String xml = DomUtils.toXml(document);
+            assertTrue(xml.contains("[3.8.8,5)"), "Maven version range should be widened");
+            assertTrue(xml.contains("[1.8,9),[11,12)"), "Java version ranges should be merged");
+        }
+    }
 }
