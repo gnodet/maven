@@ -2436,13 +2436,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12687,
+      "title": "Fix modello velocity phase for concurrent builder compatibility",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-06T22:19:26Z",
+      "verdict": "APPROVE",
+      "notes": "Correct fix for concurrency race: velocity goal moved from generate-resources to generate-sources so COMPILE waits for generated Java files. All other modules already use this pattern.",
+      "interactions": [
+        {
+          "at": "2026-08-06T22:19:26Z",
+          "verdict": "APPROVE",
+          "notes": "Correct fix for concurrency race: velocity goal moved from generate-resources to generate-sources so COMPILE waits for generated Java files. All other modules already use this pattern."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-06T17:45:36Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-06T22:19:26Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
