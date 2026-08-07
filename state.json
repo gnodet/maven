@@ -2355,9 +2355,9 @@
       "number": 12682,
       "title": "Port the site documentation from APT to Markdown",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-07T11:00:36Z",
+      "reviewed_at": "2026-08-07T19:42:48Z",
       "verdict": "COMMENT",
-      "notes": "Author fixed missing date after review feedback. No outstanding issues.",
+      "notes": "Merge commit from master only. No substantive changes. No outstanding issues.",
       "interactions": [
         {
           "at": "2026-08-06T00:35:14Z",
@@ -2376,7 +2376,7 @@
         }
       ],
       "review_count": 3,
-      "last_reviewed_at": "2026-08-07T11:00:36Z"
+      "last_reviewed_at": "2026-08-07T19:42:48Z"
     },
     {
       "number": 12683,
@@ -2492,11 +2492,27 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12696,
+      "title": "Migrate legacy plugin Javadoc annotations in Core ITs",
+      "author": "wilx",
+      "reviewed_at": "2026-08-07T19:43:53Z",
+      "verdict": "COMMENT",
+      "notes": "Correct annotation mappings but ~20 test resource POMs missing maven-plugin-annotations dependency. Will break IT compilation.",
+      "interactions": [
+        {
+          "at": "2026-08-07T19:43:53Z",
+          "verdict": "COMMENT",
+          "notes": "Correct annotation mappings but ~20 test resource POMs missing maven-plugin-annotations dependency. Will break IT compilation."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-07T14:48:42Z",
+    "timestamp": "2026-08-07T19:43:53Z",
     "prs_checked": 2,
     "reviews_posted": 1,
     "tokens_estimate": 0
