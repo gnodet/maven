@@ -2508,13 +2508,45 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12700,
+      "title": "Restore the Google Cloud mirror for CI resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-07T21:51:10Z",
+      "verdict": "APPROVE",
+      "notes": "Clean restoration of Google Cloud CDN mirror. Revert of temporary disabling during rc-6 sync lag. Correct URL, no security concerns.",
+      "interactions": [
+        {
+          "at": "2026-08-07T21:51:10Z",
+          "verdict": "APPROVE",
+          "notes": "Clean restoration of Google Cloud CDN mirror. Revert of temporary disabling during rc-6 sync lag. Correct URL, no security concerns."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12701,
+      "title": "[4.0.x] Restore the Google Cloud mirror for CI resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-07T21:51:10Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12700 to 4.0.x. Identical diff. Correct mirror URL.",
+      "interactions": [
+        {
+          "at": "2026-08-07T21:51:10Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12700 to 4.0.x. Identical diff. Correct mirror URL."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-07T19:43:53Z",
+    "timestamp": "2026-08-07T21:51:10Z",
     "prs_checked": 2,
-    "reviews_posted": 1,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
