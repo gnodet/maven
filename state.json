@@ -2464,9 +2464,9 @@
       "number": 12692,
       "title": "Upgrade the IT suite to Jetty 12.1.12 and the core Jetty API",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-07T14:22:31Z",
+      "reviewed_at": "2026-08-07T14:48:42Z",
       "verdict": "APPROVE",
-      "notes": "Clean Jetty 9.4\u219212.1.12 migration across 37 test infrastructure files. Idiomatic Handler.Abstract pattern, correct security handler wrapping. Only minor style nits (non-blocking).",
+      "notes": "Author addressed all 3 review points in 783450bd7a: local vars for getPathInContext, static import restored, SPECIFIC_ROLE for all 11 auth sites. 30 tests pass locally.",
       "interactions": [
         {
           "at": "2026-08-07T14:22:31Z",
@@ -2474,13 +2474,30 @@
           "notes": "Clean Jetty 9.4\u219212.1.12 migration across 37 test infrastructure files. Idiomatic Handler.Abstract pattern, correct security handler wrapping. Only minor style nits (non-blocking)."
         }
       ],
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-07T14:48:42Z"
+    },
+    {
+      "number": 12693,
+      "title": "[maven-4.0.x] Upgrade the IT suite to Jetty 12.1.12 and the core Jetty API",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-07T14:48:42Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12692 to 4.0.x. All review feedback fixes included. 4.0.x-specific POM conventions correctly maintained.",
+      "interactions": [
+        {
+          "at": "2026-08-07T14:48:42Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12692 to 4.0.x. All review feedback fixes included. 4.0.x-specific POM conventions correctly maintained."
+        }
+      ],
       "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-07T14:22:31Z",
-    "prs_checked": 1,
+    "timestamp": "2026-08-07T14:48:42Z",
+    "prs_checked": 2,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
