@@ -2497,9 +2497,9 @@
       "number": 12696,
       "title": "Migrate legacy plugin Javadoc annotations in Core ITs",
       "author": "wilx",
-      "reviewed_at": "2026-08-07T19:43:53Z",
+      "reviewed_at": "2026-08-07T23:34:28Z",
       "verdict": "COMMENT",
-      "notes": "Correct annotation mappings but ~20 test resource POMs missing maven-plugin-annotations dependency. Will break IT compilation.",
+      "notes": "Author force-pushed with fix: maven-plugin-annotations dependency added to all 29 flagged POMs. Review feedback fully addressed.",
       "interactions": [
         {
           "at": "2026-08-07T19:43:53Z",
@@ -2507,7 +2507,8 @@
           "notes": "Correct annotation mappings but ~20 test resource POMs missing maven-plugin-annotations dependency. Will break IT compilation."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-07T23:34:28Z"
     },
     {
       "number": 12700,
@@ -2544,9 +2545,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-07T21:51:10Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-07T23:34:28Z",
+    "prs_checked": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
