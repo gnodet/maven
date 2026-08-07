@@ -2459,13 +2459,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-07T11:21:03Z"
+    },
+    {
+      "number": 12692,
+      "title": "Upgrade the IT suite to Jetty 12.1.12 and the core Jetty API",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-07T14:22:31Z",
+      "verdict": "APPROVE",
+      "notes": "Clean Jetty 9.4\u219212.1.12 migration across 37 test infrastructure files. Idiomatic Handler.Abstract pattern, correct security handler wrapping. Only minor style nits (non-blocking).",
+      "interactions": [
+        {
+          "at": "2026-08-07T14:22:31Z",
+          "verdict": "APPROVE",
+          "notes": "Clean Jetty 9.4\u219212.1.12 migration across 37 test infrastructure files. Idiomatic Handler.Abstract pattern, correct security handler wrapping. Only minor style nits (non-blocking)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-07T11:21:11Z",
+    "timestamp": "2026-08-07T14:22:31Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
