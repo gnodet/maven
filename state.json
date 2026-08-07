@@ -2355,9 +2355,9 @@
       "number": 12682,
       "title": "Port the site documentation from APT to Markdown",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-06T17:45:36Z",
-      "verdict": "APPROVE",
-      "notes": "Re-review: all 5 previous conversion artifacts fixed in new commits. Approved.",
+      "reviewed_at": "2026-08-07T10:41:47Z",
+      "verdict": "COMMENT",
+      "notes": "Re-review of metadata restoration commit. One confirmed finding: missing date (2005-04-29) in getting-to-container-configured-mojos.md while all other APT dates were restored.",
       "interactions": [
         {
           "at": "2026-08-06T00:35:14Z",
@@ -2368,9 +2368,14 @@
           "at": "2026-08-06T17:45:36Z",
           "verdict": "APPROVE",
           "notes": "Re-review: all 5 previous conversion artifacts fixed in new commits. Approved."
+        },
+        {
+          "at": "2026-08-07T10:41:47Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review of metadata restoration commit. One confirmed finding: missing date (2005-04-29) in getting-to-container-configured-mojos.md while all other APT dates were restored."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     },
     {
       "number": 12683,
@@ -2456,7 +2461,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-06T22:19:26Z",
+    "timestamp": "2026-08-07T10:41:52Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
