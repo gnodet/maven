@@ -2355,9 +2355,9 @@
       "number": 12682,
       "title": "Port the site documentation from APT to Markdown",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-07T19:42:48Z",
+      "reviewed_at": "2026-08-08T07:01:44Z",
       "verdict": "COMMENT",
-      "notes": "Merge commit from master only. No substantive changes. No outstanding issues.",
+      "notes": "Bot review (copilot) only. No new commits or human reviews. No re-review needed.",
       "interactions": [
         {
           "at": "2026-08-06T00:35:14Z",
@@ -2376,7 +2376,7 @@
         }
       ],
       "review_count": 3,
-      "last_reviewed_at": "2026-08-07T19:42:48Z"
+      "last_reviewed_at": "2026-08-08T07:01:44Z"
     },
     {
       "number": 12683,
@@ -2561,9 +2561,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T06:06:12Z",
+    "timestamp": "2026-08-08T07:01:44Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
