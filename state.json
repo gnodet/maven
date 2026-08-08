@@ -2464,9 +2464,9 @@
       "number": 12692,
       "title": "Upgrade the IT suite to Jetty 12.1.12 and the core Jetty API",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-07T14:48:42Z",
+      "reviewed_at": "2026-08-08T08:22:38Z",
       "verdict": "APPROVE",
-      "notes": "Author addressed all 3 review points in 783450bd7a: local vars for getPathInContext, static import restored, SPECIFIC_ROLE for all 11 auth sites. 30 tests pass locally.",
+      "notes": "olamy also approved. No new commits. No re-review needed.",
       "interactions": [
         {
           "at": "2026-08-07T14:22:31Z",
@@ -2475,7 +2475,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-07T14:48:42Z"
+      "last_reviewed_at": "2026-08-08T08:22:38Z"
     },
     {
       "number": 12693,
@@ -2594,7 +2594,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T07:57:51Z",
+    "timestamp": "2026-08-08T08:22:38Z",
     "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
