@@ -2624,13 +2624,29 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-08T14:55:22Z"
+    },
+    {
+      "number": 12710,
+      "title": "Fix inherited versions in BOM consumer POMs",
+      "author": "ulofiai",
+      "reviewed_at": "2026-08-08T15:05:44Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix for missing dependency versions from imported BOMs in consumer POM generation",
+      "interactions": [
+        {
+          "at": "2026-08-08T15:05:44Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for missing dependency versions from imported BOMs in consumer POM generation"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T14:55:22Z",
+    "timestamp": "2026-08-08T15:05:47Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
