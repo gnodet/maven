@@ -2117,17 +2117,22 @@
       "number": 12657,
       "title": "fix configuration page generation",
       "author": "hboutemy",
-      "reviewed_at": "2026-08-02T09:53:20Z",
+      "reviewed_at": "2026-08-08T23:29:21Z",
       "verdict": "COMMENT",
-      "notes": "Reactor cycle from adding maven-core/maven-compat as plugin deps in root pom. CI failing. Author acknowledges need for rework.",
+      "notes": "Re-review: reactor cycle resolved, xdoc switch correct. Found inverted skip semantics (!false should be !true)",
       "interactions": [
         {
           "at": "2026-08-02T09:53:20Z",
           "verdict": "COMMENT",
           "notes": "Reactor cycle from adding maven-core/maven-compat as plugin deps in root pom. CI failing. Author acknowledges need for rework."
+        },
+        {
+          "at": "2026-08-08T23:29:21Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: reactor cycle resolved, xdoc switch correct. Found inverted skip semantics (!false should be !true)"
         }
       ],
-      "review_count": 1,
+      "review_count": 2,
       "last_reviewed_at": "2026-08-02T18:16:17Z"
     },
     {
@@ -2697,9 +2702,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T16:43:51Z",
-    "prs_checked": 3,
-    "reviews_posted": 3,
+    "timestamp": "2026-08-08T23:29:21Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
