@@ -2611,9 +2611,9 @@
       "number": 12708,
       "title": "Migrate legacy plugin Javadoc annotations in Maven Embedder tests",
       "author": "wilx",
-      "reviewed_at": "2026-08-08T12:55:35Z",
+      "reviewed_at": "2026-08-08T13:26:13Z",
       "verdict": "COMMENT",
-      "notes": "Correct mappings across 13 fixtures, POMs include maven-plugin-annotations. One confirmed finding: role-hint=nonexistent dropped from @Component in mojo-lookup-err fixture (OpenRewrite limitation).",
+      "notes": "Author fixed dropped role-hint: now uses @Component(hint=\"nonexistent\"). Review feedback fully addressed.",
       "interactions": [
         {
           "at": "2026-08-08T12:55:35Z",
@@ -2621,14 +2621,15 @@
           "notes": "Correct mappings across 13 fixtures, POMs include maven-plugin-annotations. One confirmed finding: role-hint=nonexistent dropped from @Component in mojo-lookup-err fixture (OpenRewrite limitation)."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-08T13:26:13Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T12:55:35Z",
+    "timestamp": "2026-08-08T13:26:13Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
