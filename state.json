@@ -2557,13 +2557,29 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12705,
+      "title": "Fix #12704: Do not report an independent, built module as skipped",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-08T07:34:34Z",
+      "verdict": "APPROVE",
+      "notes": "Correct fix for MNG-8670 regression. Distinguishes completed-but-halted from genuinely skipped modules using hasExecutions(). Improved skip messages attribute cause accurately.",
+      "interactions": [
+        {
+          "at": "2026-08-08T07:34:34Z",
+          "verdict": "APPROVE",
+          "notes": "Correct fix for MNG-8670 regression. Distinguishes completed-but-halted from genuinely skipped modules using hasExecutions(). Improved skip messages attribute cause accurately."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T07:01:44Z",
+    "timestamp": "2026-08-08T07:34:34Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
