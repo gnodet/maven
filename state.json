@@ -2595,17 +2595,22 @@
       "number": 12707,
       "title": "Fix duplicate model problem reporting, fixes #12691",
       "author": "Mazen050",
-      "reviewed_at": "2026-08-08T14:27:54Z",
+      "reviewed_at": "2026-08-08T16:34:56Z",
       "verdict": "APPROVE",
-      "notes": "rmannibucau requested changes. No new commits. Awaiting author response.",
+      "notes": "Re-review: new regression test addresses rmannibucau feedback, validates user-facing behavior",
       "interactions": [
         {
           "at": "2026-08-08T11:41:42Z",
           "verdict": "APPROVE",
           "notes": "Clean revert of regression from #10975. Removes redundant detailed message from ProjectBuildingException that caused duplicate problem reporting. Backport to 4.0.x recommended."
+        },
+        {
+          "at": "2026-08-08T16:34:56Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new regression test addresses rmannibucau feedback, validates user-facing behavior"
         }
       ],
-      "review_count": 1,
+      "review_count": 2,
       "last_reviewed_at": "2026-08-08T14:27:54Z"
     },
     {
@@ -2644,7 +2649,7 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-08T15:05:47Z",
+    "timestamp": "2026-08-08T16:34:56Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
