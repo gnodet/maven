@@ -2826,17 +2826,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12716,
+      "title": "#12572 introduced mvnlog",
+      "author": "sakshi8778",
+      "reviewed_at": "2026-08-09T18:48:42Z",
+      "verdict": "COMMENT",
+      "notes": "Path traversal vuln, breaking interface change, System.exit in embedded mode, CopyOnWriteArrayList O(n^2), no opt-out, no tests for 2470 LOC",
+      "interactions": [
+        {
+          "at": "2026-08-09T18:48:42Z",
+          "verdict": "COMMENT",
+          "notes": "Path traversal vuln, breaking interface change, System.exit in embedded mode, CopyOnWriteArrayList O(n^2), no opt-out, no tests for 2470 LOC"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T11:21:58Z",
+    "timestamp": "2026-08-09T18:48:42Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-09T11:17:55Z",
+  "last_reviewed_updated_at": "2026-08-09T18:34:48Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
