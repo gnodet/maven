@@ -2117,9 +2117,9 @@
       "number": 12657,
       "title": "fix configuration page generation",
       "author": "hboutemy",
-      "reviewed_at": "2026-08-09T09:48:19Z",
+      "reviewed_at": "2026-08-09T11:21:58Z",
       "verdict": "COMMENT",
-      "notes": "Discussion between hboutemy and slawekjaranowski about dropping properties file - no new code",
+      "notes": "slawekjaranowski APPROVED + discussion about dropping yml/properties files - no new code",
       "interactions": [
         {
           "at": "2026-08-02T09:53:20Z",
@@ -2133,7 +2133,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-09T09:48:19Z"
+      "last_reviewed_at": "2026-08-09T11:21:58Z"
     },
     {
       "number": 12658,
@@ -2830,13 +2830,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T09:48:23Z",
+    "timestamp": "2026-08-09T11:21:58Z",
     "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-09T09:44:44Z",
+  "last_reviewed_updated_at": "2026-08-09T11:17:55Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
