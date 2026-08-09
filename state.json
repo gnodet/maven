@@ -2698,13 +2698,61 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12694,
+      "title": "Logging foundation: structured LogEvent, JUL handler, Log API enhancements",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:24:32Z",
+      "verdict": "COMMENT",
+      "notes": "Javadoc/code mismatch on sequenceNumber(), inconsistent formattedMessage() format between JUL and SLF4J sources",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:24:32Z",
+          "verdict": "COMMENT",
+          "notes": "Javadoc/code mismatch on sequenceNumber(), inconsistent formattedMessage() format between JUL and SLF4J sources"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12695,
+      "title": "Build report: structured JSON report with per-mojo log capture",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:24:32Z",
+      "verdict": "COMMENT",
+      "notes": "Javadoc claims truncation notice but code silently drops, unused hasMore param, missing captureLogEvent routing test",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:24:32Z",
+          "verdict": "COMMENT",
+          "notes": "Javadoc claims truncation notice but code silently drops, unused hasMore param, missing captureLogEvent routing test"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12697,
+      "title": "Console modes: --console=plain/rich/verbose/machine",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:24:32Z",
+      "verdict": "COMMENT",
+      "notes": "Race condition: volatile int completedProjects++ not atomic in parallel builds, silent fallthrough on invalid --console values",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:24:32Z",
+          "verdict": "COMMENT",
+          "notes": "Race condition: volatile int completedProjects++ not atomic in parallel builds, silent fallthrough on invalid --console values"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T08:09:30Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-09T08:24:32Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "paused": false,
