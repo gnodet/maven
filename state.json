@@ -2117,9 +2117,9 @@
       "number": 12657,
       "title": "fix configuration page generation",
       "author": "hboutemy",
-      "reviewed_at": "2026-08-09T11:21:58Z",
-      "verdict": "COMMENT",
-      "notes": "slawekjaranowski APPROVED + discussion about dropping yml/properties files - no new code",
+      "reviewed_at": "2026-08-09T23:17:38Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review: all prior issues resolved. Skip fix correct, xdoc switch good, properties dropped per maintainer agreement. 3 minor nits noted.",
       "interactions": [
         {
           "at": "2026-08-02T09:53:20Z",
@@ -2130,10 +2130,15 @@
           "at": "2026-08-08T23:29:21Z",
           "verdict": "COMMENT",
           "notes": "Re-review: reactor cycle resolved, xdoc switch correct. Found inverted skip semantics (!false should be !true)"
+        },
+        {
+          "at": "2026-08-09T23:17:38Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review after rebase: rework resolver-tool usage + drop properties file. All prior issues resolved."
         }
       ],
-      "review_count": 2,
-      "last_reviewed_at": "2026-08-09T11:21:58Z"
+      "review_count": 3,
+      "last_reviewed_at": "2026-08-09T23:17:38Z"
     },
     {
       "number": 12658,
@@ -2894,13 +2899,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T22:10:11Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-09T23:17:38Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-09T22:04:05Z",
+  "last_reviewed_updated_at": "2026-08-09T23:07:57Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
