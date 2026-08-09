@@ -2746,11 +2746,59 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12698,
+      "title": "Warning mode, diagnostic collector, BuilderProblem enrichments",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:40:25Z",
+      "verdict": "COMMENT",
+      "notes": "LongAdder race condition in noKeyCounter, missing --warning-mode validation",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:40:25Z",
+          "verdict": "COMMENT",
+          "notes": "LongAdder race condition in noKeyCounter, missing --warning-mode validation"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12699,
+      "title": "mvnlog: build log viewer, integration tests, script routing",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:40:25Z",
+      "verdict": "COMMENT",
+      "notes": "Incomplete mvnlogCompleter tab-completion, missing package-info.java",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:40:25Z",
+          "verdict": "COMMENT",
+          "notes": "Incomplete mvnlogCompleter tab-completion, missing package-info.java"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12702,
+      "title": "Structured BuilderProblem pipeline for DiagnosticCollector",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-09T08:40:25Z",
+      "verdict": "COMMENT",
+      "notes": "hashCode-based diagnostic keys fragile, duplicated toBuilderProblem method",
+      "interactions": [
+        {
+          "at": "2026-08-09T08:40:25Z",
+          "verdict": "COMMENT",
+          "notes": "hashCode-based diagnostic keys fragile, duplicated toBuilderProblem method"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T08:24:32Z",
+    "timestamp": "2026-08-09T08:40:25Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
