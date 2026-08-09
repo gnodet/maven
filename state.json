@@ -2858,17 +2858,49 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12718,
+      "title": "Move the core IT suite off the JUnit 4 assertions",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-09T22:10:11Z",
+      "verdict": "APPROVE",
+      "notes": "Clean JUnit 4\u21925 assertion migration across 5 IT files, assertTrue argument reorder correct",
+      "interactions": [
+        {
+          "at": "2026-08-09T22:10:11Z",
+          "verdict": "APPROVE",
+          "notes": "Clean JUnit 4\u21925 assertion migration across 5 IT files, assertTrue argument reorder correct"
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12719,
+      "title": "Move the core IT suite off the JUnit 4 assertions (4.0.x)",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-09T22:10:11Z",
+      "verdict": "APPROVE",
+      "notes": "4.0.x backport of JUnit 4\u21925 assertion migration, identical changes to #12718",
+      "interactions": [
+        {
+          "at": "2026-08-09T22:10:11Z",
+          "verdict": "APPROVE",
+          "notes": "4.0.x backport of JUnit 4\u21925 assertion migration, identical changes to #12718"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T21:47:10Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-09T22:10:11Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-09T21:26:29Z",
+  "last_reviewed_updated_at": "2026-08-09T22:04:05Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
