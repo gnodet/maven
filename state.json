@@ -2117,9 +2117,9 @@
       "number": 12657,
       "title": "fix configuration page generation",
       "author": "hboutemy",
-      "reviewed_at": "2026-08-09T09:42:05Z",
+      "reviewed_at": "2026-08-09T09:48:19Z",
       "verdict": "COMMENT",
-      "notes": "Discussion comment from slawekjaranowski about remaining properties file multi-line issue - no new code",
+      "notes": "Discussion between hboutemy and slawekjaranowski about dropping properties file - no new code",
       "interactions": [
         {
           "at": "2026-08-02T09:53:20Z",
@@ -2133,7 +2133,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-09T09:42:05Z"
+      "last_reviewed_at": "2026-08-09T09:48:19Z"
     },
     {
       "number": 12658,
@@ -2830,13 +2830,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-09T09:44:22Z",
-    "prs_checked": 2,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-09T09:48:23Z",
+    "prs_checked": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-09T09:36:55Z",
+  "last_reviewed_updated_at": "2026-08-09T09:44:44Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
