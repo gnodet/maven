@@ -2900,9 +2900,9 @@
       "number": 12721,
       "title": "[MNG-8693] Avoid resolving unused plugins for direct goals",
       "author": "goutamadwant",
-      "reviewed_at": "2026-08-10T06:04:55Z",
+      "reviewed_at": "2026-08-10T06:19:42Z",
       "verdict": "APPROVE",
-      "notes": "Correct lazy plugin version resolution optimization. Defers resolution to point of use for direct goals.",
+      "notes": "APPROVE - added complementary lifecycle-task test per review feedback",
       "interactions": [
         {
           "at": "2026-08-10T06:04:55Z",
@@ -2910,18 +2910,19 @@
           "notes": "Correct lazy plugin version resolution optimization. Defers resolution to point of use for direct goals."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-10T06:19:42Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-10T06:04:56Z",
+    "timestamp": "2026-08-10T06:19:49Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-10T05:53:52Z",
+  "last_reviewed_updated_at": "2026-08-10T06:15:34Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
