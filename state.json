@@ -2605,9 +2605,9 @@
       "number": 12707,
       "title": "Fix duplicate model problem reporting, fixes #12691",
       "author": "Mazen050",
-      "reviewed_at": "2026-08-08T16:34:56Z",
+      "reviewed_at": "2026-08-10T19:45:56Z",
       "verdict": "APPROVE",
-      "notes": "Re-review: new regression test addresses rmannibucau feedback, validates user-facing behavior",
+      "notes": "APPROVE - rmannibucau also approved, all reviewers aligned",
       "interactions": [
         {
           "at": "2026-08-08T11:41:42Z",
@@ -2621,7 +2621,7 @@
         }
       ],
       "review_count": 2,
-      "last_reviewed_at": "2026-08-08T14:27:54Z"
+      "last_reviewed_at": "2026-08-10T19:45:56Z"
     },
     {
       "number": 12708,
@@ -2708,9 +2708,9 @@
       "number": 12694,
       "title": "Logging foundation: structured LogEvent, JUL handler, Log API enhancements",
       "author": "gnodet",
-      "reviewed_at": "2026-08-09T08:24:32Z",
+      "reviewed_at": "2026-08-10T19:45:56Z",
       "verdict": "COMMENT",
-      "notes": "Javadoc/code mismatch on sequenceNumber(), inconsistent formattedMessage() format between JUL and SLF4J sources",
+      "notes": "Operator PR - new comment from ascheman, no new commits",
       "interactions": [
         {
           "at": "2026-08-09T08:24:32Z",
@@ -2718,7 +2718,8 @@
           "notes": "Javadoc/code mismatch on sequenceNumber(), inconsistent formattedMessage() format between JUL and SLF4J sources"
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-10T19:45:56Z"
     },
     {
       "number": 12695,
@@ -2948,13 +2949,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-10T19:15:57Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-10T19:46:01Z",
+    "prs_checked": 2,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-10T18:57:15Z",
+  "last_reviewed_updated_at": "2026-08-10T19:42:12Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
