@@ -1013,9 +1013,9 @@
       "number": 12541,
       "title": "[MNG-7541] Add Maven 4 PowerShell launcher",
       "author": "wilx",
-      "reviewed_at": "2026-08-09T09:30:29Z",
+      "reviewed_at": "2026-08-11T17:04:48Z",
       "verdict": "APPROVE",
-      "notes": "Author CI fix commit (native paths in Windows workflow) - no re-review needed",
+      "notes": "APPROVE - CI/test improvements: PS 5.1 fix, test diagnostics, cross-platform CI matrix",
       "interactions": [
         {
           "at": "2026-07-26T00:37:47Z",
@@ -1024,7 +1024,7 @@
         }
       ],
       "review_count": 1,
-      "last_reviewed_at": "2026-08-09T09:30:29Z"
+      "last_reviewed_at": "2026-08-11T17:04:48Z"
     },
     {
       "number": 12546,
@@ -2997,13 +2997,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-11T15:25:20Z",
+    "timestamp": "2026-08-11T17:04:53Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-11T15:15:54Z",
+  "last_reviewed_updated_at": "2026-08-11T17:00:44Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
