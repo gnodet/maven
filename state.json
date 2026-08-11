@@ -2977,17 +2977,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12732,
+      "title": "fix: synchronize ReflectionValueExtractor class-introspection cache for thread safety",
+      "author": "waterWang",
+      "reviewed_at": "2026-08-11T15:25:20Z",
+      "verdict": "APPROVE",
+      "notes": "Correct fix for concurrent WeakHashMap corruption hang under -T parallel builds",
+      "interactions": [
+        {
+          "at": "2026-08-11T15:25:20Z",
+          "verdict": "APPROVE",
+          "notes": "Correct fix for concurrent WeakHashMap corruption hang under -T parallel builds"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-11T02:19:15Z",
+    "timestamp": "2026-08-11T15:25:20Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-11T02:11:58Z",
+  "last_reviewed_updated_at": "2026-08-11T15:15:54Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
