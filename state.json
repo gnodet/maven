@@ -3080,17 +3080,22 @@
       "number": 12740,
       "title": "[MNG-8129] Handle InvalidPathException for broken relativePath on Windows",
       "author": "gnodet",
-      "reviewed_at": "2026-08-12T17:21:58Z",
+      "reviewed_at": "2026-08-12T20:14:27Z",
       "verdict": "APPROVE",
-      "notes": "Backport of #12739 to master - same InvalidPathException fix for Windows relativePath",
+      "notes": "Re-review: new commit adds relativePath validation for illegal FS chars (defense-in-depth with InvalidPathException catch). Appropriate severity escalation (WARNING compat, ERROR impl). Tests cover all paths.",
       "interactions": [
         {
           "at": "2026-08-12T17:21:58Z",
           "verdict": "APPROVE",
           "notes": "Backport of #12739 to master - same InvalidPathException fix for Windows relativePath"
+        },
+        {
+          "at": "2026-08-12T20:14:27Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review: new commit adds relativePath validation for illegal FS chars (defense-in-depth with InvalidPathException catch). Appropriate severity escalation (WARNING compat, ERROR impl). Tests cover all paths."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12742,
@@ -3112,9 +3117,9 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-12T19:55:48Z",
+    "timestamp": "2026-08-12T20:14:31Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
