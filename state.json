@@ -3010,17 +3010,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12734,
+      "title": "fix: interpolate properties in module/subproject path before filesystem resolution",
+      "author": "waterWang",
+      "reviewed_at": "2026-08-12T03:03:12Z",
+      "verdict": "COMMENT",
+      "notes": "Property precedence inverted (model before user), missing tests, MNG-XXXX placeholder",
+      "interactions": [
+        {
+          "at": "2026-08-12T03:03:12Z",
+          "verdict": "COMMENT",
+          "notes": "Property precedence inverted (model before user), missing tests, MNG-XXXX placeholder"
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-11T23:21:24Z",
-    "prs_checked": 3,
+    "timestamp": "2026-08-12T03:03:12Z",
+    "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-11T23:06:39Z",
+  "last_reviewed_updated_at": "2026-08-12T02:50:05Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
