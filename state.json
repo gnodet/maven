@@ -3096,9 +3096,9 @@
       "number": 12742,
       "title": "feat: add relativePath validation",
       "author": "cstamas",
-      "reviewed_at": "2026-08-12T19:46:51Z",
+      "reviewed_at": "2026-08-12T19:55:47Z",
       "verdict": "APPROVE",
-      "notes": "Clean banned-character validation for parent.relativePath on 3.10.x, follows existing patterns",
+      "notes": "APPROVE - author addressed review feedback (derived constant, reformatted, POM tidy)",
       "interactions": [
         {
           "at": "2026-08-12T19:46:51Z",
@@ -3106,18 +3106,19 @@
           "notes": "Clean banned-character validation for parent.relativePath on 3.10.x, follows existing patterns"
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-12T19:55:47Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-12T19:46:51Z",
+    "timestamp": "2026-08-12T19:55:48Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-12T19:35:41Z",
+  "last_reviewed_updated_at": "2026-08-12T19:52:01Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
