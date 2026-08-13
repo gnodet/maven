@@ -3145,17 +3145,33 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12745,
+      "title": "MNG-8099: Add explicit api scope for dependencies and make compile non-transitive for Maven 4",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-08-13T15:42:05Z",
+      "verdict": "COMMENT",
+      "notes": "Critical: hasDependencyScope() regression strips all compile-scoped deps from consumer POMs (same as PR #12723). Accidental files (issue_comment.md, plexus-sec-dispatcher submodule). No tests. MavenModelVersion doesn't detect api scope.",
+      "interactions": [
+        {
+          "at": "2026-08-13T15:42:05Z",
+          "verdict": "COMMENT",
+          "notes": "Critical: hasDependencyScope() regression strips all compile-scoped deps from consumer POMs (same as PR #12723). Accidental files (issue_comment.md, plexus-sec-dispatcher submodule). No tests. MavenModelVersion doesn't detect api scope."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-13T15:17:20Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-13T15:42:05Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-13T14:44:30Z",
+  "last_reviewed_updated_at": "2026-08-13T15:19:14Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
