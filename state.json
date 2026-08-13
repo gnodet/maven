@@ -3113,17 +3113,49 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-12T19:55:47Z"
+    },
+    {
+      "number": 12741,
+      "title": "[MNG-8129] Handle InvalidPathException for broken relativePath on Windows",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-13T14:50:38Z",
+      "verdict": "APPROVE",
+      "notes": "Backport of #12740 to maven-4.0.x. Catches InvalidPathException + adds early relativePath validation. All 22 CI jobs pass.",
+      "interactions": [
+        {
+          "at": "2026-08-13T14:50:38Z",
+          "verdict": "APPROVE",
+          "notes": "Backport of #12740 to maven-4.0.x. Catches InvalidPathException + adds early relativePath validation. All 22 CI jobs pass."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12744,
+      "title": "[MNG-8287] Dependencies should always use consumer pom",
+      "author": "Hiteshsai007",
+      "reviewed_at": "2026-08-13T15:17:15Z",
+      "verdict": "COMMENT",
+      "notes": "Mixed-activation profile handling breaks AND semantics (inlines unconditionally + keeps in profile). Test assertion wrong (expects 1, should be 2). Inlined deps bypass scope filtering. Non-matching profiles kept as dead code preventing 4.0.0 downgrade.",
+      "interactions": [
+        {
+          "at": "2026-08-13T15:17:15Z",
+          "verdict": "COMMENT",
+          "notes": "Mixed-activation profile handling breaks AND semantics (inlines unconditionally + keeps in profile). Test assertion wrong (expects 1, should be 2). Inlined deps bypass scope filtering. Non-matching profiles kept as dead code preventing 4.0.0 downgrade."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-12T20:14:31Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-13T15:17:20Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-12T19:52:01Z",
+  "last_reviewed_updated_at": "2026-08-13T14:44:30Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
