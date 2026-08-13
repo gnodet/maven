@@ -3155,9 +3155,9 @@
       "number": 12745,
       "title": "MNG-8099: Add explicit api scope for dependencies and make compile non-transitive for Maven 4",
       "author": "Hiteshsai007",
-      "reviewed_at": "2026-08-13T15:42:05Z",
+      "reviewed_at": "2026-08-13T23:08:05Z",
       "verdict": "COMMENT",
-      "notes": "Critical: hasDependencyScope() regression strips all compile-scoped deps from consumer POMs (same as PR #12723). Accidental files (issue_comment.md, plexus-sec-dispatcher submodule). No tests. MavenModelVersion doesn't detect api scope.",
+      "notes": "Comment-only activity: desruisseaux questions the approach. No code changes.",
       "interactions": [
         {
           "at": "2026-08-13T15:42:05Z",
@@ -3165,18 +3165,19 @@
           "notes": "Critical: hasDependencyScope() regression strips all compile-scoped deps from consumer POMs (same as PR #12723). Accidental files (issue_comment.md, plexus-sec-dispatcher submodule). No tests. MavenModelVersion doesn't detect api scope."
         }
       ],
-      "review_count": 1
+      "review_count": 1,
+      "last_reviewed_at": "2026-08-13T23:08:05Z"
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-13T23:03:30Z",
+    "timestamp": "2026-08-13T23:08:09Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-13T16:07:54Z",
+  "last_reviewed_updated_at": "2026-08-13T22:53:02Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
