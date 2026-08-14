@@ -3134,9 +3134,9 @@
       "number": 12744,
       "title": "[MNG-8287] Dependencies should always use consumer pom",
       "author": "Hiteshsai007",
-      "reviewed_at": "2026-08-13T23:03:30Z",
-      "verdict": "COMMENT",
-      "notes": "Re-review: Previous 4 findings addressed. New regression: transformPom/transformBom unconditionally call inlinePackagingActivatedProfiles, dropping parent POM profiles targeting child packagings.",
+      "reviewed_at": "2026-08-14T05:49:53Z",
+      "verdict": "APPROVE",
+      "notes": "Re-review v3: All findings from rounds 1 and 2 addressed. transformPom/transformBom no longer call inlinePackagingActivatedProfiles. Parent POM regression test added. Clean implementation.",
       "interactions": [
         {
           "at": "2026-08-13T15:17:15Z",
@@ -3147,9 +3147,14 @@
           "at": "2026-08-13T23:03:30Z",
           "verdict": "COMMENT",
           "notes": "Re-review: Previous 4 findings addressed. New regression: transformPom/transformBom unconditionally call inlinePackagingActivatedProfiles, dropping parent POM profiles targeting child packagings."
+        },
+        {
+          "at": "2026-08-14T05:49:53Z",
+          "verdict": "APPROVE",
+          "notes": "Re-review v3: All findings from rounds 1 and 2 addressed. transformPom/transformBom no longer call inlinePackagingActivatedProfiles. Parent POM regression test added. Clean implementation."
         }
       ],
-      "review_count": 2
+      "review_count": 3
     },
     {
       "number": 12745,
@@ -3171,13 +3176,13 @@
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-13T23:08:09Z",
+    "timestamp": "2026-08-14T05:49:53Z",
     "prs_checked": 1,
-    "reviews_posted": 0,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-13T22:53:02Z",
+  "last_reviewed_updated_at": "2026-08-14T05:42:19Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
