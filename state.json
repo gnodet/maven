@@ -3172,17 +3172,49 @@
       ],
       "review_count": 1,
       "last_reviewed_at": "2026-08-13T23:08:05Z"
+    },
+    {
+      "number": 12748,
+      "title": "Fix BuildPlanExecutor thread pool leak on constructor failure",
+      "author": "ulofiai",
+      "reviewed_at": "2026-08-14T21:26:17Z",
+      "verdict": "APPROVE",
+      "notes": "Correct minimal fix: reorders executor creation after buildInitialPlan() to prevent thread pool leak on plan initialization failure.",
+      "interactions": [
+        {
+          "at": "2026-08-14T21:26:17Z",
+          "verdict": "APPROVE",
+          "notes": "Correct minimal fix: reorders executor creation after buildInitialPlan() to prevent thread pool leak on plan initialization failure."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12747,
+      "title": "Preserve coordinates when merging InputLocation",
+      "author": "ulofiai",
+      "reviewed_at": "2026-08-14T21:28:15Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix for #12610: preserves line/column coordinates from dominant location during merge, replacing hardcoded -1,-1. Well-scoped to Velocity template only.",
+      "interactions": [
+        {
+          "at": "2026-08-14T21:28:15Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for #12610: preserves line/column coordinates from dominant location during merge, replacing hardcoded -1,-1. Well-scoped to Velocity template only."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
   "last_run": {
-    "timestamp": "2026-08-14T21:05:59Z",
-    "prs_checked": 1,
-    "reviews_posted": 0,
+    "timestamp": "2026-08-14T21:28:15Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "paused": false,
   "review_queue": [],
-  "last_reviewed_updated_at": "2026-08-14T21:00:15Z",
+  "last_reviewed_updated_at": "2026-08-14T21:18:33Z",
   "triage_cursor": "2026-07-24T18:12:47Z"
 }
