@@ -117,3 +117,14 @@ Append one entry per run. Prune entries older than 30 days.
   - #12683: Fix deprecated Maven testing API compatibility → APPROVE (clean, no findings)
   - #12684: [MNG-8709] Use active profile properties for consumer POM validation → APPROVE (2 low non-blocking)
   - #12685: [mvnup] Add maven-war-plugin and maven-ear-plugin → COMMENT (1 high + 1 low confirmed)
+
+### Run 6 — 2026-08-16T11:30:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 3
+- **Verdicts:** 1 APPROVE, 2 COMMENT
+- **False positive rate:** 0% (0 of 5 findings across 2 verifier runs were FP)
+- **PRs:**
+  - #12686: [MNG-8765] Pre-interpolate plugin config → COMMENT (1 high + 2 medium + 1 low confirmed)
+  - #12687: Fix modello velocity phase → COMMENT (1 low confirmed)
+  - #12703: [MNG-8708] Fix Maven 4 parent inference → APPROVE (2 low non-blocking)
