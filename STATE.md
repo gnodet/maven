@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-16T04:32:00Z
+- **Timestamp:** 2026-08-16T10:54:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 3
-- **Note:** Reviewed 3 PRs: #12652 (reactor sort optimization - COMMENT), #12659 (classified POM resolution - APPROVE), #12653 (model building optimization - COMMENT).
+- **Reviews posted:** 2
+- **Note:** Reviewed 3 PRs: #12662 (PathConflictResolver default - suppressed, all FPs), #12654 (AsyncDrainWriter - COMMENT), #12655 (location tracking/subproject discovery - COMMENT).
 
 ## Reviewed PRs
 
@@ -106,6 +106,9 @@
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
 | #12446 | Fix deadlock in AbstractRequestCache when resolving parent POMs | gnodet | 2026-07-09T00:00:00Z | COMMENT | Review posted (own PR, can't APPROVE); clean deadlock fix, LGTM |
+| #12662 | Enable PathConflictResolver by default | gnodet | 2026-08-16T10:54:00Z | COMMENT | Own PR. Clean config change. 2 low FPs (upstream doc). Review suppressed. |
+| #12654 | Add AsyncDrainWriter to eliminate PrintWriter lock contention | gnodet | 2026-08-16T10:54:00Z | COMMENT | Own PR. Lock-free drain. 1 medium confirmed (no tests), 2 low confirmed. |
+| #12655 | Wire ModelBuilderRequest.isLocationTracking() to XML parser | gnodet | 2026-08-16T10:54:00Z | COMMENT | Own PR. 2 medium confirmed (stale description, behavioral change), 2 low confirmed. |
 
 ## Skipped PRs
 
