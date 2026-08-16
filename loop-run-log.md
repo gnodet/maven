@@ -152,3 +152,15 @@ Append one entry per run. Prune entries older than 30 days.
 - **Reviews posted:** 3 (3 COMMENT)
 - **False positives removed:** 1 (from PR #12698)
 - **Cursor:** `2026-08-09T08:40:16Z`
+
+### Run 9 — 2026-08-16T20:44:06Z
+
+| PR | Author | Verdict | Notes |
+|----|--------|---------|-------|
+| #12714 | gnodet | APPROVE | Clean DEBUG→TRACE migration |
+| #12658 | wilx | APPROVE | Correct reactor fix, reviewer's 4 highs were all FP (outdated JUnit 5 knowledge) |
+| #12716 | sakshi8778 | REQUEST_CHANGES | 6 high (path traversal + network exposure = security vuln, breaking API, no opt-out, System.exit, CopyOnWriteArrayList perf), 6 medium, no tests |
+
+- **Reviews posted:** 3 (2 APPROVE, 1 REQUEST_CHANGES)
+- **False positives removed:** 6 (from PR #12658 — all 4 high + 1 medium + 1 low were FP)
+- **Cursor:** `2026-08-09T18:48:34Z`
