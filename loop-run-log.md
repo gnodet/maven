@@ -140,3 +140,15 @@ Append one entry per run. Prune entries older than 30 days.
 - **Reviews posted:** 3 (1 APPROVE, 2 COMMENT)
 - **False positives removed:** 2 (from PR #12695)
 - **Cursor:** `2026-08-09T08:24:20Z`
+
+### Run 8 — 2026-08-16T20:27:13Z
+
+| PR | Author | Verdict | Notes |
+|----|--------|---------|-------|
+| #12698 | gnodet | COMMENT | 3 medium (race condition, warning-mode logic, deleted tests), 1 low |
+| #12699 | gnodet | COMMENT | 1 medium (unused constant), 1 low (incomplete completer) |
+| #12702 | gnodet | COMMENT | 1 medium (Windows parity gap), 3 low |
+
+- **Reviews posted:** 3 (3 COMMENT)
+- **False positives removed:** 1 (from PR #12698)
+- **Cursor:** `2026-08-09T08:40:16Z`
