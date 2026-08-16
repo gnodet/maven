@@ -116,6 +116,10 @@
 | #12687 | Fix modello velocity phase for concurrent builder compatibility | gnodet | 2026-08-16T11:30:00Z | COMMENT | Own PR. Clean race condition fix. 1 low confirmed (doc accuracy). |
 | #12703 | [MNG-8708] Fix Maven 4 parent inference | goutamadwant | 2026-08-16T11:20:00Z | APPROVE | Correct parent version inference from reactor. 2 low non-blocking notes. |
 
+| #12710 | Fix inherited versions in BOM consumer POMs | ulofiai | 2026-08-16T11:40:53Z | APPROVE | Clean fix for BOM version inheritance in consumer POMs |
+| #12695 | Build report: structured JSON report with per-mojo log capture | gnodet | 2026-08-16T11:47:53Z | COMMENT | 1 medium (Javadoc/truncation-notice mismatch), 2 low (dead param, inconsistent trailing-comma removal) |
+| #12697 | Console modes: --console=plain/rich/verbose/machine | gnodet | 2026-08-16T11:48:04Z | COMMENT | 1 high (volatile completedProjects++ not atomic), 1 medium (reactor-order assumption in parallel builds), 1 low (String.join simplification) |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
