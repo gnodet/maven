@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-16T11:08:00Z
+- **Timestamp:** 2026-08-16T11:30:00Z
 - **PRs checked:** 3
 - **Reviews posted:** 3
-- **Note:** Reviewed 3 PRs: #12683 (deprecated API compat - APPROVE), #12684 (profile properties validation - APPROVE), #12685 (mvnup plugin list - COMMENT).
+- **Note:** Reviewed 3 PRs: #12686 (pre-interpolate plugin config - COMMENT, high finding), #12687 (modello velocity phase - COMMENT), #12703 (parent inference - APPROVE).
 
 ## Reviewed PRs
 
@@ -112,6 +112,9 @@
 | #12683 | Fix deprecated Maven testing API compatibility | goutamadwant | 2026-08-16T11:05:00Z | APPROVE | Clean compatibility fix for @Basedir and ProducedArtifactStub. No findings. |
 | #12684 | [MNG-8709] Use active profile properties for consumer POM validation | goutamadwant | 2026-08-16T11:05:00Z | APPROVE | Correct fix for false validation errors. 2 low non-blocking notes. |
 | #12685 | [mvnup] Add maven-war-plugin and maven-ear-plugin to plugin upgrade list | gnodet | 2026-08-16T11:08:00Z | COMMENT | Own PR. 1 high confirmed (getPluginUpgradesMap not updated, needs rebase), 1 low confirmed (version text mismatch). |
+| #12686 | [MNG-8765] Pre-interpolate plugin configuration before type conversion | gnodet | 2026-08-16T11:30:00Z | COMMENT | Own PR. 1 high confirmed (pre-interpolation ineffective due to XmlNode immutability), 2 medium, 1 low. |
+| #12687 | Fix modello velocity phase for concurrent builder compatibility | gnodet | 2026-08-16T11:30:00Z | COMMENT | Own PR. Clean race condition fix. 1 low confirmed (doc accuracy). |
+| #12703 | [MNG-8708] Fix Maven 4 parent inference | goutamadwant | 2026-08-16T11:20:00Z | APPROVE | Correct parent version inference from reactor. 2 low non-blocking notes. |
 
 ## Skipped PRs
 
