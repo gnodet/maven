@@ -95,3 +95,14 @@ Append one entry per run. Prune entries older than 30 days.
   "outcome": "reviews-posted"
 }
 ```
+
+### Run 4 — 2026-08-16T10:54:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 2 (1 suppressed — all FPs)
+- **Verdicts:** 0 APPROVE, 2 COMMENT, 1 suppressed
+- **False positive rate:** 22% (2 of 9 findings across 3 verifier runs were FP)
+- **PRs:**
+  - #12662: Enable PathConflictResolver by default → COMMENT (suppressed, 2/2 FP)
+  - #12654: Add AsyncDrainWriter → COMMENT (3/3 confirmed: 1 medium, 2 low)
+  - #12655: Wire ModelBuilderRequest.isLocationTracking() → COMMENT (4/4 confirmed: 2 medium, 2 low)
