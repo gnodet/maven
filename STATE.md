@@ -120,6 +120,10 @@
 | #12695 | Build report: structured JSON report with per-mojo log capture | gnodet | 2026-08-16T11:47:53Z | COMMENT | 1 medium (Javadoc/truncation-notice mismatch), 2 low (dead param, inconsistent trailing-comma removal) |
 | #12697 | Console modes: --console=plain/rich/verbose/machine | gnodet | 2026-08-16T11:48:04Z | COMMENT | 1 high (volatile completedProjects++ not atomic), 1 medium (reactor-order assumption in parallel builds), 1 low (String.join simplification) |
 
+| #12698 | Warning mode, diagnostic collector, BuilderProblem enrichments | gnodet | 2026-08-16T20:26:19Z | COMMENT | 1 medium (race in synthetic key gen), 1 medium (warning-mode=fail logic mismatch), 1 medium (3 tests deleted), 1 low |
+| #12699 | mvnlog: build log viewer, integration tests, script routing | gnodet | 2026-08-16T20:26:29Z | COMMENT | 1 medium (unused constant), 1 low (incomplete shell completer) |
+| #12702 | Structured BuilderProblem pipeline for DiagnosticCollector | gnodet | 2026-08-16T20:26:40Z | COMMENT | 1 medium (Windows parity gap for flag stripping), 3 low |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
