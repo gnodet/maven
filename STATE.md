@@ -124,6 +124,10 @@
 | #12699 | mvnlog: build log viewer, integration tests, script routing | gnodet | 2026-08-16T20:26:29Z | COMMENT | 1 medium (unused constant), 1 low (incomplete shell completer) |
 | #12702 | Structured BuilderProblem pipeline for DiagnosticCollector | gnodet | 2026-08-16T20:26:40Z | COMMENT | 1 medium (Windows parity gap for flag stripping), 3 low |
 
+| #12714 | Migrate internal plumbing DEBUG statements to TRACE level | gnodet | 2026-08-16T20:35:58Z | APPROVE | Clean mechanical migration, well-scoped |
+| #12658 | Resolve classified POM artifacts from the reactor [4.x] | wilx | 2026-08-16T20:42:50Z | APPROVE | Correct minimal fix, 1 low (naming convention) |
+| #12716 | #12572 introduced mvnlog | sakshi8778 | 2026-08-16T20:43:36Z | REQUEST_CHANGES | 6 high (path traversal, network exposure, breaking API, no opt-out, System.exit, CopyOnWriteArrayList perf), 6 medium |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
