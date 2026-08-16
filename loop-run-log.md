@@ -106,3 +106,14 @@ Append one entry per run. Prune entries older than 30 days.
   - #12662: Enable PathConflictResolver by default → COMMENT (suppressed, 2/2 FP)
   - #12654: Add AsyncDrainWriter → COMMENT (3/3 confirmed: 1 medium, 2 low)
   - #12655: Wire ModelBuilderRequest.isLocationTracking() → COMMENT (4/4 confirmed: 2 medium, 2 low)
+
+### Run 5 — 2026-08-16T11:08:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 3
+- **Verdicts:** 2 APPROVE, 1 COMMENT
+- **False positive rate:** 0% (0 of 2 findings in 1 verifier run were FP)
+- **PRs:**
+  - #12683: Fix deprecated Maven testing API compatibility → APPROVE (clean, no findings)
+  - #12684: [MNG-8709] Use active profile properties for consumer POM validation → APPROVE (2 low non-blocking)
+  - #12685: [mvnup] Add maven-war-plugin and maven-ear-plugin → COMMENT (1 high + 1 low confirmed)
