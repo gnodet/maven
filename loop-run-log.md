@@ -164,3 +164,15 @@ Append one entry per run. Prune entries older than 30 days.
 - **Reviews posted:** 3 (2 APPROVE, 1 REQUEST_CHANGES)
 - **False positives removed:** 6 (from PR #12658 — all 4 high + 1 medium + 1 low were FP)
 - **Cursor:** `2026-08-09T18:48:34Z`
+
+## 2026-08-17T01:27:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 3
+- **False positives suppressed:** 1 finding in PR #12723 (MavenModelVersion detection)
+- **Verifier runs:** 1 (PR #12723)
+- **PRs reviewed:**
+  - #12721 — APPROVE (lazy plugin resolution for direct goals, MNG-8693)
+  - #12722 — APPROVE (bom import operator precedence fix)
+  - #12723 — REQUEST_CHANGES (api dependency scope, 2 critical regressions confirmed + 3 medium/high)
+- **Queue remaining:** ~17 PRs
