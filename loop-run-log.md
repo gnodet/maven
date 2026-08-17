@@ -284,3 +284,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12723 — Skipped (self-review bump from Run 10)
   - #12735 — Skipped (self-review bump from Run 13)
 - **Queue remaining:** ~1 genuine PR
+
+## 2026-08-17T12:15:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 0 (all skipped — no new author activity)
+- **False positives suppressed:** 0
+- **Verifier runs:** 0
+- **PRs reviewed:**
+  - #12740 — Skipped (cstamas approved, no code changes since our Run 14 review)
+  - #12741 — Skipped (cstamas approved, no code changes since our Run 15 review)
+  - #12745 — Skipped (self-bump from our Run 19 REQUEST_CHANGES)
+- **Queue remaining:** ~3 genuine PRs (6 total actionable, 3 checked = no-ops)
