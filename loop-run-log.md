@@ -224,3 +224,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12742 — APPROVE (relativePath banned-character validation)
   - #12740 — COMMENT (InvalidPathException on Windows, own PR, 1 low confirmed)
 - **Queue remaining:** ~9 PRs
+
+## 2026-08-17T05:06:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 2 (1 suppressed — all FPs)
+- **False positives suppressed:** 2 findings in PR #12741 (out-of-scope overload, standard pattern variable)
+- **Verifier runs:** 2 (PRs #12741, #12745)
+- **PRs reviewed:**
+  - #12744 — APPROVE (consumer POM packaging profile resolution)
+  - #12745 — REQUEST_CHANGES (api scope, 5 high + 1 medium + 1 low, all confirmed)
+  - #12741 — COMMENT suppressed (InvalidPathException backport, own PR, 2 low FPs)
+- **Queue remaining:** ~7 PRs
