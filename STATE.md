@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T05:30:00Z
+- **Timestamp:** 2026-08-17T08:47:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 0 (all 3 self-review bumps: #12745, #12723, #12735)
-- **Note:** Run 18: Queue nearly exhausted. All 3 triaged PRs were self-review bumps from our prior reviews (no new author commits). ~1 genuine PR may remain.
+- **Reviews posted:** 1 (2 skipped — self-review bumps)
+- **Note:** Run 19: #12745 re-review (author pushed fixes, still REQUEST_CHANGES — no tests, perf issue, feature-detection vs declared-version). #12723 and #12735 skipped (self-bumps).
 
 
 ## Reviewed PRs
@@ -157,6 +157,8 @@
 
 | #12747 | Preserve coordinates when merging InputLocation | ulofiai | 2026-08-17T05:21:00Z | APPROVE | Clean coordinate preservation during merge. 3 low non-blocking notes. |
 | #12750 | Fix #12749: Do not report zero exit code from mvnsh as error | HDPark95 | 2026-08-17T05:21:00Z | APPROVE | Correct exit code guard, shared helper refactoring, good tests. 1 low non-blocking. |
+
+| #12745 | MNG-8099: Add explicit api scope for dependencies | Hiteshsai007 | 2026-08-17T08:47:00Z | REQUEST_CHANGES | Re-review: author fixed accidental files, consumer POM, MavenModelVersion, Javadoc. Still blocking: no tests, per-dep MavenModelVersion instantiation, feature-detection vs declared-version, compile-non-transitive model version gap. |
 
 ## Skipped PRs
 
