@@ -429,3 +429,9 @@ Append one entry per run. Prune entries older than 30 days.
   - #12741 — Skipped (cstamas approved, no code changes)
   - #12735 — Skipped (self-bump from Run 13 APPROVE)
 - **Queue remaining:** ~2 genuine PRs
+
+### Run 32 — 2026-08-17T17:45:00Z
+- Triage: #12740 (self-bump by cstamas review, skipped), #12741 (self-bump by cstamas review, skipped), #12755 (new PR)
+- Reviewed: #12755 — COMMENT — Safe .mdo cleanup removing deprecated requiresReports field; no generated code impact since Modello targets v2.0.0 and field was v1.0.0 only; noted compat module still has runtime support
+- Posted: 1 review
+- Cursor: 2026-08-17T17:10:33Z
