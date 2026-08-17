@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T05:14:00Z
+- **Timestamp:** 2026-08-17T05:22:00Z
 - **PRs checked:** 3
 - **Reviews posted:** 2 (1 skipped — self-review bump)
-- **Note:** Run 16: #12748 (thread pool leak - APPROVE), #12732 (synchronizedMap - COMMENT), #12745 skipped (our Run 15 review bumped updated_at).
+- **Note:** Run 17: #12747 (InputLocation merge - APPROVE), #12750 (mvnsh exit code - APPROVE), #12745 skipped (self-review bump).
 
 
 ## Reviewed PRs
@@ -154,6 +154,9 @@
 
 | #12748 | Fix BuildPlanExecutor thread pool leak on constructor failure | ulofiai | 2026-08-17T05:12:00Z | APPROVE | Correct minimal fix: reorder executor creation after buildInitialPlan(). 2 low pre-existing notes. |
 | #12732 | fix: synchronize ReflectionValueExtractor class-introspection cache | waterWang | 2026-08-17T05:14:00Z | COMMENT | Correct Collections.synchronizedMap() fix for impl copy. 1 high confirmed (compat copy not fixed yet, gnodet requested both). 1 low benign TOCTOU. |
+
+| #12747 | Preserve coordinates when merging InputLocation | ulofiai | 2026-08-17T05:21:00Z | APPROVE | Clean coordinate preservation during merge. 3 low non-blocking notes. |
+| #12750 | Fix #12749: Do not report zero exit code from mvnsh as error | HDPark95 | 2026-08-17T05:21:00Z | APPROVE | Correct exit code guard, shared helper refactoring, good tests. 1 low non-blocking. |
 
 ## Skipped PRs
 
