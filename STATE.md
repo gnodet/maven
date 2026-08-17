@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T01:27:00Z
+- **Timestamp:** 2026-08-17T02:02:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 3
-- **Note:** Run 10: #12721 (lazy plugin resolution - APPROVE), #12722 (bom import fix - APPROVE), #12723 (api scope - REQUEST_CHANGES, 2 critical regressions confirmed).
+- **Reviews posted:** 2
+- **Note:** Run 11: #12707 (duplicate model problems - APPROVE), #12694 (logging foundation - COMMENT, 2 confirmed + 3 FPs), #12699 (re-review, no changes, skipped posting).
 
 ## Reviewed PRs
 
@@ -131,6 +131,10 @@
 | #12721 | [MNG-8693] Avoid resolving unused plugins for direct goals | goutamadwant | 2026-08-17T01:20:00Z | APPROVE | Well-structured lazy plugin resolution optimization. Solid test coverage. |
 | #12722 | Fix operator precedence skipping type=bom dependency imports | kalayciburak | 2026-08-17T01:20:00Z | APPROVE | Clean bug fix for type=bom import-scoped dependencies. Regression test adequate. |
 | #12723 | Add API dependency scope support | charangowdamd-cmd | 2026-08-17T01:27:00Z | REQUEST_CHANGES | 2 critical (consumer POM regression, Maven 4 transitive resolution broken), 1 high (no tests), 2 medium (javadoc, enum order). 1 FP dropped by verifier. |
+
+| #12699 | mvnlog: build log viewer, integration tests, script routing | gnodet | 2026-08-17T02:00:00Z | COMMENT | Re-review: no changes since last review, same findings remain (unused constant, incomplete completer). No new review posted. |
+| #12707 | Fix duplicate model problem reporting, fixes #12691 | Mazen050 | 2026-08-17T01:57:00Z | APPROVE | Clean regression fix for double-rendered model problems. Minimal and well-tested. |
+| #12694 | Logging foundation: structured LogEvent, JUL handler, Log API enhancements | gnodet | 2026-08-17T02:02:00Z | COMMENT | Own PR. 2 medium confirmed (sequenceNumber javadoc mismatch, JUL/SLF4J format inconsistency), 1 low noted (Log4j2/Logback removal). 3 FPs dropped by verifier. |
 
 ## Skipped PRs
 
