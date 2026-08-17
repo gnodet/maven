@@ -4,10 +4,10 @@
 
 | Field | Value |
 |-------|-------|
-| Timestamp | 2026-08-17T13:00:00Z |
+| Timestamp | 2026-08-17T10:18:41Z |
 | PRs Checked | 3 |
-| Reviews Posted | 0 |
-| Cursor | 2026-08-17T08:59:21Z |
+| Reviews Posted | 1 |
+| Cursor | 2026-08-17T10:18:41Z |
 
 
 ## Reviewed PRs
@@ -161,6 +161,8 @@
 | #12750 | Fix #12749: Do not report zero exit code from mvnsh as error | HDPark95 | 2026-08-17T05:21:00Z | APPROVE | Correct exit code guard, shared helper refactoring, good tests. 1 low non-blocking. |
 
 | #12745 | MNG-8099: Add explicit api scope for dependencies | Hiteshsai007 | 2026-08-17T08:47:00Z | REQUEST_CHANGES | Re-review: author fixed accidental files, consumer POM, MavenModelVersion, Javadoc. Still blocking: no tests, per-dep MavenModelVersion instantiation, feature-detection vs declared-version, compile-non-transitive model version gap. |
+
+| #12745 | MNG-8099: api scope (3rd review) | Hiteshsai007 | 2026-08-17T10:18:41Z | COMMENT | All 4 prior blocking issues resolved; 3 non-blocking suggestions remain |
 
 ## Skipped PRs
 
