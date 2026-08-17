@@ -272,3 +272,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12723 — Skipped (self-review bump from Run 10 REQUEST_CHANGES)
   - #12735 — Skipped (self-review bump from Run 13 APPROVE)
 - **Queue remaining:** ~1 genuine PR (queue dominated by self-bumps)
+
+## 2026-08-17T08:47:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 1 (2 skipped — self-review bumps)
+- **False positives suppressed:** 0 (all 5 findings confirmed)
+- **Verifier runs:** 1 (PR #12745)
+- **PRs reviewed:**
+  - #12745 — REQUEST_CHANGES (re-review: author fixed 4/6 issues, still no tests + perf + model-version gap)
+  - #12723 — Skipped (self-review bump from Run 10)
+  - #12735 — Skipped (self-review bump from Run 13)
+- **Queue remaining:** ~1 genuine PR
