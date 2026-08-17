@@ -2,10 +2,12 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T08:47:00Z
-- **PRs checked:** 3
-- **Reviews posted:** 1 (2 skipped — self-review bumps)
-- **Note:** Run 19: #12745 re-review (author pushed fixes, still REQUEST_CHANGES — no tests, perf issue, feature-detection vs declared-version). #12723 and #12735 skipped (self-bumps).
+| Field | Value |
+|-------|-------|
+| Timestamp | 2026-08-17T12:15:00Z |
+| PRs Checked | 3 |
+| Reviews Posted | 0 |
+| Cursor | 2026-08-17T08:47:15Z |
 
 
 ## Reviewed PRs
