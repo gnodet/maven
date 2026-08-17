@@ -200,3 +200,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12728 — APPROVE (profile activation cache-key fix)
   - #12633 — COMMENT (JDK source level compatibility, own PR, 2 confirmed + 2 FPs dropped)
 - **Queue remaining:** ~14 PRs
+
+## 2026-08-17T02:25:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 3
+- **False positives suppressed:** 0 (all findings confirmed)
+- **Verifier runs:** 2 (PRs #12733, #12734)
+- **PRs reviewed:**
+  - #12735 — APPROVE (locale-independent profile activation)
+  - #12733 — REQUEST_CHANGES (quiet mode regression: stdout/stderr silently dropped)
+  - #12734 — REQUEST_CHANGES (inverted property precedence, no tests, placeholder ref)
+- **Queue remaining:** ~11 PRs
