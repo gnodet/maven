@@ -308,3 +308,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12741 — Skipped (cstamas approved, no code changes since our review)
   - #12745 — Skipped (desruisseaux commented questioning approach, no code changes since Run 19 review)
 - **Queue remaining:** ~3 genuine PRs (queue dominated by re-review bumps with no code changes)
+
+## 2026-08-17T10:18:41Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 1 (2 skipped — no code changes)
+- **False positives suppressed:** 0 (all 3 findings confirmed)
+- **Verifier runs:** 1 (PR #12745)
+- **PRs reviewed:**
+  - #12745 — COMMENT (3rd re-review: all 4 blocking issues resolved, 3 non-blocking suggestions)
+  - #12740 — Skipped (cstamas approved, no code changes since our review)
+  - #12741 — Skipped (cstamas approved, no code changes since our review)
+- **Queue remaining:** ~3 genuine PRs
