@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T02:25:00Z
+- **Timestamp:** 2026-08-17T02:35:00Z
 - **PRs checked:** 3
 - **Reviews posted:** 3
-- **Note:** Run 13: #12735 (locale fix - APPROVE), #12733 (quiet mode - REQUEST_CHANGES), #12734 (property interpolation - REQUEST_CHANGES).
+- **Note:** Run 14: #12737 (not operator - APPROVE), #12742 (relativePath validation - APPROVE), #12740 (InvalidPathException - COMMENT).
 
 ## Reviewed PRs
 
@@ -142,6 +142,10 @@
 | #12735 | Make profile activation conditions locale-independent | SEPURI-SAI-KRISHNA | 2026-08-17T02:20:00Z | APPROVE | Correct Locale.ROOT fix for all 3 locale-sensitive call sites. Well-tested. |
 | #12733 | fix: make stdout/stderr log level follow -q/--quiet | waterWang | 2026-08-17T02:24:00Z | REQUEST_CHANGES | 2 high (stdout/stderr content silently dropped), 2 medium (approach flawed, no tests). All confirmed by verifier. |
 | #12734 | fix: interpolate properties in module/subproject path | waterWang | 2026-08-17T02:24:00Z | REQUEST_CHANGES | 1 high (inverted property precedence), 2 medium (use Interpolator.chain, no test), 2 low (placeholder ref, redundant null guard). All confirmed. |
+
+| #12737 | Support logical not operator in profile activation conditions | SEPURI-SAI-KRISHNA | 2026-08-17T02:33:00Z | APPROVE | Clean ! operator addition, correct precedence, good test coverage. |
+| #12742 | feat: add relativePath validation | cstamas | 2026-08-17T02:33:00Z | APPROVE | Banned-character validation derived from ILLEGAL_FS_CHARS. Follows existing patterns. |
+| #12740 | [MNG-8129] Handle InvalidPathException for broken relativePath on Windows | gnodet | 2026-08-17T02:34:00Z | COMMENT | Own PR. 1 low confirmed (FQ assertNull instead of static import). Well-structured defensive fix. |
 
 ## Skipped PRs
 
