@@ -248,3 +248,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12732 — COMMENT (synchronizedMap fix, compat copy still missing)
   - #12745 — Skipped (our Run 15 REQUEST_CHANGES bumped updated_at)
 - **Queue remaining:** ~5 PRs
+
+## 2026-08-17T05:22:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 2 (1 skipped — self-review bump)
+- **False positives suppressed:** 0
+- **Verifier runs:** 0 (both APPROVEs)
+- **PRs reviewed:**
+  - #12747 — APPROVE (InputLocation coordinate preservation)
+  - #12750 — APPROVE (mvnsh zero exit code fix)
+  - #12745 — Skipped (self-review bump, same as Run 16)
+- **Queue remaining:** ~3 PRs
