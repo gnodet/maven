@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T05:06:00Z
+- **Timestamp:** 2026-08-17T05:14:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 2 (1 suppressed — all FPs)
-- **Note:** Run 15: #12744 (consumer POM profiles - APPROVE), #12745 (api scope - REQUEST_CHANGES), #12741 (InvalidPathException backport - suppressed, all FPs).
+- **Reviews posted:** 2 (1 skipped — self-review bump)
+- **Note:** Run 16: #12748 (thread pool leak - APPROVE), #12732 (synchronizedMap - COMMENT), #12745 skipped (our Run 15 review bumped updated_at).
 
 
 ## Reviewed PRs
@@ -151,6 +151,9 @@
 | #12744 | [MNG-8287] Dependencies should always use consumer pom | Hiteshsai007 | 2026-08-17T05:06:00Z | APPROVE | Well-implemented consumer POM packaging profile resolution. 3 low non-blocking (dedup guard, DM test coverage, javadoc). |
 | #12745 | MNG-8099: Add explicit api scope for dependencies | Hiteshsai007 | 2026-08-17T05:06:00Z | REQUEST_CHANGES | 5 high (consumer POM regression, resolver regression, accidental files, no tests), 1 medium (MavenModelVersion gap), 1 low (javadoc). All confirmed by verifier. |
 | #12741 | [MNG-8129] Handle InvalidPathException for broken relativePath on Windows | gnodet | 2026-08-17T05:06:00Z | COMMENT | Own PR (4.0.x backport). Review suppressed — 2 low findings both FP (out-of-scope overload, standard pattern variable). |
+
+| #12748 | Fix BuildPlanExecutor thread pool leak on constructor failure | ulofiai | 2026-08-17T05:12:00Z | APPROVE | Correct minimal fix: reorder executor creation after buildInitialPlan(). 2 low pre-existing notes. |
+| #12732 | fix: synchronize ReflectionValueExtractor class-introspection cache | waterWang | 2026-08-17T05:14:00Z | COMMENT | Correct Collections.synchronizedMap() fix for impl copy. 1 high confirmed (compat copy not fixed yet, gnodet requested both). 1 low benign TOCTOU. |
 
 ## Skipped PRs
 
