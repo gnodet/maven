@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-16T11:30:00Z
+- **Timestamp:** 2026-08-17T01:27:00Z
 - **PRs checked:** 3
 - **Reviews posted:** 3
-- **Note:** Reviewed 3 PRs: #12686 (pre-interpolate plugin config - COMMENT, high finding), #12687 (modello velocity phase - COMMENT), #12703 (parent inference - APPROVE).
+- **Note:** Run 10: #12721 (lazy plugin resolution - APPROVE), #12722 (bom import fix - APPROVE), #12723 (api scope - REQUEST_CHANGES, 2 critical regressions confirmed).
 
 ## Reviewed PRs
 
@@ -127,6 +127,10 @@
 | #12714 | Migrate internal plumbing DEBUG statements to TRACE level | gnodet | 2026-08-16T20:35:58Z | APPROVE | Clean mechanical migration, well-scoped |
 | #12658 | Resolve classified POM artifacts from the reactor [4.x] | wilx | 2026-08-16T20:42:50Z | APPROVE | Correct minimal fix, 1 low (naming convention) |
 | #12716 | #12572 introduced mvnlog | sakshi8778 | 2026-08-16T20:43:36Z | REQUEST_CHANGES | 6 high (path traversal, network exposure, breaking API, no opt-out, System.exit, CopyOnWriteArrayList perf), 6 medium |
+
+| #12721 | [MNG-8693] Avoid resolving unused plugins for direct goals | goutamadwant | 2026-08-17T01:20:00Z | APPROVE | Well-structured lazy plugin resolution optimization. Solid test coverage. |
+| #12722 | Fix operator precedence skipping type=bom dependency imports | kalayciburak | 2026-08-17T01:20:00Z | APPROVE | Clean bug fix for type=bom import-scoped dependencies. Regression test adequate. |
+| #12723 | Add API dependency scope support | charangowdamd-cmd | 2026-08-17T01:27:00Z | REQUEST_CHANGES | 2 critical (consumer POM regression, Maven 4 transitive resolution broken), 1 high (no tests), 2 medium (javadoc, enum order). 1 FP dropped by verifier. |
 
 ## Skipped PRs
 
