@@ -4,10 +4,10 @@
 
 | Field | Value |
 |-------|-------|
-| Timestamp | 2026-08-17T17:00:00Z |
+| Timestamp | 2026-08-17T12:31:14Z |
 | PRs Checked | 3 |
-| Reviews Posted | 0 |
-| Cursor | 2026-08-17T10:51:43Z |
+| Reviews Posted | 1 |
+| Cursor | 2026-08-17T12:31:14Z |
 
 
 ## Reviewed PRs
@@ -167,6 +167,8 @@
 | #12745 | MNG-8099: api scope (4th review) | Hiteshsai007 | 2026-08-17T10:37:39Z | COMMENT | Prior suggestions addressed; remap test NPEs at constructor (all-null args) |
 
 | #12745 | MNG-8099: api scope (5th review) | Hiteshsai007 | 2026-08-17T10:51:43Z | APPROVE | All issues resolved across 5 review cycles — tests, perf, docs, NPE fix |
+
+| #12753 | Clock.withZone() in MonotonicClock | poliglots | 2026-08-17T12:31:14Z | COMMENT | Contradictory Javadoc, wrong exception type, outdated class doc, missing same-zone opt |
 
 ## Skipped PRs
 
