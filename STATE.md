@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T02:14:00Z
+- **Timestamp:** 2026-08-17T02:25:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 2
-- **Note:** Run 12: #12728 (profile cache fix - APPROVE), #12633 (JDK source level - COMMENT, 2 confirmed + 2 FPs), #12723 skipped (just reviewed in run 10).
+- **Reviews posted:** 3
+- **Note:** Run 13: #12735 (locale fix - APPROVE), #12733 (quiet mode - REQUEST_CHANGES), #12734 (property interpolation - REQUEST_CHANGES).
 
 ## Reviewed PRs
 
@@ -138,6 +138,10 @@
 
 | #12728 | fix: keep all profile activation keys in the cache | waterWang | 2026-08-17T02:10:00Z | APPROVE | Correct fix for cache-key bug in profile activation. removeIf stripped false entries causing empty-map matches. |
 | #12633 | Emit clear error when running JDK cannot compile source level | gnodet | 2026-08-17T02:14:00Z | COMMENT | Own PR. 1 medium confirmed (misleading comment), 1 low confirmed (error without halt). 2 FPs dropped by verifier. |
+
+| #12735 | Make profile activation conditions locale-independent | SEPURI-SAI-KRISHNA | 2026-08-17T02:20:00Z | APPROVE | Correct Locale.ROOT fix for all 3 locale-sensitive call sites. Well-tested. |
+| #12733 | fix: make stdout/stderr log level follow -q/--quiet | waterWang | 2026-08-17T02:24:00Z | REQUEST_CHANGES | 2 high (stdout/stderr content silently dropped), 2 medium (approach flawed, no tests). All confirmed by verifier. |
+| #12734 | fix: interpolate properties in module/subproject path | waterWang | 2026-08-17T02:24:00Z | REQUEST_CHANGES | 1 high (inverted property precedence), 2 medium (use Interpolator.chain, no test), 2 low (placeholder ref, redundant null guard). All confirmed. |
 
 ## Skipped PRs
 
