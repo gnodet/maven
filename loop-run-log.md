@@ -188,3 +188,15 @@ Append one entry per run. Prune entries older than 30 days.
   - #12707 — APPROVE (duplicate model problem regression fix)
   - #12694 — COMMENT (logging foundation, own PR, 2 medium confirmed + 1 low noted, 3 FPs dropped)
 - **Queue remaining:** ~16 PRs
+
+## 2026-08-17T02:14:00Z
+
+- **PRs checked:** 3
+- **Reviews posted:** 2 (1 skipped — #12723 already reviewed in run 10)
+- **False positives suppressed:** 2 findings in PR #12633 (future JDK update, obvious upper bound)
+- **Verifier runs:** 1 (PR #12633)
+- **PRs reviewed:**
+  - #12723 — Skipped (just reviewed in run 10, our review bumped updated_at)
+  - #12728 — APPROVE (profile activation cache-key fix)
+  - #12633 — COMMENT (JDK source level compatibility, own PR, 2 confirmed + 2 FPs dropped)
+- **Queue remaining:** ~14 PRs
