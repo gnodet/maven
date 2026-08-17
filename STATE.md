@@ -2,10 +2,11 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T02:35:00Z
+- **Timestamp:** 2026-08-17T05:06:00Z
 - **PRs checked:** 3
-- **Reviews posted:** 3
-- **Note:** Run 14: #12737 (not operator - APPROVE), #12742 (relativePath validation - APPROVE), #12740 (InvalidPathException - COMMENT).
+- **Reviews posted:** 2 (1 suppressed — all FPs)
+- **Note:** Run 15: #12744 (consumer POM profiles - APPROVE), #12745 (api scope - REQUEST_CHANGES), #12741 (InvalidPathException backport - suppressed, all FPs).
+
 
 ## Reviewed PRs
 
@@ -146,6 +147,10 @@
 | #12737 | Support logical not operator in profile activation conditions | SEPURI-SAI-KRISHNA | 2026-08-17T02:33:00Z | APPROVE | Clean ! operator addition, correct precedence, good test coverage. |
 | #12742 | feat: add relativePath validation | cstamas | 2026-08-17T02:33:00Z | APPROVE | Banned-character validation derived from ILLEGAL_FS_CHARS. Follows existing patterns. |
 | #12740 | [MNG-8129] Handle InvalidPathException for broken relativePath on Windows | gnodet | 2026-08-17T02:34:00Z | COMMENT | Own PR. 1 low confirmed (FQ assertNull instead of static import). Well-structured defensive fix. |
+
+| #12744 | [MNG-8287] Dependencies should always use consumer pom | Hiteshsai007 | 2026-08-17T05:06:00Z | APPROVE | Well-implemented consumer POM packaging profile resolution. 3 low non-blocking (dedup guard, DM test coverage, javadoc). |
+| #12745 | MNG-8099: Add explicit api scope for dependencies | Hiteshsai007 | 2026-08-17T05:06:00Z | REQUEST_CHANGES | 5 high (consumer POM regression, resolver regression, accidental files, no tests), 1 medium (MavenModelVersion gap), 1 low (javadoc). All confirmed by verifier. |
+| #12741 | [MNG-8129] Handle InvalidPathException for broken relativePath on Windows | gnodet | 2026-08-17T05:06:00Z | COMMENT | Own PR (4.0.x backport). Review suppressed — 2 low findings both FP (out-of-scope overload, standard pattern variable). |
 
 ## Skipped PRs
 
