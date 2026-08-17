@@ -2,10 +2,10 @@
 
 ## Last Run
 
-- **Timestamp:** 2026-08-17T02:02:00Z
+- **Timestamp:** 2026-08-17T02:14:00Z
 - **PRs checked:** 3
 - **Reviews posted:** 2
-- **Note:** Run 11: #12707 (duplicate model problems - APPROVE), #12694 (logging foundation - COMMENT, 2 confirmed + 3 FPs), #12699 (re-review, no changes, skipped posting).
+- **Note:** Run 12: #12728 (profile cache fix - APPROVE), #12633 (JDK source level - COMMENT, 2 confirmed + 2 FPs), #12723 skipped (just reviewed in run 10).
 
 ## Reviewed PRs
 
@@ -135,6 +135,9 @@
 | #12699 | mvnlog: build log viewer, integration tests, script routing | gnodet | 2026-08-17T02:00:00Z | COMMENT | Re-review: no changes since last review, same findings remain (unused constant, incomplete completer). No new review posted. |
 | #12707 | Fix duplicate model problem reporting, fixes #12691 | Mazen050 | 2026-08-17T01:57:00Z | APPROVE | Clean regression fix for double-rendered model problems. Minimal and well-tested. |
 | #12694 | Logging foundation: structured LogEvent, JUL handler, Log API enhancements | gnodet | 2026-08-17T02:02:00Z | COMMENT | Own PR. 2 medium confirmed (sequenceNumber javadoc mismatch, JUL/SLF4J format inconsistency), 1 low noted (Log4j2/Logback removal). 3 FPs dropped by verifier. |
+
+| #12728 | fix: keep all profile activation keys in the cache | waterWang | 2026-08-17T02:10:00Z | APPROVE | Correct fix for cache-key bug in profile activation. removeIf stripped false entries causing empty-map matches. |
+| #12633 | Emit clear error when running JDK cannot compile source level | gnodet | 2026-08-17T02:14:00Z | COMMENT | Own PR. 1 medium confirmed (misleading comment), 1 low confirmed (error without halt). 2 FPs dropped by verifier. |
 
 ## Skipped PRs
 
