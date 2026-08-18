@@ -174,6 +174,8 @@
 
 | #12753 | fix(api-core): properly implement Clock.withZone() in MonotonicClock | poliglots | 2026-08-18T09:00:00Z | APPROVE | Re-review: all 4 previous findings addressed; proper withZone() impl with zone variants, tests, short-circuit |
 
+| #12762 | Fix parent profile cache matching across activation contexts | ulofiai | 2026-08-18T16:00:00Z | APPROVE | Correct minimal fix for cache-poisoning bug; removed incorrect removeIf that stripped false entries from profile cache records |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
