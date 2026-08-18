@@ -447,3 +447,4 @@ Append one entry per run. Prune entries older than 30 days.
 - Reviewed: #12762 — APPROVE — Correct minimal fix for cache-poisoning bug in profile activation context; removeIf stripped false entries causing wrong cache hits
 - Posted: 1 review (APPROVE)
 - Cursor: 2026-08-18T21:02:41Z
+| 54 | 2026-08-18T21:36:32Z | #12735 (APPROVE), #12737 (APPROVE), #12723 (REQUEST_CHANGES) | 3 posted, 0 suppressed | Reviewed 3 genuinely new PRs at triage positions 6-8 (top 5 were stale review bumps). Locale-independent profile activation, ! operator support, API dependency scope with breaking changes. |
