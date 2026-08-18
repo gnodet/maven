@@ -172,6 +172,8 @@
 
 | #12755 | Fix #8879 MNG-7575 Remove RequiresReports | ljkGH | 2026-08-17T17:45:00Z | COMMENT | Safe .mdo cleanup; no generated code impact; compat module still supports requiresReports |
 
+| #12753 | fix(api-core): properly implement Clock.withZone() in MonotonicClock | poliglots | 2026-08-18T09:00:00Z | APPROVE | Re-review: all 4 previous findings addressed; proper withZone() impl with zone variants, tests, short-circuit |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
