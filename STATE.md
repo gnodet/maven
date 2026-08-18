@@ -176,6 +176,10 @@
 
 | #12762 | Fix parent profile cache matching across activation contexts | ulofiai | 2026-08-18T16:00:00Z | APPROVE | Correct minimal fix for cache-poisoning bug; removed incorrect removeIf that stripped false entries from profile cache records |
 
+| #12735 | Make profile activation conditions locale-independent | SEPURI | 2026-08-18T21:36:32Z | APPROVE | Locale-independent profile activation via Locale.ROOT |
+| #12737 | Support the logical not operator in profile activation | SEPURI | 2026-08-18T21:36:32Z | APPROVE | Clean ! operator support for condition expressions |
+| #12723 | Add API dependency scope support | charangowdamd | 2026-08-18T21:36:32Z | REQUEST_CHANGES | Breaking: compile non-transitive breaks consumer POM builder and resolution |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
