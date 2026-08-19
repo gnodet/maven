@@ -488,3 +488,10 @@ Append one entry per run. Prune entries older than 30 days.
 - **PRs checked**: #12740, #12741, #12750, #12748, #12762, #12766
 - **Reviews posted**: 0
 - **Result**: No-op — queue exhausted
+
+### Run 76 — 2026-08-19T19:45:00Z
+- **Triage result**: 7 actionable (all re-reviews)
+- **All stale**: review-activity bumps only (cstamas, elharo, gnodet, ascheman reviews), no new author commits
+- **PRs checked**: #12740, #12741, #12750, #12748, #12762, #12766, #12771
+- **Reviews posted**: 0
+- **Result**: No-op — queue exhausted
