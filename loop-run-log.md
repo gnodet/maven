@@ -503,3 +503,10 @@ Append one entry per run. Prune entries older than 30 days.
 - **Reviews posted**: 1
   - #12771: APPROVE (re-review — refactored isPreRelease to delegate to GenericQualifiers)
 - **Result**: 1 review posted
+
+### Run 78 — 2026-08-19T19:40:00Z
+- **Triage result**: 6 actionable (all re-reviews)
+- **All stale**: review-activity bumps only (cstamas, elharo, gnodet reviews), no new author commits
+- **PRs checked**: #12740, #12741, #12750, #12748, #12762, #12766
+- **Reviews posted**: 0
+- **Result**: No-op — queue exhausted
