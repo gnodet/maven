@@ -495,3 +495,11 @@ Append one entry per run. Prune entries older than 30 days.
 - **PRs checked**: #12740, #12741, #12750, #12748, #12762, #12766, #12771
 - **Reviews posted**: 0
 - **Result**: No-op — queue exhausted
+
+### Run 77 — 2026-08-19T19:09:39Z
+- **Triage result**: 7 actionable (all re-reviews)
+- **Genuine new activity**: PR #12771 (new commit "Reuse GenericQualifiers for the pre-release check")
+- **Stale bumps skipped**: #12740, #12741, #12750, #12748, #12762, #12766
+- **Reviews posted**: 1
+  - #12771: APPROVE (re-review — refactored isPreRelease to delegate to GenericQualifiers)
+- **Result**: 1 review posted
