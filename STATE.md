@@ -184,6 +184,8 @@
 
 | #12767 | Support Maven version ranges in profile activation | goutamadwant | 2026-08-19T01:55:21Z | COMMENT | Suppressed: all 5 findings FP (fail-closed negation intentional, scope correct) |
 
+| #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T16:55:10Z | APPROVE | Three-tier fallback (stable/pre-release/snapshot) for plugin version resolution |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
