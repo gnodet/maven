@@ -180,6 +180,8 @@
 | #12737 | Support the logical not operator in profile activation | SEPURI | 2026-08-18T21:36:32Z | APPROVE | Clean ! operator support for condition expressions |
 | #12723 | Add API dependency scope support | charangowdamd | 2026-08-18T21:36:32Z | REQUEST_CHANGES | Breaking: compile non-transitive breaks consumer POM builder and resolution |
 
+| #12766 | Fix concurrent updates to mapped model sources | goutamadwant | 2026-08-19T01:37:33Z | APPROVE | Thread-safe ConcurrentHashMap.newKeySet() replacing HashSet |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
