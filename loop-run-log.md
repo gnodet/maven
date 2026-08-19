@@ -466,3 +466,10 @@ Append one entry per run. Prune entries older than 30 days.
 | 70 | 2026-08-19T17:02:03Z | (none) | 0 posted | No-op: same 6 stale re-reviews. 2nd consecutive no-op. |
 | 71 | 2026-08-19T17:08:29Z | (none) | 0 posted | No-op: #12771 bump was copilot bot review, no new author commits. |
 | 72 | 2026-08-19T17:20:32Z | (none) | 0 posted | No-op: same 7 stale re-reviews, no new PRs. |
+
+### Run 73 — 2026-08-19T20:00:00Z
+- **Triage result**: 7 actionable (all re-reviews)
+- **All stale**: review-activity bumps only (cstamas, elharo, gnodet, copilot reviews), no new author commits
+- **PRs checked**: #12740, #12741, #12750, #12748, #12762, #12766, #12771
+- **Reviews posted**: 0
+- **Result**: No-op — queue exhausted
