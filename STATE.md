@@ -182,6 +182,8 @@
 
 | #12766 | Fix concurrent updates to mapped model sources | goutamadwant | 2026-08-19T01:37:33Z | APPROVE | Thread-safe ConcurrentHashMap.newKeySet() replacing HashSet |
 
+| #12767 | Support Maven version ranges in profile activation | goutamadwant | 2026-08-19T01:55:21Z | COMMENT | Suppressed: all 5 findings FP (fail-closed negation intentional, scope correct) |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
