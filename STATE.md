@@ -186,6 +186,8 @@
 
 | #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T16:55:10Z | APPROVE | Three-tier fallback (stable/pre-release/snapshot) for plugin version resolution |
 
+| #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T18:44:10Z | APPROVE | Re-review: new commit addresses all feedback, adds isParseable guard and 5 unit tests |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
