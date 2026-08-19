@@ -188,6 +188,8 @@
 
 | #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T18:44:10Z | APPROVE | Re-review: new commit addresses all feedback, adds isParseable guard and 5 unit tests |
 
+| #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T19:09:39Z | APPROVE | Re-review: refactored isPreRelease to use GenericQualifiers, clean simplification |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
