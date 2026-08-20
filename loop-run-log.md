@@ -606,3 +606,9 @@ Append one entry per run. Prune entries older than 30 days.
 - **All stale**: no new commits on any PR
 - **Reviews posted**: 0
 - **Result**: No-op — queue exhausted (16th consecutive no-op)
+
+### Run 95 — 2026-08-20T04:10:00Z
+- **Triage result**: 6 actionable (all re-reviews, unchanged since run 78)
+- **All stale**: no new commits on any PR
+- **Reviews posted**: 0
+- **Result**: No-op — queue exhausted (17th consecutive no-op)
