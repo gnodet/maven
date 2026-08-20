@@ -540,3 +540,9 @@ Append one entry per run. Prune entries older than 30 days.
 - **All stale**: no new commits on any PR
 - **Reviews posted**: 0
 - **Result**: No-op — queue exhausted
+
+### Run 84 — 2026-08-19T22:40:00Z
+- **Triage result**: 6 actionable (all re-reviews, identical timestamps to runs 78-83)
+- **All stale**: no new commits on any PR
+- **Reviews posted**: 0
+- **Result**: No-op — queue exhausted
