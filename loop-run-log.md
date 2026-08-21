@@ -653,3 +653,8 @@ Append one entry per run. Prune entries older than 30 days.
 - **PRs checked:** #12740, #12741, #12750, #12748, #12762, #12766, #12707
 - **Reviews posted:** 0
 - **Note:** Fixed per_page=5 pagination bug in stale detection — PR #12707 appeared new because per_page=5 missed our Run 119 APPROVE; full review list confirms our review at 2026-08-21T15:03:41Z covers latest commit at 2026-08-21T14:46:41Z
+
+### Run 122 — 2026-08-21T17:30:32Z
+- **Result:** 1 PR reviewed, 1 review posted
+- **PR #12707** (re-review): APPROVE — new commit `7100fca9` fixes problem count (`results.size()` → `problems.stream().sum()`) and strengthens test to distinguish problem-count vs result-count. Clean fix, no issues.
+- **Skipped:** 6 stale PRs (#12740, #12741, #12750, #12748, #12762, #12766)
