@@ -624,3 +624,4 @@ Append one entry per run. Prune entries older than 30 days.
 - **All stale**: no new commits on any PR
 - **Reviews posted**: 0
 - **Result**: No-op — queue exhausted (19th consecutive no-op)
+| 98 | 2026-08-21T01:07:03Z | 0 | 0 | no-op: 6 stale re-reviews, no new commits |
