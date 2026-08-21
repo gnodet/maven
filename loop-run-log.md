@@ -647,3 +647,9 @@ Append one entry per run. Prune entries older than 30 days.
 | 118 | 2026-08-22T14:43:59Z | 0 | 0 | no-op: 7 stale re-reviews, no new commits |
 | 119 | 2026-08-21T15:03:41Z | 1 | 1 | reviewed #12707 (APPROVE) — fix duplicate model problem reporting |
 | 120 | 2026-08-22T15:07:10Z | 0 | 0 | no-op: 6 stale re-reviews, no new commits |
+
+### Run 121 — 2026-08-21T18:35:00Z
+- **Result:** no-op (all 7 triaged PRs are stale review bumps, no new author commits)
+- **PRs checked:** #12740, #12741, #12750, #12748, #12762, #12766, #12707
+- **Reviews posted:** 0
+- **Note:** Fixed per_page=5 pagination bug in stale detection — PR #12707 appeared new because per_page=5 missed our Run 119 APPROVE; full review list confirms our review at 2026-08-21T15:03:41Z covers latest commit at 2026-08-21T14:46:41Z
