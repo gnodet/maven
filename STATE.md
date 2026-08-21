@@ -192,6 +192,8 @@
 
 | #12707 | Fix duplicate model problem reporting | Mazen050 | 2026-08-21T15:03:41Z | APPROVE | Clean fix eliminating duplicate problem rendering regression |
 
+| #12707 | Fix duplicate model problem reporting, fixes #12691 | Mazen050 | 2026-08-21T17:30:32Z | APPROVE | Re-review: new commit fixes problem count (results.size→problems sum) and strengthens test |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
