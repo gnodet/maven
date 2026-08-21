@@ -190,6 +190,8 @@
 
 | #12771 | Fix #12770: do not resolve unversioned plugins to pre-releases | ascheman | 2026-08-19T19:09:39Z | APPROVE | Re-review: refactored isPreRelease to use GenericQualifiers, clean simplification |
 
+| #12707 | Fix duplicate model problem reporting | Mazen050 | 2026-08-21T15:03:41Z | APPROVE | Clean fix eliminating duplicate problem rendering regression |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
