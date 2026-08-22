@@ -194,6 +194,8 @@
 
 | #12707 | Fix duplicate model problem reporting, fixes #12691 | Mazen050 | 2026-08-21T17:30:32Z | APPROVE | Re-review: new commit fixes problem count (results.size→problems sum) and strengthens test |
 
+| #12767 | Support Maven version ranges in profile activation | goutamadwant | 2026-08-22T11:26:52Z | APPROVE | Well-tested version range support for maven.version profile activation |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
