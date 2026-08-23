@@ -715,3 +715,8 @@ Append one entry per run. Prune entries older than 30 days.
 - **PRs checked:** #12740, #12741, #12750, #12748, #12762, #12707
 - **Reviews posted:** 0
 - **Note:** Open PR count dropped from 29 to 28 (one PR merged/closed)
+
+### Run 134 — 2026-08-23T08:40:18Z
+- **Result:** 1 PR reviewed, 1 review posted
+- **PR #12779** (new): APPROVE — Fixes duplicate `lib/jansi-native/` directory entry in maven-3.9.x assembly by replacing broad `**` glob with explicit extension patterns (`**/*.so`, `**/*.jnilib`, `**/*.dll`), consistent with 3.10.x approach.
+- **Skipped:** 6 stale PRs (#12740, #12741, #12750, #12748, #12762, #12707)
