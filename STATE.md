@@ -196,6 +196,8 @@
 
 | #12767 | Support Maven version ranges in profile activation | goutamadwant | 2026-08-22T11:26:52Z | APPROVE | Well-tested version range support for maven.version profile activation |
 
+| #12779 | Stop packaging a duplicate lib/jansi-native directory entry | slachiewicz | 2026-08-23T08:40:18Z | APPROVE | Clean fix replacing broad glob with explicit extension patterns, consistent with 3.10.x |
+
 ## Skipped PRs
 
 <!-- PRs intentionally skipped (bot PRs, draft, etc.) -->
