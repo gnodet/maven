@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T07:35:50Z",
+    "timestamp": "2026-08-24T07:50:57Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
@@ -14,17 +14,22 @@
       "number": 12767,
       "title": "Support Maven version ranges in profile activation",
       "author": "goutamadwant",
-      "reviewed_at": "2026-08-24T05:48:36Z",
+      "reviewed_at": "2026-08-24T07:50:57Z",
       "verdict": "APPROVE",
-      "notes": "enhancement: Well-scoped implementation of version range support for maven.version profile activation",
+      "notes": "enhancement: Re-review \u2014 prior CHANGES_REQUESTED was philosophical objection. Clean implementation with 11 tests.",
       "interactions": [
         {
           "at": "2026-08-24T05:48:36Z",
           "verdict": "APPROVE",
           "notes": "enhancement: Well-scoped implementation of version range support for maven.version profile activation"
+        },
+        {
+          "at": "2026-08-24T07:50:57Z",
+          "verdict": "APPROVE",
+          "notes": "enhancement: Re-review \u2014 prior CHANGES_REQUESTED was philosophical objection. Clean implementation with 11 tests."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12747,
@@ -297,6 +302,38 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12662,
+      "title": "Enable PathConflictResolver by default",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T07:50:57Z",
+      "verdict": "APPROVE",
+      "notes": "performance: O(N\u00b2)\u2192O(N) conflict resolver switch. Posted as COMMENT (own PR). Resolver javadoc inconsistency noted.",
+      "interactions": [
+        {
+          "at": "2026-08-24T07:50:57Z",
+          "verdict": "APPROVE",
+          "notes": "performance: O(N\u00b2)\u2192O(N) conflict resolver switch. Posted as COMMENT (own PR). Resolver javadoc inconsistency noted."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12658,
+      "title": "Resolve classified POM artifacts from the reactor [4.x]",
+      "author": "wilx",
+      "reviewed_at": "2026-08-24T07:50:57Z",
+      "verdict": "APPROVE",
+      "notes": "bug: Clean 1-line fix. Backport to maven-4.0.x may be missing.",
+      "interactions": [
+        {
+          "at": "2026-08-24T07:50:57Z",
+          "verdict": "APPROVE",
+          "notes": "bug: Clean 1-line fix. Backport to maven-4.0.x may be missing."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -305,5 +342,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-23T23:02:44Z"
+  "last_reviewed_updated_at": "2026-08-24T07:42:54Z"
 }
