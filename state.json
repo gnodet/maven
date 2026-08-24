@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T08:44:34Z",
+    "timestamp": "2026-08-24T08:54:00Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
@@ -430,6 +430,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12710,
+      "title": "Fix inherited versions in BOM consumer POMs",
+      "author": "ulofiai",
+      "reviewed_at": "2026-08-24T08:54:00Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix, no issues found. Both reviewer findings were false positives.",
+      "interactions": [
+        {
+          "at": "2026-08-24T08:54:00Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix, no issues found. Both reviewer findings were false positives."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12685,
+      "title": "[mvnup] Add maven-war-plugin and maven-ear-plugin to plugin upgrade list",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T08:54:00Z",
+      "verdict": "COMMENT",
+      "notes": "Clean data-only change. Minor reason-string/minVersion mismatch confirmed. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T08:54:00Z",
+          "verdict": "COMMENT",
+          "notes": "Clean data-only change. Minor reason-string/minVersion mismatch confirmed. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12722,
+      "title": "Fix operator precedence skipping type=bom dependency imports",
+      "author": "kalayciburak",
+      "reviewed_at": "2026-08-24T08:54:00Z",
+      "verdict": "APPROVE",
+      "notes": "Correct operator-precedence fix. No issues found. Both reviewer findings were false positives.",
+      "interactions": [
+        {
+          "at": "2026-08-24T08:54:00Z",
+          "verdict": "APPROVE",
+          "notes": "Correct operator-precedence fix. No issues found. Both reviewer findings were false positives."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -438,5 +486,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-23T23:03:35Z"
+  "last_reviewed_updated_at": "2026-08-24T06:05:05Z"
 }
