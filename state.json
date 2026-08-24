@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T15:24:04Z",
+    "timestamp": "2026-08-24T16:10:42Z",
     "prs_checked": 1,
-    "reviews_posted": 1,
+    "reviews_posted": 0,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -147,17 +147,22 @@
       "number": 12716,
       "title": "#12572 introduced mvnlog",
       "author": "sakshi8778",
-      "reviewed_at": "2026-08-24T06:25:19Z",
+      "reviewed_at": "2026-08-24T16:10:42Z",
       "verdict": "REQUEST_CHANGES",
-      "notes": "feature: Critical security issues (path traversal, 0.0.0.0 binding), breaking API change, no tests, O(n^2) log collection. Issues flagged in 3 review rounds now.",
+      "notes": "feature: Re-check \u2014 no new commits from author. Latest review is from operator (gnodet). Same critical issues remain. Skipping re-review.",
       "interactions": [
         {
           "at": "2026-08-24T06:25:19Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "feature: Critical security issues (path traversal, 0.0.0.0 binding), breaking API change, no tests, O(n^2) log collection. Issues flagged in 3 review rounds now."
+        },
+        {
+          "at": "2026-08-24T16:10:42Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "feature: Re-check \u2014 no new commits from author. Latest review is from operator (gnodet). Same critical issues remain. Skipping re-review."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12714,
@@ -816,5 +821,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-24T15:08:51Z"
+  "last_reviewed_updated_at": "2026-08-24T15:55:29Z"
 }
