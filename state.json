@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T10:35:56Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-24T11:09:59Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -590,6 +590,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12626,
+      "title": "Fix field cache to let child class fields take precedence over parent",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T11:09:50Z",
+      "verdict": "APPROVE",
+      "notes": "bug: Clean putIfAbsent fix for field cache asymmetry. Forward-port to master needed. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T11:09:50Z",
+          "verdict": "APPROVE",
+          "notes": "bug: Clean putIfAbsent fix for field cache asymmetry. Forward-port to master needed. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12620,
+      "title": "[MNG-6797] Remember if Maven model problems were encountered in Maven 4",
+      "author": "wilx",
+      "reviewed_at": "2026-08-24T11:09:53Z",
+      "verdict": "APPROVE",
+      "notes": "enhancement: Port of Maven 3 model-problem retention to Maven 4. Sound design, thorough tests. Missing label + milestone.",
+      "interactions": [
+        {
+          "at": "2026-08-24T11:09:53Z",
+          "verdict": "APPROVE",
+          "notes": "enhancement: Port of Maven 3 model-problem retention to Maven 4. Sound design, thorough tests. Missing label + milestone."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12629,
+      "title": "Fix #12607: DefaultMaven session scope leak on constructor exception",
+      "author": "elharo",
+      "reviewed_at": "2026-08-24T11:09:55Z",
+      "verdict": "APPROVE",
+      "notes": "bug: Clean session-scope leak fix. Backport to maven-4.0.x needed. Missing label + milestone.",
+      "interactions": [
+        {
+          "at": "2026-08-24T11:09:55Z",
+          "verdict": "APPROVE",
+          "notes": "bug: Clean session-scope leak fix. Backport to maven-4.0.x needed. Missing label + milestone."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -598,5 +646,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-23T23:02:53Z"
+  "last_reviewed_updated_at": "2026-08-24T05:05:05Z"
 }
