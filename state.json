@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T20:13:28Z",
+    "timestamp": "2026-08-24T20:33:11Z",
     "prs_checked": 2,
-    "reviews_posted": 0,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -626,17 +626,22 @@
       "number": 12620,
       "title": "[MNG-6797] Remember if Maven model problems were encountered in Maven 4",
       "author": "wilx",
-      "reviewed_at": "2026-08-24T11:09:53Z",
+      "reviewed_at": "2026-08-24T20:33:11Z",
       "verdict": "APPROVE",
-      "notes": "enhancement: Port of Maven 3 model-problem retention to Maven 4. Sound design, thorough tests. Missing label + milestone.",
+      "notes": "enhancement: Re-review after rebase. Clean rebase, no content changes. APPROVE maintained.",
       "interactions": [
         {
           "at": "2026-08-24T11:09:53Z",
           "verdict": "APPROVE",
           "notes": "enhancement: Port of Maven 3 model-problem retention to Maven 4. Sound design, thorough tests. Missing label + milestone."
+        },
+        {
+          "at": "2026-08-24T20:33:11Z",
+          "verdict": "APPROVE",
+          "notes": "enhancement: Re-review after rebase. Clean rebase, no content changes. APPROVE maintained."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12629,
@@ -849,6 +854,22 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12480,
+      "title": "Use hardened XmlService.newXMLInputFactory() consistently in extractModelId",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T20:33:11Z",
+      "verdict": "APPROVE",
+      "notes": "enhancement: Security hardening \u2014 replaces raw XMLInputFactory with XXE-hardened XmlService. Dead code removed. Good test.",
+      "interactions": [
+        {
+          "at": "2026-08-24T20:33:11Z",
+          "verdict": "APPROVE",
+          "notes": "enhancement: Security hardening \u2014 replaces raw XMLInputFactory with XXE-hardened XmlService. Dead code removed. Good test."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -857,5 +878,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-24T19:50:54Z"
+  "last_reviewed_updated_at": "2026-08-24T20:27:56Z"
 }
