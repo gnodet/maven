@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T10:02:36Z",
+    "timestamp": "2026-08-24T10:18:55Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
@@ -526,6 +526,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12652,
+      "title": "Optimize reactor sort, model pool, and phase comparator performance",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T10:18:55Z",
+      "verdict": "COMMENT",
+      "notes": "Clean perf optimization, O(n)->O(1) lookups. All findings non-blocking. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:18:55Z",
+          "verdict": "COMMENT",
+          "notes": "Clean perf optimization, O(n)->O(1) lookups. All findings non-blocking. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12655,
+      "title": "Wire ModelBuilderRequest.isLocationTracking() to XML parser",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T10:18:55Z",
+      "verdict": "COMMENT",
+      "notes": "Behavioral change in subproject discovery + API infra. Title/desc need updating. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:18:55Z",
+          "verdict": "COMMENT",
+          "notes": "Behavioral change in subproject discovery + API infra. Title/desc need updating. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12654,
+      "title": "Add AsyncDrainWriter to eliminate PrintWriter lock contention",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T10:18:55Z",
+      "verdict": "COMMENT",
+      "notes": "Sound concurrency design, missing unit tests. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:18:55Z",
+          "verdict": "COMMENT",
+          "notes": "Sound concurrency design, missing unit tests. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -534,5 +582,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-24T08:31:53Z"
+  "last_reviewed_updated_at": "2026-08-23T23:02:52Z"
 }
