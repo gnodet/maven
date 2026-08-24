@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T07:07:56Z",
+    "timestamp": "2026-08-24T07:35:50Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
@@ -249,6 +249,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12694,
+      "title": "Logging foundation: structured LogEvent, JUL handler, Log API enhancements",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T07:35:50Z",
+      "verdict": "COMMENT",
+      "notes": "feature: API contract contradiction in sequenceNumber(), no test coverage for 1000+ lines, StackWalker overhead, logger name change.",
+      "interactions": [
+        {
+          "at": "2026-08-24T07:35:50Z",
+          "verdict": "COMMENT",
+          "notes": "feature: API contract contradiction in sequenceNumber(), no test coverage for 1000+ lines, StackWalker overhead, logger name change."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12687,
+      "title": "Fix modello velocity phase for concurrent builder compatibility",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T07:35:50Z",
+      "verdict": "APPROVE",
+      "notes": "bug: Clean fix for concurrent builder race. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T07:35:50Z",
+          "verdict": "APPROVE",
+          "notes": "bug: Clean fix for concurrent builder race. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12686,
+      "title": "[MNG-8765] Pre-interpolate plugin configuration before type conversion",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T07:35:50Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Fix is structurally broken - XmlPlexusConfiguration getChild(int) bypasses childrenCache. Tests don't cover actual MNG-8765 scenario.",
+      "interactions": [
+        {
+          "at": "2026-08-24T07:35:50Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Fix is structurally broken - XmlPlexusConfiguration getChild(int) bypasses childrenCache. Tests don't cover actual MNG-8765 scenario."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -257,5 +305,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-23T23:02:36Z"
+  "last_reviewed_updated_at": "2026-08-23T23:02:44Z"
 }
