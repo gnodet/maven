@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T08:54:00Z",
+    "timestamp": "2026-08-24T10:02:36Z",
     "prs_checked": 3,
     "reviews_posted": 3,
     "tokens_estimate": 0
@@ -478,6 +478,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12703,
+      "title": "[MNG-8708] Fix Maven 4 parent inference",
+      "author": "goutamadwant",
+      "reviewed_at": "2026-08-24T10:02:36Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix for 4.1.0 parent inference. No issues. No backport needed (4.1.0-only feature).",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:02:36Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix for 4.1.0 parent inference. No issues. No backport needed (4.1.0-only feature)."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12684,
+      "title": "[MNG-8709] Use active profile properties for consumer POM validation",
+      "author": "goutamadwant",
+      "reviewed_at": "2026-08-24T10:02:36Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix. Minor version-range nit confirmed. Targets maven-4.0.x.",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:02:36Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix. Minor version-range nit confirmed. Targets maven-4.0.x."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12802,
+      "title": "[Backport maven-4.0.x] Fix #12640: BOM consumer POM must not include inherited dependency management",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-24T10:02:36Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12641. CI all green. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-24T10:02:36Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12641. CI all green. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -486,5 +534,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-24T06:05:05Z"
+  "last_reviewed_updated_at": "2026-08-24T08:31:53Z"
 }
