@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-24T17:25:49Z",
+    "timestamp": "2026-08-24T18:09:31Z",
     "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
@@ -115,17 +115,22 @@
       "number": 12723,
       "title": "Add API dependency scope support",
       "author": "charangowdamd-cmd",
-      "reviewed_at": "2026-08-24T06:25:19Z",
+      "reviewed_at": "2026-08-24T18:09:31Z",
       "verdict": "REQUEST_CHANGES",
-      "notes": "feature: Incomplete api scope implementation, superseded by PR #12745. Critical gaps in consumer POM, transitive resolution, and backward compat.",
+      "notes": "feature: Re-review \u2014 only new commit is formatting fix. Same 4 critical issues remain (consumer POM, transitive resolution, backward compat, no tests). Superseded by PR #12745. Not re-posting same review.",
       "interactions": [
         {
           "at": "2026-08-24T06:25:19Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "feature: Incomplete api scope implementation, superseded by PR #12745. Critical gaps in consumer POM, transitive resolution, and backward compat."
+        },
+        {
+          "at": "2026-08-24T18:09:31Z",
+          "verdict": "REQUEST_CHANGES",
+          "notes": "feature: Re-review \u2014 only new commit is formatting fix. Same 4 critical issues remain (consumer POM, transitive resolution, backward compat, no tests). Superseded by PR #12745. Not re-posting same review."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12721,
@@ -826,5 +831,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-24T17:21:53Z"
+  "last_reviewed_updated_at": "2026-08-24T17:43:17Z"
 }
