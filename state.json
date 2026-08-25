@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-25T11:30:31Z",
+    "timestamp": "2026-08-25T12:22:53Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
@@ -912,17 +912,22 @@
       "number": 12828,
       "title": "Use the just built maven to run integration tests",
       "author": "fridrich",
-      "reviewed_at": "2026-08-25T11:23:06Z",
-      "verdict": "REQUEST_CHANGES",
-      "notes": "bug: Missing disable of default unpack-built-maven-distro execution. Without <phase>none</phase>, Maven 3 build fails on undefined sessionRootDirectory before the new extraction runs.",
+      "reviewed_at": "2026-08-25T12:22:53Z",
+      "verdict": "APPROVE",
+      "notes": "bug: Re-review after author addressed feedback. Default unpack execution now disabled, sessionRootDirectory replaced with maven.multiModuleProjectDirectory for Maven 3 compat.",
       "interactions": [
         {
           "at": "2026-08-25T11:23:06Z",
           "verdict": "REQUEST_CHANGES",
           "notes": "bug: Missing disable of default unpack-built-maven-distro execution. Without <phase>none</phase>, Maven 3 build fails on undefined sessionRootDirectory before the new extraction runs."
+        },
+        {
+          "at": "2026-08-25T12:22:53Z",
+          "verdict": "APPROVE",
+          "notes": "bug: Re-review after author addressed feedback. Default unpack execution now disabled, sessionRootDirectory replaced with maven.multiModuleProjectDirectory for Maven 3 compat."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12829,
@@ -947,5 +952,5 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-25T11:15:10Z"
+  "last_reviewed_updated_at": "2026-08-25T11:42:54Z"
 }
