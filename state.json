@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-27T00:12:09Z",
+    "timestamp": "2026-08-27T00:38:22Z",
     "prs_checked": 2,
     "reviews_posted": 2,
     "tokens_estimate": 0
@@ -1079,6 +1079,40 @@
       ],
       "review_count": 1,
       "head_sha": "4933c3be4325f0047960613bb01e5d4be4ba47a1"
+    },
+    {
+      "number": 12145,
+      "title": "Avoid final logger injection in EventSpyDispatcher",
+      "author": "Will-thom",
+      "reviewed_at": "2026-08-27T00:38:22Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Issue #12115 closed as NOT_PLANNED. Fix is 1 of 54 files with same pattern. Root cause likely in Sisu/Plexus. All 4 findings verified.",
+      "interactions": [
+        {
+          "at": "2026-08-27T00:38:22Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Issue #12115 closed as NOT_PLANNED. Fix is 1 of 54 files with same pattern. Root cause likely in Sisu/Plexus. All 4 findings verified."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "084f0460e876c966470c618484e9a50fcb9bd396"
+    },
+    {
+      "number": 12135,
+      "title": "[MNG-11642] Add JPMS module support to Maven 4",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-27T00:38:22Z",
+      "verdict": "COMMENT",
+      "notes": "enhancement: JPMS modularization \u2014 17 module-info.java + 16 Automatic-Module-Name. Sound design. Posted as COMMENT (own PR).",
+      "interactions": [
+        {
+          "at": "2026-08-27T00:38:22Z",
+          "verdict": "COMMENT",
+          "notes": "enhancement: JPMS modularization \u2014 17 module-info.java + 16 Automatic-Module-Name. Sound design. Posted as COMMENT (own PR)."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "ea5829e60093f57cd6c0a8a5d97edb10406be40d"
     }
   ],
   "skipped_prs": [],
@@ -1087,7 +1121,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-26T23:23:47Z",
+  "last_reviewed_updated_at": "2026-07-24T14:55:31Z",
   "deferred_prs": [
     {
       "number": 12831,
@@ -1101,14 +1135,14 @@
       "reason": "no_ci",
       "deferred_at": "2026-08-26T15:32:28Z",
       "last_checked": "2026-08-26T15:32:28Z",
-      "check_count": 6
+      "check_count": 7
     },
     {
       "number": 12841,
       "reason": "no_ci",
       "deferred_at": "2026-08-26T15:32:28Z",
       "last_checked": "2026-08-26T15:32:28Z",
-      "check_count": 6
+      "check_count": 7
     },
     {
       "number": 12845,
@@ -1129,7 +1163,7 @@
       "reason": "ci_pending",
       "deferred_at": "2026-08-26T19:33:52Z",
       "last_checked": "2026-08-26T19:33:52Z",
-      "check_count": 4
+      "check_count": 5
     },
     {
       "number": 12684,
@@ -1150,14 +1184,14 @@
       "reason": "ci_pending",
       "deferred_at": "2026-08-26T22:34:50Z",
       "last_checked": "2026-08-26T22:34:50Z",
-      "check_count": 3
+      "check_count": 4
     },
     {
       "number": 12402,
       "reason": "ci_failing",
       "deferred_at": "2026-08-26T22:34:50Z",
       "last_checked": "2026-08-26T22:34:50Z",
-      "check_count": 3
+      "check_count": 4
     },
     {
       "number": 12852,
@@ -1171,7 +1205,7 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T00:06:47Z",
       "last_checked": "2026-08-27T00:06:47Z",
-      "check_count": 1
+      "check_count": 2
     }
   ]
 }
