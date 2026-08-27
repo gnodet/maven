@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-27T07:49:39Z",
+    "timestamp": "2026-08-27T07:59:14Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
@@ -1177,6 +1177,22 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11770,
+      "title": "feat: Improve the matching of required versions",
+      "author": "nielsbasjes",
+      "reviewed_at": "2026-08-27T07:59:14Z",
+      "verdict": "APPROVE",
+      "notes": "enhancement: Relaxes toolchain version matching for auto-generated toolchains.xml. Competing PR #11786 by cstamas. Forward-port to maven-3.10.x needed.",
+      "interactions": [
+        {
+          "at": "2026-08-27T07:59:14Z",
+          "verdict": "APPROVE",
+          "notes": "enhancement: Relaxes toolchain version matching for auto-generated toolchains.xml. Competing PR #11786 by cstamas. Forward-port to maven-3.10.x needed."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -1185,7 +1201,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-07-24T15:51:15Z",
+  "last_reviewed_updated_at": "2026-07-31T08:32:51Z",
   "deferred_prs": [
     {
       "number": 12855,
@@ -1199,48 +1215,55 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T00:57:41Z",
       "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 2
+      "check_count": 3
     },
     {
       "number": 12832,
       "reason": "no_ci",
       "deferred_at": "2026-08-27T00:57:41Z",
       "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 2
+      "check_count": 3
     },
     {
       "number": 12842,
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T00:57:41Z",
       "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 2
+      "check_count": 3
     },
     {
       "number": 12806,
       "reason": "ci_pending",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12862,
       "reason": "ci_pending",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11926,
       "reason": "no_ci",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11904,
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
+      "check_count": 2
+    },
+    {
+      "number": 12734,
+      "reason": "no_ci",
+      "deferred_at": "2026-08-27T07:54:29Z",
+      "last_checked": "2026-08-27T07:54:29Z",
       "check_count": 1
     }
   ]
