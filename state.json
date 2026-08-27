@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-27T20:15:24Z",
+    "timestamp": "2026-08-27T20:22:17Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 72438
+    "tokens_estimate": 59171
   },
   "reviewed_prs": [
     {
@@ -1337,6 +1337,22 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12870,
+      "title": "Fix #12769: merge duplicate mirror repos to preserve snapshot policies",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-27T20:22:15Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Fixes rc-6 regression where mirror injection duplicates drop snapshot policies during dedup. Backport to maven-4.0.x needed.",
+      "interactions": [
+        {
+          "at": "2026-08-27T20:22:15Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Fixes rc-6 regression where mirror injection duplicates drop snapshot policies during dedup. Backport to maven-4.0.x needed."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -1345,7 +1361,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-27T20:07:47Z",
+  "last_reviewed_updated_at": "2026-08-27T20:11:47Z",
   "deferred_prs": [
     {
       "number": 12855,
