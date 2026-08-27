@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-27T11:30:15Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-27T16:10:50Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -1225,6 +1225,54 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12867,
+      "title": "Fix #12592: use string-based ID for forked execution cycle detection",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-27T16:10:49Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Replaces mutable MojoDescriptor-based cycle detection with immutable String IDs. Backport to maven-4.0.x needed.",
+      "interactions": [
+        {
+          "at": "2026-08-27T16:10:49Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Replaces mutable MojoDescriptor-based cycle detection with immutable String IDs. Backport to maven-4.0.x needed."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12865,
+      "title": "Fix #12605: remove synchronized bottleneck in createProjectRealm()",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-27T16:10:49Z",
+      "verdict": "COMMENT",
+      "notes": "performance: Replaces synchronized with ConcurrentHashMap.putIfAbsent in 3 cache classes. Fixes parallel build bottleneck. Maven 4 only.",
+      "interactions": [
+        {
+          "at": "2026-08-27T16:10:49Z",
+          "verdict": "COMMENT",
+          "notes": "performance: Replaces synchronized with ConcurrentHashMap.putIfAbsent in 3 cache classes. Fixes parallel build bottleneck. Maven 4 only."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12863,
+      "title": "Fix #12607: prevent session scope leak on MavenChainedWorkspaceReader constructor exception",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-27T16:10:49Z",
+      "verdict": "COMMENT",
+      "notes": "bug: One-line reorder to close exception gap between sessionScope.enter() and try block. Backport to maven-4.0.x needed.",
+      "interactions": [
+        {
+          "at": "2026-08-27T16:10:49Z",
+          "verdict": "COMMENT",
+          "notes": "bug: One-line reorder to close exception gap between sessionScope.enter() and try block. Backport to maven-4.0.x needed."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -1233,7 +1281,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-27T11:26:02Z",
+  "last_reviewed_updated_at": "2026-08-27T13:57:20Z",
   "deferred_prs": [
     {
       "number": 12855,
