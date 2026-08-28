@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T07:13:22Z",
+    "timestamp": "2026-08-28T08:30:37Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 68648
+    "tokens_estimate": 119936
   },
   "reviewed_prs": [
     {
@@ -1422,6 +1422,22 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 12874,
+      "title": "Strip executable() conditions from consumer POMs",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T08:30:34Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Strips executable() conditions from consumer POM profile activations. Weak test assertion pattern flagged.",
+      "interactions": [
+        {
+          "at": "2026-08-28T08:30:34Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Strips executable() conditions from consumer POM profile activations. Weak test assertion pattern flagged."
+        }
+      ],
+      "review_count": 1
     }
   ],
   "skipped_prs": [],
@@ -1430,7 +1446,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-28T04:19:24Z",
+  "last_reviewed_updated_at": "2026-08-28T08:17:40Z",
   "deferred_prs": [
     {
       "number": 12855,
