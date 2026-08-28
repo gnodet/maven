@@ -1658,17 +1658,23 @@
       "number": 12891,
       "title": "[backport 4.0.x] Fix #12646: project-local-repo clean race condition when root pom has parent",
       "author": "gnodet",
-      "reviewed_at": "2026-08-28T14:53:31Z",
+      "reviewed_at": "2026-08-28T17:20:18Z",
       "verdict": "COMMENT",
-      "notes": "Backport of #12650. 3 verified findings: merge conflict, unrelated cache config swept in, orphaned test resources.",
+      "notes": "Delta re-review: merge conflict resolved, 2/3 findings remain (unrelated maven.cache.config, orphaned mng-5102-mixins resources)",
       "interactions": [
         {
           "at": "2026-08-28T14:53:31Z",
           "verdict": "COMMENT",
           "notes": "Backport of #12650. 3 verified findings: merge conflict, unrelated cache config swept in, orphaned test resources."
+        },
+        {
+          "at": "2026-08-28T17:20:18Z",
+          "verdict": "COMMENT",
+          "notes": "Delta re-review: merge conflict resolved, 2/3 findings remain (unrelated maven.cache.config, orphaned mng-5102-mixins resources)"
         }
       ],
-      "review_count": 1
+      "review_count": 2,
+      "head_sha": "abb26f9ee1cd8c1cbf1e1d4e96414d75883c6f2b"
     },
     {
       "number": 12901,
