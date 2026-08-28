@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T10:19:34Z",
-    "prs_checked": 3,
-    "reviews_posted": 2,
-    "tokens_estimate": 463812
+    "timestamp": "2026-08-28T10:36:20Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 184923
   },
   "reviewed_prs": [
     {
@@ -267,17 +267,22 @@
       "number": 12697,
       "title": "Console modes: --console=plain/rich/verbose/machine",
       "author": "gnodet",
-      "reviewed_at": "2026-08-24T07:07:51Z",
+      "reviewed_at": "2026-08-28T10:36:20Z",
       "verdict": "COMMENT",
-      "notes": "feature: volatile++ race in completedProjects, invalid --console silently accepted, unused constructor param, hardcoded report path.",
+      "notes": "feature: Console modes. 5/7 confirmed (29% FP). Race in completedProjects++, reactor-order assumption, silent invalid --console.",
       "interactions": [
         {
           "at": "2026-08-24T07:07:51Z",
           "verdict": "COMMENT",
           "notes": "feature: volatile++ race in completedProjects, invalid --console silently accepted, unused constructor param, hardcoded report path."
+        },
+        {
+          "at": "2026-08-28T10:36:20Z",
+          "verdict": "COMMENT",
+          "notes": "feature: Console modes. 5/7 confirmed (29% FP). Race in completedProjects++, reactor-order assumption, silent invalid --console."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12695,
@@ -1476,7 +1481,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-28T09:55:15Z",
+  "last_reviewed_updated_at": "2026-08-28T10:16:58Z",
   "deferred_prs": [
     {
       "number": 12855,
