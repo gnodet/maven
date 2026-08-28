@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T20:25:53Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
+    "timestamp": "2026-08-28T21:46:54Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -1742,6 +1742,23 @@
       ],
       "review_count": 1,
       "head_sha": "da106d16866b1420794ae0670240d1a4288b7d4a"
+    },
+    {
+      "number": 10952,
+      "title": "[MNG-8537] Keep Maven Namespace the same",
+      "author": "elharo",
+      "reviewed_at": "2026-08-28T21:46:54Z",
+      "verdict": "COMMENT",
+      "notes": "6 confirmed findings (disabled IT, tightened validation, dead code, misleading constant, assertion mismatch, duplicate test); blocked by community decision for 4.0 GA",
+      "interactions": [
+        {
+          "at": "2026-08-28T21:46:54Z",
+          "verdict": "COMMENT",
+          "notes": "6 confirmed findings (disabled IT, tightened validation, dead code, misleading constant, assertion mismatch, duplicate test); blocked by community decision for 4.0 GA"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "bb6351a7eda4a2be953fee9b0b310779d2d829c5"
     }
   ],
   "skipped_prs": [],
@@ -1750,7 +1767,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-07-24T16:19:35Z",
+  "last_reviewed_updated_at": "2026-07-24T21:20:45Z",
   "deferred_prs": [
     {
       "number": 12855,
@@ -1897,6 +1914,13 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T20:25:53Z",
       "last_checked": "2026-08-28T20:25:53Z",
+      "check_count": 1
+    },
+    {
+      "number": 11102,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T21:46:54Z",
+      "last_checked": "2026-08-28T21:46:54Z",
       "check_count": 1
     }
   ]
