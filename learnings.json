@@ -1,1 +1,20 @@
-{"version": "1.0", "project": "apache/maven", "learnings": []}
+{
+  "version": "1.0",
+  "project": "apache/maven",
+  "learnings": [
+    {
+      "id": "delta-review-for-re-reviews",
+      "added": "2026-08-28",
+      "summary": "Always do delta reviews for re-reviewed PRs, never full reviews from scratch",
+      "detail": "When triage flags a PR as re-review (new commits since last review), do NOT spawn a fresh reviewer that re-discovers all issues from scratch. Instead: (1) Fetch the previous review we posted on that PR using gh api repos/REPO/pulls/NUMBER/reviews and extract our last review body. (2) Include previous findings in the reviewer prompt as context. (3) Ask the reviewer to focus ONLY on: were previous findings addressed? are there NEW issues? (4) Only post a new review if the delta is meaningful (new findings, or fixes confirmed). This avoids duplicate noise, saves subagent budget, and respects the PR author's time.",
+      "applies_to": "step 4 (reviewer agent prompts) in review-loop.md"
+    },
+    {
+      "id": "skip-rebase-only-re-reviews",
+      "added": "2026-08-28",
+      "summary": "Skip posting reviews for rebase-only re-reviews with no content changes",
+      "detail": "When a re-review shows the PR was only rebased with no content changes, do not post a new review. Just update state. The previous review's findings still apply and are already visible on the PR.",
+      "applies_to": "step 6 (post reviews) in review-loop.md"
+    }
+  ]
+}
