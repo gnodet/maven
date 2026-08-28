@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T14:53:31Z",
+    "timestamp": "2026-08-28T15:27:57Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 145133
+    "tokens_estimate": 49263
   },
   "reviewed_prs": [
     {
@@ -1666,6 +1666,22 @@
           "at": "2026-08-28T14:53:31Z",
           "verdict": "COMMENT",
           "notes": "Backport of #12650. 3 verified findings: merge conflict, unrelated cache config swept in, orphaned test resources."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12901,
+      "title": "[backport 4.0.x] Optimize reactor sort and phase comparator performance",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T15:27:57Z",
+      "verdict": "COMMENT",
+      "notes": "Clean partial backport of #12652. LGTM, suggested milestone 4.0.0-rc-7.",
+      "interactions": [
+        {
+          "at": "2026-08-28T15:27:57Z",
+          "verdict": "COMMENT",
+          "notes": "Clean partial backport of #12652. LGTM, suggested milestone 4.0.0-rc-7."
         }
       ],
       "review_count": 1
