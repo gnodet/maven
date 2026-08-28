@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T14:00:01Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
-    "tokens_estimate": 89968
+    "timestamp": "2026-08-28T14:09:02Z",
+    "prs_checked": 1,
+    "reviews_posted": 0,
+    "tokens_estimate": 0
   },
   "reviewed_prs": [
     {
@@ -1333,17 +1333,22 @@
       "number": 12866,
       "title": "Fix #12590: NPE on null rootDirectory in DefaultModelBuilder",
       "author": "gnodet",
-      "reviewed_at": "2026-08-27T16:38:07Z",
+      "reviewed_at": "2026-08-28T14:09:02Z",
       "verdict": "COMMENT",
-      "notes": "bug: Null guard for rootDirectory in getEnhancedProperties(). Prevents NPE when session.getRootDirectory() throws and modelSource.getPath() returns null. Maven 4 only.",
+      "notes": "Re-review: only a merge commit (origin/master into fix/12590) since last review. No content changes, no new review posted.",
       "interactions": [
         {
           "at": "2026-08-27T16:38:07Z",
           "verdict": "COMMENT",
           "notes": "bug: Null guard for rootDirectory in getEnhancedProperties(). Prevents NPE when session.getRootDirectory() throws and modelSource.getPath() returns null. Maven 4 only."
+        },
+        {
+          "at": "2026-08-28T14:09:02Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: only a merge commit (origin/master into fix/12590) since last review. No content changes, no new review posted."
         }
       ],
-      "review_count": 1
+      "review_count": 2
     },
     {
       "number": 12869,
