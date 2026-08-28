@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T14:20:43Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 47498
+    "timestamp": "2026-08-28T14:26:58Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
+    "tokens_estimate": 138272
   },
   "reviewed_prs": [
     {
@@ -1554,6 +1554,54 @@
           "at": "2026-08-28T14:20:43Z",
           "verdict": "COMMENT",
           "notes": "Clean backport of #12654. LGTM, correct thread-safety and resource management."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12893,
+      "title": "[backport 4.0.x] Enable PathConflictResolver by default",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:26:58Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12662. LGTM, config-only change.",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:26:58Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12662. LGTM, config-only change."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12897,
+      "title": "[backport 4.0.x] Fix #12605: remove synchronized bottleneck in createProjectRealm()",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:26:58Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12865. LGTM, correct concurrency fix with ConcurrentHashMap.putIfAbsent().",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:26:58Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12865. LGTM, correct concurrency fix with ConcurrentHashMap.putIfAbsent()."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12899,
+      "title": "[backport 4.0.x] Fix #12868: Restore --define as long option for -D",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:26:58Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12869. LGTM, purely additive CLI fix.",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:26:58Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12869. LGTM, purely additive CLI fix."
         }
       ],
       "review_count": 1
