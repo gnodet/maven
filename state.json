@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T15:27:57Z",
+    "timestamp": "2026-08-28T18:43:30Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 49263
+    "tokens_estimate": 0
   },
   "reviewed_prs": [
     {
@@ -1691,6 +1691,23 @@
         }
       ],
       "review_count": 1
+    },
+    {
+      "number": 11405,
+      "title": "Introduce TempFileService and lifecycle cleanup participant",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-08-28T18:43:30Z",
+      "verdict": "COMMENT",
+      "notes": "3 confirmed findings (deleteTree robustness, missing tests), 2 false positives rejected",
+      "interactions": [
+        {
+          "at": "2026-08-28T18:43:30Z",
+          "verdict": "COMMENT",
+          "notes": "3 confirmed findings (deleteTree robustness, missing tests), 2 false positives rejected"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "4f59b7638a08aad83bdc2f6b1c3029bfa5c4fc16"
     }
   ],
   "skipped_prs": [],
@@ -1699,7 +1716,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-28T12:21:23Z",
+  "last_reviewed_updated_at": "2026-08-27T20:04:32Z",
   "deferred_prs": [
     {
       "number": 12855,
@@ -1797,6 +1814,48 @@
       "reason": "ci_pending",
       "deferred_at": "2026-08-27T17:58:19Z",
       "last_checked": "2026-08-27T17:58:19Z",
+      "check_count": 1
+    },
+    {
+      "number": 12694,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 12653,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 12722,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 12887,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 11410,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 11502,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T18:43:30Z",
+      "last_checked": "2026-08-28T18:43:30Z",
       "check_count": 1
     }
   ]
