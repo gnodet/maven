@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T18:43:30Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
+    "timestamp": "2026-08-28T20:25:53Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -1708,6 +1708,40 @@
       ],
       "review_count": 1,
       "head_sha": "4f59b7638a08aad83bdc2f6b1c3029bfa5c4fc16"
+    },
+    {
+      "number": 11146,
+      "title": "Add support for MAVEN_PROJECTBASEDIR substitution (backport of MNG-8598)",
+      "author": "mguillem",
+      "reviewed_at": "2026-08-28T20:19:38Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport to maven-3.9.x; suggested milestone 3.9.17 and backport to maven-3.10.x",
+      "interactions": [
+        {
+          "at": "2026-08-28T20:19:38Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport to maven-3.9.x; suggested milestone 3.9.17 and backport to maven-3.10.x"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "dfa391893527bc1fb26d55a6df7683440d676bfd"
+    },
+    {
+      "number": 11185,
+      "title": "Disallow arbitrary namespaces in Maven and Metadata readers",
+      "author": "arturobernalg",
+      "reviewed_at": "2026-08-28T20:25:53Z",
+      "verdict": "COMMENT",
+      "notes": "6 confirmed findings (broken indentation, hardcoded tag names, overly permissive namespace check, unused enforceNamespace, missing Locale.ROOT, no strict=false test)",
+      "interactions": [
+        {
+          "at": "2026-08-28T20:25:53Z",
+          "verdict": "COMMENT",
+          "notes": "6 confirmed findings (broken indentation, hardcoded tag names, overly permissive namespace check, unused enforceNamespace, missing Locale.ROOT, no strict=false test)"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "da106d16866b1420794ae0670240d1a4288b7d4a"
     }
   ],
   "skipped_prs": [],
@@ -1716,7 +1750,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-27T20:04:32Z",
+  "last_reviewed_updated_at": "2026-07-24T16:19:35Z",
   "deferred_prs": [
     {
       "number": 12855,
@@ -1856,6 +1890,13 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
+      "check_count": 1
+    },
+    {
+      "number": 11186,
+      "reason": "ci_failing",
+      "deferred_at": "2026-08-28T20:25:53Z",
+      "last_checked": "2026-08-28T20:25:53Z",
       "check_count": 1
     }
   ]
