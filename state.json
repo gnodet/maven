@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T14:32:37Z",
-    "prs_checked": 3,
-    "reviews_posted": 3,
-    "tokens_estimate": 142628
+    "timestamp": "2026-08-28T14:53:31Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 145133
   },
   "reviewed_prs": [
     {
@@ -1650,6 +1650,22 @@
           "at": "2026-08-28T14:32:37Z",
           "verdict": "COMMENT",
           "notes": "Clean backport of #12809. LGTM, correct path normalization."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12891,
+      "title": "[backport 4.0.x] Fix #12646: project-local-repo clean race condition when root pom has parent",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:53:31Z",
+      "verdict": "COMMENT",
+      "notes": "Backport of #12650. 3 verified findings: merge conflict, unrelated cache config swept in, orphaned test resources.",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:53:31Z",
+          "verdict": "COMMENT",
+          "notes": "Backport of #12650. 3 verified findings: merge conflict, unrelated cache config swept in, orphaned test resources."
         }
       ],
       "review_count": 1
