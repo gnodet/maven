@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T13:52:33Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 40385
+    "timestamp": "2026-08-28T14:00:01Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 89968
   },
   "reviewed_prs": [
     {
@@ -1501,6 +1501,38 @@
           "at": "2026-08-28T13:52:33Z",
           "verdict": "COMMENT",
           "notes": "Clean backport of #12873 to maven-4.0.x. LGTM, no issues."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12889,
+      "title": "[Backport maven-4.0.x] Fix #2520: default maven.mainClass in Java instead of classworlds config",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:00:01Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12875. LGTM, 2 low-severity style nits.",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:00:01Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12875. LGTM, 2 low-severity style nits."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12890,
+      "title": "[4.0.x] Fix #11504: add replacement guidance to deprecated model and settings APIs",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T14:00:01Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12872. LGTM, docs-only.",
+      "interactions": [
+        {
+          "at": "2026-08-28T14:00:01Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12872. LGTM, docs-only."
         }
       ],
       "review_count": 1
