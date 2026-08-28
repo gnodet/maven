@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-28T12:34:28Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
-    "tokens_estimate": 0
+    "timestamp": "2026-08-28T13:52:33Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 40385
   },
   "reviewed_prs": [
     {
@@ -1485,6 +1485,22 @@
           "at": "2026-08-28T08:30:34Z",
           "verdict": "COMMENT",
           "notes": "bug: Strips executable() conditions from consumer POM profile activations. Weak test assertion pattern flagged."
+        }
+      ],
+      "review_count": 1
+    },
+    {
+      "number": 12888,
+      "title": "[4.0.x] Re-include macOS JLine native libraries in distribution",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-28T13:52:33Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12873 to maven-4.0.x. LGTM, no issues.",
+      "interactions": [
+        {
+          "at": "2026-08-28T13:52:33Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12873 to maven-4.0.x. LGTM, no issues."
         }
       ],
       "review_count": 1
