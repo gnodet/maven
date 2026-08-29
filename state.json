@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-29T17:31:50Z",
+    "timestamp": "2026-08-29T20:27:34Z",
     "prs_checked": 2,
     "reviews_posted": 2,
-    "tokens_estimate": 160000
+    "tokens_estimate": 125000
   },
   "reviewed_prs": [
     {
@@ -1833,6 +1833,40 @@
       ],
       "review_count": 1,
       "head_sha": "3665afc30ac68606725e9c373c7247eba45b5b55"
+    },
+    {
+      "number": 12923,
+      "title": "[backport 3.10.x] Fix #12600: handle missing project index in forked executions",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-29T20:27:00Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport to 3.10.x. No issues found. All branches covered.",
+      "interactions": [
+        {
+          "at": "2026-08-29T20:27:00Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport to 3.10.x. No issues found. All branches covered."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "c49ab119b19854a3865499e86411a418ec03da0c"
+    },
+    {
+      "number": 12920,
+      "title": "[backport 4.0.x] [MNG-8693] Avoid resolving unused plugins for direct goals",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-29T20:27:30Z",
+      "verdict": "COMMENT",
+      "notes": "Clean cherry-pick backport from master. No issues found.",
+      "interactions": [
+        {
+          "at": "2026-08-29T20:27:30Z",
+          "verdict": "COMMENT",
+          "notes": "Clean cherry-pick backport from master. No issues found."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "75232ff87e7ba2620eed9ecdd8992920e7ce1e95"
     }
   ],
   "skipped_prs": [],
@@ -1841,7 +1875,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-29T15:59:25Z",
+  "last_reviewed_updated_at": "2026-08-29T19:29:13Z",
   "deferred_prs": [
     {
       "number": 12855,
