@@ -436,17 +436,23 @@
       "number": 12734,
       "title": "fix: interpolate properties in module/subproject path before filesystem resolution",
       "author": "waterWang",
-      "reviewed_at": "2026-08-24T08:11:10Z",
-      "verdict": "COMMENT",
-      "notes": "bug: Property precedence inverted, no test, MNG-XXXX placeholder. Prior feedback unaddressed 12 days.",
+      "reviewed_at": "2026-08-29T18:56:34Z",
+      "verdict": "APPROVE",
+      "notes": "Delta re-review: all 5 prior findings resolved. APPROVE.",
       "interactions": [
         {
           "at": "2026-08-24T08:11:10Z",
           "verdict": "COMMENT",
           "notes": "bug: Property precedence inverted, no test, MNG-XXXX placeholder. Prior feedback unaddressed 12 days."
+        },
+        {
+          "at": "2026-08-29T18:56:34Z",
+          "verdict": "APPROVE",
+          "notes": "Delta re-review: all 5 prior findings resolved. APPROVE."
         }
       ],
-      "review_count": 1
+      "review_count": 2,
+      "head_sha": "d469c960c1b4b190797293a2decff5024f90e209"
     },
     {
       "number": 12733,
@@ -1892,13 +1898,6 @@
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
       "check_count": 3
-    },
-    {
-      "number": 12734,
-      "reason": "no_ci",
-      "deferred_at": "2026-08-27T07:54:29Z",
-      "last_checked": "2026-08-27T07:54:29Z",
-      "check_count": 4
     },
     {
       "number": 12750,
