@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-29T21:53:36Z",
+    "timestamp": "2026-08-29T21:58:39Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 100000
+    "tokens_estimate": 60000
   },
   "reviewed_prs": [
     {
@@ -1907,6 +1907,23 @@
       ],
       "review_count": 1,
       "head_sha": "55d10fe374f147f8a842f914ee4800aa3971d824"
+    },
+    {
+      "number": 12924,
+      "title": "fix: interpolate properties in module/subproject path before filesystem resolution (backport #12734)",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-29T21:58:38Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport to 4.0.x. Core fix identical to master. No issues.",
+      "interactions": [
+        {
+          "at": "2026-08-29T21:58:38Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport to 4.0.x. Core fix identical to master. No issues."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "45a5581cda7c69d737fa1a3ff01e5672e745d61b"
     }
   ],
   "skipped_prs": [],
@@ -1915,7 +1932,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-29T20:26:17Z",
+  "last_reviewed_updated_at": "2026-08-29T21:04:12Z",
   "deferred_prs": [
     {
       "number": 12855,
