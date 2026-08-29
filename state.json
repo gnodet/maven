@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-29T20:48:21Z",
+    "timestamp": "2026-08-29T21:53:36Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 68000
+    "tokens_estimate": 100000
   },
   "reviewed_prs": [
     {
@@ -1890,6 +1890,23 @@
       ],
       "review_count": 1,
       "head_sha": "d3d473111865ec0a9d996208aee9d178ddff25ab"
+    },
+    {
+      "number": 12922,
+      "title": "Backport #12633: Emit clear error when running JDK cannot compile source level",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-29T21:53:31Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport to 4.0.x. No issues. Appropriate branch adaptations (File vs Path, @since, test conventions).",
+      "interactions": [
+        {
+          "at": "2026-08-29T21:53:31Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport to 4.0.x. No issues. Appropriate branch adaptations (File vs Path, @since, test conventions)."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "55d10fe374f147f8a842f914ee4800aa3971d824"
     }
   ],
   "skipped_prs": [],
@@ -1898,7 +1915,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-29T19:20:11Z",
+  "last_reviewed_updated_at": "2026-08-29T20:26:17Z",
   "deferred_prs": [
     {
       "number": 12855,
