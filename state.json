@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T22:06:53Z",
+    "timestamp": "2026-08-30T22:18:37Z",
     "prs_checked": 2,
     "reviews_posted": 2,
-    "tokens_estimate": 192977
+    "tokens_estimate": 203388
   },
   "reviewed_prs": [
     {
@@ -2246,6 +2246,40 @@
       ],
       "review_count": 1,
       "head_sha": "a1bed86e49ca837394e64d219290650ef5f42412"
+    },
+    {
+      "number": 12950,
+      "title": "Validate legacy metadata inputs and clone proxies before decryption",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T22:18:37Z",
+      "verdict": "COMMENT",
+      "notes": "Master variant of legacy compat series. Missing 2 checksum-policy commits present in 4.0.x variant.",
+      "interactions": [
+        {
+          "at": "2026-08-30T22:18:37Z",
+          "verdict": "COMMENT",
+          "notes": "Master variant of legacy compat series. Missing 2 checksum-policy commits present in 4.0.x variant."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "8ac81cd7e6c2607a574645e9d65a521cbd9cdc31"
+    },
+    {
+      "number": 12962,
+      "title": "Forward port #12961: assign FastTerminal before starting the build thread",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T22:18:37Z",
+      "verdict": "COMMENT",
+      "notes": "Operator PR. Clean race condition fix, JMM analysis correct. Identical to #12961.",
+      "interactions": [
+        {
+          "at": "2026-08-30T22:18:37Z",
+          "verdict": "COMMENT",
+          "notes": "Operator PR. Clean race condition fix, JMM analysis correct. Identical to #12961."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "83d6b3d4282f5a38bce3b1fce042fc6fd76725d2"
     }
   ],
   "skipped_prs": [],
@@ -2254,7 +2288,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-30T21:49:57Z",
+  "last_reviewed_updated_at": "2026-08-30T22:00:50Z",
   "deferred_prs": [
     {
       "number": 12855,
