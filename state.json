@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T10:53:53Z",
+    "timestamp": "2026-08-30T12:03:20Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 51931
+    "tokens_estimate": 147765
   },
   "reviewed_prs": [
     {
@@ -708,9 +708,9 @@
       "number": 12629,
       "title": "Fix #12607: DefaultMaven session scope leak on constructor exception",
       "author": "elharo",
-      "reviewed_at": "2026-08-24T13:37:59Z",
-      "verdict": "APPROVE",
-      "notes": "bug: Re-review after 3 new commits. Production fix unchanged and correct. Test improved with TestSessionScope subclass. Backport to maven-4.0.x still needed.",
+      "reviewed_at": "2026-08-30T12:03:20Z",
+      "verdict": "COMMENT",
+      "notes": "Bug already fixed by #12863. PR is a valid defensive refactoring but against already-fixed code. Test issues noted.",
       "interactions": [
         {
           "at": "2026-08-24T11:09:55Z",
@@ -721,9 +721,15 @@
           "at": "2026-08-24T13:37:59Z",
           "verdict": "APPROVE",
           "notes": "bug: Re-review after 3 new commits. Production fix unchanged and correct. Test improved with TestSessionScope subclass. Backport to maven-4.0.x still needed."
+        },
+        {
+          "at": "2026-08-30T12:03:20Z",
+          "verdict": "COMMENT",
+          "notes": "Bug already fixed by #12863. PR is a valid defensive refactoring but against already-fixed code. Test issues noted."
         }
       ],
-      "review_count": 2
+      "review_count": 3,
+      "head_sha": "cbcf6659181486dee3637b76a18f84693af2ca9d"
     },
     {
       "number": 12633,
