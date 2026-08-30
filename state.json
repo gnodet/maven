@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-29T23:03:23Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 48000
+    "timestamp": "2026-08-30T09:39:02Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 87048
   },
   "reviewed_prs": [
     {
@@ -1929,6 +1929,40 @@
       ],
       "review_count": 1,
       "head_sha": "45a5581cda7c69d737fa1a3ff01e5672e745d61b"
+    },
+    {
+      "number": 12927,
+      "title": "Fix: make ProjectIndex thread-safe for parallel builds (backport #12832)",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T09:39:01Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12832 to maven-3.10.x. No issues.",
+      "interactions": [
+        {
+          "at": "2026-08-30T09:39:01Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12832 to maven-3.10.x. No issues."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "6f79fa10cc5424558e13f269417a0f522fbddea5"
+    },
+    {
+      "number": 12928,
+      "title": "Fix: make ProjectIndex thread-safe for parallel builds (backport #12832)",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T09:39:02Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12832 to maven-3.9.x. No issues.",
+      "interactions": [
+        {
+          "at": "2026-08-30T09:39:02Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12832 to maven-3.9.x. No issues."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "37c26c23b6f3b9826e4e9f45a0aa00843a2fc33d"
     }
   ],
   "skipped_prs": [],
@@ -1937,7 +1971,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-29T22:27:13Z",
+  "last_reviewed_updated_at": "2026-08-30T09:03:56Z",
   "deferred_prs": [
     {
       "number": 12855,
