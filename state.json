@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T20:48:56Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 42044
+    "timestamp": "2026-08-30T21:47:24Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
+    "tokens_estimate": 355009
   },
   "reviewed_prs": [
     {
@@ -2127,6 +2127,57 @@
       ],
       "review_count": 1,
       "head_sha": "d5aa630b623732eeb1fc89aeab87f2330a955834"
+    },
+    {
+      "number": 12949,
+      "title": "Validate coordinates and repository precedence during artifact resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T21:47:24Z",
+      "verdict": "COMMENT",
+      "notes": "Security hardening: validates artifact coords and repo precedence. 3 confirmed findings (duplication, log injection, silent override). Master variant.",
+      "interactions": [
+        {
+          "at": "2026-08-30T21:47:24Z",
+          "verdict": "COMMENT",
+          "notes": "Security hardening: validates artifact coords and repo precedence. 3 confirmed findings (duplication, log injection, silent override). Master variant."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "080774019ce182fb16a21b8d648f270952218d00"
+    },
+    {
+      "number": 12944,
+      "title": "Validate coordinates and repository precedence during artifact resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T21:47:24Z",
+      "verdict": "APPROVE",
+      "notes": "Security hardening backport to maven-4.0.x. Clean, solid test coverage.",
+      "interactions": [
+        {
+          "at": "2026-08-30T21:47:24Z",
+          "verdict": "APPROVE",
+          "notes": "Security hardening backport to maven-4.0.x. Clean, solid test coverage."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "59bd9f76fb6c78969969ce91df0290ed6bb1b546"
+    },
+    {
+      "number": 12952,
+      "title": "Validate coordinates and repository precedence during artifact resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T21:47:24Z",
+      "verdict": "APPROVE",
+      "notes": "Security hardening backport to maven-3.10.x. Minor truncated comment.",
+      "interactions": [
+        {
+          "at": "2026-08-30T21:47:24Z",
+          "verdict": "APPROVE",
+          "notes": "Security hardening backport to maven-3.10.x. Minor truncated comment."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "726b5df0ba192bf64ed01919731b6f57a37c5782"
     }
   ],
   "skipped_prs": [],
@@ -2135,7 +2186,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-30T09:03:56Z",
+  "last_reviewed_updated_at": "2026-08-30T21:27:29Z",
   "deferred_prs": [
     {
       "number": 12855,
