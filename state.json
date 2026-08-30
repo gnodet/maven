@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T09:39:02Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
-    "tokens_estimate": 87048
+    "timestamp": "2026-08-30T10:13:10Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 71829
   },
   "reviewed_prs": [
     {
@@ -1963,6 +1963,23 @@
       ],
       "review_count": 1,
       "head_sha": "37c26c23b6f3b9826e4e9f45a0aa00843a2fc33d"
+    },
+    {
+      "number": 12929,
+      "title": "Forward-port: Log API enhancements and mojo MDC",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T10:13:10Z",
+      "verdict": "COMMENT",
+      "notes": "Clean forward-port of #12690 from maven-4.0.x to master. Byte-identical cherry-pick.",
+      "interactions": [
+        {
+          "at": "2026-08-30T10:13:10Z",
+          "verdict": "COMMENT",
+          "notes": "Clean forward-port of #12690 from maven-4.0.x to master. Byte-identical cherry-pick."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "1d41e835756d51977ea8af244bfd1d1681978ce4"
     }
   ],
   "skipped_prs": [],
