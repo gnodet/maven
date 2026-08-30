@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T22:24:04Z",
+    "timestamp": "2026-08-30T22:34:27Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 51317
+    "tokens_estimate": 106654
   },
   "reviewed_prs": [
     {
@@ -2297,6 +2297,23 @@
       ],
       "review_count": 1,
       "head_sha": "c8f326bd358a5ed901456bbe8befec64d758502a"
+    },
+    {
+      "number": 12946,
+      "title": "Output, transport and consumer POM robustness fixes",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T22:34:24Z",
+      "verdict": "APPROVE",
+      "notes": "security/robustness: Multi-topic PR with terminal injection prevention, path traversal hardening, fail-closed mirror matching for unparseable URLs, credential leak prevention, and consumer POM sanitization. All well-tested.",
+      "interactions": [
+        {
+          "at": "2026-08-30T22:34:24Z",
+          "verdict": "APPROVE",
+          "notes": "security/robustness: Multi-topic PR with terminal injection prevention, path traversal hardening, fail-closed mirror matching for unparseable URLs, credential leak prevention, and consumer POM sanitization. All well-tested."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "c43dbd865c4201ec175fa2106b1d3bac89036221"
     }
   ],
   "skipped_prs": [],
