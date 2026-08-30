@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T21:57:47Z",
+    "timestamp": "2026-08-30T22:06:53Z",
     "prs_checked": 2,
     "reviews_posted": 2,
-    "tokens_estimate": 179230
+    "tokens_estimate": 192977
   },
   "reviewed_prs": [
     {
@@ -2212,6 +2212,40 @@
       ],
       "review_count": 1,
       "head_sha": "28b160ffd584da2e728dc6298a32903ada558cfe"
+    },
+    {
+      "number": 12945,
+      "title": "Honour configured policy and validate inputs on the legacy compat paths",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T22:06:53Z",
+      "verdict": "APPROVE",
+      "notes": "Security hardening for legacy compat paths on 4.0.x. Checksum policy, input validation, proxy cloning.",
+      "interactions": [
+        {
+          "at": "2026-08-30T22:06:53Z",
+          "verdict": "APPROVE",
+          "notes": "Security hardening for legacy compat paths on 4.0.x. Checksum policy, input validation, proxy cloning."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "9d03e0ffd67372a8bba51bed6fe80bb91bb9d865"
+    },
+    {
+      "number": 12955,
+      "title": "Validate coordinates and repository precedence during artifact resolution",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T22:06:53Z",
+      "verdict": "APPROVE",
+      "notes": "3.9.x backport of coordinate validation series. Completes 4-PR set. ProjectModelResolver revert correct.",
+      "interactions": [
+        {
+          "at": "2026-08-30T22:06:53Z",
+          "verdict": "APPROVE",
+          "notes": "3.9.x backport of coordinate validation series. Completes 4-PR set. ProjectModelResolver revert correct."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "a1bed86e49ca837394e64d219290650ef5f42412"
     }
   ],
   "skipped_prs": [],
@@ -2220,7 +2254,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-30T21:27:30Z",
+  "last_reviewed_updated_at": "2026-08-30T21:49:57Z",
   "deferred_prs": [
     {
       "number": 12855,
