@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T19:31:41Z",
+    "timestamp": "2026-08-30T20:48:56Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 51555
+    "tokens_estimate": 42044
   },
   "reviewed_prs": [
     {
@@ -2110,6 +2110,23 @@
       ],
       "review_count": 1,
       "head_sha": "fcca7d6d0abba82226d5c906c6a6f3e466ebe3c3"
+    },
+    {
+      "number": 12939,
+      "title": "Fix #12660: inherit version from imported BOM when local dep mgmt entry has no version",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T20:48:52Z",
+      "verdict": "COMMENT",
+      "notes": "Superseded by already-merged #12957 with identical fix plus integration test",
+      "interactions": [
+        {
+          "at": "2026-08-30T20:48:52Z",
+          "verdict": "COMMENT",
+          "notes": "Superseded by already-merged #12957 with identical fix plus integration test"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "d5aa630b623732eeb1fc89aeab87f2330a955834"
     }
   ],
   "skipped_prs": [],
