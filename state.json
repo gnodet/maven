@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T15:47:59Z",
+    "timestamp": "2026-08-30T16:01:07Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 35904
+    "tokens_estimate": 56382
   },
   "reviewed_prs": [
     {
@@ -2042,6 +2042,23 @@
       ],
       "review_count": 1,
       "head_sha": "ed2b870de048093e6c1c7f769e228b72797fa60a"
+    },
+    {
+      "number": 12940,
+      "title": "Add integration test for #12660: BOM version from imported BOM",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T16:01:07Z",
+      "verdict": "COMMENT",
+      "notes": "Clean IT for BOM version inheritance fix. Style suggestion: use XML parsing instead of string matching.",
+      "interactions": [
+        {
+          "at": "2026-08-30T16:01:07Z",
+          "verdict": "COMMENT",
+          "notes": "Clean IT for BOM version inheritance fix. Style suggestion: use XML parsing instead of string matching."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "58acc8349948f4ece2e24731247d628ab69db380"
     }
   ],
   "skipped_prs": [],
