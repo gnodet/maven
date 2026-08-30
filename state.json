@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T19:06:08Z",
+    "timestamp": "2026-08-30T19:21:25Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 82782
+    "tokens_estimate": 83392
   },
   "reviewed_prs": [
     {
@@ -2076,6 +2076,23 @@
       ],
       "review_count": 1,
       "head_sha": "31f127e6adb09053bda1ff3b8b2dd4d6f0003e0b"
+    },
+    {
+      "number": 12947,
+      "title": "Fix version comparison and parsing inconsistencies in maven-artifact",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T19:21:25Z",
+      "verdict": "APPROVE",
+      "notes": "Three correct fixes: compareTo transitivity, hashCode/equals consistency, parsing length bound. Pre-existing adjacent issue noted. Backport needed for 4.0.x.",
+      "interactions": [
+        {
+          "at": "2026-08-30T19:21:25Z",
+          "verdict": "APPROVE",
+          "notes": "Three correct fixes: compareTo transitivity, hashCode/equals consistency, parsing length bound. Pre-existing adjacent issue noted. Backport needed for 4.0.x."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "eb093a621dcbddc539858827657884f28de4675d"
     }
   ],
   "skipped_prs": [],
