@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T14:11:38Z",
+    "timestamp": "2026-08-30T15:47:59Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 76045
+    "tokens_estimate": 35904
   },
   "reviewed_prs": [
     {
@@ -1838,18 +1838,23 @@
       "number": 12916,
       "title": "Fix #12774: skip consumer POM re-attachment on repeated task segments",
       "author": "gnodet",
-      "reviewed_at": "2026-08-29T17:31:46Z",
+      "reviewed_at": "2026-08-30T15:47:59Z",
       "verdict": "COMMENT",
-      "notes": "1 confirmed low finding: idempotency check after unnecessary temp file creation.",
+      "notes": "Delta review: previous finding (idempotency check after temp file creation) resolved. No new issues.",
       "interactions": [
         {
           "at": "2026-08-29T17:31:46Z",
           "verdict": "COMMENT",
           "notes": "1 confirmed low finding: idempotency check after unnecessary temp file creation."
+        },
+        {
+          "at": "2026-08-30T15:47:59Z",
+          "verdict": "COMMENT",
+          "notes": "Delta review: previous finding (idempotency check after temp file creation) resolved. No new issues."
         }
       ],
-      "review_count": 1,
-      "head_sha": "3665afc30ac68606725e9c373c7247eba45b5b55"
+      "review_count": 2,
+      "head_sha": "9515783100d08ea3c04683dd8d21d8b7fdfcda87"
     },
     {
       "number": 12923,
