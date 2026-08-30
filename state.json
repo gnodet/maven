@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T12:03:20Z",
+    "timestamp": "2026-08-30T12:09:48Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 147765
+    "tokens_estimate": 60343
   },
   "reviewed_prs": [
     {
@@ -2003,6 +2003,23 @@
       ],
       "review_count": 1,
       "head_sha": "0e301cd71eaecc2606f28704d63eb6c8e810f7be"
+    },
+    {
+      "number": 12932,
+      "title": "[MNG-8174] Fix NPE when a property references itself in a plugin configuration",
+      "author": "elharo",
+      "reviewed_at": "2026-08-30T12:09:48Z",
+      "verdict": "APPROVE",
+      "notes": "Clean NPE fix with good test. Backports needed for all 3 maintenance branches.",
+      "interactions": [
+        {
+          "at": "2026-08-30T12:09:48Z",
+          "verdict": "APPROVE",
+          "notes": "Clean NPE fix with good test. Backports needed for all 3 maintenance branches."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "f681bbf1355acd85601c8920310755f333e6d399"
     }
   ],
   "skipped_prs": [],
