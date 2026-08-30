@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T12:09:48Z",
+    "timestamp": "2026-08-30T14:11:38Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 60343
+    "tokens_estimate": 76045
   },
   "reviewed_prs": [
     {
@@ -2020,6 +2020,23 @@
       ],
       "review_count": 1,
       "head_sha": "f681bbf1355acd85601c8920310755f333e6d399"
+    },
+    {
+      "number": 12938,
+      "title": "Fix #12931: do not rewrite unmodified POMs in mvnup apply",
+      "author": "kalayciburak",
+      "reviewed_at": "2026-08-30T14:11:38Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix threading modifiedPoms through to save logic. Backport needed for maven-4.0.x only.",
+      "interactions": [
+        {
+          "at": "2026-08-30T14:11:38Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix threading modifiedPoms through to save logic. Backport needed for maven-4.0.x only."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "ed2b870de048093e6c1c7f769e228b72797fa60a"
     }
   ],
   "skipped_prs": [],
