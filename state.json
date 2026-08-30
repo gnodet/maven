@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T16:01:07Z",
+    "timestamp": "2026-08-30T19:06:08Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 56382
+    "tokens_estimate": 82782
   },
   "reviewed_prs": [
     {
@@ -2059,6 +2059,23 @@
       ],
       "review_count": 1,
       "head_sha": "58acc8349948f4ece2e24731247d628ab69db380"
+    },
+    {
+      "number": 12954,
+      "title": "Scope server credentials and validate legacy relocation coordinates",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-30T19:06:07Z",
+      "verdict": "APPROVE",
+      "notes": "Three security-hardening fixes: credential scoping, relocation validation, server ID matching. Backports needed for 3.9.x and master.",
+      "interactions": [
+        {
+          "at": "2026-08-30T19:06:07Z",
+          "verdict": "APPROVE",
+          "notes": "Three security-hardening fixes: credential scoping, relocation validation, server ID matching. Backports needed for 3.9.x and master."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "31f127e6adb09053bda1ff3b8b2dd4d6f0003e0b"
     }
   ],
   "skipped_prs": [],
