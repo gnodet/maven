@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T10:13:10Z",
+    "timestamp": "2026-08-30T10:53:53Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 71829
+    "tokens_estimate": 51931
   },
   "reviewed_prs": [
     {
@@ -1980,6 +1980,23 @@
       ],
       "review_count": 1,
       "head_sha": "1d41e835756d51977ea8af244bfd1d1681978ce4"
+    },
+    {
+      "number": 12930,
+      "title": "[Backport 4.0.x] Fix operator precedence skipping type=bom dependency imports",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-30T10:53:53Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport of #12722 to maven-4.0.x. Operator precedence fix for BOM imports. No issues.",
+      "interactions": [
+        {
+          "at": "2026-08-30T10:53:53Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport of #12722 to maven-4.0.x. Operator precedence fix for BOM imports. No issues."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "0e301cd71eaecc2606f28704d63eb6c8e810f7be"
     }
   ],
   "skipped_prs": [],
