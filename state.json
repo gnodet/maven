@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T07:54:48Z",
-    "prs_checked": 0,
-    "reviews_posted": 0,
-    "tokens_estimate": 0
+    "timestamp": "2026-08-31T08:31:15Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 57431
   },
   "reviewed_prs": [
     {
@@ -2482,6 +2482,23 @@
       ],
       "review_count": 1,
       "head_sha": "3068b686ada8ce9f2c776f8b9478e82359debc25"
+    },
+    {
+      "number": 12972,
+      "title": "[Backport maven-4.0.x] Fix #12931: do not rewrite unmodified POMs in mvnup apply",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T08:31:15Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Clean backport of #12938. mvnup apply now only writes modified POMs. Byte-identical to master.",
+      "interactions": [
+        {
+          "at": "2026-08-31T08:31:15Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Clean backport of #12938. mvnup apply now only writes modified POMs. Byte-identical to master."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "b7a7103e245c640e42c634ec2635ae9c082f87bc"
     }
   ],
   "skipped_prs": [],
