@@ -4,8 +4,8 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-30T22:37:01Z",
-    "prs_checked": 0,
+    "timestamp": "2026-08-31T01:55:38Z",
+    "prs_checked": 1,
     "reviews_posted": 0,
     "tokens_estimate": 0
   },
@@ -1804,18 +1804,23 @@
       "number": 12918,
       "title": "[backport 3.9.x] Fix #12600: handle missing project index in forked executions",
       "author": "gnodet",
-      "reviewed_at": "2026-08-29T15:45:11Z",
+      "reviewed_at": "2026-08-31T01:55:38Z",
       "verdict": "COMMENT",
-      "notes": "Clean backport of #12911 with test; suggested milestone 3.9.17; maven-3.10.x backport still missing",
+      "notes": "Re-review: rebase-only, no content changes. Previous review still applies. Skipped posting.",
       "interactions": [
         {
           "at": "2026-08-29T15:45:11Z",
           "verdict": "COMMENT",
           "notes": "Clean backport of #12911 with test; suggested milestone 3.9.17; maven-3.10.x backport still missing"
+        },
+        {
+          "at": "2026-08-31T01:55:38Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: rebase-only, no content changes. Previous review still applies. Skipped posting."
         }
       ],
-      "review_count": 1,
-      "head_sha": "53bf53958d41ceea794dbb685e2a8ba82d5a8dfa"
+      "review_count": 2,
+      "head_sha": "58bc9aad964ce182f243eb3db21689b1a5377fb0"
     },
     {
       "number": 12915,
@@ -2322,7 +2327,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-30T21:31:26Z",
+  "last_reviewed_updated_at": "2026-08-31T01:38:58Z",
   "deferred_prs": [
     {
       "number": 12855,
