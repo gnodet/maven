@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T08:37:03Z",
-    "prs_checked": 1,
+    "timestamp": "2026-08-31T09:08:29Z",
+    "prs_checked": 2,
     "reviews_posted": 1,
-    "tokens_estimate": 42640
+    "tokens_estimate": 0
   },
   "reviewed_prs": [
     {
@@ -230,9 +230,9 @@
       "number": 12699,
       "title": "Decomposed mvnlog viewer tool",
       "author": "gnodet",
-      "reviewed_at": "2026-08-28T10:46:07Z",
+      "reviewed_at": "2026-08-31T09:08:29Z",
       "verdict": "COMMENT",
-      "notes": "feature: Re-review after rebase. Same 5 findings as previous review. Skipped posting to avoid duplicate noise.",
+      "notes": "Re-review: rebase-only force-push, no content changes. All 5 previous findings still apply. Skipped posting.",
       "interactions": [
         {
           "at": "2026-08-24T06:44:59Z",
@@ -248,9 +248,15 @@
           "at": "2026-08-28T10:46:07Z",
           "verdict": "COMMENT",
           "notes": "feature: Re-review after rebase. Same 5 findings as previous review. Skipped posting to avoid duplicate noise."
+        },
+        {
+          "at": "2026-08-31T09:08:29Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: rebase-only force-push, no content changes. All 5 previous findings still apply. Skipped posting."
         }
       ],
-      "review_count": 3
+      "review_count": 4,
+      "head_sha": "69b8969fc3142cfa4199289fbb6509b3dea3cf12"
     },
     {
       "number": 12698,
@@ -2504,6 +2510,23 @@
       ],
       "review_count": 1,
       "head_sha": "b7a7103e245c640e42c634ec2635ae9c082f87bc"
+    },
+    {
+      "number": 12971,
+      "title": "[4.0.x] Fix flaky FastTerminalReentrancyTest by avoiding PTY creation",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T09:08:29Z",
+      "verdict": "COMMENT",
+      "notes": "Clean cherry-pick of #12970. Well-documented fix for flaky test. No issues.",
+      "interactions": [
+        {
+          "at": "2026-08-31T09:08:29Z",
+          "verdict": "COMMENT",
+          "notes": "Clean cherry-pick of #12970. Well-documented fix for flaky test. No issues."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "d13dbcb90c42923ae39dd65197cae92a48953052"
     }
   ],
   "skipped_prs": [],
@@ -2621,13 +2644,6 @@
     },
     {
       "number": 12722,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
-    },
-    {
-      "number": 12887,
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
