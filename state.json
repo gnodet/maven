@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T07:06:47Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 49514
+    "timestamp": "2026-08-31T07:43:07Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
+    "tokens_estimate": 305961
   },
   "reviewed_prs": [
     {
@@ -2414,6 +2414,57 @@
       ],
       "review_count": 1,
       "head_sha": "199708d31bfafe8dbfe58233e8442b754bc67bd7"
+    },
+    {
+      "number": 12968,
+      "title": "Replace deprecated Terminal.getWidth/getHeight with getColumns/getRows",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T07:34:51Z",
+      "verdict": "COMMENT",
+      "notes": "chore: Mechanical rename of deprecated JLine 4.4.0 Terminal methods. All call sites covered.",
+      "interactions": [
+        {
+          "at": "2026-08-31T07:34:51Z",
+          "verdict": "COMMENT",
+          "notes": "chore: Mechanical rename of deprecated JLine 4.4.0 Terminal methods. All call sites covered."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "1392a907e8d1e1db185f203c928c4185769f90cc"
+    },
+    {
+      "number": 12969,
+      "title": "[4.0.x] Replace deprecated Terminal.getWidth/getHeight with getColumns/getRows",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T07:34:51Z",
+      "verdict": "COMMENT",
+      "notes": "chore: Clean backport of #12968 to 4.0.x. Identical diff.",
+      "interactions": [
+        {
+          "at": "2026-08-31T07:34:51Z",
+          "verdict": "COMMENT",
+          "notes": "chore: Clean backport of #12968 to 4.0.x. Identical diff."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "3a5ec0c68fb9cb3324e53816d30ed4381e955c6e"
+    },
+    {
+      "number": 12943,
+      "title": "Restrict what a repository-resolved model contributes to the build",
+      "author": "slachiewicz",
+      "reviewed_at": "2026-08-31T07:43:07Z",
+      "verdict": "COMMENT",
+      "notes": "enhancement: Security hardening restricting dependency-resolved model contributions. 2 confirmed findings (config documentation gap, future-proofing note). Excellent test coverage.",
+      "interactions": [
+        {
+          "at": "2026-08-31T07:43:07Z",
+          "verdict": "COMMENT",
+          "notes": "enhancement: Security hardening restricting dependency-resolved model contributions. 2 confirmed findings (config documentation gap, future-proofing note). Excellent test coverage."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "b2ce53a4b7ed5df4f0ae1a224f3648882274bc3a"
     }
   ],
   "skipped_prs": [],
