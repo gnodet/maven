@@ -2786,13 +2786,6 @@
       "check_count": 1
     },
     {
-      "number": 12959,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
-    },
-    {
       "number": 12937,
       "reason": "ci_failing",
       "deferred_at": "2026-08-30T22:36:56Z",
