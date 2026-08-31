@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T03:07:28Z",
+    "timestamp": "2026-08-31T05:52:43Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 42807
+    "tokens_estimate": 83974
   },
   "reviewed_prs": [
     {
@@ -2375,6 +2375,23 @@
       ],
       "review_count": 1,
       "head_sha": "9e3d365547d427168803a12598b429311c793676"
+    },
+    {
+      "number": 12967,
+      "title": "[MNG-8287] Backport consumer POM packaging profile resolution to 4.0.x",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T05:52:43Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Clean backport of #12744. Consumer POM packaging profile inlining logic correct, comprehensive tests. One minor style note (unnecessary quote escaping).",
+      "interactions": [
+        {
+          "at": "2026-08-31T05:52:43Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Clean backport of #12744. Consumer POM packaging profile inlining logic correct, comprehensive tests. One minor style note (unnecessary quote escaping)."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "2e7d9871a8f64cbdbfa22b9ea9cbc09e50380580"
     }
   ],
   "skipped_prs": [],
