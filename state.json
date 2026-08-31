@@ -4,8 +4,8 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T09:08:29Z",
-    "prs_checked": 2,
+    "timestamp": "2026-08-31T09:29:16Z",
+    "prs_checked": 3,
     "reviews_posted": 1,
     "tokens_estimate": 0
   },
@@ -262,9 +262,9 @@
       "number": 12698,
       "title": "Warning mode, diagnostic collector, BuilderProblem enrichments",
       "author": "gnodet",
-      "reviewed_at": "2026-08-28T12:32:36Z",
+      "reviewed_at": "2026-08-31T09:24:03Z",
       "verdict": "COMMENT",
-      "notes": "Delta re-review: new commit 863b6322 (multi-line warning batching) is clean. All 4 previous findings still unaddressed. No new review posted.",
+      "notes": "Re-review: rebase-only (chain rebase, author dates 08-28). All 4 previous findings still apply. Skipped posting.",
       "interactions": [
         {
           "at": "2026-08-24T07:07:49Z",
@@ -280,17 +280,23 @@
           "at": "2026-08-28T12:32:36Z",
           "verdict": "COMMENT",
           "notes": "Delta re-review: new commit 863b6322 (multi-line warning batching) is clean. All 4 previous findings still unaddressed. No new review posted."
+        },
+        {
+          "at": "2026-08-31T09:24:03Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: rebase-only (chain rebase, author dates 08-28). All 4 previous findings still apply. Skipped posting."
         }
       ],
-      "review_count": 3
+      "review_count": 4,
+      "head_sha": "9e250d343518e77a1356ae60912b2d88b6cd8e68"
     },
     {
       "number": 12697,
       "title": "Console modes: --console=plain/rich/verbose/machine",
       "author": "gnodet",
-      "reviewed_at": "2026-08-28T10:36:20Z",
+      "reviewed_at": "2026-08-31T09:24:03Z",
       "verdict": "COMMENT",
-      "notes": "feature: Console modes. 5/7 confirmed (29% FP). Race in completedProjects++, reactor-order assumption, silent invalid --console.",
+      "notes": "Re-review: rebase-only (author date 08-28, committer date 08-31). All 5 previous findings still apply. Skipped posting.",
       "interactions": [
         {
           "at": "2026-08-24T07:07:51Z",
@@ -301,9 +307,15 @@
           "at": "2026-08-28T10:36:20Z",
           "verdict": "COMMENT",
           "notes": "feature: Console modes. 5/7 confirmed (29% FP). Race in completedProjects++, reactor-order assumption, silent invalid --console."
+        },
+        {
+          "at": "2026-08-31T09:24:03Z",
+          "verdict": "COMMENT",
+          "notes": "Re-review: rebase-only (author date 08-28, committer date 08-31). All 5 previous findings still apply. Skipped posting."
         }
       ],
-      "review_count": 2
+      "review_count": 3,
+      "head_sha": "d6b4d8022ed5c32e1ab99c0c0e46a77e503138a8"
     },
     {
       "number": 12695,
@@ -2527,6 +2539,23 @@
       ],
       "review_count": 1,
       "head_sha": "d13dbcb90c42923ae39dd65197cae92a48953052"
+    },
+    {
+      "number": 12887,
+      "title": "Clean up the integration tests of stuff that is never used",
+      "author": "fridrich",
+      "reviewed_at": "2026-08-31T09:29:16Z",
+      "verdict": "APPROVE",
+      "notes": "All 51 deleted files confirmed unreferenced. Maven 2 profiles.xml leftovers + orphaned test variant directories.",
+      "interactions": [
+        {
+          "at": "2026-08-31T09:29:16Z",
+          "verdict": "APPROVE",
+          "notes": "All 51 deleted files confirmed unreferenced. Maven 2 profiles.xml leftovers + orphaned test variant directories."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "bd83ab92cd36ef5d5ff56200d1a71c0202118080"
     }
   ],
   "skipped_prs": [],
@@ -2535,7 +2564,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-31T01:38:58Z",
+  "last_reviewed_updated_at": "2026-08-31T08:55:42Z",
   "deferred_prs": [
     {
       "number": 12855,
