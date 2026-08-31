@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T20:14:24Z",
-    "prs_checked": 2,
+    "timestamp": "2026-08-31T20:30:26Z",
+    "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 67000
+    "tokens_estimate": 66000
   },
   "reviewed_prs": [
     {
@@ -2296,18 +2296,23 @@
       "number": 12950,
       "title": "Validate legacy metadata inputs and clone proxies before decryption",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-30T22:18:37Z",
-      "verdict": "COMMENT",
-      "notes": "Master variant of legacy compat series. Missing 2 checksum-policy commits present in 4.0.x variant.",
+      "reviewed_at": "2026-08-31T20:30:26Z",
+      "verdict": "APPROVE",
+      "notes": "Delta re-review: checksum-policy commit addresses previous finding. APPROVE.",
       "interactions": [
         {
           "at": "2026-08-30T22:18:37Z",
           "verdict": "COMMENT",
           "notes": "Master variant of legacy compat series. Missing 2 checksum-policy commits present in 4.0.x variant."
+        },
+        {
+          "at": "2026-08-31T20:30:26Z",
+          "verdict": "APPROVE",
+          "notes": "Delta re-review: checksum-policy commit addresses previous finding. APPROVE."
         }
       ],
-      "review_count": 1,
-      "head_sha": "8ac81cd7e6c2607a574645e9d65a521cbd9cdc31"
+      "review_count": 2,
+      "head_sha": "6ff4b8afa4dcc6d30412378a6e6a15f646d76413"
     },
     {
       "number": 12962,
@@ -2642,7 +2647,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-31T19:29:50Z",
+  "last_reviewed_updated_at": "2026-08-31T19:50:32Z",
   "deferred_prs": [
     {
       "number": 12855,
