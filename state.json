@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T08:31:15Z",
+    "timestamp": "2026-08-31T08:37:03Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 57431
+    "tokens_estimate": 42640
   },
   "reviewed_prs": [
     {
@@ -2210,18 +2210,23 @@
       "number": 12953,
       "title": "Restrict what a repository-resolved model contributes to the build",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-30T21:57:47Z",
+      "reviewed_at": "2026-08-31T08:37:03Z",
       "verdict": "COMMENT",
-      "notes": "Security hardening for 3.10.x. 1 confirmed finding: garbled comment from copy-paste error.",
+      "notes": "Delta re-review: new commit improves Javadoc for opt-out property. Previous garbled comment finding still applies.",
       "interactions": [
         {
           "at": "2026-08-30T21:57:47Z",
           "verdict": "COMMENT",
           "notes": "Security hardening for 3.10.x. 1 confirmed finding: garbled comment from copy-paste error."
+        },
+        {
+          "at": "2026-08-31T08:37:03Z",
+          "verdict": "COMMENT",
+          "notes": "Delta re-review: new commit improves Javadoc for opt-out property. Previous garbled comment finding still applies."
         }
       ],
-      "review_count": 1,
-      "head_sha": "28b160ffd584da2e728dc6298a32903ada558cfe"
+      "review_count": 2,
+      "head_sha": "632787d3c9ba2ad84bd7453eb26a3ceaa035d4e3"
     },
     {
       "number": 12945,
