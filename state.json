@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T20:40:28Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 78000
+    "timestamp": "2026-08-31T21:24:34Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 145000
   },
   "reviewed_prs": [
     {
@@ -2656,6 +2656,40 @@
       ],
       "review_count": 1,
       "head_sha": "a3c0591eb2a0f1c3ab887bd1608985adce88cbcb"
+    },
+    {
+      "number": 12976,
+      "title": "Scope server credentials and validate legacy relocation coordinates",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T21:24:34Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Forward-port of approved #12954 to master. All adaptations correct. Pre-existing gap noted in resolver relocation validation.",
+      "interactions": [
+        {
+          "at": "2026-08-31T21:24:34Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Forward-port of approved #12954 to master. All adaptations correct. Pre-existing gap noted in resolver relocation validation."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "cb0c6c8d0f13f993a6a7b385e7bc471c4dbdb5f8"
+    },
+    {
+      "number": 12978,
+      "title": "Honour configured policy and validate inputs on the legacy compat paths",
+      "author": "gnodet",
+      "reviewed_at": "2026-08-31T21:24:34Z",
+      "verdict": "COMMENT",
+      "notes": "bug: Backport of approved #12945 to maven-3.10.x. Clean adaptation, no logic drift.",
+      "interactions": [
+        {
+          "at": "2026-08-31T21:24:34Z",
+          "verdict": "COMMENT",
+          "notes": "bug: Backport of approved #12945 to maven-3.10.x. Clean adaptation, no logic drift."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "a707ec44183635addcadcd1fd079051a0a3fd2e3"
     }
   ],
   "skipped_prs": [],
@@ -2664,7 +2698,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-08-31T20:34:08Z",
+  "last_reviewed_updated_at": "2026-08-31T20:39:16Z",
   "deferred_prs": [
     {
       "number": 12855,
