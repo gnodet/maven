@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-08-31T06:45:33Z",
+    "timestamp": "2026-08-31T07:06:47Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 146115
+    "tokens_estimate": 49514
   },
   "reviewed_prs": [
     {
@@ -2380,18 +2380,23 @@
       "number": 12967,
       "title": "[MNG-8287] Backport consumer POM packaging profile resolution to 4.0.x",
       "author": "gnodet",
-      "reviewed_at": "2026-08-31T05:52:43Z",
+      "reviewed_at": "2026-08-31T07:06:47Z",
       "verdict": "COMMENT",
-      "notes": "bug: Clean backport of #12744. Consumer POM packaging profile inlining logic correct, comprehensive tests. One minor style note (unnecessary quote escaping).",
+      "notes": "Delta re-review: new commit filters import-scoped managed deps from inlined profiles. Clean fix, approved.",
       "interactions": [
         {
           "at": "2026-08-31T05:52:43Z",
           "verdict": "COMMENT",
           "notes": "bug: Clean backport of #12744. Consumer POM packaging profile inlining logic correct, comprehensive tests. One minor style note (unnecessary quote escaping)."
+        },
+        {
+          "at": "2026-08-31T07:06:47Z",
+          "verdict": "COMMENT",
+          "notes": "Delta re-review: new commit filters import-scoped managed deps from inlined profiles. Clean fix, approved."
         }
       ],
-      "review_count": 1,
-      "head_sha": "2e7d9871a8f64cbdbfa22b9ea9cbc09e50380580"
+      "review_count": 2,
+      "head_sha": "cb86a141f1e003db4ac5f6adf9f977636a85bacd"
     },
     {
       "number": 12951,
