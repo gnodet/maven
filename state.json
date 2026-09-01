@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T12:49:35Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
-    "tokens_estimate": 267647
+    "timestamp": "2026-09-01T13:08:32Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
+    "tokens_estimate": 148622
   },
   "reviewed_prs": [
     {
@@ -2819,6 +2819,23 @@
       ],
       "review_count": 1,
       "head_sha": "93b659c26b0be942e96f05509b9e2fd17dcfba01"
+    },
+    {
+      "number": 13002,
+      "title": "Validate metadata inputs and honour checksum policy on legacy paths",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T13:08:32Z",
+      "verdict": "COMMENT",
+      "notes": "Clean backport to 3.9.x: path traversal validation + checksum policy enforcement. Low-severity: code duplication, update tracker inconsistency on deploy path.",
+      "interactions": [
+        {
+          "at": "2026-09-01T13:08:32Z",
+          "verdict": "COMMENT",
+          "notes": "Clean backport to 3.9.x: path traversal validation + checksum policy enforcement. Low-severity: code duplication, update tracker inconsistency on deploy path."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "da6bed4f244c445de389c8881f64fa67c3a1c567"
     }
   ],
   "skipped_prs": [],
@@ -2827,7 +2844,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T11:17:27Z",
+  "last_reviewed_updated_at": "2026-09-01T12:37:05Z",
   "deferred_prs": [
     {
       "number": 12855,
