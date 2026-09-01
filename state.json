@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T10:04:29Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 72000
+    "timestamp": "2026-09-01T10:45:32Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 142112
   },
   "reviewed_prs": [
     {
@@ -2262,18 +2262,23 @@
       "number": 12945,
       "title": "Honour configured policy and validate inputs on the legacy compat paths",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-30T22:06:53Z",
-      "verdict": "APPROVE",
-      "notes": "Security hardening for legacy compat paths on 4.0.x. Checksum policy, input validation, proxy cloning.",
+      "reviewed_at": "2026-09-01T10:45:32Z",
+      "verdict": "COMMENT",
+      "notes": "Delta review: NUL bytes in test, wrong @since 4.1.0 on 4.0.x branch, code duplication in validateVersionToken",
       "interactions": [
         {
           "at": "2026-08-30T22:06:53Z",
           "verdict": "APPROVE",
           "notes": "Security hardening for legacy compat paths on 4.0.x. Checksum policy, input validation, proxy cloning."
+        },
+        {
+          "at": "2026-09-01T10:45:32Z",
+          "verdict": "COMMENT",
+          "notes": "Delta review: NUL bytes in test, wrong @since 4.1.0 on 4.0.x branch, code duplication in validateVersionToken"
         }
       ],
-      "review_count": 1,
-      "head_sha": "9d03e0ffd67372a8bba51bed6fe80bb91bb9d865"
+      "review_count": 2,
+      "head_sha": "e1d9a852b9f7a5f81c6ea97ab344df81e0e62cbe"
     },
     {
       "number": 12955,
@@ -2712,6 +2717,23 @@
       ],
       "review_count": 1,
       "head_sha": "7fb33fdeff0af4d4a236f124c282541af3943469"
+    },
+    {
+      "number": 12996,
+      "title": "Fix #12986: UnsupportedOperationException in MavenSession.lookup()",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T10:42:53Z",
+      "verdict": "APPROVE",
+      "notes": "Clean fix replacing NPE with actionable UnsupportedOperationException in deprecated lookup methods",
+      "interactions": [
+        {
+          "at": "2026-09-01T10:42:53Z",
+          "verdict": "APPROVE",
+          "notes": "Clean fix replacing NPE with actionable UnsupportedOperationException in deprecated lookup methods"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "d4bdd42014164861c51adf27ccb416e02b617bf4"
     }
   ],
   "skipped_prs": [],
@@ -2720,7 +2742,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T09:36:24Z",
+  "last_reviewed_updated_at": "2026-09-01T10:11:43Z",
   "deferred_prs": [
     {
       "number": 12855,
