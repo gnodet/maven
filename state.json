@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T20:48:08Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 60000
+    "timestamp": "2026-09-01T22:02:38Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 170000
   },
   "reviewed_prs": [
     {
@@ -2104,18 +2104,23 @@
       "number": 12954,
       "title": "Scope server credentials and validate legacy relocation coordinates",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-30T19:06:07Z",
+      "reviewed_at": "2026-09-01T22:02:38Z",
       "verdict": "APPROVE",
-      "notes": "Three security-hardening fixes: credential scoping, relocation validation, server ID matching. Backports needed for 3.9.x and master.",
+      "notes": "Delta review: rebased+expanded with 3rd commit (server ID case-sensitivity). CI green. 1 low carry-over style nit.",
       "interactions": [
         {
           "at": "2026-08-30T19:06:07Z",
           "verdict": "APPROVE",
           "notes": "Three security-hardening fixes: credential scoping, relocation validation, server ID matching. Backports needed for 3.9.x and master."
+        },
+        {
+          "at": "2026-09-01T22:02:38Z",
+          "verdict": "APPROVE",
+          "notes": "Delta review: rebased+expanded with 3rd commit (server ID case-sensitivity). CI green. 1 low carry-over style nit."
         }
       ],
-      "review_count": 1,
-      "head_sha": "31f127e6adb09053bda1ff3b8b2dd4d6f0003e0b"
+      "review_count": 2,
+      "head_sha": "0c300fd5eac9f8a28f0e068fbbf2a9cb47c78dcb"
     },
     {
       "number": 12947,
@@ -2964,6 +2969,23 @@
       ],
       "review_count": 1,
       "head_sha": "19d3c58498bd3969c13dc3c7505dbe81b76742ec"
+    },
+    {
+      "number": 13005,
+      "title": "Credential scoping + relocation validation (3.9.x backport)",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T22:02:38Z",
+      "verdict": "COMMENT",
+      "notes": "3.9.x backport. 1 confirmed finding: @since 3.9.10 should be @since 3.9.17. Missing milestone+labels suggested.",
+      "interactions": [
+        {
+          "at": "2026-09-01T22:02:38Z",
+          "verdict": "COMMENT",
+          "notes": "3.9.x backport. 1 confirmed finding: @since 3.9.10 should be @since 3.9.17. Missing milestone+labels suggested."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "b6942fadc30412cdc39341c02e0c916a9df9266e"
     }
   ],
   "skipped_prs": [],
@@ -2972,7 +2994,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T20:37:26Z",
+  "last_reviewed_updated_at": "2026-09-01T21:06:57Z",
   "deferred_prs": [
     {
       "number": 12855,
