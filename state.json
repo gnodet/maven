@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T10:45:32Z",
-    "prs_checked": 2,
-    "reviews_posted": 2,
-    "tokens_estimate": 142112
+    "timestamp": "2026-09-01T12:38:16Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
+    "tokens_estimate": 343332
   },
   "reviewed_prs": [
     {
@@ -2734,6 +2734,57 @@
       ],
       "review_count": 1,
       "head_sha": "d4bdd42014164861c51adf27ccb416e02b617bf4"
+    },
+    {
+      "number": 12999,
+      "title": "Fix #12985: Upgrade toolchains-plugin when adding select-jdk-toolchain execution",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T12:34:19Z",
+      "verdict": "APPROVE",
+      "notes": "Clean bug fix, reuses existing plugin entries, handles pluginManagement. Backport to maven-4.0.x may be needed.",
+      "interactions": [
+        {
+          "at": "2026-09-01T12:34:19Z",
+          "verdict": "APPROVE",
+          "notes": "Clean bug fix, reuses existing plugin entries, handles pluginManagement. Backport to maven-4.0.x may be needed."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "757341670ed04e2f9e40f775cfb00db875290e10"
+    },
+    {
+      "number": 12997,
+      "title": "Fix #12991: skip shade-plugin upgrade when custom ResourceTransformers are present",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T12:38:16Z",
+      "verdict": "COMMENT",
+      "notes": "Missing log on effective-model path, project-wide exclusion too conservative. Backport to 4.0.x may be needed.",
+      "interactions": [
+        {
+          "at": "2026-09-01T12:38:16Z",
+          "verdict": "COMMENT",
+          "notes": "Missing log on effective-model path, project-wide exclusion too conservative. Backport to 4.0.x may be needed."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "3225ddaa8246d07e268d9ba81aff8e4bd841c10e"
+    },
+    {
+      "number": 12998,
+      "title": "Improve standalone ApiRunner to properly apply settings",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T12:38:16Z",
+      "verdict": "COMMENT",
+      "notes": "getMavenVersion() can return null despite @Nonnull contract. Placeholder JIRA number in commit.",
+      "interactions": [
+        {
+          "at": "2026-09-01T12:38:16Z",
+          "verdict": "COMMENT",
+          "notes": "getMavenVersion() can return null despite @Nonnull contract. Placeholder JIRA number in commit."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "5f2ad8d4da10c1291544933ea63887400313db44"
     }
   ],
   "skipped_prs": [],
@@ -2742,7 +2793,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T10:11:43Z",
+  "last_reviewed_updated_at": "2026-09-01T11:10:10Z",
   "deferred_prs": [
     {
       "number": 12855,
