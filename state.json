@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T19:36:20Z",
+    "timestamp": "2026-09-01T19:42:25Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 95003
+    "tokens_estimate": 5000
   },
   "reviewed_prs": [
     {
@@ -2871,18 +2871,23 @@
       "number": 13001,
       "title": "mvnup: upgrade BND plugins to fix ConcurrentModificationException on JDK 17.0.13+",
       "author": "gnodet",
-      "reviewed_at": "2026-09-01T15:32:18Z",
+      "reviewed_at": "2026-09-01T19:42:25Z",
       "verdict": "COMMENT",
-      "notes": "Clean data-only change. Cosmetic: reason text cites TreeMap CME but issue shows HashMap CME.",
+      "notes": "Delta: reason text inaccuracy addressed (generic description replacing TreeMap-specific reference).",
       "interactions": [
         {
           "at": "2026-09-01T15:32:18Z",
           "verdict": "COMMENT",
           "notes": "Clean data-only change. Cosmetic: reason text cites TreeMap CME but issue shows HashMap CME."
+        },
+        {
+          "at": "2026-09-01T19:42:25Z",
+          "verdict": "COMMENT",
+          "notes": "Delta: reason text inaccuracy addressed (generic description replacing TreeMap-specific reference)."
         }
       ],
-      "review_count": 1,
-      "head_sha": "8c7d6ab5c623ec20833ce624cacf1267bd8cc4d7"
+      "review_count": 2,
+      "head_sha": "ae29f26ec66c5923eeab02b131d4b58f861e2657"
     },
     {
       "number": 12995,
@@ -2942,7 +2947,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T18:53:05Z",
+  "last_reviewed_updated_at": "2026-09-01T18:58:10Z",
   "deferred_prs": [
     {
       "number": 12855,
