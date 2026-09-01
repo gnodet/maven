@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T17:12:27Z",
+    "timestamp": "2026-09-01T17:35:56Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 111177
+    "tokens_estimate": 74441
   },
   "reviewed_prs": [
     {
@@ -2897,6 +2897,23 @@
       ],
       "review_count": 1,
       "head_sha": "8eae5c6cf4426c9e7c00e7e210d61a9be05fe349"
+    },
+    {
+      "number": 12977,
+      "title": "Scope server credentials and validate legacy relocation coordinates",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T17:35:56Z",
+      "verdict": "COMMENT",
+      "notes": "Forward-port of #12954 from 3.10.x to 4.0.x. Clean adaptations. 1 low style nit (assertEquals\u2192assertTrue). Backport still needed on master and 3.9.x.",
+      "interactions": [
+        {
+          "at": "2026-09-01T17:35:56Z",
+          "verdict": "COMMENT",
+          "notes": "Forward-port of #12954 from 3.10.x to 4.0.x. Clean adaptations. 1 low style nit (assertEquals\u2192assertTrue). Backport still needed on master and 3.9.x."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "19d3c58498bd3969c13dc3c7505dbe81b76742ec"
     }
   ],
   "skipped_prs": [],
@@ -2905,7 +2922,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T15:42:52Z",
+  "last_reviewed_updated_at": "2026-09-01T17:27:02Z",
   "deferred_prs": [
     {
       "number": 12855,
