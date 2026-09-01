@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T13:08:32Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 148622
+    "timestamp": "2026-09-01T15:32:18Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 263412
   },
   "reviewed_prs": [
     {
@@ -2836,6 +2836,40 @@
       ],
       "review_count": 1,
       "head_sha": "da6bed4f244c445de389c8881f64fa67c3a1c567"
+    },
+    {
+      "number": 13001,
+      "title": "mvnup: upgrade BND plugins to fix ConcurrentModificationException on JDK 17.0.13+",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T15:32:18Z",
+      "verdict": "COMMENT",
+      "notes": "Clean data-only change. Cosmetic: reason text cites TreeMap CME but issue shows HashMap CME.",
+      "interactions": [
+        {
+          "at": "2026-09-01T15:32:18Z",
+          "verdict": "COMMENT",
+          "notes": "Clean data-only change. Cosmetic: reason text cites TreeMap CME but issue shows HashMap CME."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "8c7d6ab5c623ec20833ce624cacf1267bd8cc4d7"
+    },
+    {
+      "number": 12995,
+      "title": "Fix #12984: mvnup jar-plugin upgrade to 3.5.0 \u2014 fix invalid Automatic-Module-Name",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-01T15:32:18Z",
+      "verdict": "APPROVE",
+      "notes": "Clean ModuleNameFixStrategy. No code issues. PR description typo: maven-archiver 3.6.5 should be 3.3.0.",
+      "interactions": [
+        {
+          "at": "2026-09-01T15:32:18Z",
+          "verdict": "APPROVE",
+          "notes": "Clean ModuleNameFixStrategy. No code issues. PR description typo: maven-archiver 3.6.5 should be 3.3.0."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "2d607af384d37e6352efe74e6fc3a4877ef8e813"
     }
   ],
   "skipped_prs": [],
@@ -2844,7 +2878,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T12:37:05Z",
+  "last_reviewed_updated_at": "2026-09-01T15:00:08Z",
   "deferred_prs": [
     {
       "number": 12855,
