@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T19:42:25Z",
-    "prs_checked": 1,
-    "reviews_posted": 1,
-    "tokens_estimate": 5000
+    "timestamp": "2026-09-01T20:14:44Z",
+    "prs_checked": 2,
+    "reviews_posted": 2,
+    "tokens_estimate": 100042
   },
   "reviewed_prs": [
     {
@@ -2223,18 +2223,23 @@
       "number": 12942,
       "title": "Fix version comparison and parsing inconsistencies in maven-artifact",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-30T21:57:47Z",
+      "reviewed_at": "2026-09-01T20:14:44Z",
       "verdict": "APPROVE",
-      "notes": "Clean byte-for-byte backport of already-approved #12947 to maven-4.0.x",
+      "notes": "Delta: Javadoc punctuation fix + ga11 multi-digit test coverage. Clean follow-up.",
       "interactions": [
         {
           "at": "2026-08-30T21:57:47Z",
           "verdict": "APPROVE",
           "notes": "Clean byte-for-byte backport of already-approved #12947 to maven-4.0.x"
+        },
+        {
+          "at": "2026-09-01T20:14:44Z",
+          "verdict": "APPROVE",
+          "notes": "Delta: Javadoc punctuation fix + ga11 multi-digit test coverage. Clean follow-up."
         }
       ],
-      "review_count": 1,
-      "head_sha": "2b6effd0565855a56fa90593a4addf001c9485cf"
+      "review_count": 2,
+      "head_sha": "7f70d4a7d083dcf8b0316bad1faab93f707a0c94"
     },
     {
       "number": 12953,
@@ -2550,9 +2555,9 @@
       "number": 12948,
       "title": "Restrict what a repository-resolved model contributes to the build",
       "author": "slachiewicz",
-      "reviewed_at": "2026-08-31T13:51:18Z",
+      "reviewed_at": "2026-09-01T20:14:44Z",
       "verdict": "APPROVE",
-      "notes": "Delta review: both previous findings addressed. Config property promoted to Constants with @Config. Design-intent comment added.",
+      "notes": "Delta: merge master clean. MNG-8450 dedup and security hardening independent layers.",
       "interactions": [
         {
           "at": "2026-08-31T07:53:54Z",
@@ -2563,10 +2568,15 @@
           "at": "2026-08-31T13:51:18Z",
           "verdict": "APPROVE",
           "notes": "Delta review: both previous findings addressed. Config property promoted to Constants with @Config. Design-intent comment added."
+        },
+        {
+          "at": "2026-09-01T20:14:44Z",
+          "verdict": "APPROVE",
+          "notes": "Delta: merge master clean. MNG-8450 dedup and security hardening independent layers."
         }
       ],
-      "review_count": 2,
-      "head_sha": "46b1763518226531960c2f5dbca906f7ca103af6"
+      "review_count": 3,
+      "head_sha": "d0b6ab8d3d62f643ab0ce84389767ef846e052ba"
     },
     {
       "number": 12972,
@@ -2947,7 +2957,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T18:58:10Z",
+  "last_reviewed_updated_at": "2026-09-01T19:25:07Z",
   "deferred_prs": [
     {
       "number": 12855,
