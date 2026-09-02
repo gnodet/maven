@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-02T08:23:53Z",
-    "prs_checked": 2,
-    "reviews_posted": 1,
-    "tokens_estimate": 190000
+    "timestamp": "2026-09-02T11:32:06Z",
+    "prs_checked": 3,
+    "reviews_posted": 3,
+    "tokens_estimate": 145000
   },
   "reviewed_prs": [
     {
@@ -2790,18 +2790,23 @@
       "number": 12999,
       "title": "Fix #12985: Upgrade toolchains-plugin when adding select-jdk-toolchain execution",
       "author": "gnodet",
-      "reviewed_at": "2026-09-01T12:34:19Z",
-      "verdict": "APPROVE",
-      "notes": "Clean bug fix, reuses existing plugin entries, handles pluginManagement. Backport to maven-4.0.x may be needed.",
+      "reviewed_at": "2026-09-02T11:30:57Z",
+      "verdict": "COMMENT",
+      "notes": "Delta: previous finding addressed (property version warning + shared matching extracted). No new issues.",
       "interactions": [
         {
           "at": "2026-09-01T12:34:19Z",
           "verdict": "APPROVE",
           "notes": "Clean bug fix, reuses existing plugin entries, handles pluginManagement. Backport to maven-4.0.x may be needed."
+        },
+        {
+          "at": "2026-09-02T11:30:57Z",
+          "verdict": "COMMENT",
+          "notes": "Delta: previous finding addressed (property version warning + shared matching extracted). No new issues."
         }
       ],
-      "review_count": 1,
-      "head_sha": "757341670ed04e2f9e40f775cfb00db875290e10"
+      "review_count": 2,
+      "head_sha": "418e084a67843c30452dfbf68f91e96373e16682"
     },
     {
       "number": 12997,
@@ -2866,35 +2871,45 @@
       "number": 12994,
       "title": "Fix #12989: mvnup plugin upgrades should respect project JDK version",
       "author": "gnodet",
-      "reviewed_at": "2026-09-01T12:46:54Z",
-      "verdict": "APPROVE",
-      "notes": "Clean fix, JDK compat check for plugin upgrades. Backport to maven-4.0.x may be needed.",
+      "reviewed_at": "2026-09-02T11:30:58Z",
+      "verdict": "COMMENT",
+      "notes": "Delta: both suggestions addressed (JDK skip helper extracted, POM sorting by path depth). CI green.",
       "interactions": [
         {
           "at": "2026-09-01T12:46:54Z",
           "verdict": "APPROVE",
           "notes": "Clean fix, JDK compat check for plugin upgrades. Backport to maven-4.0.x may be needed."
+        },
+        {
+          "at": "2026-09-02T11:30:58Z",
+          "verdict": "COMMENT",
+          "notes": "Delta: both suggestions addressed (JDK skip helper extracted, POM sorting by path depth). CI green."
         }
       ],
-      "review_count": 1,
-      "head_sha": "aa0165a16355157c68a51d4e466041323798e040"
+      "review_count": 2,
+      "head_sha": "3e34a57a58ac8d81f9302177d8f6f4fba39b4ed5"
     },
     {
       "number": 12993,
       "title": "[MNG-8633] mvnup: inject standalone Nashorn for antrun JavaScript compatibility",
       "author": "gnodet",
-      "reviewed_at": "2026-09-01T12:49:35Z",
+      "reviewed_at": "2026-09-02T11:32:06Z",
       "verdict": "COMMENT",
-      "notes": "Outdated Nashorn version 15.4 (latest is 15.7). Backport to maven-4.0.x may be needed.",
+      "notes": "Delta: GraalVM warning added per rmannibucau. Version 15.4 still outdated (latest 15.6). Corrected previous claim of 15.7.",
       "interactions": [
         {
           "at": "2026-09-01T12:49:35Z",
           "verdict": "COMMENT",
           "notes": "Outdated Nashorn version 15.4 (latest is 15.7). Backport to maven-4.0.x may be needed."
+        },
+        {
+          "at": "2026-09-02T11:32:06Z",
+          "verdict": "COMMENT",
+          "notes": "Delta: GraalVM warning added per rmannibucau. Version 15.4 still outdated (latest 15.6). Corrected previous claim of 15.7."
         }
       ],
-      "review_count": 1,
-      "head_sha": "93b659c26b0be942e96f05509b9e2fd17dcfba01"
+      "review_count": 2,
+      "head_sha": "893788e7d42cf59bba1907d30bc171157766b206"
     },
     {
       "number": 13002,
@@ -3066,252 +3081,42 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-02T07:49:18Z",
+  "last_reviewed_updated_at": "",
   "deferred_prs": [
     {
-      "number": 12855,
-      "reason": "ci_pending",
-      "deferred_at": "2026-08-27T00:47:37Z",
-      "last_checked": "2026-08-27T00:47:37Z",
-      "check_count": 3
-    },
-    {
-      "number": 12402,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-27T00:57:41Z",
-      "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 7
-    },
-    {
-      "number": 12832,
+      "number": 25495,
       "reason": "no_ci",
-      "deferred_at": "2026-08-27T00:57:41Z",
-      "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 6
-    },
-    {
-      "number": 12842,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-27T00:57:41Z",
-      "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 6
-    },
-    {
-      "number": 12806,
-      "reason": "ci_pending",
-      "deferred_at": "2026-08-27T07:30:07Z",
-      "last_checked": "2026-08-27T07:30:07Z",
+      "deferred_at": "2026-09-02T10:56:46Z",
+      "last_checked": "2026-09-02T10:56:46Z",
       "check_count": 2
     },
     {
-      "number": 12862,
+      "number": 26036,
       "reason": "ci_pending",
-      "deferred_at": "2026-08-27T07:30:07Z",
-      "last_checked": "2026-08-27T07:30:07Z",
+      "deferred_at": "2026-09-02T10:56:46Z",
+      "last_checked": "2026-09-02T10:56:46Z",
       "check_count": 2
     },
     {
-      "number": 11926,
+      "number": 26010,
       "reason": "no_ci",
-      "deferred_at": "2026-08-27T07:30:07Z",
-      "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 5
+      "deferred_at": "2026-09-02T10:56:46Z",
+      "last_checked": "2026-09-02T10:56:46Z",
+      "check_count": 2
     },
     {
-      "number": 11904,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-27T07:30:07Z",
-      "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 4
-    },
-    {
-      "number": 12750,
+      "number": 26023,
       "reason": "no_ci",
-      "deferred_at": "2026-08-27T08:52:07Z",
-      "last_checked": "2026-08-27T08:52:07Z",
-      "check_count": 3
-    },
-    {
-      "number": 11692,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-27T08:52:07Z",
-      "last_checked": "2026-08-27T08:52:07Z",
+      "deferred_at": "2026-09-02T10:56:46Z",
+      "last_checked": "2026-09-02T10:56:46Z",
       "check_count": 2
     },
     {
-      "number": 12633,
+      "number": 26032,
       "reason": "ci_pending",
-      "deferred_at": "2026-08-27T16:33:29Z",
-      "last_checked": "2026-08-27T16:33:29Z",
+      "deferred_at": "2026-09-02T10:56:46Z",
+      "last_checked": "2026-09-02T10:56:46Z",
       "check_count": 2
-    },
-    {
-      "number": 12848,
-      "reason": "ci_pending",
-      "deferred_at": "2026-08-27T17:58:19Z",
-      "last_checked": "2026-08-27T17:58:19Z",
-      "check_count": 1
-    },
-    {
-      "number": 12871,
-      "reason": "ci_pending",
-      "deferred_at": "2026-08-27T17:58:19Z",
-      "last_checked": "2026-08-27T17:58:19Z",
-      "check_count": 1
-    },
-    {
-      "number": 12694,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 2
-    },
-    {
-      "number": 12653,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 2
-    },
-    {
-      "number": 12722,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
-    },
-    {
-      "number": 11410,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 2
-    },
-    {
-      "number": 11502,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T18:43:30Z",
-      "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 2
-    },
-    {
-      "number": 11186,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T20:25:53Z",
-      "last_checked": "2026-08-28T20:25:53Z",
-      "check_count": 1
-    },
-    {
-      "number": 11102,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-28T21:46:54Z",
-      "last_checked": "2026-08-28T21:46:54Z",
-      "check_count": 1
-    },
-    {
-      "number": 12913,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-29T11:52:06Z",
-      "last_checked": "2026-08-29T11:52:06Z",
-      "check_count": 2
-    },
-    {
-      "number": 12910,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-29T11:52:06Z",
-      "last_checked": "2026-08-29T11:52:06Z",
-      "check_count": 1
-    },
-    {
-      "number": 12917,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-29T15:45:11Z",
-      "last_checked": "2026-08-29T15:45:11Z",
-      "check_count": 1
-    },
-    {
-      "number": 12938,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
-    },
-    {
-      "number": 12929,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
-    },
-    {
-      "number": 12937,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 2
-    },
-    {
-      "number": 12936,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 2
-    },
-    {
-      "number": 12935,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:56Z",
-      "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 2
-    },
-    {
-      "number": 12960,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:57Z",
-      "last_checked": "2026-08-30T22:36:57Z",
-      "check_count": 1
-    },
-    {
-      "number": 12714,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
-    },
-    {
-      "number": 12702,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
-    },
-    {
-      "number": 12695,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
-    },
-    {
-      "number": 13010,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
-    },
-    {
-      "number": 13011,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
-    },
-    {
-      "number": 13009,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T08:10:38Z",
-      "last_checked": "2026-09-02T08:10:38Z",
-      "check_count": 1
     }
   ]
 }
