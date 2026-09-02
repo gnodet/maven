@@ -3230,13 +3230,6 @@
       "deferred_at": "2026-08-30T22:36:57Z",
       "last_checked": "2026-08-30T22:36:57Z",
       "check_count": 1
-    },
-    {
-      "number": 12958,
-      "reason": "ci_failing",
-      "deferred_at": "2026-08-30T22:36:57Z",
-      "last_checked": "2026-08-30T22:36:57Z",
-      "check_count": 1
     }
   ]
 }
