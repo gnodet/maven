@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-02T08:09:29Z",
-    "prs_checked": 1,
+    "timestamp": "2026-09-02T08:23:53Z",
+    "prs_checked": 2,
     "reviews_posted": 1,
-    "tokens_estimate": 88000
+    "tokens_estimate": 190000
   },
   "reviewed_prs": [
     {
@@ -584,17 +584,23 @@
       "number": 12703,
       "title": "[MNG-8708] Fix Maven 4 parent inference",
       "author": "goutamadwant",
-      "reviewed_at": "2026-08-24T10:02:36Z",
+      "reviewed_at": "2026-09-02T08:18:59Z",
       "verdict": "APPROVE",
-      "notes": "Clean fix for 4.1.0 parent inference. No issues. No backport needed (4.1.0-only feature).",
+      "notes": "Delta re-review: both previous suggestions addressed (mixin validation + three-level test). No new issues.",
       "interactions": [
         {
           "at": "2026-08-24T10:02:36Z",
           "verdict": "APPROVE",
           "notes": "Clean fix for 4.1.0 parent inference. No issues. No backport needed (4.1.0-only feature)."
+        },
+        {
+          "at": "2026-09-02T08:18:59Z",
+          "verdict": "APPROVE",
+          "notes": "Delta re-review: both previous suggestions addressed (mixin validation + three-level test). No new issues."
         }
       ],
-      "review_count": 1
+      "review_count": 2,
+      "head_sha": "d251c72bc445eef27bb68b2168dd3bedb89a5ea8"
     },
     {
       "number": 12684,
@@ -3035,6 +3041,23 @@
       ],
       "review_count": 1,
       "head_sha": "a9f668fb1600b51822865def72ca1bda0f4c5b78"
+    },
+    {
+      "number": 12958,
+      "title": "[MNG-7793] Add generated-source metadata to Maven 4 APIs",
+      "author": "goutamadwant",
+      "reviewed_at": "2026-09-02T08:23:53Z",
+      "verdict": "APPROVE",
+      "notes": "All 3 findings (path dedup, fixture bump, @since) rejected by verifier as FP. No review posted.",
+      "interactions": [
+        {
+          "at": "2026-09-02T08:23:53Z",
+          "verdict": "APPROVE",
+          "notes": "All 3 findings (path dedup, fixture bump, @since) rejected by verifier as FP. No review posted."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "3bf6edd1253fe3cefa4046794b48b60d4f050816"
     }
   ],
   "skipped_prs": [],
@@ -3043,7 +3066,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-02T06:21:02Z",
+  "last_reviewed_updated_at": "2026-09-02T07:49:18Z",
   "deferred_prs": [
     {
       "number": 12855,
@@ -3057,7 +3080,7 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T00:57:41Z",
       "last_checked": "2026-08-27T00:57:41Z",
-      "check_count": 6
+      "check_count": 7
     },
     {
       "number": 12832,
@@ -3092,14 +3115,14 @@
       "reason": "no_ci",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 4
+      "check_count": 5
     },
     {
       "number": 11904,
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T07:30:07Z",
       "last_checked": "2026-08-27T07:30:07Z",
-      "check_count": 3
+      "check_count": 4
     },
     {
       "number": 12750,
@@ -3113,7 +3136,7 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-27T08:52:07Z",
       "last_checked": "2026-08-27T08:52:07Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12633,
@@ -3141,14 +3164,14 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12653,
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12722,
@@ -3162,14 +3185,14 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11502,
       "reason": "ci_failing",
       "deferred_at": "2026-08-28T18:43:30Z",
       "last_checked": "2026-08-28T18:43:30Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11186,
@@ -3190,7 +3213,7 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-29T11:52:06Z",
       "last_checked": "2026-08-29T11:52:06Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12910,
@@ -3225,27 +3248,69 @@
       "reason": "ci_failing",
       "deferred_at": "2026-08-30T22:36:56Z",
       "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12936,
       "reason": "ci_failing",
       "deferred_at": "2026-08-30T22:36:56Z",
       "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12935,
       "reason": "ci_failing",
       "deferred_at": "2026-08-30T22:36:56Z",
       "last_checked": "2026-08-30T22:36:56Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12960,
       "reason": "ci_failing",
       "deferred_at": "2026-08-30T22:36:57Z",
       "last_checked": "2026-08-30T22:36:57Z",
+      "check_count": 1
+    },
+    {
+      "number": 12714,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
+      "check_count": 1
+    },
+    {
+      "number": 12702,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
+      "check_count": 1
+    },
+    {
+      "number": 12695,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
+      "check_count": 1
+    },
+    {
+      "number": 13010,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
+      "check_count": 1
+    },
+    {
+      "number": 13011,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
+      "check_count": 1
+    },
+    {
+      "number": 13009,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T08:10:38Z",
+      "last_checked": "2026-09-02T08:10:38Z",
       "check_count": 1
     }
   ]
