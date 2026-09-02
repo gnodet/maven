@@ -4,9 +4,9 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-02T12:00:39Z",
-    "prs_checked": 3,
-    "reviews_posted": 3,
+    "timestamp": "2026-09-02T17:43:09Z",
+    "prs_checked": 1,
+    "reviews_posted": 1,
     "tokens_estimate": 0
   },
   "reviewed_prs": [
@@ -3113,6 +3113,23 @@
       ],
       "review_count": 1,
       "head_sha": "5b93e75ec08162ec101bbb0a0ff17c2a506c76db"
+    },
+    {
+      "number": 13020,
+      "title": "[Backport 4.0.x] Fix #12986: Throw descriptive UnsupportedOperationException instead of NPE in MavenSession.lookup()",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-02T17:43:09Z",
+      "verdict": "APPROVE",
+      "notes": "Clean backport of #12996, identical core changes, correctly excluded PathTranslator hunk",
+      "interactions": [
+        {
+          "at": "2026-09-02T17:43:09Z",
+          "verdict": "APPROVE",
+          "notes": "Clean backport of #12996, identical core changes, correctly excluded PathTranslator hunk"
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "1db1fc001ca9b5f34eafdc6cf7360d8c466e7f1c"
     }
   ],
   "skipped_prs": [],
@@ -3121,7 +3138,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-02T11:59:27Z",
+  "last_reviewed_updated_at": "2026-09-02T15:34:35Z",
   "deferred_prs": [
     {
       "number": 25495,
@@ -3163,28 +3180,28 @@
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12702,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12695,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12694,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12993,
@@ -3212,56 +3229,56 @@
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12973,
       "reason": "ci_pending",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11926,
       "reason": "no_ci",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 11904,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12402,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12937,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 12936,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 13009,
       "reason": "ci_failing",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
+      "check_count": 2
     },
     {
       "number": 13015,
@@ -3275,6 +3292,34 @@
       "reason": "ci_pending",
       "deferred_at": "2026-09-02T11:46:39Z",
       "last_checked": "2026-09-02T11:46:39Z",
+      "check_count": 1
+    },
+    {
+      "number": 13023,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T17:38:58Z",
+      "last_checked": "2026-09-02T17:38:58Z",
+      "check_count": 1
+    },
+    {
+      "number": 13024,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T17:38:58Z",
+      "last_checked": "2026-09-02T17:38:58Z",
+      "check_count": 1
+    },
+    {
+      "number": 13022,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T17:38:58Z",
+      "last_checked": "2026-09-02T17:38:58Z",
+      "check_count": 1
+    },
+    {
+      "number": 11692,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T17:38:58Z",
+      "last_checked": "2026-09-02T17:38:58Z",
       "check_count": 1
     }
   ]
