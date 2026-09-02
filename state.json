@@ -4,8 +4,8 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-01T22:06:26Z",
-    "prs_checked": 1,
+    "timestamp": "2026-09-02T05:29:30Z",
+    "prs_checked": 2,
     "reviews_posted": 0,
     "tokens_estimate": 5000
   },
@@ -2711,18 +2711,23 @@
       "number": 12976,
       "title": "Scope server credentials and validate legacy relocation coordinates",
       "author": "gnodet",
-      "reviewed_at": "2026-08-31T21:24:34Z",
+      "reviewed_at": "2026-09-02T05:29:30Z",
       "verdict": "COMMENT",
-      "notes": "bug: Forward-port of approved #12954 to master. All adaptations correct. Pre-existing gap noted in resolver relocation validation.",
+      "notes": "Mechanical fixes only (spotless formatting, test throws clause). No content changes \u2014 skipped posting.",
       "interactions": [
         {
           "at": "2026-08-31T21:24:34Z",
           "verdict": "COMMENT",
           "notes": "bug: Forward-port of approved #12954 to master. All adaptations correct. Pre-existing gap noted in resolver relocation validation."
+        },
+        {
+          "at": "2026-09-02T05:29:30Z",
+          "verdict": "COMMENT",
+          "notes": "Mechanical fixes only (spotless formatting, test throws clause). No content changes \u2014 skipped posting."
         }
       ],
-      "review_count": 1,
-      "head_sha": "cb0c6c8d0f13f993a6a7b385e7bc471c4dbdb5f8"
+      "review_count": 2,
+      "head_sha": "987ee302b7a441b760834885658ae1bbfb781d47"
     },
     {
       "number": 12978,
@@ -2962,18 +2967,23 @@
       "number": 12977,
       "title": "Scope server credentials and validate legacy relocation coordinates",
       "author": "gnodet",
-      "reviewed_at": "2026-09-01T17:35:56Z",
+      "reviewed_at": "2026-09-02T05:29:30Z",
       "verdict": "COMMENT",
-      "notes": "Forward-port of #12954 from 3.10.x to 4.0.x. Clean adaptations. 1 low style nit (assertEquals\u2192assertTrue). Backport still needed on master and 3.9.x.",
+      "notes": "Mechanical fixes only (spotless formatting, test throws clause). No content changes \u2014 skipped posting.",
       "interactions": [
         {
           "at": "2026-09-01T17:35:56Z",
           "verdict": "COMMENT",
           "notes": "Forward-port of #12954 from 3.10.x to 4.0.x. Clean adaptations. 1 low style nit (assertEquals\u2192assertTrue). Backport still needed on master and 3.9.x."
+        },
+        {
+          "at": "2026-09-02T05:29:30Z",
+          "verdict": "COMMENT",
+          "notes": "Mechanical fixes only (spotless formatting, test throws clause). No content changes \u2014 skipped posting."
         }
       ],
-      "review_count": 1,
-      "head_sha": "19d3c58498bd3969c13dc3c7505dbe81b76742ec"
+      "review_count": 2,
+      "head_sha": "9726990abf81dfacaaf7aac27056940713130391"
     },
     {
       "number": 13005,
@@ -2999,7 +3009,7 @@
   "escalated": [],
   "resolved": [],
   "created_at": "2026-08-24T05:05:22Z",
-  "last_reviewed_updated_at": "2026-09-01T21:28:32Z",
+  "last_reviewed_updated_at": "2026-09-02T04:40:28Z",
   "deferred_prs": [
     {
       "number": 12855,
