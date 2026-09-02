@@ -4,10 +4,10 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-02T06:25:51Z",
+    "timestamp": "2026-09-02T08:09:29Z",
     "prs_checked": 1,
     "reviews_posted": 1,
-    "tokens_estimate": 60000
+    "tokens_estimate": 88000
   },
   "reviewed_prs": [
     {
@@ -3018,6 +3018,23 @@
       ],
       "review_count": 1,
       "head_sha": "010595da2f3a24ac9ba8c6264aab22620029a8ac"
+    },
+    {
+      "number": 13006,
+      "title": "Fix #13004: enable deterministic profile activation for BUILD_CONSUMER",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-02T08:09:29Z",
+      "verdict": "COMMENT",
+      "notes": "1 confirmed: no test for mixed activation edge case. 2 FP rejected. Backport missing for maven-4.0.x.",
+      "interactions": [
+        {
+          "at": "2026-09-02T08:09:29Z",
+          "verdict": "COMMENT",
+          "notes": "1 confirmed: no test for mixed activation edge case. 2 FP rejected. Backport missing for maven-4.0.x."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "a9f668fb1600b51822865def72ca1bda0f4c5b78"
     }
   ],
   "skipped_prs": [],
