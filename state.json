@@ -4,7 +4,7 @@
   "project_name": "Maven",
   "loop_type": "review-loop",
   "last_run": {
-    "timestamp": "2026-09-02T20:24:14Z",
+    "timestamp": "2026-09-03T05:24:39Z",
     "prs_checked": 1,
     "reviews_posted": 1,
     "tokens_estimate": 0
@@ -3169,6 +3169,23 @@
       ],
       "review_count": 2,
       "head_sha": "aa5af679f263f4d2692b4a73fcc59d74b4eaea54"
+    },
+    {
+      "number": 13030,
+      "title": "Revert restricted interpolation for repository-resolved models",
+      "author": "gnodet",
+      "reviewed_at": "2026-09-03T05:24:39Z",
+      "verdict": "APPROVE",
+      "notes": "Clean selective revert of interpolation restriction regression on maven-3.10.x. Profile activation restrictions preserved.",
+      "interactions": [
+        {
+          "at": "2026-09-03T05:24:39Z",
+          "verdict": "APPROVE",
+          "notes": "Clean selective revert of interpolation restriction regression on maven-3.10.x. Profile activation restrictions preserved."
+        }
+      ],
+      "review_count": 1,
+      "head_sha": "6f9ab42c0e31ecb3dd7e4d64c9323a5cd0cf0947"
     }
   ],
   "skipped_prs": [],
@@ -3182,205 +3199,149 @@
     {
       "number": 25495,
       "reason": "no_ci",
-      "deferred_at": "2026-09-02T10:56:46Z",
-      "last_checked": "2026-09-02T10:56:46Z",
-      "check_count": 2
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T16:48:33Z",
+      "check_count": 18
+    },
+    {
+      "number": 26038,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T14:00:00Z",
+      "check_count": 8
     },
     {
       "number": 26036,
+      "reason": "ci_failing",
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T14:00:00Z",
+      "check_count": 6
+    },
+    {
+      "number": 26040,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T10:56:46Z",
-      "last_checked": "2026-09-02T10:56:46Z",
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T14:00:00Z",
+      "check_count": 5
+    },
+    {
+      "number": 26041,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T14:00:00Z",
+      "check_count": 5
+    },
+    {
+      "number": 26039,
+      "reason": "no_ci",
+      "deferred_at": "2026-09-02T14:00:00Z",
+      "last_checked": "2026-09-02T17:55:35Z",
+      "check_count": 17
+    },
+    {
+      "number": 26037,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T13:27:22Z",
+      "last_checked": "2026-09-02T13:27:22Z",
       "check_count": 2
+    },
+    {
+      "number": 26042,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T14:53:27Z",
+      "last_checked": "2026-09-02T14:53:27Z",
+      "check_count": 1
     },
     {
       "number": 26010,
-      "reason": "no_ci",
-      "deferred_at": "2026-09-02T10:56:46Z",
-      "last_checked": "2026-09-02T10:56:46Z",
-      "check_count": 2
-    },
-    {
-      "number": 26023,
-      "reason": "no_ci",
-      "deferred_at": "2026-09-02T10:56:46Z",
-      "last_checked": "2026-09-02T10:56:46Z",
-      "check_count": 2
-    },
-    {
-      "number": 26032,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T10:56:46Z",
-      "last_checked": "2026-09-02T10:56:46Z",
-      "check_count": 2
+      "deferred_at": "2026-09-02T16:17:13Z",
+      "last_checked": "2026-09-02T16:17:13Z",
+      "check_count": 6
     },
     {
-      "number": 12714,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
+      "number": 26026,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T16:17:13Z",
+      "last_checked": "2026-09-02T16:17:13Z",
+      "check_count": 6
+    },
+    {
+      "number": 26028,
+      "reason": "no_ci",
+      "deferred_at": "2026-09-02T16:17:13Z",
+      "last_checked": "2026-09-02T16:17:13Z",
       "check_count": 5
     },
     {
-      "number": 12702,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
+      "number": 26047,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T16:17:13Z",
+      "last_checked": "2026-09-02T16:17:13Z",
+      "check_count": 6
+    },
+    {
+      "number": 26048,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T16:21:00Z",
+      "last_checked": "2026-09-02T16:21:00Z",
       "check_count": 5
     },
     {
-      "number": 12695,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 12694,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 12993,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
-    },
-    {
-      "number": 12994,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
-    },
-    {
-      "number": 12996,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
-    },
-    {
-      "number": 12999,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
+      "number": 26049,
+      "reason": "ci_pending",
+      "deferred_at": "2026-09-02T16:22:29Z",
+      "last_checked": "2026-09-02T16:22:29Z",
       "check_count": 4
     },
     {
-      "number": 12973,
+      "number": 26050,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
+      "deferred_at": "2026-09-02T16:47:09Z",
+      "last_checked": "2026-09-02T16:47:09Z",
       "check_count": 3
     },
     {
-      "number": 11926,
-      "reason": "no_ci",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 11904,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 12402,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 12937,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 12936,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 13009,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 5
-    },
-    {
-      "number": 13015,
+      "number": 26051,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
-    },
-    {
-      "number": 13016,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T11:46:39Z",
-      "last_checked": "2026-09-02T11:46:39Z",
-      "check_count": 1
-    },
-    {
-      "number": 13023,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T17:38:58Z",
-      "last_checked": "2026-09-02T17:38:58Z",
+      "deferred_at": "2026-09-02T16:48:33Z",
+      "last_checked": "2026-09-02T16:48:33Z",
       "check_count": 2
     },
     {
-      "number": 13024,
+      "number": 26052,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T17:38:58Z",
-      "last_checked": "2026-09-02T17:38:58Z",
-      "check_count": 1
+      "deferred_at": "2026-09-02T17:55:35Z",
+      "last_checked": "2026-09-02T17:55:35Z",
+      "check_count": 6
     },
     {
-      "number": 13022,
+      "number": 26053,
       "reason": "ci_pending",
-      "deferred_at": "2026-09-02T17:38:58Z",
-      "last_checked": "2026-09-02T17:38:58Z",
-      "check_count": 1
+      "deferred_at": "2026-09-02T21:28:29Z",
+      "last_checked": "2026-09-02T21:28:29Z",
+      "check_count": 6
     },
     {
-      "number": 11692,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T17:38:58Z",
-      "last_checked": "2026-09-02T17:38:58Z",
+      "number": 26054,
+      "reason": "no_ci",
+      "deferred_at": "2026-09-02T22:43:28Z",
+      "last_checked": "2026-09-02T22:43:28Z",
       "check_count": 4
     },
     {
-      "number": 13025,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T19:15:55Z",
-      "last_checked": "2026-09-02T19:15:55Z",
-      "check_count": 1
+      "number": 26055,
+      "reason": "no_ci",
+      "deferred_at": "2026-09-03T00:02:59Z",
+      "last_checked": "2026-09-03T00:02:59Z",
+      "check_count": 2
     },
     {
-      "number": 13026,
-      "reason": "ci_pending",
-      "deferred_at": "2026-09-02T20:22:08Z",
-      "last_checked": "2026-09-02T20:22:08Z",
-      "check_count": 1
-    },
-    {
-      "number": 11502,
-      "reason": "ci_failing",
-      "deferred_at": "2026-09-02T20:22:08Z",
-      "last_checked": "2026-09-02T20:22:08Z",
-      "check_count": 1
+      "number": 26056,
+      "reason": "no_ci",
+      "deferred_at": "2026-09-03T00:02:59Z",
+      "last_checked": "2026-09-03T00:02:59Z",
+      "check_count": 2
     }
   ]
 }
