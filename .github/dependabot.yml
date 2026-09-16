@@ -17,6 +17,15 @@
 version: 2
 updates:
 
+  # Test branch: profile + renamed properties approach for lifecycle plugins
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "test/dependabot-lifecycle-plugins"
+    labels:
+      - "dependencies"
+
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
