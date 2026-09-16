@@ -23,6 +23,7 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "test/dependabot-lifecycle-plugins"
+    open-pull-requests-limit: 20
     labels:
       - "dependencies"
 
