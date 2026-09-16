@@ -100,7 +100,7 @@ class RequestTraceTest {
                         .pathScope(PathScope.MAIN_RUNTIME)
                         .build())
                 .getRoot()
-                .getChildren()
+                .children()
                 .iterator()
                 .next();
 
@@ -114,7 +114,7 @@ class RequestTraceTest {
         }
 
         assertNotNull(node);
-        assertEquals(6, node.getChildren().size());
+        assertEquals(6, node.children().size());
     }
 
     @Provides
