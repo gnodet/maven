@@ -308,6 +308,77 @@ under the License.
             </excludes>
           </configuration>
         </plugin>
+        <!-- Default lifecycle plugins — declared here so Dependabot/Renovate can
+             track the version.maven-*-plugin properties as real Maven coordinates
+             and propose automated bumps. Uses lifecycle.version.* property names
+             (unique prefix) to avoid shadowing same-named properties from
+             maven-apache-parent. This pluginManagement has no effect on the build:
+             none of these plugins are bound to any phase in this module. -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${lifecycle.version.maven-clean-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${lifecycle.version.maven-compiler-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${lifecycle.version.maven-deploy-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ear-plugin</artifactId>
+          <version>${lifecycle.version.maven-ear-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ejb-plugin</artifactId>
+          <version>${lifecycle.version.maven-ejb-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${lifecycle.version.maven-install-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${lifecycle.version.maven-jar-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${lifecycle.version.maven-plugin-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-rar-plugin</artifactId>
+          <version>${lifecycle.version.maven-rar-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${lifecycle.version.maven-resources-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${lifecycle.version.maven-site-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${lifecycle.version.maven-surefire-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${lifecycle.version.maven-war-plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -439,112 +510,5 @@ under the License.
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <!--
-        This profile exists solely so that Dependabot / Renovate can track the
-        default lifecycle plugin versions as real Maven plugin coordinates and
-        propose automated version bumps.
-
-        The profile is NEVER activated during a normal build: the activation
-        condition requires a property named "__dependabot_activate__" to equal
-        "true", which no build or CI step sets.  That means the pluginManagement
-        block below has zero effect on compilation, testing or packaging.
-
-        Property naming: we intentionally use the prefix "lifecycle." to avoid
-        shadowing the same-named properties defined in maven-apache-parent (e.g.
-        version.maven-clean-plugin), which would confuse Dependabot's property
-        resolver and prevent it from seeing the local values.
-
-        When Dependabot bumps a version it will update the property value here;
-        a separate manual step (or a follow-up bot) copies that value to the
-        matching version.maven-* property in <properties> above, which is the
-        one actually filtered into plugin-versions.properties at build time.
-      -->
-      <id>dependabot-lifecycle-plugins</id>
-      <activation>
-        <property>
-          <name>__dependabot_activate__</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <properties>
-        <!-- Keep this block empty: the lifecycle.version.* properties are declared
-             in the top-level <properties> section so Dependabot can find them
-             outside of this profile. -->
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-clean-plugin</artifactId>
-              <version>${lifecycle.version.maven-clean-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <version>${lifecycle.version.maven-compiler-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-deploy-plugin</artifactId>
-              <version>${lifecycle.version.maven-deploy-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-ear-plugin</artifactId>
-              <version>${lifecycle.version.maven-ear-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-ejb-plugin</artifactId>
-              <version>${lifecycle.version.maven-ejb-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-install-plugin</artifactId>
-              <version>${lifecycle.version.maven-install-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <version>${lifecycle.version.maven-jar-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-plugin-plugin</artifactId>
-              <version>${lifecycle.version.maven-plugin-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-rar-plugin</artifactId>
-              <version>${lifecycle.version.maven-rar-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>${lifecycle.version.maven-resources-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-site-plugin</artifactId>
-              <version>${lifecycle.version.maven-site-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>${lifecycle.version.maven-surefire-plugin}</version>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-war-plugin</artifactId>
-              <version>${lifecycle.version.maven-war-plugin}</version>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
