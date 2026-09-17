@@ -93,7 +93,7 @@ jobs:
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
       - name: Upload Maven distributions
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: maven-distributions
           path: |
@@ -194,7 +194,7 @@ jobs:
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
       - name: Upload test artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: failure() || cancelled()
         with:
           name: ${{ github.run_number }}-full-build-artifact-${{ runner.os }}-${{ matrix.java }}
@@ -278,7 +278,7 @@ jobs:
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
       - name: Upload test artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: failure() || cancelled()
         with:
           name: ${{ github.run_number }}-integration-test-artifact-${{ runner.os }}-${{ matrix.java }}
