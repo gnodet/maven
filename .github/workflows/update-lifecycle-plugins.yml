@@ -17,7 +17,7 @@ jobs:
       matrix:
         branch: [master, maven-4.0.x]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ matrix.branch }}
 
