@@ -17,7 +17,7 @@
 version: 2
 updates:
 
-  # Test branch: profile + renamed properties approach for lifecycle plugins
+  # Test branch: lifecycle plugins in main <build><pluginManagement>, lifecycle.version.* properties
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
