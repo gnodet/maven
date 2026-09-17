@@ -17,12 +17,12 @@
 version: 2
 updates:
 
-  # Test branch: lifecycle plugins: root POM top-level properties + main build pluginManagement
+  # Test: lifecycle plugins with literal versions in root POM pluginManagement,
+  # scanning default branch (master) to eliminate target-branch as a variable.
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "test/dependabot-lifecycle-plugins"
     open-pull-requests-limit: 100
     labels:
       - "dependencies"
