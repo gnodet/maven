@@ -17,7 +17,7 @@
 version: 2
 updates:
 
-  # Test branch: lifecycle plugins: root POM top-level properties + never-activated profile
+  # Test branch: lifecycle plugins: root POM top-level properties + main build pluginManagement
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
