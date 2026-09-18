@@ -523,6 +523,8 @@ under the License.
               <exclude>org.apache.maven.plugin.DefaultExtensionRealmCache#put(org.apache.maven.plugin.ExtensionRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,org.apache.maven.project.ExtensionDescriptor,java.util.List):METHOD_REMOVED</exclude>
               <exclude>org.apache.maven.plugin.DefaultPluginRealmCache#put(org.apache.maven.plugin.PluginRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,java.util.List):METHOD_REMOVED</exclude>
               <exclude>org.apache.maven.project.DefaultProjectRealmCache#put(org.apache.maven.project.ProjectRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,org.eclipse.aether.graph.DependencyFilter):METHOD_REMOVED</exclude>
+              <!-- PluginValidationManager: String issue → BuilderProblem problem (4.1.0) -->
+              <exclude>org.apache.maven.plugin.PluginValidationManager</exclude>
             </excludes>
           </parameter>
         </configuration>

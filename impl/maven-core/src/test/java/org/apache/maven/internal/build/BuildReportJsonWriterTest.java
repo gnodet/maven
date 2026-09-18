@@ -32,6 +32,7 @@ import org.apache.maven.api.build.report.MojoReport;
 import org.apache.maven.api.build.report.SubprojectReport;
 import org.apache.maven.api.logging.LogEvent;
 import org.apache.maven.api.logging.LogLevel;
+import org.apache.maven.api.services.BuilderProblem;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -591,6 +592,63 @@ class BuildReportJsonWriterTest {
         assertTrue(zooPos >= 0, "zoo key present");
         assertTrue(alphaPos < middlePos, "alpha before middle");
         assertTrue(middlePos < zooPos, "middle before zoo");
+    }
+
+    @Test
+    void testProblemsSerialization() {
+        BuilderProblem p1 = BuilderProblem.builder()
+                .source("maven-compiler-plugin:3.15.0:compile")
+                .lineNumber(42)
+                .columnNumber(1)
+                .message("source/target value 8 is deprecated")
+                .severity(BuilderProblem.Severity.WARNING)
+                .key("deprecated-source-target")
+                .suggestion("Update <maven.compiler.source> to 11 or higher")
+                .documentationUrl("https://example.com/docs/compiler")
+                .build();
+
+        BuilderProblem p2 = BuilderProblem.builder()
+                .source("maven-compiler-plugin")
+                .message("3 errors found")
+                .severity(BuilderProblem.Severity.ERROR)
+                .key("compilation-failure")
+                .build();
+
+        BuildReport report = new DefaultBuildReport(
+                BuildStatus.FAILURE,
+                Duration.ofSeconds(5),
+                BASE_TIME,
+                "4.1.0-SNAPSHOT",
+                "21.0.1",
+                List.of("compile"),
+                "com.example:test:1.0",
+                false,
+                1,
+                List.of(),
+                List.of(),
+                List.of(p1, p2),
+                List.of());
+
+        String json = BuildReportJsonWriter.toJson(report);
+
+        // Problem structure
+        assertTrue(json.contains("\"problems\": ["), "problems array present");
+        assertTrue(json.contains("\"key\": \"deprecated-source-target\""), "problem key");
+        assertTrue(json.contains("\"severity\": \"WARNING\""), "problem severity");
+        assertTrue(json.contains("\"message\": \"source/target value 8 is deprecated\""), "problem message");
+        assertTrue(json.contains("\"source\": \"maven-compiler-plugin:3.15.0:compile\""), "problem source");
+        assertTrue(json.contains("\"line\": 42"), "problem line");
+        assertTrue(json.contains("\"column\": 1"), "problem column");
+        assertTrue(
+                json.contains("\"suggestion\": \"Update <maven.compiler.source> to 11 or higher\""),
+                "problem suggestion");
+        assertTrue(
+                json.contains("\"documentationUrl\": \"https://example.com/docs/compiler\""),
+                "problem documentationUrl");
+
+        // Second problem (minimal fields)
+        assertTrue(json.contains("\"key\": \"compilation-failure\""), "second problem key");
+        assertTrue(json.contains("\"severity\": \"ERROR\""), "second problem severity");
     }
 
     @Test

@@ -338,6 +338,15 @@ class BuildReportCollectorTest {
 
     // ---- Test helpers ----
 
+    private static BuilderProblem warning(String key, String message, String source) {
+        return BuilderProblem.builder()
+                .source(source)
+                .message(message)
+                .severity(BuilderProblem.Severity.WARNING)
+                .key(key)
+                .build();
+    }
+
     private MavenProject createProject(String groupId, String artifactId, String version) {
         MavenProject project = new MavenProject();
         project.setGroupId(groupId);
