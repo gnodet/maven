@@ -184,6 +184,21 @@ public interface BuildEnvironment {
     boolean updateSnapshots();
 
     /**
+     * Whether transfer progress output was suppressed ({@code --no-transfer-progress} / {@code -ntp}).
+     *
+     * @return {@code true} if transfer progress was disabled
+     */
+    boolean noTransferProgress();
+
+    /**
+     * Whether the build was invoked in non-interactive (batch) mode ({@code --batch-mode} / {@code -B}).
+     * Equivalent to {@code !isInteractiveMode()} on {@code MavenExecutionRequest}.
+     *
+     * @return {@code true} if batch mode was active
+     */
+    boolean batchMode();
+
+    /**
      * The degree of concurrency ({@code -T} flag), or {@code 1} for sequential builds.
      *
      * @return the thread count

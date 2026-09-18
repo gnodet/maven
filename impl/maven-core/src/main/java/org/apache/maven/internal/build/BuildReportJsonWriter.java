@@ -146,6 +146,8 @@ final class BuildReportJsonWriter {
         writeField(sb, indent + 1, "reactorFailureBehavior", env.reactorFailureBehavior());
         writeField(sb, indent + 1, "offline", env.offline());
         writeField(sb, indent + 1, "updateSnapshots", env.updateSnapshots());
+        writeField(sb, indent + 1, "noTransferProgress", env.noTransferProgress());
+        writeField(sb, indent + 1, "batchMode", env.batchMode());
         writeField(sb, indent + 1, "threads", env.threads());
         removeTrailingComma(sb);
         writeIndent(sb, indent);

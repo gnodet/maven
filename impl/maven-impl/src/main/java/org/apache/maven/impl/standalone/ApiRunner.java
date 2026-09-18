@@ -437,6 +437,16 @@ public class ApiRunner {
                 }
 
                 @Override
+                public boolean noTransferProgress() {
+                    return false;
+                }
+
+                @Override
+                public boolean batchMode() {
+                    return false;
+                }
+
+                @Override
                 public int threads() {
                     return 1;
                 }

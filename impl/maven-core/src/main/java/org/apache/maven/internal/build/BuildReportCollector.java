@@ -436,6 +436,8 @@ public final class BuildReportCollector extends AbstractEventSpy {
                 failureBehavior,
                 request.isOffline(),
                 request.isUpdateSnapshots(),
+                request.isNoTransferProgress(),
+                !request.isInteractiveMode(),
                 request.getDegreeOfConcurrency());
     }
 

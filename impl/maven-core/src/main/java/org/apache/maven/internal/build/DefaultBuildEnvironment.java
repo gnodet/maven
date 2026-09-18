@@ -37,6 +37,8 @@ record DefaultBuildEnvironment(
         String reactorFailureBehavior,
         boolean offline,
         boolean updateSnapshots,
+        boolean noTransferProgress,
+        boolean batchMode,
         int threads)
         implements BuildEnvironment {
 
