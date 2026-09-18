@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.maven.api.BuildEnvironment;
 import org.apache.maven.api.annotations.Experimental;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.services.BuilderProblem;
@@ -43,6 +44,16 @@ import org.apache.maven.api.services.BuilderProblem;
  */
 @Experimental
 public interface BuildReport {
+
+    /**
+     * The invocation context of this build: flags, properties, and platform settings
+     * that were active when the session started.
+     *
+     * @return the build environment, never {@code null}
+     * @since 4.1.0
+     */
+    @Nonnull
+    BuildEnvironment environment();
 
     /**
      * Schema version of the report format. Consumers should check this

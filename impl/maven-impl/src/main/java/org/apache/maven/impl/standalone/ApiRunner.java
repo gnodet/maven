@@ -382,6 +382,68 @@ public class ApiRunner {
         }
 
         @Override
+        public org.apache.maven.api.BuildEnvironment buildEnvironment() {
+            // ApiRunner is a standalone/embedded session with no MavenExecutionRequest;
+            // return a minimal environment reflecting defaults.
+            return new org.apache.maven.api.BuildEnvironment() {
+                @Override
+                public java.util.List<String> goals() {
+                    return java.util.List.of();
+                }
+
+                @Override
+                public java.util.Map<String, String> userProperties() {
+                    return java.util.Map.of();
+                }
+
+                @Override
+                public java.util.Map<String, String> systemInfo() {
+                    return java.util.Map.of();
+                }
+
+                @Override
+                public String localRepository() {
+                    return "";
+                }
+
+                @Override
+                public java.util.List<String> activeProfiles() {
+                    return java.util.List.of();
+                }
+
+                @Override
+                public java.util.List<String> selectedProjects() {
+                    return java.util.List.of();
+                }
+
+                @Override
+                public String resumeFrom() {
+                    return null;
+                }
+
+                @Override
+                public String reactorFailureBehavior() {
+                    return "FAIL_FAST";
+                }
+
+                @Override
+                public boolean offline() {
+                    return false;
+                }
+
+                @Override
+                public boolean updateSnapshots() {
+                    return false;
+                }
+
+                @Override
+                public int threads() {
+                    return 1;
+                }
+            };
+        }
+
+        @Override
         public Instant getStartTime() {
             return startTime;
         }

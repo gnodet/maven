@@ -174,6 +174,12 @@ public class DefaultSession extends AbstractSession implements InternalMavenSess
 
     @Nonnull
     @Override
+    public org.apache.maven.api.BuildEnvironment buildEnvironment() {
+        return org.apache.maven.internal.build.BuildReportCollector.buildEnvironment(getMavenSession());
+    }
+
+    @Nonnull
+    @Override
     public Instant getStartTime() {
         return getMavenSession().getRequest().getStartInstant();
     }

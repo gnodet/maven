@@ -18,6 +18,7 @@
  */
 package org.apache.maven.internal.build;
 
+import org.apache.maven.api.BuildEnvironment;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.FailureReport;
 import org.apache.maven.api.build.report.LogEvent;
@@ -58,6 +59,12 @@ final class BuildReportJsonWriter {
         writeField(sb, indent + 1, "project", report.project());
         writeField(sb, indent + 1, "multiModule", report.multiModule());
         writeField(sb, indent + 1, "threads", report.threads());
+
+        // environment object
+        writeIndent(sb, indent + 1);
+        sb.append("\"environment\": ");
+        writeEnvironment(sb, report.environment(), indent + 1);
+        sb.append(",\n");
 
         // modules array
         writeIndent(sb, indent + 1);
@@ -125,6 +132,49 @@ final class BuildReportJsonWriter {
 
         writeIndent(sb, indent);
         sb.append('}');
+    }
+
+    private static void writeEnvironment(StringBuilder sb, BuildEnvironment env, int indent) {
+        sb.append("{\n");
+        writeStringArray(sb, indent + 1, "goals", env.goals());
+        writeStringMap(sb, indent + 1, "userProperties", env.userProperties());
+        writeStringMap(sb, indent + 1, "systemInfo", env.systemInfo());
+        writeField(sb, indent + 1, "localRepository", env.localRepository());
+        writeStringArray(sb, indent + 1, "activeProfiles", env.activeProfiles());
+        writeStringArray(sb, indent + 1, "selectedProjects", env.selectedProjects());
+        writeNullableField(sb, indent + 1, "resumeFrom", env.resumeFrom(), true);
+        writeField(sb, indent + 1, "reactorFailureBehavior", env.reactorFailureBehavior());
+        writeField(sb, indent + 1, "offline", env.offline());
+        writeField(sb, indent + 1, "updateSnapshots", env.updateSnapshots());
+        writeField(sb, indent + 1, "threads", env.threads());
+        removeTrailingComma(sb);
+        writeIndent(sb, indent);
+        sb.append('}');
+    }
+
+    private static void writeStringMap(StringBuilder sb, int indent, String key, java.util.Map<String, String> map) {
+        writeIndent(sb, indent);
+        sb.append('"').append(key).append("\": ");
+        if (map.isEmpty()) {
+            sb.append("{}");
+        } else {
+            sb.append("{\n");
+            var entries = new java.util.ArrayList<>(map.entrySet());
+            for (int i = 0; i < entries.size(); i++) {
+                var entry = entries.get(i);
+                writeIndent(sb, indent + 1);
+                writeJsonString(sb, entry.getKey());
+                sb.append(": ");
+                writeJsonString(sb, entry.getValue());
+                if (i < entries.size() - 1) {
+                    sb.append(',');
+                }
+                sb.append('\n');
+            }
+            writeIndent(sb, indent);
+            sb.append('}');
+        }
+        sb.append(",\n");
     }
 
     private static void writeProblem(StringBuilder sb, BuilderProblem problem, int indent) {

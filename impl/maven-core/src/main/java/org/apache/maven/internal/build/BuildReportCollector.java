@@ -34,10 +34,14 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.maven.api.BuildEnvironment;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
@@ -106,6 +110,9 @@ public final class BuildReportCollector extends AbstractEventSpy {
     /** Session-level state - set once on SessionStarted. */
     private volatile MavenSession session;
 
+    /** Build environment - captured once at SessionStarted, immutable thereafter. */
+    private volatile BuildEnvironment buildEnvironment;
+
     // ---- Log capture state ----
 
     /**
@@ -165,6 +172,7 @@ public final class BuildReportCollector extends AbstractEventSpy {
 
     private void onSessionStarted(ExecutionEvent event) {
         this.session = event.getSession();
+        this.buildEnvironment = buildEnvironment(this.session);
         installLogCapture();
     }
 
@@ -346,6 +354,7 @@ public final class BuildReportCollector extends AbstractEventSpy {
         List<LogEvent> buildOutput = List.copyOf(buildLogBuffer);
 
         return new DefaultBuildReport(
+                buildEnvironment != null ? buildEnvironment : buildEnvironment(endSession),
                 overallStatus,
                 totalDuration,
                 startInstant,
@@ -359,6 +368,95 @@ public final class BuildReportCollector extends AbstractEventSpy {
                 failureReports,
                 List.of(),
                 buildOutput);
+    }
+
+    /**
+     * Captures the build environment from the session at the point of invocation.
+     * Called once at {@code SessionStarted} so the snapshot reflects the original
+     * invocation context, not any session mutations that may happen during the build.
+     */
+    public static BuildEnvironment buildEnvironment(MavenSession session) {
+        var request = session.getRequest();
+
+        // Goals
+        List<String> goals = request.getGoals() != null ? List.copyOf(request.getGoals()) : List.of();
+
+        // User properties — filter sensitive keys
+        Map<String, String> userProperties = new LinkedHashMap<>();
+        if (request.getUserProperties() != null) {
+            request.getUserProperties().forEach((k, v) -> {
+                String key = String.valueOf(k);
+                String value = isSensitiveKey(key) ? "***" : String.valueOf(v);
+                userProperties.put(key, value);
+            });
+        }
+
+        // Curated system info
+        Map<String, String> systemInfo = new TreeMap<>();
+        addSystemProp(systemInfo, "os.name");
+        addSystemProp(systemInfo, "os.arch");
+        addSystemProp(systemInfo, "os.version");
+        addSystemProp(systemInfo, "java.vendor");
+        addSystemProp(systemInfo, "java.vm.name");
+        addSystemProp(systemInfo, "java.vm.version");
+        addSystemProp(systemInfo, "maven.home");
+        addSystemProp(systemInfo, "user.home");
+        addSystemProp(systemInfo, "user.name");
+        systemInfo.put(
+                "available.processors", String.valueOf(Runtime.getRuntime().availableProcessors()));
+
+        // Local repository path
+        String localRepo = request.getLocalRepositoryPath() != null
+                ? request.getLocalRepositoryPath().getAbsolutePath()
+                : "";
+
+        // Explicitly activated profiles (-P)
+        List<String> activeProfiles =
+                request.getActiveProfiles() != null ? List.copyOf(request.getActiveProfiles()) : List.of();
+
+        // Selected projects (-pl)
+        List<String> selectedProjects =
+                request.getSelectedProjects() != null ? List.copyOf(request.getSelectedProjects()) : List.of();
+
+        // Resume from (-rf)
+        String resumeFrom = request.getResumeFrom();
+
+        // Failure behavior
+        String failureBehavior =
+                request.getReactorFailureBehavior() != null ? request.getReactorFailureBehavior() : "FAIL_FAST";
+
+        return new DefaultBuildEnvironment(
+                goals,
+                userProperties,
+                systemInfo,
+                localRepo,
+                activeProfiles,
+                selectedProjects,
+                resumeFrom,
+                failureBehavior,
+                request.isOffline(),
+                request.isUpdateSnapshots(),
+                request.getDegreeOfConcurrency());
+    }
+
+    private static final Set<String> SENSITIVE_KEY_FRAGMENTS =
+            Set.of("password", "passwd", "secret", "token", "apikey", "api_key", "credential", "passphrase");
+
+    private static boolean isSensitiveKey(String key) {
+        String lower = key.toLowerCase(java.util.Locale.ROOT);
+        for (String fragment : SENSITIVE_KEY_FRAGMENTS) {
+            if (lower.contains(fragment)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void addSystemProp(Map<String, String> map, String key) {
+        String value = System.getProperty(key);
+        if (value != null) {
+            map.put(key, value);
+        }
     }
 
     private ModuleReport buildModuleReport(MavenProject project, MavenSession endSession) {

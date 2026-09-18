@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+import org.apache.maven.api.BuildEnvironment;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
 import org.apache.maven.api.build.report.FailureReport;
@@ -33,6 +34,7 @@ import org.apache.maven.api.services.BuilderProblem;
  * Internal immutable implementation of {@link BuildReport}.
  */
 record DefaultBuildReport(
+        BuildEnvironment environment,
         BuildStatus status,
         Duration duration,
         Instant startTime,

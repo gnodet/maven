@@ -21,7 +21,9 @@ package org.apache.maven.internal.build;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.maven.api.BuildEnvironment;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
 import org.apache.maven.api.build.report.FailureReport;
@@ -37,6 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BuildReportJsonWriterTest {
 
+    private static final BuildEnvironment EMPTY_ENV = new DefaultBuildEnvironment(
+            List.of(), Map.of(), Map.of(), "", List.of(), List.of(), null, "FAIL_FAST", false, false, 1);
     private static final Instant BASE_TIME = Instant.parse("2025-01-15T10:30:00Z");
 
     @Test
@@ -80,6 +84,7 @@ class BuildReportJsonWriterTest {
                 new DefaultLogEvent(BASE_TIME, LogLevel.INFO, "Maven Core", "o.a.m.reactor", null));
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofMillis(30000),
                 BASE_TIME,
@@ -131,6 +136,7 @@ class BuildReportJsonWriterTest {
                 "org.apache.maven.plugin.compiler.CompilationFailureException: ...\n\tat ...\n");
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.FAILURE,
                 Duration.ofMillis(5000),
                 BASE_TIME,
@@ -168,6 +174,7 @@ class BuildReportJsonWriterTest {
                 null);
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.FAILURE,
                 Duration.ofMillis(100),
                 BASE_TIME,
@@ -193,6 +200,7 @@ class BuildReportJsonWriterTest {
     @Test
     void testEmptyModulesAndFailures() {
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofMillis(100),
                 BASE_TIME,
@@ -216,6 +224,7 @@ class BuildReportJsonWriterTest {
     @Test
     void testFormatVersion() {
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ZERO,
                 BASE_TIME,
@@ -264,6 +273,7 @@ class BuildReportJsonWriterTest {
                 List.of());
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofSeconds(15),
                 BASE_TIME,
@@ -303,6 +313,7 @@ class BuildReportJsonWriterTest {
                 List.of());
 
         String json = BuildReportJsonWriter.toJson(new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofSeconds(1),
                 BASE_TIME,
@@ -362,6 +373,7 @@ class BuildReportJsonWriterTest {
                 List.of(julEvent, slf4jEvent));
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofSeconds(1),
                 BASE_TIME,
@@ -403,6 +415,7 @@ class BuildReportJsonWriterTest {
     @Test
     void testEmptyProblems() {
         BuildReport report = new DefaultBuildReport(
+                EMPTY_ENV,
                 BuildStatus.SUCCESS,
                 Duration.ofMillis(100),
                 BASE_TIME,

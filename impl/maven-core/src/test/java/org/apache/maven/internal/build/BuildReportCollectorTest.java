@@ -98,6 +98,15 @@ class BuildReportCollectorTest {
         assertEquals(BuildStatus.SUCCESS, report.modules().get(0).mojos().get(0).status());
         assertTrue(report.failures().isEmpty());
         assertTrue(report.problems().isEmpty());
+
+        // environment assertions
+        assertNotNull(report.environment());
+        assertEquals(List.of("clean", "install"), report.environment().goals());
+        assertFalse(report.environment().offline());
+        assertFalse(report.environment().updateSnapshots());
+        assertNotNull(report.environment().systemInfo());
+        assertFalse(report.environment().systemInfo().isEmpty());
+        assertTrue(report.environment().systemInfo().containsKey("available.processors"));
     }
 
     @Test
@@ -214,6 +223,46 @@ class BuildReportCollectorTest {
 
         // Short stack traces should NOT contain the truncation notice
         assertFalse(result.contains("more lines truncated"), "short stack traces should not be truncated");
+    }
+
+    @Test
+    void testBuildEnvironmentSensitiveKeyRedaction() {
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+
+        // Inject user properties with sensitive and non-sensitive keys
+        Properties userProps = new Properties();
+        userProps.setProperty("my.password", "s3cr3t");
+        userProps.setProperty("db.secret", "hunter2");
+        userProps.setProperty("api.token", "abc123");
+        userProps.setProperty("maven.compiler.release", "21");
+        session.getRequest().setUserProperties(userProps);
+
+        var env = BuildReportCollector.buildEnvironment(session);
+
+        assertEquals("***", env.userProperties().get("my.password"), "password key must be redacted");
+        assertEquals("***", env.userProperties().get("db.secret"), "secret key must be redacted");
+        assertEquals("***", env.userProperties().get("api.token"), "token key must be redacted");
+        assertEquals("21", env.userProperties().get("maven.compiler.release"), "non-sensitive key must be kept");
+    }
+
+    @Test
+    void testBuildEnvironmentOfflineAndProfiles() {
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getRequest().setOffline(true);
+        session.getRequest().setUpdateSnapshots(true);
+        session.getRequest().setActiveProfiles(List.of("ci", "!slow-tests"));
+        session.getRequest().setSelectedProjects(List.of(":my-app"));
+        session.getRequest().setResumeFrom(":other-module");
+
+        var env = BuildReportCollector.buildEnvironment(session);
+
+        assertTrue(env.offline());
+        assertTrue(env.updateSnapshots());
+        assertEquals(List.of("ci", "!slow-tests"), env.activeProfiles());
+        assertEquals(List.of(":my-app"), env.selectedProjects());
+        assertEquals(":other-module", env.resumeFrom());
     }
 
     // ---- Test helpers ----
