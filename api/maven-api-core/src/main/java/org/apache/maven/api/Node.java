@@ -106,8 +106,8 @@ public interface Node {
      * @return the child nodes of this node, never {@code null}
      * @deprecated Use {@link #children()} instead.
      */
-    @Nonnull
     @Deprecated(since = "4.1.0", forRemoval = true)
+    @Nonnull
     default List<Node> getChildren() {
         return children();
     }
@@ -116,8 +116,8 @@ public interface Node {
      * @return repositories of this node
      * @deprecated Use {@link #remoteRepositories()} instead.
      */
-    @Nonnull
     @Deprecated(since = "4.1.0", forRemoval = true)
+    @Nonnull
     default List<RemoteRepository> getRemoteRepositories() {
         return remoteRepositories();
     }
@@ -127,8 +127,8 @@ public interface Node {
      *
      * @deprecated Use {@link #repository()} instead.
      */
-    @Nonnull
     @Deprecated(since = "4.1.0", forRemoval = true)
+    @Nonnull
     default Optional<RemoteRepository> getRepository() {
         return repository();
     }
