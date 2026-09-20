@@ -65,7 +65,7 @@ public interface LogEvent {
     /**
      * The log message, without level prefix or timestamp formatting.
      *
-     * @return the formatted message, never {@code null}
+     * @return the log message, never {@code null}
      */
     @Nonnull
     String message();

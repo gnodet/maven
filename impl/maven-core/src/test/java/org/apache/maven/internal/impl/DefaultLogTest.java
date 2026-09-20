@@ -19,6 +19,7 @@
 package org.apache.maven.internal.impl;
 
 import org.apache.maven.api.plugin.Log;
+import org.apache.maven.logging.ProjectBuildLogAppender;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -57,6 +58,10 @@ class DefaultLogTest {
     /**
      * Verify that Log API metadata is set during the log call and
      * cleared afterwards — no leakage across calls.
+     * <p>
+     * Report capture must be active for the metadata path to execute;
+     * without it {@code withMetadata()} takes the fast-path and the
+     * ThreadLocal is never set.
      */
     @Test
     void logApiMetadataIsClearedAfterCall() {
@@ -65,10 +70,18 @@ class DefaultLogTest {
         when(mockLogger.getName()).thenReturn("com.example.MyMojo");
 
         DefaultLog log = new DefaultLog(mockLogger);
-        log.info("test message");
 
-        // After the call completes, metadata should be cleared
-        assertNull(DefaultLog.getLogApiMetadata(), "Log API metadata should be cleared after the log call");
+        // Activate the report-capture path so withMetadata() actually sets the ThreadLocal
+        ProjectBuildLogAppender.setReportCapture(event -> {});
+        try {
+            log.info("test message");
+
+            // After the call completes, metadata should be cleared (finally block ran)
+            assertNull(DefaultLog.getLogApiMetadata(), "Log API metadata should be cleared after the log call");
+        } finally {
+            // Restore: do not leave a capture installed across tests
+            ProjectBuildLogAppender.setReportCapture(null);
+        }
     }
 
     /**
