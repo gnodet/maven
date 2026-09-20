@@ -149,6 +149,11 @@ public class MavenJulHandler extends Handler {
             return;
         }
 
+        // Honour any Filter registered on this Handler (java.util.logging.Handler contract).
+        if (!isLoggable(record)) {
+            return;
+        }
+
         // Re-entrancy guard: drop recursive JUL events that originate from
         // within SLF4J/JLine processing triggered by this very publish() call.
         // Example: MavenSimpleLogger.renderLevel() lazily initialises ANSI
