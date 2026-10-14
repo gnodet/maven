@@ -254,7 +254,9 @@ public class InjectorImpl implements Injector {
         if (res != null && !res.isEmpty()) {
             List<Binding<Q>> bindingList = new ArrayList<>(res);
             Comparator<Binding<?>> comparator = key.getQualifier() == null
-                    ? getPriorityComparator().thenComparing(b -> !isDefaultBinding(b))
+                    ? getPriorityComparator()
+                            .thenComparing(b -> !isDefaultBinding(b))
+                            .thenComparing(b -> isNullQualifiedBinding(b) ? 0 : 1)
                     : getPriorityComparator();
             bindingList.sort(comparator);
             Binding<Q> binding = bindingList.get(0);
@@ -318,6 +320,18 @@ public class InjectorImpl implements Injector {
         Key<?> key = binding.getOriginalKey();
         Object qualifier = key != null ? key.getQualifier() : null;
         return qualifier == null || "".equals(qualifier);
+    }
+
+    /**
+     * Returns true when the binding's original key has a {@code null} qualifier, meaning it was
+     * registered as a directly unqualified provider (not as a named bean also aliased to the
+     * unqualified key via {@code doBindImplicit}).  Used as a final tiebreaker after
+     * {@link #isDefaultBinding} to prefer explicit unqualified providers over {@code @Named("")}
+     * beans that were additionally registered without a qualifier.
+     */
+    private static boolean isNullQualifiedBinding(Binding<?> binding) {
+        Key<?> key = binding.getOriginalKey();
+        return key == null || key.getQualifier() == null;
     }
 
     @SuppressWarnings("unchecked")

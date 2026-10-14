@@ -270,12 +270,23 @@ class BindingSelectionTest {
     }
 
     @Test
-    void anUnqualifiedClassAndAnEmptyNamedClassAreAmbiguous() {
+    void anUnqualifiedClassWinsOverAnEmptyNamedClass() {
         Injector injector = Injector.create().bindImplicit(DefaultService.class).bindImplicit(EmptyNamedService.class);
 
-        DIException exception = assertThrows(DIException.class, () -> injector.getInstance(Service.class));
-        assertTrue(exception.getMessage().contains("DefaultService"));
-        assertTrue(exception.getMessage().contains("EmptyNamedService"));
+        assertInstanceOf(DefaultService.class, injector.getInstance(Service.class));
+        assertInstanceOf(EmptyNamedService.class, injector.getInstance(Key.of(Service.class, "")));
+    }
+
+    @Test
+    void anUnqualifiedProviderMethodWinsOverAnEmptyNamedClass() {
+        // Models the pattern where a test harness provides an unqualified binding that should
+        // override a @Named("") default implementation such as DefaultToolchainManager.
+        Injector injector = Injector.create()
+                .bindImplicit(EmptyNamedService.class)
+                .bindImplicit(UnqualifiedProviderForEmptyNamed.class);
+
+        assertInstanceOf(DefaultService.class, injector.getInstance(Service.class));
+        assertInstanceOf(EmptyNamedService.class, injector.getInstance(Key.of(Service.class, "")));
     }
 
     @Test
@@ -500,5 +511,12 @@ class BindingSelectionTest {
         @Inject
         @Nullable
         Service service;
+    }
+
+    static class UnqualifiedProviderForEmptyNamed {
+        @Provides
+        static Service unqualified() {
+            return new DefaultService();
+        }
     }
 }
