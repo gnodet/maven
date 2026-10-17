@@ -207,9 +207,8 @@ public class DefaultRepositorySystemSessionFactory implements RepositorySystemSe
         } else {
             // New-style per-type policies take precedence; warn if old-style flags were also set
             if (request.isNoSnapshotUpdates() || request.isUpdateSnapshots()) {
-                logger.warn(
-                        "Both new-style update policy options and legacy snapshot flags (-U/-nsu) were specified. "
-                                + "The new-style policies take precedence; the legacy flags are ignored.");
+                logger.warn("Both new-style update policy options and legacy snapshot flags (-U/-nsu) were specified. "
+                        + "The new-style policies take precedence; the legacy flags are ignored.");
             }
             if (request.getArtifactsUpdatePolicy() != null) {
                 sessionBuilder.setArtifactUpdatePolicy(request.getArtifactsUpdatePolicy());

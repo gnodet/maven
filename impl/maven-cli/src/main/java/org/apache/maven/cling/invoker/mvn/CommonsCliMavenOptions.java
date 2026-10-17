@@ -395,13 +395,13 @@ public class CommonsCliMavenOptions extends CommonsCliOptions implements MavenOp
                     .longOpt(ARTIFACTS_UPDATE_POLICY)
                     .hasArg(true)
                     .desc(
-                            "The update policy to apply onto artifacts ('always', 'daily', 'never'); The -UA option overrides this option with 'always'")
+                            "The update policy to apply onto artifacts ('always', 'daily', 'interval:N', 'never'); The -UA option overrides this option with 'always'")
                     .get());
             options.addOption(Option.builder()
                     .longOpt(METADATA_UPDATE_POLICY)
                     .hasArg(true)
                     .desc(
-                            "The update policy to apply onto metadata ('always', 'daily', 'never'); The -UM option overrides this option with 'always'")
+                            "The update policy to apply onto metadata ('always', 'daily', 'interval:N', 'never'); The -UM option overrides this option with 'always'")
                     .get());
             options.addOption(Option.builder(AT_FILE)
                     .longOpt("at-file")
