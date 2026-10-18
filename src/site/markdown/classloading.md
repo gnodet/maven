@@ -74,7 +74,7 @@ extensions can influence the build itself (e.g. polyglot Maven).
     <groupId>...</groupId>
     <artifactId>...</artifactId>
     <version>...</version>
-    <!-- optional: parent-first (default), self-first, plugin -->
+    <!-- optional: self-first (default), parent-first, plugin -->
     <classLoadingStrategy>...</classLoadingStrategy>
   </extension>
 </extensions>
@@ -90,9 +90,9 @@ wiring:
 
 | Strategy | Behavior |
 |---|---|
-| `parent-first` (default) | Imports everything from the core realm. Classes from the core are preferred over the extension's own. |
+| `self-first` (default) | Uses the core realm as parent but checks its own classes first. Allows the extension to override core classes. |
+| `parent-first` | Imports everything from the core realm. Classes from the core are preferred over the extension's own. |
 | `plugin` | Imports only `CoreExports` packages (the Maven API surface). Same isolation as build extensions. |
-| `self-first` | Uses the core realm as parent but checks its own classes first. Allows the extension to override core classes. |
 
 Core extensions are loaded as part of Maven runtime startup and
 disposed of as part of Maven runtime shutdown.
