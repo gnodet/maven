@@ -44,6 +44,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -209,6 +210,39 @@ class DefaultSettingsBuilderFactoryTest {
                 .toList();
         assertEquals(List.of("https://good.example.org"), repositoryOrigins);
         assertTrue(result.getProblems().hasWarningProblems());
+    }
+
+    @Test
+    void emptySettingsGetCentralInBothRepoLists() {
+        Settings settings = execute("settings-simple").getEffectiveSettings();
+
+        assertEquals(1, settings.getRepositories().size());
+        assertEquals("central", settings.getRepositories().get(0).getId());
+
+        assertEquals(1, settings.getPluginRepositories().size());
+        assertEquals("central", settings.getPluginRepositories().get(0).getId());
+    }
+
+    @Test
+    void reposOnlySettingsGetCentralInPluginRepos() {
+        Settings settings = execute("settings-repos-only").getEffectiveSettings();
+
+        assertFalse(settings.getRepositories().isEmpty());
+        assertEquals("internal", settings.getRepositories().get(0).getId());
+
+        assertEquals(1, settings.getPluginRepositories().size());
+        assertEquals("central", settings.getPluginRepositories().get(0).getId());
+    }
+
+    @Test
+    void pluginReposOnlySettingsGetCentralInRepos() {
+        Settings settings = execute("settings-plugin-repos-only").getEffectiveSettings();
+
+        assertEquals(1, settings.getRepositories().size());
+        assertEquals("central", settings.getRepositories().get(0).getId());
+
+        assertFalse(settings.getPluginRepositories().isEmpty());
+        assertEquals("internal-plugins", settings.getPluginRepositories().get(0).getId());
     }
 
     private Path getSettings(String name) {
