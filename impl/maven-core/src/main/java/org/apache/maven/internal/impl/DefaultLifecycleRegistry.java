@@ -46,6 +46,7 @@ import org.apache.maven.api.services.LifecycleRegistry;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.api.spi.ExtensibleEnumProvider;
 import org.apache.maven.api.spi.LifecycleProvider;
+import org.apache.maven.impl.ExtensibleEnumRegistries;
 import org.apache.maven.lifecycle.PluginVersions;
 import org.apache.maven.lifecycle.mapping.LifecyclePhase;
 import org.codehaus.plexus.PlexusContainer;
@@ -111,8 +112,9 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
         List<LifecycleProvider> p = new ArrayList<>(providers);
         p.add(() -> List.of(new CleanLifecycle(), new DefaultLifecycle(), new SiteLifecycle()));
         this.providers = p;
-        // validate lifecycle
-        for (Lifecycle lifecycle : this) {
+        // validate lifecycle — iterate all providers unfiltered to catch phase uniqueness violations
+        // regardless of classloader context (providers are still being registered at this point)
+        for (Lifecycle lifecycle : allLifecycles()) {
             Set<String> set = new HashSet<>();
             lifecycle.allPhases().forEach(phase -> {
                 if (!set.add(phase.name())) {
@@ -135,7 +137,22 @@ public class DefaultLifecycleRegistry implements LifecycleRegistry {
 
     @Override
     public Stream<Lifecycle> stream() {
-        return providers.stream().map(ExtensibleEnumProvider::provides).flatMap(Collection::stream);
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        return providers.stream()
+                .filter(p -> ExtensibleEnumRegistries.isVisibleFrom(p, tccl))
+                .map(ExtensibleEnumProvider::provides)
+                .flatMap(Collection::stream);
+    }
+
+    /**
+     * Returns all lifecycles from all providers without classloader filtering.
+     * Used only for construction-time validation of phase uniqueness.
+     */
+    private Iterable<Lifecycle> allLifecycles() {
+        return () -> providers.stream()
+                .map(ExtensibleEnumProvider::provides)
+                .flatMap(Collection::stream)
+                .iterator();
     }
 
     @Override

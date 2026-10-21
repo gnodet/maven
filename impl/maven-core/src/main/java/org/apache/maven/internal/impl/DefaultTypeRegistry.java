@@ -37,6 +37,7 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.LegacyArtifactHandlerManager;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
+import org.apache.maven.impl.ExtensibleEnumRegistries;
 import org.apache.maven.impl.resolver.type.DefaultType;
 
 import static java.util.Objects.requireNonNull;
@@ -78,26 +79,33 @@ public class DefaultTypeRegistry extends AbstractEventSpy implements TypeRegistr
     @Nonnull
     public Type require(String id) {
         requireNonNull(id, "id cannot be null");
-        return usedTypes.computeIfAbsent(id, i -> {
-            Type type = lookup.lookupList(TypeProvider.class).stream()
-                    .flatMap(p -> p.provides().stream())
-                    .filter(t -> Objects.equals(id, t.id()))
-                    .findFirst()
-                    .orElse(null);
-            if (type == null) {
-                // Copy data as the ArtifactHandler is not immutable, but Type should be.
-                ArtifactHandler handler = manager.getArtifactHandler(id);
-                type = new DefaultType(
-                        id,
-                        languageRegistry.lookup(handler.getLanguage()).orElseGet(() -> handler::getLanguage),
-                        handler.getExtension(),
-                        handler.getClassifier(),
-                        handler.isIncludesDependencies(),
-                        handler.isAddedToClasspath()
-                                ? new JavaPathType[] {JavaPathType.CLASSES, JavaPathType.MODULES}
-                                : new JavaPathType[] {});
-            }
+        // Extension-contributed types must be filtered by classloader visibility to prevent
+        // reactor leaks in parallel builds. They are intentionally not cached: the visible
+        // set depends on the calling thread's context classloader, which differs per module.
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        Type type = lookup.lookupList(TypeProvider.class).stream()
+                .filter(p -> ExtensibleEnumRegistries.isVisibleFrom(p, tccl))
+                .flatMap(p -> p.provides().stream())
+                .filter(t -> Objects.equals(id, t.id()))
+                .findFirst()
+                .orElse(null);
+        if (type != null) {
             return type;
+        }
+        // Fall back to globally-visible types (ArtifactHandler-based). These are safe to
+        // cache: they are not extension-scoped and do not vary by classloader context.
+        return usedTypes.computeIfAbsent(id, i -> {
+            // Copy data as the ArtifactHandler is not immutable, but Type should be.
+            ArtifactHandler handler = manager.getArtifactHandler(id);
+            return new DefaultType(
+                    id,
+                    languageRegistry.lookup(handler.getLanguage()).orElseGet(() -> handler::getLanguage),
+                    handler.getExtension(),
+                    handler.getClassifier(),
+                    handler.isIncludesDependencies(),
+                    handler.isAddedToClasspath()
+                            ? new JavaPathType[] {JavaPathType.CLASSES, JavaPathType.MODULES}
+                            : new JavaPathType[] {});
         });
     }
 }

@@ -155,11 +155,37 @@ public class ExtensibleEnumRegistries {
         private final Lookup lookup;
         private final Class<P> providerType;
 
+        /**
+         * Creates a static registry backed by an injected list of providers and a set of built-in
+         * values. No dynamic {@link Lookup} is performed at query time; the registry is fully
+         * populated at construction. Use this constructor for registry types whose providers are
+         * known at DI wiring time and do not vary per-project (e.g. {@link DefaultPathScopeRegistry},
+         * {@link DefaultProjectScopeRegistry}, {@link DefaultLanguageRegistry}).
+         *
+         * @param providers the injected list of SPI providers
+         * @param builtinValues the built-in enum values always present in this registry
+         */
         @SafeVarargs
         public DefaultExtensibleEnumRegistry(List<P> providers, T... builtinValues) {
             this(null, null, providers, builtinValues);
         }
 
+        /**
+         * Creates a dynamic registry that also performs live {@link Lookup} at query time, filtering
+         * providers by classloader visibility. Use this constructor for registry types whose providers
+         * can be contributed by project extensions that are scoped to individual reactor modules
+         * (e.g. {@link org.apache.maven.internal.impl.DefaultPackagingRegistry}).
+         *
+         * <p>The injected {@code providers} list is still used to populate the static {@code values}
+         * map (built-in and globally-visible providers). The {@link Lookup} is consulted on every
+         * {@link #lookup(String)} call to discover extension-contributed providers that are only
+         * visible from the current thread's context classloader.</p>
+         *
+         * @param lookup the DI lookup service used for dynamic provider discovery
+         * @param providerType the SPI provider interface to query via {@code lookup}
+         * @param providers the injected list of SPI providers
+         * @param builtinValues the built-in enum values always present in this registry
+         */
         @SafeVarargs
         public DefaultExtensibleEnumRegistry(
                 Lookup lookup, Class<P> providerType, List<P> providers, T... builtinValues) {
