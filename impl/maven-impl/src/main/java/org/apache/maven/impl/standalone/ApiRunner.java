@@ -596,7 +596,7 @@ public class ApiRunner {
                 ? new LocalRepository(localRepoProvider.getLocalRepo().toAbsolutePath())
                 : settings.getLocalRepository() != null
                                 && !settings.getLocalRepository().isEmpty()
-                        ? new LocalRepository(settings.getLocalRepository())
+                        ? new LocalRepository(Path.of(settings.getLocalRepository()).toAbsolutePath())
                         : new LocalRepository(
                                 mavenUserHome.resolve("repository").toAbsolutePath());
         LocalRepositoryManager llm = system.newLocalRepositoryManager(rsession, localRepository);
