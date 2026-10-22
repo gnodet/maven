@@ -590,12 +590,13 @@ public class ApiRunner {
         // Set the Maven version
         session.setMavenVersion(detectMavenVersion(lookup));
 
-        // Preserve Path values; the String constructor parses repository URLs.
-        LocalRepository localRepository = settings.getLocalRepository() != null
-                        && !settings.getLocalRepository().isEmpty()
-                ? new LocalRepository(settings.getLocalRepository())
-                : localRepoProvider != null && localRepoProvider.getLocalRepo() != null
-                        ? new LocalRepository(localRepoProvider.getLocalRepo().toAbsolutePath())
+        // Preserve Path values; the String constructor parses repository URLs. An explicit localRepo
+        // argument takes precedence over settings.xml, which in turn takes precedence over the default.
+        LocalRepository localRepository = localRepoProvider != null && localRepoProvider.getLocalRepo() != null
+                ? new LocalRepository(localRepoProvider.getLocalRepo().toAbsolutePath())
+                : settings.getLocalRepository() != null
+                                && !settings.getLocalRepository().isEmpty()
+                        ? new LocalRepository(settings.getLocalRepository())
                         : new LocalRepository(
                                 mavenUserHome.resolve("repository").toAbsolutePath());
         LocalRepositoryManager llm = system.newLocalRepositoryManager(rsession, localRepository);
