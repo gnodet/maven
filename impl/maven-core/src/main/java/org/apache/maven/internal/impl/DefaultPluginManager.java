@@ -33,6 +33,7 @@ import org.apache.maven.api.services.PluginManagerException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.LifecyclePluginResolver;
 import org.apache.maven.plugin.MavenPluginManager;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.version.PluginVersionResolutionException;
 import org.apache.maven.project.MavenProject;
@@ -81,11 +82,17 @@ public final class DefaultPluginManager implements PluginManager {
             PluginDescriptor descriptor = pluginManager.getPluginDescriptor(
                     legacyPlugin, mavenProject.getRemotePluginRepositories(), executionSession.getRepositorySession());
             pluginManager.setupPluginRealm(descriptor, executionSession, null, null, null);
-            return new DefaultPlugin(internalSession, legacyPlugin, descriptor, lookup);
+            return new DefaultPlugin(internalSession, legacyPlugin, descriptor, createPluginLookup(descriptor));
         } catch (Exception e) {
             throw new PluginManagerException(
                     "Unable to load plugin " + plugin.getGroupId() + ":" + plugin.getArtifactId(), e);
         }
+    }
+
+    private Lookup createPluginLookup(PluginDescriptor descriptor) {
+        boolean isV4 =
+                descriptor.getMojos() != null && descriptor.getMojos().stream().anyMatch(MojoDescriptor::isV4Api);
+        return isV4 ? new InjectorLookup(descriptor.getClassRealm()) : lookup;
     }
 
     private org.apache.maven.model.Plugin findPlugin(

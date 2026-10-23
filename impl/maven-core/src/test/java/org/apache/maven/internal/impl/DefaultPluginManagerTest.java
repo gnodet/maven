@@ -18,16 +18,19 @@
  */
 package org.apache.maven.internal.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.maven.api.Plugin;
 import org.apache.maven.api.services.Lookup;
+import org.apache.maven.api.services.LookupException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.LifecyclePluginResolver;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MavenPluginManager;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -79,6 +82,7 @@ class DefaultPluginManagerTest {
         when(legacyPluginManager.getPluginDescriptor(eq(model), any(), any())).thenReturn(descriptor);
         when(descriptor.getPluginDescriptorV4()).thenReturn(apiDescriptor);
         when(descriptor.getClassRealm()).thenReturn(realm);
+        when(descriptor.getMojos()).thenReturn(List.of());
         when(descriptor.getDependencyNode()).thenReturn(dependencyNode);
         when(dependencyNode.getDependency()).thenReturn(resolverDependency);
         when(dependencyNode.getChildren()).thenReturn(List.of());
@@ -181,5 +185,91 @@ class DefaultPluginManagerTest {
                 failure,
                 assertThrows(IllegalStateException.class, () -> realm.lookup().lookupList(Object.class)));
         assertSame(originalClassLoader, Thread.currentThread().getContextClassLoader());
+    }
+
+    @Test
+    void v4PluginUsesInjectorLookup() throws Exception {
+        Lookup sessionLookup = mock(Lookup.class);
+        ClassRealm realm = mock(ClassRealm.class);
+        when(realm.getResources(any())).thenReturn(Collections.emptyEnumeration());
+
+        InjectorLookup injectorLookup = new InjectorLookup(realm);
+        DefaultRealm pluginRealm = new DefaultRealm(realm, injectorLookup);
+
+        // V4 lookup should NOT delegate to the session-level Lookup
+        assertThrows(LookupException.class, () -> pluginRealm.lookup().lookup(Object.class));
+        verifyNoInteractions(sessionLookup);
+    }
+
+    @Test
+    void v3PluginUsesSessionLookup() {
+        Object service = new Object();
+        Lookup sessionLookup = mock(Lookup.class);
+        when(sessionLookup.lookup(Object.class)).thenReturn(service);
+
+        ClassLoader pluginClassLoader = new ClassLoader() {};
+        DefaultRealm pluginRealm = new DefaultRealm(pluginClassLoader, sessionLookup);
+
+        // V3 lookup delegates to the session-level Lookup (with TCCL swap)
+        assertSame(service, pluginRealm.lookup().lookup(Object.class));
+        verify(sessionLookup).lookup(Object.class);
+    }
+
+    @Test
+    void injectorLookupCachesSameInjectorPerClassLoader() throws Exception {
+        ClassRealm realm = mock(ClassRealm.class);
+        when(realm.getResources(any())).thenReturn(Collections.emptyEnumeration());
+
+        InjectorLookup first = new InjectorLookup(realm);
+        InjectorLookup second = new InjectorLookup(realm);
+
+        // Both should throw the same way (same underlying Injector, same bindings)
+        assertThrows(LookupException.class, () -> first.lookup(Object.class));
+        assertThrows(LookupException.class, () -> second.lookup(Object.class));
+    }
+
+    @Test
+    void v4PluginLoadedViaManagerUsesInjectorLookup() throws Exception {
+        MavenPluginManager legacyPluginManager = mock(MavenPluginManager.class);
+        LifecyclePluginResolver lifecyclePluginResolver = mock(LifecyclePluginResolver.class);
+        Lookup sessionLookup = mock(Lookup.class);
+        InternalMavenSession session = mock(InternalMavenSession.class);
+        MavenSession mavenSession = mock(MavenSession.class);
+        MavenSession executionSession = mock(MavenSession.class);
+        DefaultProject project = mock(DefaultProject.class);
+        MavenProject mavenProject = new MavenProject();
+        Build build = new Build();
+        org.apache.maven.model.Plugin model = new org.apache.maven.model.Plugin();
+        model.setGroupId("org.example");
+        model.setArtifactId("v4-plugin");
+        model.setVersion("1.0");
+        build.addPlugin(model);
+        mavenProject.setBuild(build);
+
+        PluginDescriptor descriptor = mock(PluginDescriptor.class);
+        org.apache.maven.api.plugin.descriptor.PluginDescriptor apiDescriptor =
+                mock(org.apache.maven.api.plugin.descriptor.PluginDescriptor.class);
+        ClassRealm realm = mock(ClassRealm.class);
+        when(realm.getResources(any())).thenReturn(Collections.emptyEnumeration());
+        MojoDescriptor v4Mojo = mock(MojoDescriptor.class);
+        when(v4Mojo.isV4Api()).thenReturn(true);
+
+        when(session.getMavenSession()).thenReturn(mavenSession);
+        when(mavenSession.clone()).thenReturn(executionSession);
+        when(project.getProject()).thenReturn(mavenProject);
+        when(legacyPluginManager.getPluginDescriptor(eq(model), any(), any())).thenReturn(descriptor);
+        when(descriptor.getPluginDescriptorV4()).thenReturn(apiDescriptor);
+        when(descriptor.getClassRealm()).thenReturn(realm);
+        when(descriptor.getMojos()).thenReturn(List.of(v4Mojo));
+        when(descriptor.getDependencyNode()).thenReturn(null);
+
+        DefaultPluginManager manager =
+                new DefaultPluginManager(legacyPluginManager, lifecyclePluginResolver, sessionLookup);
+
+        Plugin result = manager.loadPlugin(session, project, model.getDelegate());
+
+        // V4 plugin realm lookup should NOT delegate to the session-level Lookup
+        assertThrows(LookupException.class, () -> result.getRealm().lookup().lookup(Object.class));
+        verifyNoInteractions(sessionLookup);
     }
 }

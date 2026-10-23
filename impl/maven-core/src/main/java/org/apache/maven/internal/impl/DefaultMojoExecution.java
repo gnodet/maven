@@ -62,11 +62,14 @@ public class DefaultMojoExecution implements MojoExecution {
     }
 
     private static Plugin buildPlugin(InternalMavenSession session, org.apache.maven.plugin.MojoExecution delegate) {
-        org.apache.maven.plugin.descriptor.MojoDescriptor legacyDescriptor = delegate.getMojoDescriptor();
         org.apache.maven.plugin.descriptor.PluginDescriptor legacyPluginDescriptor =
-                legacyDescriptor.getPluginDescriptor();
-        return new DefaultPlugin(
-                session, delegate.getPlugin(), legacyPluginDescriptor, session.getService(Lookup.class));
+                delegate.getMojoDescriptor().getPluginDescriptor();
+        boolean isV4 = legacyPluginDescriptor.getMojos() != null
+                && legacyPluginDescriptor.getMojos().stream()
+                        .anyMatch(org.apache.maven.plugin.descriptor.MojoDescriptor::isV4Api);
+        Lookup pluginLookup =
+                isV4 ? new InjectorLookup(legacyPluginDescriptor.getClassRealm()) : session.getService(Lookup.class);
+        return new DefaultPlugin(session, delegate.getPlugin(), legacyPluginDescriptor, pluginLookup);
     }
 
     private static Optional<PluginExecution> buildModel(org.apache.maven.plugin.MojoExecution delegate) {
