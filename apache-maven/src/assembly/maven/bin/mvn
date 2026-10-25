@@ -567,6 +567,9 @@ handle_args() {
       --val)
         MAVEN_MAIN_CLASS="org.apache.maven.cling.MavenValCling"
         ;;
+      --log)
+        MAVEN_MAIN_CLASS="org.apache.maven.cling.MavenLogCling"
+        ;;
       *)
         ;;
     esac
@@ -575,6 +578,21 @@ handle_args() {
 }
 
 handle_args "$@"
+
+# Strip routing flags (--debug, --yjp, --enc, --shell, --up, --log) from $@
+# so they are not passed to the Java process where they may collide with
+# Commons CLI option-prefix matching (e.g. --log matches --log-file).
+_argc=$#
+_i=0
+while [ $_i -lt $_argc ]; do
+  _arg="$1"
+  shift
+  case $_arg in
+    --debug|--yjp|--enc|--shell|--up|--log) ;;
+    *) set -- "$@" "$_arg" ;;
+  esac
+  _i=$((_i + 1))
+done
 MAVEN_MAIN_CLASS=${MAVEN_MAIN_CLASS:=org.apache.maven.cling.MavenCling}
 
 # Build base command string for eval (only contains Maven-controlled values)
@@ -587,15 +605,8 @@ cmd="\"$JAVACMD\" \
   \"-Dmaven.home=$MAVEN_HOME\" \
   \"-Dmaven.mainClass=$MAVEN_MAIN_CLASS\" \
   \"-Dlibrary.jline.path=$JLINE_NATIVE_PATH\" \
-  \"-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR\""
-
-# The JVM option must precede the main class on the command line, otherwise it
-# would be treated as a plain Maven argument rather than a system property.
-if [ "$FAST_VERSION_PRINTED" = "true" ] ; then
-  cmd="$cmd \"-Dmaven.version.printed=true\""
-fi
-
-cmd="$cmd $LAUNCHER_CLASS"
+  \"-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR\" \
+  $LAUNCHER_CLASS"
 
 # MAVEN_ARGS is only passed for the default Maven build command (MavenCling),
 # not for sub-commands like --up, --enc, --shell or --val which have their own options.
@@ -664,7 +675,13 @@ if [ -n "$MAVEN_DEBUG_SCRIPT" ]; then
   printf ' "%s"' "$@" >&2; echo >&2
 fi
 
-# The arguments ("$@") are passed outside the eval'd string to preserve literal
-# values (backslashes, ${...} placeholders) without shell re-parsing.
-# Only the base command uses eval for MAVEN_OPTS word splitting.
-eval exec "$cmd" '"$@"'
+# User arguments ("$@") and MAVEN_ARGS are passed outside the eval'd string
+# to preserve literal values (backslashes, ${...} placeholders) without
+# shell re-parsing. Only the base command uses eval for MAVEN_OPTS word splitting.
+# MAVEN_ARGS is only passed for the default Maven build command (MavenCling),
+# not for sub-commands like --up, --enc, or --shell which have their own options.
+if [ "$MAVEN_MAIN_CLASS" = "org.apache.maven.cling.MavenCling" ]; then
+  eval exec "$cmd" '$MAVEN_ARGS' '"$@"'
+else
+  eval exec "$cmd" '"$@"'
+fi

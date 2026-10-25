@@ -52,4 +52,7 @@ public final class Tools {
      * @since 4.1.0
      */
     public static final String MVNVAL_NAME = "Maven POM Validation Tool";
+
+    public static final String MVNLOG_CMD = "mvnlog";
+    public static final String MVNLOG_NAME = "Maven Build Log Viewer";
 }

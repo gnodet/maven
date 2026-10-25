@@ -341,6 +341,7 @@ public class CommonsCliOptions implements Options {
         public static final String VALIDATE = "val";
         public static final String SHELL = "shell";
         public static final String YJP = "yjp";
+        public static final String LOG = "log";
 
         // deprecated ones
         @Deprecated
@@ -487,6 +488,10 @@ public class CommonsCliOptions implements Options {
             options.addOption(Option.builder()
                     .longOpt(YJP)
                     .desc("Launch the JVM with Yourkit profiler (script option).")
+                    .get());
+            options.addOption(Option.builder()
+                    .longOpt(LOG)
+                    .desc("Launch the Maven Build Log Viewer (script option).")
                     .get());
 
             // Deprecated
