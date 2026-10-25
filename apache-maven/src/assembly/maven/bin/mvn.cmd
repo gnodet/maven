@@ -106,6 +106,7 @@ if "%_FLAG_ARG%"=="--enc" set "IS_MAIN_OVERRIDE=1"
 if "%_FLAG_ARG%"=="--shell" set "IS_MAIN_OVERRIDE=1"
 if "%_FLAG_ARG%"=="--up" set "IS_MAIN_OVERRIDE=1"
 if "%_FLAG_ARG%"=="--val" set "IS_MAIN_OVERRIDE=1"
+if "%_FLAG_ARG%"=="--log" set "IS_MAIN_OVERRIDE=1"
 @REM Compact single-dash tokens (e.g. -qv, -vX) mirror the Unix script's
 @REM -[qvVXe]* handling, but only when the part after '-' is made exclusively
 @REM of the safe chars v V q X e; otherwise (e.g. -f, -D...) the token is
@@ -378,6 +379,8 @@ if "%~1"=="--debug" (
       set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenUpCling"
 ) else if "%~1"=="--val" (
       set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenValCling"
+) else if "%~1"=="--log" (
+      set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenLogCling"
 )
 exit /b 0
 
