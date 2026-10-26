@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.logging.LogEvent;
+import org.apache.maven.api.logging.LogLevel;
 import org.apache.maven.api.logging.LogSink;
 import org.apache.maven.api.logging.LoggerManager;
 import org.apache.maven.logging.impl.DefaultLogEvent;
@@ -45,6 +46,8 @@ import org.apache.maven.logging.impl.DefaultLogEvent;
  * when multiple threads log concurrently during parallel builds.
  */
 public class ProjectBuildLogAppender implements AutoCloseable {
+
+    public static final String DEFAULT_WARNING_MODE = "summary";
 
     private static final ThreadLocal<String> PROJECT_ID = new InheritableThreadLocal<>();
     private static final ThreadLocal<String> MOJO_ID = new InheritableThreadLocal<>();
@@ -128,9 +131,20 @@ public class ProjectBuildLogAppender implements AutoCloseable {
     private final ConcurrentLinkedQueue<LogEvent> queue = new ConcurrentLinkedQueue<>();
     private final ReentrantLock drainLock = new ReentrantLock();
     private volatile boolean needsMetadata;
+    private final boolean suppressInlineWarnings;
 
-    public ProjectBuildLogAppender(BuildEventListener buildEventListener) {
+    /**
+     * Creates a new appender that forwards log events to the given listener.
+     *
+     * @param buildEventListener the listener to forward events to
+     * @param warningMode the warning display mode ({@code "summary"}, {@code "all"},
+     *                    {@code "none"}, {@code "fail"}); {@code "summary"} suppresses
+     *                    inline WARN events while preserving them for the build report;
+     *                    {@code null} is treated as non-summary (all events flow inline)
+     */
+    public ProjectBuildLogAppender(BuildEventListener buildEventListener, String warningMode) {
         this.buildEventListener = buildEventListener;
+        this.suppressInlineWarnings = "summary".equalsIgnoreCase(warningMode);
         LoggerManager.get().setLogSink(new Sink());
     }
 
@@ -197,7 +211,9 @@ public class ProjectBuildLogAppender implements AutoCloseable {
     private void drain() {
         LogEvent event;
         while ((event = queue.poll()) != null) {
-            buildEventListener.projectLogMessage(event.projectId(), event);
+            if (!suppressInlineWarnings || event.level() == null || event.level() != LogLevel.WARN) {
+                buildEventListener.projectLogMessage(event.projectId(), event);
+            }
 
             Consumer<LogEvent> capture = reportCapture;
             if (capture != null) {

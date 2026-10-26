@@ -225,6 +225,24 @@ public class CommonsCliOptions implements Options {
     }
 
     @Override
+    public Optional<String> warningMode() {
+        if (commandLine.hasOption(CLIManager.WARNING_MODE)) {
+            String value = commandLine.getOptionValue(CLIManager.WARNING_MODE);
+            // Validate against the documented set of accepted values
+            if (!value.equalsIgnoreCase("summary")
+                    && !value.equalsIgnoreCase("all")
+                    && !value.equalsIgnoreCase("none")
+                    && !value.equalsIgnoreCase("fail")) {
+                throw new IllegalArgumentException("Invalid value for --warning-mode: '"
+                        + value
+                        + "'. Accepted values are: summary, all, none, fail.");
+            }
+            return Optional.of(value);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Boolean> offline() {
         if (commandLine.hasOption(CLIManager.OFFLINE)) {
             return Optional.of(Boolean.TRUE);
@@ -328,6 +346,7 @@ public class CommonsCliOptions implements Options {
         public static final String RAW_STREAMS = "raw-streams";
         public static final String COLOR = "color";
         public static final String CONSOLE = "console";
+        public static final String WARNING_MODE = "warning-mode";
         public static final String OFFLINE = "o";
         public static final String HELP = "h";
 
@@ -457,6 +476,13 @@ public class CommonsCliOptions implements Options {
                             + " In 'auto' mode, CI environments use 'plain',"
                             + " interactive TTYs use 'rich' (status bar)."
                             + " 'machine' outputs one JSON line per lifecycle event.")
+                    .get());
+            options.addOption(Option.builder()
+                    .longOpt(WARNING_MODE)
+                    .hasArg()
+                    .desc("Controls how build warnings are displayed."
+                            + " Supported modes: 'summary' (default, deduplicated summary at end),"
+                            + " 'all' (inline + summary), 'none' (suppress), 'fail' (treat warnings as errors).")
                     .get());
             options.addOption(Option.builder(OFFLINE)
                     .longOpt("offline")

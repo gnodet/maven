@@ -52,6 +52,7 @@ public class MavenITmng5572ReactorPluginExtensionsTest extends AbstractMavenInte
         Verifier verifier = newVerifier(testDir);
         verifier.setLogFileName("log2.txt");
         verifier.setAutoclean(false);
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         verifier.verifyErrorFreeLog();

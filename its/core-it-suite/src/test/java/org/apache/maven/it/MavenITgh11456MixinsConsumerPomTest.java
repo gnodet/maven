@@ -45,6 +45,7 @@ class MavenITgh11456MixinsConsumerPomTest extends AbstractMavenIntegrationTestCa
 
         Verifier verifier = newVerifier(basedir);
         verifier.addCliArgument("-Dmaven.repo.local=" + basedir.resolve("repo"));
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("package");
         try {
             verifier.execute();

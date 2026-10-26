@@ -32,15 +32,35 @@ class DefaultBuilderProblem implements BuilderProblem {
     final Exception exception;
     final String message;
     final Severity severity;
+    final String key;
+    final String suggestion;
+    final String documentationUrl;
 
     DefaultBuilderProblem(
             String source, int lineNumber, int columnNumber, Exception exception, String message, Severity severity) {
+        this(source, lineNumber, columnNumber, exception, message, severity, null, null, null);
+    }
+
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    DefaultBuilderProblem(
+            String source,
+            int lineNumber,
+            int columnNumber,
+            Exception exception,
+            String message,
+            Severity severity,
+            String key,
+            String suggestion,
+            String documentationUrl) {
         this.source = source;
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.exception = exception;
         this.message = message;
         this.severity = severity;
+        this.key = key;
+        this.suggestion = suggestion;
+        this.documentationUrl = documentationUrl;
     }
 
     @Override
@@ -71,6 +91,21 @@ class DefaultBuilderProblem implements BuilderProblem {
     @Override
     public Severity getSeverity() {
         return severity;
+    }
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public String getSuggestion() {
+        return suggestion;
+    }
+
+    @Override
+    public String getDocumentationUrl() {
+        return documentationUrl;
     }
 
     @Override

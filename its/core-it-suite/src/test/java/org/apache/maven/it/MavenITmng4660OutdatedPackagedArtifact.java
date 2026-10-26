@@ -99,6 +99,7 @@ public class MavenITmng4660OutdatedPackagedArtifact extends AbstractMavenIntegra
         // is no longer in sync with its compiled artifacts.
         final Verifier verifier3 = newVerifier(testDir);
         verifier3.setAutoclean(false);
+        verifier3.addCliArgument("--warning-mode=all");
         verifier3.addCliArgument("--resume-from");
         verifier3.addCliArgument(":module-b");
         verifier3.addCliArgument("compile");

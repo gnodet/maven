@@ -44,6 +44,7 @@ public class MavenITmng5561PluginRelocationLosesConfigurationTest extends Abstra
         verifier.verifyErrorFreeLog();
 
         verifier = newVerifier(projectDir);
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("verify");
         verifier.execute();
         verifier.verifyErrorFreeLog();
