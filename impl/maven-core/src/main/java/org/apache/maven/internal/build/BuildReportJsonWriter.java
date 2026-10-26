@@ -204,6 +204,9 @@ final class BuildReportJsonWriter {
         if (problem.getColumnNumber() > 0) {
             writeField(sb, indent + 1, "column", problem.getColumnNumber());
         }
+        writeNullableField(sb, indent + 1, "key", problem.getKey());
+        writeNullableField(sb, indent + 1, "suggestion", problem.getSuggestion());
+        writeNullableField(sb, indent + 1, "documentationUrl", problem.getDocumentationUrl());
         // Remove the trailing comma from the last written field
         removeTrailingComma(sb);
         writeIndent(sb, indent);

@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
+import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;

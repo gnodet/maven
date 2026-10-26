@@ -317,6 +317,39 @@ public final class DefaultPluginValidationManager extends AbstractEventSpy imple
         return false;
     }
 
+    /**
+     * Returns the problem enriched with the pom.xml location of the plugin declaration.
+     * If the problem already has a non-empty source, the original is returned unchanged.
+     * Otherwise the source (pom file path) and line number are taken from the plugin's
+     * {@link InputLocation} so the build report can link warnings back to the exact pom line.
+     */
+    private static BuilderProblem enrichWithPluginLocation(BuilderProblem problem, MojoDescriptor mojoDescriptor) {
+        // Only add location when the caller did not already supply one
+        if (problem.getSource() != null && !problem.getSource().isEmpty()) {
+            return problem;
+        }
+        InputLocation inputLocation =
+                mojoDescriptor.getPluginDescriptor().getPlugin().getLocation("");
+        if (inputLocation == null || inputLocation.getSource() == null) {
+            return problem;
+        }
+        String sourceFile = inputLocation.getSource().getLocation();
+        if (sourceFile == null || sourceFile.isEmpty()) {
+            return problem;
+        }
+        return BuilderProblem.builder()
+                .source(sourceFile)
+                .lineNumber(inputLocation.getLineNumber())
+                .columnNumber(inputLocation.getColumnNumber())
+                .exception(problem.getException())
+                .message(problem.getMessage())
+                .severity(problem.getSeverity())
+                .key(problem.getKey())
+                .suggestion(problem.getSuggestion())
+                .documentationUrl(problem.getDocumentationUrl())
+                .build();
+    }
+
     private String pluginDeclaration(MavenSession mavenSession, MojoDescriptor mojoDescriptor) {
         InputLocation inputLocation =
                 mojoDescriptor.getPluginDescriptor().getPlugin().getLocation("");

@@ -615,6 +615,7 @@ class BuildReportJsonWriterTest {
                 .build();
 
         BuildReport report = new DefaultBuildReport(
+                EMPTY_INVOCATION,
                 BuildStatus.FAILURE,
                 Duration.ofSeconds(5),
                 BASE_TIME,
