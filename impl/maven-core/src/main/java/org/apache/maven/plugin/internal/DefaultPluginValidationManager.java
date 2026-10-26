@@ -190,7 +190,7 @@ public final class DefaultPluginValidationManager extends AbstractEventSpy imple
         PluginValidationIssues pluginIssues = pluginIssues(mavenSession.getRepositorySession())
                 .computeIfAbsent(pluginKey, k -> new PluginValidationIssues());
         pluginIssues.reportPluginIssue(locality, pluginDeclaration(mavenSession, mojoDescriptor), problem.getMessage());
-        diagnosticCollector.report(problem);
+        diagnosticCollector.report(enrichWithPluginLocation(problem, mojoDescriptor));
         mayReportInline(mavenSession.getRepositorySession(), locality, problem.getMessage());
     }
 
@@ -212,7 +212,7 @@ public final class DefaultPluginValidationManager extends AbstractEventSpy imple
                 pluginDeclaration(mavenSession, mojoDescriptor),
                 mojoInfo(mojoDescriptor, mojoClass),
                 problem.getMessage());
-        diagnosticCollector.report(problem);
+        diagnosticCollector.report(enrichWithPluginLocation(problem, mojoDescriptor));
         mayReportInline(mavenSession.getRepositorySession(), locality, problem.getMessage());
     }
 

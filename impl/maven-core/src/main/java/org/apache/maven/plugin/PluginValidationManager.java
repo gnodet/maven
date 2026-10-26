@@ -101,7 +101,7 @@ public interface PluginValidationManager {
                 BuilderProblem.builder()
                         .message(issue)
                         .severity(BuilderProblem.Severity.WARNING)
-                        .key("plugin-validation:" + issue.hashCode())
+                        .key("plugin-validation:" + issue)
                         .build());
     }
 
@@ -119,7 +119,7 @@ public interface PluginValidationManager {
                 BuilderProblem.builder()
                         .message(issue)
                         .severity(BuilderProblem.Severity.WARNING)
-                        .key("plugin-validation:" + issue.hashCode())
+                        .key("plugin-validation:" + issue)
                         .build());
     }
 
@@ -142,7 +142,7 @@ public interface PluginValidationManager {
                 BuilderProblem.builder()
                         .message(issue)
                         .severity(BuilderProblem.Severity.WARNING)
-                        .key("plugin-validation:" + issue.hashCode())
+                        .key("plugin-validation:" + issue)
                         .build());
     }
 }

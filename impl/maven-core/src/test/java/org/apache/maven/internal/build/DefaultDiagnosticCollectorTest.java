@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultDiagnosticCollectorTest {
@@ -164,13 +165,7 @@ class DefaultDiagnosticCollectorTest {
         collector.report(warning("test", "test", null));
         List<BuilderProblem> problems = collector.getProblems();
 
-        try {
-            problems.add(warning("another", "another", null));
-            // Should not reach here
-            assertFalse(true, "Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(UnsupportedOperationException.class, () -> problems.add(warning("another", "another", null)));
     }
 
     @Test
@@ -178,12 +173,9 @@ class DefaultDiagnosticCollectorTest {
         collector.report(warning("test", "test", null));
         List<DefaultDiagnosticSummary> summary = collector.getSummary();
 
-        try {
-            summary.add(new DefaultDiagnosticSummary(warning("x", "x", null), 1));
-            assertFalse(true, "Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> summary.add(new DefaultDiagnosticSummary(warning("x", "x", null), 1)));
     }
 
     @Test

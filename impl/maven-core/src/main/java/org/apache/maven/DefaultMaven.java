@@ -60,6 +60,7 @@ import org.apache.maven.execution.ProjectActivation;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.graph.GraphBuilder;
 import org.apache.maven.graph.ProjectSelector;
+import org.apache.maven.internal.build.BuilderProblems;
 import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.internal.impl.InternalMavenSession;
@@ -659,7 +660,7 @@ public class DefaultMaven implements Maven {
             // Pipe structured problem directly to DiagnosticCollector so that
             // source location and severity are preserved in the build report.
             // The SLF4J hook excludes this logger to avoid double-counting.
-            diagnosticCollector.report(toBuilderProblem(problem));
+            diagnosticCollector.report(BuilderProblems.fromModelProblem(problem));
         }
 
         if (!graphResult.hasErrors()) {
@@ -673,25 +674,12 @@ public class DefaultMaven implements Maven {
     }
 
     /**
-     * Converts a compat {@link ModelProblem} to the Maven 4 {@link BuilderProblem} API,
-     * preserving source, line, column, severity, and message.
+     * Converts a compat {@link ModelProblem} to the Maven 4 {@link BuilderProblem} API.
+     * @deprecated Use {@link BuilderProblems#fromModelProblem(ModelProblem)} instead.
      */
+    @Deprecated(since = "4.1.0", forRemoval = true)
     private static BuilderProblem toBuilderProblem(ModelProblem problem) {
-        BuilderProblem.Severity severity =
-                switch (problem.getSeverity()) {
-                    case FATAL -> BuilderProblem.Severity.FATAL;
-                    case ERROR -> BuilderProblem.Severity.ERROR;
-                    default -> BuilderProblem.Severity.WARNING;
-                };
-        return BuilderProblem.builder()
-                .source(problem.getSource())
-                .lineNumber(problem.getLineNumber())
-                .columnNumber(problem.getColumnNumber())
-                .exception(problem.getException())
-                .message(problem.getMessage())
-                .severity(severity)
-                .key("model:" + problem.getMessage().hashCode())
-                .build();
+        return BuilderProblems.fromModelProblem(problem);
     }
 
     @Deprecated
