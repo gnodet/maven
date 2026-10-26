@@ -43,7 +43,6 @@ import org.apache.maven.api.Session;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Prerequisites;
 import org.apache.maven.api.model.Profile;
-import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -671,15 +670,6 @@ public class DefaultMaven implements Maven {
         }
 
         return graphResult;
-    }
-
-    /**
-     * Converts a compat {@link ModelProblem} to the Maven 4 {@link BuilderProblem} API.
-     * @deprecated Use {@link BuilderProblems#fromModelProblem(ModelProblem)} instead.
-     */
-    @Deprecated(since = "4.1.0", forRemoval = true)
-    private static BuilderProblem toBuilderProblem(ModelProblem problem) {
-        return BuilderProblems.fromModelProblem(problem);
     }
 
     @Deprecated

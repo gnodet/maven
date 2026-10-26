@@ -122,13 +122,20 @@ public final class DefaultDiagnosticCollector {
         // Always increment the count
         counts.computeIfAbsent(key, k -> new LongAdder()).increment();
 
-        // Store the first occurrence only (if within cap)
-        if (uniqueProblems.putIfAbsent(key, problem) == null) {
-            if (uniqueProblems.size() <= MAX_DIAGNOSTICS) {
-                orderedKeys.add(key);
-            } else {
-                // Over cap — remove the entry we just added
-                uniqueProblems.remove(key);
+        // Store the first occurrence only (if within cap).
+        // Synchronize on orderedKeys so that the putIfAbsent + size-check + add
+        // sequence is atomic: under parallel module builds (-T) multiple threads
+        // could each win putIfAbsent (on distinct keys) and then all observe
+        // size() <= MAX_DIAGNOSTICS before any has called orderedKeys.add(),
+        // causing the cap to be overshot by the number of concurrent threads.
+        synchronized (orderedKeys) {
+            if (uniqueProblems.putIfAbsent(key, problem) == null) {
+                if (orderedKeys.size() < MAX_DIAGNOSTICS) {
+                    orderedKeys.add(key);
+                } else {
+                    // Over cap — remove the entry we just added
+                    uniqueProblems.remove(key);
+                }
             }
         }
     }

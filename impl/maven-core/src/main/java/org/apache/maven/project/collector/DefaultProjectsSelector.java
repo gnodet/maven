@@ -26,10 +26,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.internal.build.BuilderProblems;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.building.ModelProblemUtils;
 import org.apache.maven.project.MavenProject;
@@ -112,14 +110,5 @@ public class DefaultProjectsSelector implements ProjectsSelector {
         }
 
         return projects;
-    }
-
-    /**
-     * Converts a compat {@link ModelProblem} to the Maven 4 {@link BuilderProblem} API.
-     * @deprecated Use {@link BuilderProblems#fromModelProblem(ModelProblem)} instead.
-     */
-    @Deprecated(since = "4.1.0", forRemoval = true)
-    private static BuilderProblem toBuilderProblem(ModelProblem problem) {
-        return BuilderProblems.fromModelProblem(problem);
     }
 }
