@@ -1,0 +1,111 @@
+# Simplified CI for gnodet's fork — single job, no matrix.
+# Runs build, ITs and javadoc on every PR, any branch.
+
+name: Fork CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  MIMIR_VERSION: 0.12.4
+  MIMIR_BASEDIR: ~/.mimir
+  MIMIR_LOCAL: ~/.mimir/local
+  MAVEN_OPTS: -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./target/java_heapdump.hprof
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify Mimir version alignment
+        shell: bash
+        run: |
+          POM_VERSION=$(grep -A2 'eu.maveniverse.maven.mimir' pom.xml | grep '<version>' | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          if [ "$POM_VERSION" != "${{ env.MIMIR_VERSION }}" ]; then
+            echo "::error::MIMIR_VERSION (${{ env.MIMIR_VERSION }}) does not match pom.xml ($POM_VERSION)"
+            exit 1
+          fi
+
+      - name: Prepare Mimir for Maven 3.x
+        shell: bash
+        run: |
+          mkdir -p ${{ env.MIMIR_BASEDIR }}
+          cp .github/ci-mimir-session.properties ${{ env.MIMIR_BASEDIR }}/session.properties
+          cp .github/ci-mimir-daemon.properties ${{ env.MIMIR_BASEDIR }}/daemon.properties
+          cp .github/ci-extensions.xml .mvn/extensions.xml
+
+      - name: Restore Mimir caches
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ env.MIMIR_LOCAL }}
+          key: fork-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            fork-${{ runner.os }}-
+            fork-
+
+      - name: Set up Maven
+        shell: bash
+        run: mvn --errors --batch-mode --show-version org.apache.maven.plugins:maven-wrapper-plugin:3.3.4:wrapper "-Dmaven=4.0.0-rc-7"
+
+      - name: Prepare Mimir for Maven 4.x
+        shell: bash
+        run: |
+          rm .mvn/extensions.xml
+          mkdir -p ~/.m2
+          cp .github/ci-extensions.xml ~/.m2/extensions.xml
+
+      - name: Build Maven
+        shell: bash
+        run: ./mvnw verify -e -B -V
+
+      - name: Javadoc
+        shell: bash
+        run: ./mvnw javadoc:javadoc -e -B -V
+
+      - name: Extract Maven distribution
+        shell: bash
+        run: |
+          mkdir -p maven-local
+          tar xzf apache-maven/target/apache-maven-*-bin.tar.gz -C maven-local --strip-components 1
+          echo "MAVEN_HOME=$PWD/maven-local" >> $GITHUB_ENV
+          echo "$PWD/maven-local/bin" >> $GITHUB_PATH
+
+      - name: Run integration tests
+        shell: bash
+        run: mvn install -e -B -V -Prun-its,mimir
+
+      - name: Save Mimir caches
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: ${{ !cancelled() && !failure() }}
+        with:
+          path: ${{ env.MIMIR_LOCAL }}
+          key: fork-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ failure() || cancelled() }}
+        with:
+          name: test-logs
+          retention-days: 3
+          path: |
+            **/target/surefire-reports/*
+            **/target/failsafe-reports/*
+            ./its/core-it-suite/target/test-classes/**
+            **/target/java_heapdump.hprof
