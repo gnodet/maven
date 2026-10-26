@@ -567,16 +567,12 @@ public class BuildReportRenderer {
 
         MessageBuilder mb = messageBuilderFactory.builder();
         mb.a(buffer);
-        switch (status) {
-            case "SUCCESS":
-                mb.success(status);
-                break;
-            case "FAILURE":
-                mb.failure(status);
-                break;
-            default:
-                mb.warning(status);
-                break;
+        if ("SUCCESS".equals(status)) {
+            mb.success(status);
+        } else if ("FAILURE".equals(status)) {
+            mb.failure(status);
+        } else {
+            mb.warning(status != null ? status : "UNKNOWN");
         }
 
         // Duration
