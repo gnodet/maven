@@ -605,8 +605,15 @@ cmd="\"$JAVACMD\" \
   \"-Dmaven.home=$MAVEN_HOME\" \
   \"-Dmaven.mainClass=$MAVEN_MAIN_CLASS\" \
   \"-Dlibrary.jline.path=$JLINE_NATIVE_PATH\" \
-  \"-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR\" \
-  $LAUNCHER_CLASS"
+  \"-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR\""
+
+# The JVM option must precede the main class on the command line, otherwise it
+# would be treated as a plain Maven argument rather than a system property.
+if [ "$FAST_VERSION_PRINTED" = "true" ] ; then
+  cmd="$cmd \"-Dmaven.version.printed=true\""
+fi
+
+cmd="$cmd $LAUNCHER_CLASS"
 
 # MAVEN_ARGS is only passed for the default Maven build command (MavenCling),
 # not for sub-commands like --up, --enc, --shell or --val which have their own options.
