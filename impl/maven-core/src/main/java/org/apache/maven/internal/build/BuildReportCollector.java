@@ -123,8 +123,9 @@ public final class BuildReportCollector extends AbstractEventSpy {
 
     /**
      * Returns the diagnostic collector used by this build report collector.
-     * Plugins can inject {@link DefaultDiagnosticCollector} directly, but this
-     * accessor is provided for internal use and testing.
+     * Plugins should inject {@link org.apache.maven.api.services.DiagnosticReporter}
+     * (the API interface in {@code maven-api-core}) rather than this internal class.
+     * This accessor is for internal use and testing only.
      */
     DefaultDiagnosticCollector getDiagnosticCollector() {
         return diagnosticCollector;

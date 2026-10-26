@@ -78,8 +78,7 @@ public final class DefaultDiagnosticCollector implements DiagnosticReporter {
 
     /**
      * Keys to suppress. Problems with a key in this set are silently dropped.
-     * Configured via {@link #setSuppressedKeys(Set)}, typically from the
-     * {@code maven.diagnostic.suppress} user property.
+     * Configured via {@link #setSuppressedKeys(Set)}.
      */
     private volatile Set<String> suppressedKeys = Set.of();
 
