@@ -65,6 +65,7 @@ class MavenITmng8708ParentInferenceTest extends AbstractMavenIntegrationTestCase
         Path testDir = extractResources("mng-8708-parent-inference/explicit-both");
 
         Verifier verifier = newVerifier(testDir);
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         verifier.verifyErrorFreeLog();

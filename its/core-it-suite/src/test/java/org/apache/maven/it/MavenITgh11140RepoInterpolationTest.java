@@ -74,6 +74,7 @@ class MavenITgh11140RepoInterpolationTest extends AbstractMavenIntegrationTestCa
         Verifier verifier = newVerifier(testDir);
 
         // Do NOT set env vars, so placeholders stay
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         // Build should succeed, but warn about uninterpolated expressions

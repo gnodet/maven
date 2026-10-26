@@ -39,6 +39,7 @@ class MavenITmng8245BeforePhaseCliTest extends AbstractMavenIntegrationTestCase 
 
         Verifier verifier = newVerifier(testDir);
         verifier.setLogFileName("before-clean-concurrent.txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArguments("-b", "concurrent", "before:clean");
         verifier.execute();
 
@@ -56,6 +57,7 @@ class MavenITmng8245BeforePhaseCliTest extends AbstractMavenIntegrationTestCase 
 
         Verifier verifier = newVerifier(testDir);
         verifier.setLogFileName("before-clean-legacy.txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArguments("before:clean");
         verifier.execute();
 
@@ -73,6 +75,7 @@ class MavenITmng8245BeforePhaseCliTest extends AbstractMavenIntegrationTestCase 
 
         Verifier verifier = newVerifier(testDir);
         verifier.setLogFileName("after-clean-concurrent.txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArguments("-b", "concurrent", "after:clean");
         verifier.execute();
 
@@ -90,6 +93,7 @@ class MavenITmng8245BeforePhaseCliTest extends AbstractMavenIntegrationTestCase 
 
         Verifier verifier = newVerifier(testDir);
         verifier.setLogFileName("after-clean-legacy.txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArguments("after:clean");
         verifier.execute();
 

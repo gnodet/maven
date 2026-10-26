@@ -45,6 +45,7 @@ class MavenITmng8414ConsumerPomWithNewFeaturesTest extends AbstractMavenIntegrat
         Path basedir = extractResources("mng-8414-consumer-pom-with-new-features");
 
         Verifier verifier = newVerifier(basedir.toString(), null);
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArguments("package", "-Dmaven.consumer.pom.flatten=true");
         verifier.execute();
         verifier.verifyErrorFreeLog();

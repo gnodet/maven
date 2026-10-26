@@ -42,6 +42,7 @@ public class MavenITmng8220ExtensionWithDITest extends AbstractMavenIntegrationT
         verifier.verifyErrorFreeLog();
 
         verifier = newVerifier(testDir.resolve("test"));
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         verifier.verifyErrorFreeLog();

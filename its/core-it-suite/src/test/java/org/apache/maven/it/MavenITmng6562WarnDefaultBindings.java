@@ -64,6 +64,7 @@ public class MavenITmng6562WarnDefaultBindings extends AbstractMavenIntegrationT
         Verifier verifier = newVerifier(testDir);
         verifier.setAutoclean(false);
         verifier.setLogFileName(phase + ".txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument(phase);
         verifier.execute();
 
@@ -79,6 +80,7 @@ public class MavenITmng6562WarnDefaultBindings extends AbstractMavenIntegrationT
         Verifier verifier = newVerifier(testDir);
         verifier.setAutoclean(false);
         verifier.setLogFileName(phase + ".txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument(phase);
         verifier.execute();
         verifier.verifyErrorFreeLog();
@@ -95,6 +97,7 @@ public class MavenITmng6562WarnDefaultBindings extends AbstractMavenIntegrationT
         Verifier verifier = newVerifier(testDir);
         verifier.setAutoclean(false);
         verifier.setLogFileName(phase + ".txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument(phase);
         verifier.execute();
         verifier.verifyErrorFreeLog();
@@ -111,6 +114,7 @@ public class MavenITmng6562WarnDefaultBindings extends AbstractMavenIntegrationT
         Verifier verifier = newVerifier(testDir);
         verifier.setAutoclean(false);
         verifier.setLogFileName(phase + ".txt");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument(phase);
         verifier.execute();
         verifier.verifyErrorFreeLog();

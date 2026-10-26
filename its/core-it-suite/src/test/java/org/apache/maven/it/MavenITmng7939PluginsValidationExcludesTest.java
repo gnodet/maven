@@ -44,6 +44,7 @@ class MavenITmng7939PluginsValidationExcludesTest extends AbstractMavenIntegrati
         verifier.setLogFileName("with-warning-log.txt");
         verifier.deleteDirectory("target");
         verifier.addCliArgument("-Dmaven.plugin.validation=verbose");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         verifier.verifyErrorFreeLog();

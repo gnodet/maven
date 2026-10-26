@@ -34,6 +34,7 @@ class MavenITgh11140RepoDmUnresolvedTest extends AbstractMavenIntegrationTestCas
         Path testDir = extractResources("gh-11140-repo-dm-unresolved");
         Verifier verifier = newVerifier(testDir);
 
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
         // Build should succeed, but warn about uninterpolated expressions (repos are skipped)

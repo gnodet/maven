@@ -78,6 +78,7 @@ class MavenITgh11181CoreExtensionsMetaVersionsTest extends AbstractMavenIntegrat
         verifier.setUserHomeDirectory(testDir.resolve("HOME"));
         verifier.setHandleLocalRepoTail(false);
         verifier.setAutoclean(false);
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("validate");
         verifier.execute();
 

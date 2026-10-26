@@ -145,6 +145,11 @@ public abstract class AbstractMavenIntegrationTestCase {
         // the executor from embedded to forked mode (environment variables trigger forked mode).
         verifier.addCliArgument("--console=verbose");
 
+        // Force all warnings to be emitted inline so that ITs checking for [WARNING] in the
+        // log continue to work. The default warning-mode is "summary" (deduplicated at end),
+        // which suppresses inline [WARNING] lines — not suitable for integration tests.
+        verifier.addCliArgument("--warning-mode=all");
+
         if (settings != null) {
             Path settingsPath;
             if (!settings.isEmpty()) {

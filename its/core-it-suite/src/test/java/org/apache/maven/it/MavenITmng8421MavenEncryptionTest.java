@@ -62,6 +62,7 @@ class MavenITmng8421MavenEncryptionTest extends AbstractMavenIntegrationTestCase
         verifier.setLogFileName("home2.txt");
         verifier.setUserHomeDirectory(home);
         verifier.setExecutable("mvnenc");
+        verifier.addCliArgument("--warning-mode=all");
         verifier.addCliArgument("diag");
         verifier.execute();
         verifier.verifyErrorFreeLog();

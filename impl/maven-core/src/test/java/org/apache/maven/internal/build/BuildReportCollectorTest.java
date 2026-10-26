@@ -28,6 +28,8 @@ import java.util.Properties;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
+import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
@@ -74,8 +76,7 @@ class BuildReportCollectorTest {
         MavenSession session = createSession(project);
         MavenExecutionResult result = session.getResult();
 
-        // Simulate: session started -> project started -> mojo started -> mojo succeeded -> project succeeded ->
-        // session
+        // Simulate: session started → project started → mojo started → mojo succeeded → project succeeded → session
         // ended
         collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
         collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
@@ -274,26 +275,142 @@ class BuildReportCollectorTest {
         assertEquals("child-impl", report.subprojects().get(2).artifactId());
     }
 
-    @Test
-    void testStackTraceIsTruncated() {
-        // Build a throwable with a deep stack trace
-        RuntimeException deep = createDeepException(50);
-        String truncated = BuildReportCollector.truncateStackTrace(deep);
+    // ---- Warning mode tests ----
 
-        // Should contain the truncation notice
-        assertTrue(truncated.contains("more lines truncated"), "deep stack traces should be truncated");
+    @Test
+    void testWarningModeNoneSuppressesSummary() {
+        // Register a diagnostic so there's something to print
+        collector.getDiagnosticCollector().report(warning("test-key", "test warning", "test-source"));
+
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.build.warningMode", "none");
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectSucceeded, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session, project, null));
+
+        // No exceptions means summary was suppressed (in "none" mode)
+        assertFalse(session.getResult().hasExceptions());
     }
 
     @Test
-    void testShortStackTraceIsNotTruncated() {
-        RuntimeException shallow = new RuntimeException("short");
-        // Trim the stack to a known-small size so it's guaranteed under the limit
-        shallow.setStackTrace(
-                new StackTraceElement[] {new StackTraceElement("com.example.Foo", "bar", "Foo.java", 42)});
-        String result = BuildReportCollector.truncateStackTrace(shallow);
+    void testWarningModeFailAddsException() {
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.build.warningMode", "fail");
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
 
-        // Short stack traces should NOT contain the truncation notice
-        assertFalse(result.contains("more lines truncated"), "short stack traces should not be truncated");
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+        // Report the diagnostic after SessionStarted so it is not wiped by reset()
+        collector.getDiagnosticCollector().report(warning("test-key", "test warning", "test-source"));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectSucceeded, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session, project, null));
+
+        assertTrue(session.getResult().hasExceptions(), "Build should fail with --warning-mode=fail and warnings");
+        String msg = session.getResult().getExceptions().get(0).getMessage();
+        assertTrue(
+                msg.contains("warning(s)") && msg.contains("--warning-mode=fail"),
+                "Exception message should say 'warning(s)' and mention the flag, got: " + msg);
+    }
+
+    @Test
+    void testWarningModeFailNoWarningsNoException() {
+        // No warnings registered — fail mode should not add exception
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.build.warningMode", "fail");
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectSucceeded, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session, project, null));
+
+        assertFalse(session.getResult().hasExceptions(), "No warnings, no exception");
+    }
+
+    @Test
+    void testWarningModeSummaryIsDefault() {
+        collector.getDiagnosticCollector().report(warning("test-key", "test warning", "test-source"));
+
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        // No warningMode property set — defaults to "summary"
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectSucceeded, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session, project, null));
+
+        // Summary mode should NOT fail the build
+        assertFalse(session.getResult().hasExceptions());
+    }
+
+    // ---- Synthetic diagnostic key tests ----
+
+    @Test
+    void testSyntheticDiagnosticKeyStripsPaths() {
+        String key1 = BuildReportCollector.syntheticDiagnosticKey("compiler", "Foo.java:42: unchecked cast");
+        String key2 = BuildReportCollector.syntheticDiagnosticKey("compiler", "Bar.java:99: unchecked cast");
+        assertEquals(key1, key2, "Same warning from different files should deduplicate");
+    }
+
+    @Test
+    void testSyntheticDiagnosticKeyDifferentMessages() {
+        String key1 = BuildReportCollector.syntheticDiagnosticKey("compiler", "unchecked cast");
+        String key2 = BuildReportCollector.syntheticDiagnosticKey("compiler", "deprecated API");
+        assertFalse(key1.equals(key2), "Different messages should produce different keys");
+    }
+
+    @Test
+    void testSyntheticDiagnosticKeyIncludesLoggerSuffix() {
+        String key = BuildReportCollector.syntheticDiagnosticKey(
+                "org.apache.maven.plugins.compiler.CompilerMojo", "unchecked cast");
+        assertTrue(key.startsWith("auto:CompilerMojo:"), "Key should include short logger suffix");
+    }
+
+    // ---- Diagnostic suppression wiring tests ----
+
+    @Test
+    void testDiagnosticSuppressionFromUserProperty() {
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.diagnostic.suppress", "key-a,key-b");
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+
+        // Report diagnostics — key-a and key-b should be suppressed
+        collector.getDiagnosticCollector().report(warning("key-a", "warning a", null));
+        collector.getDiagnosticCollector().report(warning("key-b", "warning b", null));
+        collector.getDiagnosticCollector().report(warning("key-c", "warning c", null));
+
+        assertEquals(1, collector.getDiagnosticCollector().getProblems().size());
+        assertEquals(
+                "key-c", collector.getDiagnosticCollector().getProblems().get(0).getKey());
+    }
+
+    @Test
+    void testDiagnosticSuppressionWildcard() {
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.diagnostic.suppress", "auto:*");
+        session.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+
+        collector.getDiagnosticCollector().report(warning("auto:Compiler:abc", "unchecked", null));
+        collector.getDiagnosticCollector().report(warning("explicit-key", "explicit", null));
+
+        assertEquals(1, collector.getDiagnosticCollector().getProblems().size());
+        assertEquals(
+                "explicit-key",
+                collector.getDiagnosticCollector().getProblems().get(0).getKey());
     }
 
     @Test
@@ -318,6 +435,58 @@ class BuildReportCollectorTest {
     }
 
     @Test
+    void testWarningModeFailDoesNotAddExceptionWhenBuildAlreadyFailed() {
+        // --warning-mode=fail must not stack a second exception when the build already failed
+        // for a different reason (e.g. compile error) — that produces confusing double-failure output.
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session = createSession(project);
+        session.getUserProperties().setProperty("maven.build.warningMode", "fail");
+        session.getResult().addBuildSummary(new BuildFailure(project, 1000, new RuntimeException("compile error")));
+        // Pre-existing exception — simulates a compile/test failure
+        session.getResult().addException(new RuntimeException("compile error"));
+
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session, project, null));
+        // Report the diagnostic after SessionStarted so it is not wiped by reset()
+        collector.getDiagnosticCollector().report(warning("test-key", "test warning", "test-source"));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectStarted, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.ProjectSucceeded, session, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session, project, null));
+
+        // Should still have exactly 1 exception (the pre-existing one), not 2
+        assertEquals(
+                1,
+                session.getResult().getExceptions().size(),
+                "Should not add a second exception when build already failed");
+        assertEquals("compile error", session.getResult().getExceptions().get(0).getMessage());
+    }
+
+    @Test
+    void testDiagnosticCollectorResetBetweenSessions() {
+        // Simulate mvnd: two sequential builds in the same JVM sharing one @Singleton collector.
+        // The second session must start with a clean diagnostic state.
+        collector.getDiagnosticCollector().report(warning("key-from-build-1", "leftover warning", "src1"));
+
+        // First session
+        MavenProject project = createProject("org.example", "my-app", "1.0.0");
+        MavenSession session1 = createSession(project);
+        session1.getResult().addBuildSummary(new BuildSuccess(project, 1000));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session1, project, null));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session1, project, null));
+
+        // Second session — must start clean; the warning from build 1 should be gone
+        MavenSession session2 = createSession(project);
+        session2.getUserProperties().setProperty("maven.build.warningMode", "fail");
+        session2.getResult().addBuildSummary(new BuildSuccess(project, 500));
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionStarted, session2, project, null));
+        // No new warnings reported in session 2
+        collector.onEvent(createEvent(ExecutionEvent.Type.SessionEnded, session2, project, null));
+
+        assertFalse(
+                session2.getResult().hasExceptions(),
+                "No warnings in session 2 — fail mode must not carry over warnings from session 1");
+    }
+
+    @Test
     void testBuildInvocationOfflineAndProfiles() {
         MavenProject project = createProject("org.example", "my-app", "1.0.0");
         MavenSession session = createSession(project);
@@ -337,6 +506,15 @@ class BuildReportCollectorTest {
     }
 
     // ---- Test helpers ----
+
+    private static BuilderProblem warning(String key, String message, String source) {
+        return BuilderProblem.builder()
+                .source(source)
+                .message(message)
+                .severity(BuilderProblem.Severity.WARNING)
+                .key(key)
+                .build();
+    }
 
     private MavenProject createProject(String groupId, String artifactId, String version) {
         MavenProject project = new MavenProject();
@@ -410,24 +588,5 @@ class BuildReportCollectorTest {
                 return null;
             }
         };
-    }
-
-    /**
-     * Creates an exception with a stack trace of at least {@code depth} lines.
-     */
-    private static RuntimeException createDeepException(int depth) {
-        try {
-            throwDeep(depth);
-        } catch (RuntimeException e) {
-            return e;
-        }
-        throw new AssertionError("unreachable");
-    }
-
-    private static void throwDeep(int remaining) {
-        if (remaining <= 0) {
-            throw new RuntimeException("deep exception");
-        }
-        throwDeep(remaining - 1);
     }
 }
