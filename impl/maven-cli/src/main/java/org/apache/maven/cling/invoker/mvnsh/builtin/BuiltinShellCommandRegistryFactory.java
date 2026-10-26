@@ -292,15 +292,25 @@ public class BuiltinShellCommandRegistryFactory implements ShellCommandRegistryF
                                 .cwd(shellContext.cwd.get())
                                 .build()));
             } catch (InvokerException.ExitException e) {
-                shellContext.logger.error("mvnlog command exited with exit code " + e.getExitCode());
+                if (e.getExitCode() != 0) {
+                    shellContext.logger.error("mvnlog command exited with exit code " + e.getExitCode());
+                }
             } catch (Exception e) {
                 saveException(e);
             }
         }
 
         private List<Completer> mvnlogCompleter(String name) {
-            return List.of(
-                    new ArgumentCompleter(new StringsCompleter("--diagnostics", "--failures", "--full", "--list")));
+            return List.of(new ArgumentCompleter(new StringsCompleter(
+                    "--diagnostics",
+                    "--failures",
+                    "--full",
+                    "--list",
+                    "--json",
+                    "--module",
+                    "--mojo",
+                    "--level",
+                    "--grep")));
         }
 
         private void mvnup(CommandInput input) {

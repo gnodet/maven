@@ -71,16 +71,12 @@ public class BuildReportRenderer {
             int passed = 0, failed = 0, skipped = 0;
             for (Map<String, Object> module : modules) {
                 String status = getString(module, "status");
-                switch (status) {
-                    case "SUCCESS":
-                        passed++;
-                        break;
-                    case "FAILURE":
-                        failed++;
-                        break;
-                    default:
-                        skipped++;
-                        break;
+                if ("SUCCESS".equals(status)) {
+                    passed++;
+                } else if ("FAILURE".equals(status)) {
+                    failed++;
+                } else {
+                    skipped++;
                 }
             }
             StringBuilder stats = new StringBuilder();
@@ -261,7 +257,7 @@ public class BuildReportRenderer {
             } else if ("FAILURE".equals(status)) {
                 mb.failure(status);
             } else {
-                mb.warning(status);
+                mb.warning(status != null ? status : "UNKNOWN");
             }
             output.accept(mb.toString());
 
