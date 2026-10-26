@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.api.services.DiagnosticReporter;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Named
 @Singleton
-public final class DefaultDiagnosticCollector {
+public final class DefaultDiagnosticCollector implements DiagnosticReporter {
 
     /**
      * Maximum number of unique problems to store.

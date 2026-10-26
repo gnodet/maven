@@ -26,9 +26,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.internal.build.BuilderProblems;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.building.ModelProblemUtils;
 import org.apache.maven.project.MavenProject;
@@ -47,10 +47,10 @@ import org.slf4j.LoggerFactory;
 public class DefaultProjectsSelector implements ProjectsSelector {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultProjectsSelector.class);
     private final ProjectBuilder projectBuilder;
-    private final DefaultDiagnosticCollector diagnosticCollector;
+    private final DiagnosticReporter diagnosticCollector;
 
     @Inject
-    public DefaultProjectsSelector(ProjectBuilder projectBuilder, DefaultDiagnosticCollector diagnosticCollector) {
+    public DefaultProjectsSelector(ProjectBuilder projectBuilder, DiagnosticReporter diagnosticCollector) {
         this.projectBuilder = projectBuilder;
         this.diagnosticCollector = diagnosticCollector;
     }

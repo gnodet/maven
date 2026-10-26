@@ -41,10 +41,10 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.api.Constants;
 import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.plugin.PluginValidationManager;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -86,10 +86,10 @@ public final class DefaultPluginValidationManager extends AbstractEventSpy imple
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final DefaultDiagnosticCollector diagnosticCollector;
+    private final DiagnosticReporter diagnosticCollector;
 
     @Inject
-    DefaultPluginValidationManager(DefaultDiagnosticCollector diagnosticCollector) {
+    DefaultPluginValidationManager(DiagnosticReporter diagnosticCollector) {
         this.diagnosticCollector = diagnosticCollector;
     }
 

@@ -45,6 +45,7 @@ import org.apache.maven.api.model.Prerequisites;
 import org.apache.maven.api.model.Profile;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.execution.BuildResumptionAnalyzer;
 import org.apache.maven.execution.BuildResumptionDataRepository;
@@ -60,7 +61,6 @@ import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.graph.GraphBuilder;
 import org.apache.maven.graph.ProjectSelector;
 import org.apache.maven.internal.build.BuilderProblems;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
@@ -114,7 +114,7 @@ public class DefaultMaven implements Maven {
 
     private final ProjectSelector projectSelector;
 
-    private final DefaultDiagnosticCollector diagnosticCollector;
+    private final DiagnosticReporter diagnosticCollector;
 
     @Inject
     @SuppressWarnings("checkstyle:ParameterNumber")
@@ -130,7 +130,7 @@ public class DefaultMaven implements Maven {
             SuperPomProvider superPomProvider,
             DefaultSessionFactory defaultSessionFactory,
             @Nullable @Named("ide") WorkspaceReader ideWorkspaceReader,
-            DefaultDiagnosticCollector diagnosticCollector) {
+            DiagnosticReporter diagnosticCollector) {
         this.lookup = lookup;
         this.eventCatapult = eventCatapult;
         this.legacySupport = legacySupport;

@@ -41,6 +41,7 @@ import org.apache.maven.api.cli.InvokerRequest;
 import org.apache.maven.api.cli.mvn.MavenOptions;
 import org.apache.maven.api.logging.Logger;
 import org.apache.maven.api.services.BuilderProblem;
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.Sources;
 import org.apache.maven.api.services.ToolchainsBuilder;
@@ -65,7 +66,6 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.ProfileActivation;
 import org.apache.maven.execution.ProjectActivation;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.jline.MessageUtils;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.apache.maven.logging.LoggingExecutionListener;
@@ -230,7 +230,7 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
             // key, suggestion, documentationUrl, and source location are preserved
             // in the build report. This runs before SessionStarted, so the SLF4J
             // auto-collection hook is not active yet — no double-counting risk.
-            context.lookup.lookupOptional(DefaultDiagnosticCollector.class).ifPresent(collector -> {
+            context.lookup.lookupOptional(DiagnosticReporter.class).ifPresent(collector -> {
                 for (BuilderProblem problem :
                         toolchainsResult.getProblems().problems().toList()) {
                     collector.report(problem);

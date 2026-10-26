@@ -60,6 +60,7 @@ import org.apache.maven.api.services.SettingsBuilder;
 import org.apache.maven.api.services.SettingsBuilderRequest;
 import org.apache.maven.api.services.SettingsBuilderResult;
 import org.apache.maven.api.services.Sources;
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.api.settings.Mirror;
 import org.apache.maven.api.settings.Profile;
 import org.apache.maven.api.settings.Proxy;
@@ -77,7 +78,6 @@ import org.apache.maven.cling.utils.CLIReportingUtils;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.impl.SettingsUtilsV4;
-import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.jline.FastTerminal;
 import org.apache.maven.jline.MessageUtils;
 import org.apache.maven.logging.BuildEventListener;
@@ -836,7 +836,7 @@ public abstract class LookupInvoker<C extends LookupContext> implements Invoker 
      * that would otherwise be lost when problems are logged as plain text.
      */
     private void pipeSettingsProblems(C context, SettingsBuilderResult settingsResult) {
-        context.lookup.lookupOptional(DefaultDiagnosticCollector.class).ifPresent(collector -> {
+        context.lookup.lookupOptional(DiagnosticReporter.class).ifPresent(collector -> {
             for (BuilderProblem problem :
                     settingsResult.getProblems().problems().toList()) {
                 collector.report(problem);
