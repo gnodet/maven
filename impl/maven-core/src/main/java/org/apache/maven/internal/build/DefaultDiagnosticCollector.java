@@ -119,8 +119,11 @@ public final class DefaultDiagnosticCollector implements DiagnosticReporter {
             return;
         }
 
-        // Always increment the count
-        counts.computeIfAbsent(key, k -> new LongAdder()).increment();
+        // Create the counter before publishing the key via putIfAbsent so any
+        // concurrent thread that sees the key in uniqueProblems (the else branch)
+        // is guaranteed to find its counter in counts. If we are later forced to
+        // undo the insertion (over-cap), we remove the counter so it doesn't leak.
+        LongAdder counter = counts.computeIfAbsent(key, k -> new LongAdder());
 
         // Store the first occurrence only (if within cap).
         // Synchronize on orderedKeys so that the putIfAbsent + size-check + add
@@ -132,9 +135,20 @@ public final class DefaultDiagnosticCollector implements DiagnosticReporter {
             if (uniqueProblems.putIfAbsent(key, problem) == null) {
                 if (orderedKeys.size() < MAX_DIAGNOSTICS) {
                     orderedKeys.add(key);
+                    counter.increment();
                 } else {
-                    // Over cap — remove the entry we just added
+                    // Over cap — undo the reservation; also remove the pre-created
+                    // counter so it does not leak into future getProblems() tallies.
                     uniqueProblems.remove(key);
+                    counts.remove(key);
+                }
+            } else {
+                // Duplicate key: increment count only if the key is within the cap
+                // (i.e. it was stored). Over-cap keys have no counts entry because
+                // their counter was removed during the undo above.
+                LongAdder existing = counts.get(key);
+                if (existing != null) {
+                    existing.increment();
                 }
             }
         }
@@ -224,5 +238,20 @@ public final class DefaultDiagnosticCollector implements DiagnosticReporter {
             }
         }
         return false;
+    }
+
+    /**
+     * Clears all collected diagnostics, counts and ordering state.
+     * Must be called at the start of each build session when running inside Maven
+     * Daemon (mvnd), where multiple builds share the same JVM and therefore the
+     * same {@code @Singleton} instance.
+     */
+    public void reset() {
+        counts.clear();
+        uniqueProblems.clear();
+        synchronized (orderedKeys) {
+            orderedKeys.clear();
+        }
+        noKeyCounter.set(0);
     }
 }
