@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.internal.build.BuilderProblems;
+import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.building.ModelProblemUtils;
 import org.apache.maven.project.MavenProject;
