@@ -688,8 +688,4 @@ fi
 # values (backslashes, ${...} placeholders) without shell re-parsing. Only the base
 # command uses eval for MAVEN_OPTS word splitting. MAVEN_ARGS words have already been
 # parsed and rotated into "$@" by the block above, so they must not be passed again here.
-if [ "$MAVEN_MAIN_CLASS" = "org.apache.maven.cling.MavenCling" ]; then
-  eval exec "$cmd" '"$@"'
-else
-  eval exec "$cmd" '"$@"'
-fi
+eval exec "$cmd" '"$@"'
