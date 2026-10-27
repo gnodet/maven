@@ -21,7 +21,6 @@ package org.apache.maven.internal.build;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UncheckedIOException;
 import java.io.Writer;
 
 import org.apache.maven.api.BuildInvocation;
@@ -40,10 +39,10 @@ import org.apache.maven.api.services.BuilderProblem;
  * stable across Maven versions — field order is fixed, and new fields are
  * appended at the end of each object.
  * <p>
- * Use {@link #write(Writer, BuildReport)} to stream directly to any {@link Writer}
- * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}) to avoid
- * building the full report in memory. The {@link #toJson(BuildReport)} convenience
- * method is provided for testing and in-process consumers.
+ * Use {@link #write(Writer, BuildReport)} to write directly to any {@link Writer}
+ * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}) without retaining
+ * the JSON string after the write completes. The {@link #toJson(BuildReport)} convenience
+ * method is provided for testing and in-process consumers that need the string.
  */
 final class BuildReportJsonWriter {
 
@@ -69,11 +68,7 @@ final class BuildReportJsonWriter {
      * @throws IOException if the underlying writer throws
      */
     static void write(Writer out, BuildReport report) throws IOException {
-        try {
-            out.write(toJson(report));
-        } catch (UncheckedIOException e) {
-            throw e.getCause();
-        }
+        out.write(toJson(report));
     }
 
     private static void writeReport(StringBuilder sb, BuildReport report, int indent) {
