@@ -52,7 +52,8 @@ final class BuildReportJsonWriter {
      * Serialize the given report to a pretty-printed JSON string.
      * <p>
      * Prefer {@link #write(Writer, BuildReport)} when writing directly to a file
-     * or stream, to avoid holding the full report string in memory.
+     * or stream — the caller does not need to hold the JSON string in memory after
+     * the write completes.
      */
     static String toJson(BuildReport report) {
         StringBuilder sb = new StringBuilder(4096);
@@ -62,7 +63,7 @@ final class BuildReportJsonWriter {
     }
 
     /**
-     * Stream the pretty-printed JSON representation of {@code report} to {@code out}.
+     * Write the pretty-printed JSON representation of {@code report} to {@code out}.
      * The caller is responsible for flushing and closing the writer.
      *
      * @throws IOException if the underlying writer throws
