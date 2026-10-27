@@ -56,6 +56,9 @@ public final class BuilderProblems {
                 .exception(problem.getException())
                 .message(problem.getMessage())
                 .severity(severity)
+                // Dedup key: source + message uniquely identifies a model problem.
+                // Note: if messages contain variant tokens (e.g. resolved versions),
+                // logically identical problems may not deduplicate across builds.
                 .key("model:" + problem.getSource() + "::" + problem.getMessage())
                 .build();
     }

@@ -100,6 +100,11 @@ public final class BuildReportCollector extends AbstractEventSpy {
      * objects directly to the {@link DefaultDiagnosticCollector}. Without this
      * exclusion, each problem would be counted twice: once from the direct pipe
      * and once from the SLF4J WARN interception.
+     *
+     * <p><b>Maintainer note:</b> if you wire a new class to call
+     * {@link DefaultDiagnosticCollector#report} directly (bypassing the SLF4J
+     * interception), add its fully-qualified class name here to avoid
+     * double-counting.</p>
      */
     private static final Set<String> EXCLUDED_LOGGERS = Set.of(
             BuildReportCollector.class.getName(),
