@@ -577,9 +577,18 @@ public class RichBuildEventListener implements BuildEventListener {
     private List<String> buildStatusLines() {
         int termWidth = Math.max(terminal.getWidth(), 40);
 
-        // Collect active projects sorted by start time for visual stability
+        // Collect active projects: projects with an active mojo come first (they are
+        // actually building), idle projects (waiting for a slot) are shown last.
+        // Within each group, order is stable by start time.
         List<ProjectState> active = new ArrayList<>(activeProjects.values());
-        active.sort((a, b) -> a.startTime.compareTo(b.startTime));
+        active.sort((a, b) -> {
+            boolean aActive = a.currentMojo != null;
+            boolean bActive = b.currentMojo != null;
+            if (aActive != bActive) {
+                return aActive ? -1 : 1; // active mojos first
+            }
+            return a.startTime.compareTo(b.startTime);
+        });
 
         // Determine if we're in progress bar mode (reactor too large for per-module indicators)
         int maxIndicators = Math.min(projectOrder.size(), (termWidth - 40) / 3);
@@ -623,12 +632,20 @@ public class RichBuildEventListener implements BuildEventListener {
 
     private String formatProjectSlot(ProjectState state) {
         StringBuilder b = new StringBuilder();
+        boolean idle = !state.failed && state.currentMojo == null;
         if (state.failed) {
             b.append(RED).append(" ✗ ").append(RESET);
+        } else if (idle) {
+            // Started but waiting — no mojo executing yet; dim the bullet
+            b.append(DIM).append(" ○ ").append(RESET);
         } else {
             b.append(CYAN).append(" ● ").append(RESET);
         }
-        b.append(BOLD);
+        if (idle) {
+            b.append(DIM);
+        } else {
+            b.append(BOLD);
+        }
         b.append(projectNames.getOrDefault(state.projectId, state.projectId));
         b.append(RESET);
         if (state.currentMojo != null) {
