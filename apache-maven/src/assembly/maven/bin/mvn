@@ -567,6 +567,9 @@ handle_args() {
       --val)
         MAVEN_MAIN_CLASS="org.apache.maven.cling.MavenValCling"
         ;;
+      --log)
+        MAVEN_MAIN_CLASS="org.apache.maven.cling.MavenLogCling"
+        ;;
       *)
         ;;
     esac
@@ -575,6 +578,23 @@ handle_args() {
 }
 
 handle_args "$@"
+
+# Strip shell-only routing flags (--debug, --yjp, --log) from $@ so they are not
+# passed to the Java process where they may collide with Commons CLI option-prefix
+# matching (e.g. --log matches --log-file).
+# Sub-command flags (--enc, --shell, --up, --val) are kept in $@ so the Java
+# main class (MavenEncCling, MavenShellCling, etc.) receives them as its first argument.
+_argc=$#
+_i=0
+while [ $_i -lt $_argc ]; do
+  _arg="$1"
+  shift
+  case $_arg in
+    --debug|--yjp|--log) ;;
+    *) set -- "$@" "$_arg" ;;
+  esac
+  _i=$((_i + 1))
+done
 MAVEN_MAIN_CLASS=${MAVEN_MAIN_CLASS:=org.apache.maven.cling.MavenCling}
 
 # Build base command string for eval (only contains Maven-controlled values)
@@ -664,7 +684,8 @@ if [ -n "$MAVEN_DEBUG_SCRIPT" ]; then
   printf ' "%s"' "$@" >&2; echo >&2
 fi
 
-# The arguments ("$@") are passed outside the eval'd string to preserve literal
-# values (backslashes, ${...} placeholders) without shell re-parsing.
-# Only the base command uses eval for MAVEN_OPTS word splitting.
+# User arguments ("$@") are passed outside the eval'd string to preserve literal
+# values (backslashes, ${...} placeholders) without shell re-parsing. Only the base
+# command uses eval for MAVEN_OPTS word splitting. MAVEN_ARGS words have already been
+# parsed and rotated into "$@" by the block above, so they must not be passed again here.
 eval exec "$cmd" '"$@"'

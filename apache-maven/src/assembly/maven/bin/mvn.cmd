@@ -370,6 +370,8 @@ if "%~1"=="--debug" (
       set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenUpCling"
 ) else if "%~1"=="--val" (
       set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenValCling"
+) else if "%~1"=="--log" (
+      set "MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenLogCling"
 )
 exit /b 0
 
