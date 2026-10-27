@@ -18,13 +18,14 @@
  */
 package org.apache.maven.internal.build;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.maven.api.BuildInvocation;
@@ -48,8 +48,6 @@ import org.apache.maven.api.build.report.FailureReport;
 import org.apache.maven.api.build.report.MojoReport;
 import org.apache.maven.api.build.report.SubprojectReport;
 import org.apache.maven.api.logging.LogEvent;
-import org.apache.maven.api.logging.LogLevel;
-import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.execution.BuildSuccess;
@@ -93,48 +91,6 @@ public final class BuildReportCollector extends AbstractEventSpy {
     static final String SPAN_ID_MDC_KEY = "otel.span_id";
 
     private static final int MAX_STACKTRACE_LINES = 30;
-
-    /**
-     * Logger names excluded from SLF4J auto-collection because these classes
-     * already pipe structured {@link org.apache.maven.api.services.BuilderProblem}
-     * objects directly to the {@link DefaultDiagnosticCollector}. Without this
-     * exclusion, each problem would be counted twice: once from the direct pipe
-     * and once from the SLF4J WARN interception.
-     *
-     * <p><b>Maintainer note:</b> if you wire a new class to call
-     * {@link DefaultDiagnosticCollector#report} directly (bypassing the SLF4J
-     * interception), add its fully-qualified class name here to avoid
-     * double-counting.</p>
-     */
-    private static final Set<String> EXCLUDED_LOGGERS = Set.of(
-            BuildReportCollector.class.getName(),
-            "org.apache.maven.DefaultMaven",
-            "org.apache.maven.project.collector.DefaultProjectsSelector",
-            "org.apache.maven.plugin.internal.DefaultPluginValidationManager");
-
-    private final DefaultDiagnosticCollector diagnosticCollector;
-
-    @Inject
-    public BuildReportCollector(DefaultDiagnosticCollector diagnosticCollector) {
-        this.diagnosticCollector = diagnosticCollector;
-    }
-
-    /**
-     * No-arg constructor for tests that don't need diagnostic collection.
-     */
-    BuildReportCollector() {
-        this(new DefaultDiagnosticCollector());
-    }
-
-    /**
-     * Returns the diagnostic collector used by this build report collector.
-     * Plugins should inject {@link org.apache.maven.api.services.DiagnosticReporter}
-     * (the API interface in {@code maven-api-core}) rather than this internal class.
-     * This accessor is for internal use and testing only.
-     */
-    DefaultDiagnosticCollector getDiagnosticCollector() {
-        return diagnosticCollector;
-    }
 
     /**
      * Maximum number of log events captured per scope (mojo, subproject, or build).
@@ -372,23 +328,6 @@ public final class BuildReportCollector extends AbstractEventSpy {
     private void captureLogEvent(LogEvent event) {
         long threadId = Thread.currentThread().getId();
 
-        // Auto-collect WARN-level log events as build problems, giving Maven 3 plugins
-        // automatic deduplication and summary at end of build without code changes.
-        // Skip loggers that already pipe structured BuilderProblems directly to the
-        // DiagnosticCollector (avoiding double-counting), and our own logger to avoid
-        // feedback loops from problem summary printing.
-        if (event.level() == LogLevel.WARN
-                && event.message() != null
-                && !EXCLUDED_LOGGERS.contains(event.loggerName())) {
-            String syntheticKey = syntheticDiagnosticKey(event.loggerName(), event.message());
-            diagnosticCollector.report(BuilderProblem.builder()
-                    .source(event.loggerName())
-                    .message(event.message())
-                    .severity(BuilderProblem.Severity.WARNING)
-                    .key(syntheticKey)
-                    .build());
-        }
-
         // 1. Mojo-level: event belongs to the currently-executing mojo on this thread
         String mKey = currentMojoByThread.get(threadId);
         if (mKey != null) {
@@ -611,7 +550,6 @@ public final class BuildReportCollector extends AbstractEventSpy {
 
         try {
             Files.createDirectories(reportsDir);
-            String json = BuildReportJsonWriter.toJson(report);
 
             // Timestamped file: build-report-20250729T143000Z.json
             String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'")
@@ -623,7 +561,9 @@ public final class BuildReportCollector extends AbstractEventSpy {
             // never leaves a half-written report on disk.
             Path tmpFile = Files.createTempFile(reportsDir, ".build-report-", ".tmp");
             try {
-                Files.writeString(tmpFile, json);
+                try (BufferedWriter writer = Files.newBufferedWriter(tmpFile, StandardCharsets.UTF_8)) {
+                    BuildReportJsonWriter.write(writer, report);
+                }
                 atomicMove(tmpFile, timestampedFile);
             } catch (IOException e) {
                 Files.deleteIfExists(tmpFile);
@@ -643,7 +583,7 @@ public final class BuildReportCollector extends AbstractEventSpy {
                 atomicMove(tmpLink, latestFile);
             } catch (UnsupportedOperationException | IOException symEx) {
                 // Windows or restricted filesystem - fall back to a plain copy
-                Files.writeString(latestFile, json);
+                Files.copy(timestampedFile, latestFile, StandardCopyOption.REPLACE_EXISTING);
             }
 
             LOGGER.debug("Build report written to {}", timestampedFile);
@@ -680,17 +620,6 @@ public final class BuildReportCollector extends AbstractEventSpy {
 
     private static String nonBlank(String value) {
         return value == null || value.isBlank() ? null : value;
-    }
-
-    /**
-     * Generates a stable synthetic deduplication key for auto-collected WARN log events.
-     * Uses the logger name as namespace and the full message as the discriminator to avoid
-     * the hash-collision risk of {@code String.hashCode()}.
-     * The key is prefixed with {@code "auto:"} to distinguish synthetic keys (generated by
-     * the SLF4J WARN interception) from explicit keys supplied by plugins or validators.
-     */
-    static String syntheticDiagnosticKey(String loggerName, String message) {
-        return "auto:" + loggerName + ":" + message;
     }
 
     static String truncateStackTrace(Throwable t) {

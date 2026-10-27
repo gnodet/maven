@@ -92,17 +92,6 @@ public interface LogEvent {
     String loggerName();
 
     /**
-     * The stack trace associated with this event, if an exception was logged.
-     * <p>
-     * The trace is formatted as a multi-line string and may be truncated
-     * for very deep stack traces.
-     *
-     * @return the stack trace string, or {@code null} if no exception was logged
-     */
-    @Nullable
-    String stackTrace();
-
-    /**
      * The original exception that triggered this log event, if available.
      *
      * @return the original throwable, or {@code null}

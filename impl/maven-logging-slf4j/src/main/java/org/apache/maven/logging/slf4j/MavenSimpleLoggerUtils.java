@@ -57,7 +57,6 @@ public final class MavenSimpleLoggerUtils {
                 toLogLevel(level),
                 cleanMessage != null ? cleanMessage : "",
                 loggerName,
-                null,
                 throwable,
                 null,
                 null,

@@ -18,8 +18,6 @@
  */
 package org.apache.maven.logging;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
@@ -147,13 +145,11 @@ public class ProjectBuildLogAppender implements AutoCloseable {
             if (event instanceof DefaultLogEvent && projectId == event.projectId() && mojoId == event.mojoId()) {
                 full = event;
             } else {
-                String stackTrace = event.throwable() != null ? formatStackTrace(event.throwable()) : null;
                 full = new DefaultLogEvent(
                         event.timestamp() != null ? event.timestamp() : MonotonicClock.now(),
                         event.level(),
                         event.message(),
                         event.loggerName(),
-                        stackTrace,
                         event.throwable(),
                         event.sourceClassName(),
                         event.sourceMethodName(),
@@ -215,11 +211,5 @@ public class ProjectBuildLogAppender implements AutoCloseable {
             drainLock.unlock();
         }
         LoggerManager.get().setLogSink(null);
-    }
-
-    private static String formatStackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
     }
 }

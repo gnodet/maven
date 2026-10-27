@@ -18,6 +18,11 @@
  */
 package org.apache.maven.internal.build;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import org.apache.maven.api.BuildInvocation;
 import org.apache.maven.api.MakeBehavior;
 import org.apache.maven.api.build.report.BuildReport;
@@ -33,6 +38,11 @@ import org.apache.maven.api.services.BuilderProblem;
  * The output is human-readable (indented with 2 spaces) and designed to be
  * stable across Maven versions — field order is fixed, and new fields are
  * appended at the end of each object.
+ * <p>
+ * Use {@link #write(Writer, BuildReport)} to write directly to any {@link Writer}
+ * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}) without retaining
+ * the JSON string after the write completes. The {@link #toJson(BuildReport)} convenience
+ * method is provided for testing and in-process consumers that need the string.
  */
 final class BuildReportJsonWriter {
 
@@ -40,12 +50,25 @@ final class BuildReportJsonWriter {
 
     /**
      * Serialize the given report to a pretty-printed JSON string.
+     * <p>
+     * Prefer {@link #write(Writer, BuildReport)} when writing directly to a file
+     * or stream, to avoid holding the full report string in memory.
      */
     static String toJson(BuildReport report) {
         StringBuilder sb = new StringBuilder(4096);
         writeReport(sb, report, 0);
         sb.append('\n');
         return sb.toString();
+    }
+
+    /**
+     * Stream the pretty-printed JSON representation of {@code report} to {@code out}.
+     * The caller is responsible for flushing and closing the writer.
+     *
+     * @throws IOException if the underlying writer throws
+     */
+    static void write(Writer out, BuildReport report) throws IOException {
+        out.write(toJson(report));
     }
 
     private static void writeReport(StringBuilder sb, BuildReport report, int indent) {
@@ -204,9 +227,6 @@ final class BuildReportJsonWriter {
         if (problem.getColumnNumber() > 0) {
             writeField(sb, indent + 1, "column", problem.getColumnNumber());
         }
-        writeNullableField(sb, indent + 1, "key", problem.getKey());
-        writeNullableField(sb, indent + 1, "suggestion", problem.getSuggestion());
-        writeNullableField(sb, indent + 1, "documentationUrl", problem.getDocumentationUrl());
         // Remove the trailing comma from the last written field
         removeTrailingComma(sb);
         writeIndent(sb, indent);
@@ -323,8 +343,8 @@ final class BuildReportJsonWriter {
             writeField(sb, indent + 1, "loggerName", event.loggerName());
         }
         writeField(sb, indent + 1, "message", event.message());
-        if (event.stackTrace() != null) {
-            writeField(sb, indent + 1, "stackTrace", event.stackTrace());
+        if (event.throwable() != null) {
+            writeField(sb, indent + 1, "stackTrace", throwableToString(event.throwable()));
         }
         // Source metadata — present for Log API and JUL events
         if (event.sourceClassName() != null) {
@@ -449,5 +469,11 @@ final class BuildReportJsonWriter {
 
     private static void writeIndent(StringBuilder sb, int level) {
         sb.append("  ".repeat(level));
+    }
+
+    private static String throwableToString(Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 }

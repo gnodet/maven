@@ -18,8 +18,6 @@
  */
 package org.apache.maven.logging.jul;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -140,14 +138,11 @@ public class MavenJulHandler extends Handler {
                 threadName = Thread.currentThread().getName();
             }
 
-            String stackTrace = throwable != null ? formatStackTrace(throwable) : null;
-
             LogEvent event = new DefaultLogEvent(
                     MonotonicClock.now(),
                     level,
                     message,
                     loggerName,
-                    stackTrace,
                     throwable,
                     sourceClass,
                     sourceMethod,
@@ -213,11 +208,5 @@ public class MavenJulHandler extends Handler {
         }
 
         return message;
-    }
-
-    private static String formatStackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
     }
 }

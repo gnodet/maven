@@ -18,6 +18,8 @@
  */
 package org.apache.maven.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.function.Consumer;
 
 import org.apache.maven.api.logging.LogEvent;
@@ -42,9 +44,11 @@ public class SimpleBuildEventListener implements BuildEventListener {
     @Override
     public void projectLogMessage(String projectId, LogEvent event) {
         log("[" + renderLevel(event.level()) + "] " + event.message());
-        String stackTrace = event.stackTrace();
-        if (stackTrace != null) {
-            log(stackTrace);
+        Throwable throwable = event.throwable();
+        if (throwable != null) {
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            log(sw.toString().stripTrailing());
         }
     }
 

@@ -28,7 +28,6 @@ import java.util.Properties;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
-import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
@@ -338,15 +337,6 @@ class BuildReportCollectorTest {
     }
 
     // ---- Test helpers ----
-
-    private static BuilderProblem warning(String key, String message, String source) {
-        return BuilderProblem.builder()
-                .source(source)
-                .message(message)
-                .severity(BuilderProblem.Severity.WARNING)
-                .key(key)
-                .build();
-    }
 
     private MavenProject createProject(String groupId, String artifactId, String version) {
         MavenProject project = new MavenProject();

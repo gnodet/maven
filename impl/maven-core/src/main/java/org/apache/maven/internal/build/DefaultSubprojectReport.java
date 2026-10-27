@@ -43,13 +43,8 @@ record DefaultSubprojectReport(
         List<LogEvent> output)
         implements SubprojectReport {
 
-    @Override
-    public List<MojoReport> mojos() {
-        return List.copyOf(mojos);
-    }
-
-    @Override
-    public List<LogEvent> output() {
-        return List.copyOf(output);
+    DefaultSubprojectReport {
+        mojos = List.copyOf(mojos);
+        output = List.copyOf(output);
     }
 }

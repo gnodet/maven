@@ -41,7 +41,6 @@ public final class DefaultLogEvent implements LogEvent {
     private final LogLevel level;
     private final String message;
     private final String loggerName;
-    private final String stackTrace;
     private final Throwable throwable;
     private final String sourceClassName;
     private final String sourceMethodName;
@@ -62,7 +61,6 @@ public final class DefaultLogEvent implements LogEvent {
             LogLevel level,
             String message,
             String loggerName,
-            String stackTrace,
             Throwable throwable,
             String sourceClassName,
             String sourceMethodName,
@@ -78,7 +76,6 @@ public final class DefaultLogEvent implements LogEvent {
         this.level = level;
         this.message = message;
         this.loggerName = loggerName;
-        this.stackTrace = stackTrace;
         this.throwable = throwable;
         this.sourceClassName = sourceClassName;
         this.sourceMethodName = sourceMethodName;
@@ -101,7 +98,6 @@ public final class DefaultLogEvent implements LogEvent {
             LogLevel level,
             String message,
             String loggerName,
-            String stackTrace,
             Throwable throwable,
             String sourceClassName,
             String sourceMethodName,
@@ -115,7 +111,6 @@ public final class DefaultLogEvent implements LogEvent {
                 level,
                 message,
                 loggerName,
-                stackTrace,
                 throwable,
                 sourceClassName,
                 sourceMethodName,
@@ -132,8 +127,8 @@ public final class DefaultLogEvent implements LogEvent {
     /**
      * Convenience constructor for SLF4J events (no source metadata).
      */
-    public DefaultLogEvent(Instant timestamp, LogLevel level, String message, String loggerName, String stackTrace) {
-        this(timestamp, level, message, loggerName, stackTrace, null, null, null, -1, -1, null, null, null);
+    public DefaultLogEvent(Instant timestamp, LogLevel level, String message, String loggerName, Throwable throwable) {
+        this(timestamp, level, message, loggerName, throwable, null, null, -1, -1, null, null, null);
     }
 
     @Override
@@ -162,11 +157,6 @@ public final class DefaultLogEvent implements LogEvent {
     @Override
     public String loggerName() {
         return loggerName;
-    }
-
-    @Override
-    public String stackTrace() {
-        return stackTrace;
     }
 
     @Override

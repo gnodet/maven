@@ -27,7 +27,6 @@ import java.util.Properties;
 import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.build.report.BuildReport;
 import org.apache.maven.api.build.report.BuildStatus;
-import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.execution.BuildSuccess;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
@@ -61,51 +60,11 @@ class BuildReportIntegrationTest {
     @TempDir
     Path tempDir;
 
-    private DefaultDiagnosticCollector diagnosticCollector;
     private BuildReportCollector collector;
 
     @BeforeEach
     void setUp() {
-        diagnosticCollector = new DefaultDiagnosticCollector();
-        collector = new BuildReportCollector(diagnosticCollector);
-    }
-
-    private static BuilderProblem warning(String key, String message, String source) {
-        return BuilderProblem.builder()
-                .source(source)
-                .message(message)
-                .severity(BuilderProblem.Severity.WARNING)
-                .key(key)
-                .build();
-    }
-
-    private static BuilderProblem warning(String key, String message, String source, String suggestion, String docUrl) {
-        return BuilderProblem.builder()
-                .source(source)
-                .message(message)
-                .severity(BuilderProblem.Severity.WARNING)
-                .key(key)
-                .suggestion(suggestion)
-                .documentationUrl(docUrl)
-                .build();
-    }
-
-    private static BuilderProblem info(String key, String message, String source) {
-        return BuilderProblem.builder()
-                .source(source)
-                .message(message)
-                .severity(BuilderProblem.Severity.INFO)
-                .key(key)
-                .build();
-    }
-
-    private static BuilderProblem error(String key, String message, String source) {
-        return BuilderProblem.builder()
-                .source(source)
-                .message(message)
-                .severity(BuilderProblem.Severity.ERROR)
-                .key(key)
-                .build();
+        collector = new BuildReportCollector();
     }
 
     /**

@@ -18,8 +18,6 @@
  */
 package org.apache.maven.logging.impl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.StackWalker.StackFrame;
 import java.time.Instant;
 import java.util.Map;
@@ -181,14 +179,11 @@ public class DefaultLogger implements Logger, org.apache.maven.api.plugin.Log {
             threadName = Thread.currentThread().getName();
         }
 
-        String stackTrace = throwable != null ? formatStackTrace(throwable) : null;
-
         LogEvent event = new DefaultLogEvent(
                 timestamp,
                 level,
                 message,
                 name,
-                stackTrace,
                 throwable,
                 sourceClass,
                 sourceMethod,
@@ -214,12 +209,6 @@ public class DefaultLogger implements Logger, org.apache.maven.api.plugin.Log {
                 .findFirst()
                 .map(StackFrame::getMethodName)
                 .orElse(null));
-    }
-
-    private static String formatStackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
     }
 
     // ---- Deprecated org.apache.maven.api.plugin.Log (backward compat) ----
