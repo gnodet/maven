@@ -448,8 +448,8 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
         }
         // "auto" mode: CI → plain, interactive TTY → rich, otherwise → verbose
         if (!"auto".equalsIgnoreCase(consoleMode)) {
-            context.logger.warn("Unknown --console value '" + consoleMode
-                    + "'; expected one of: plain, rich, verbose, machine, auto. Falling back to auto-detection.");
+            throw new InvokerException("Unknown --console value '" + consoleMode
+                    + "'; expected one of: plain, rich, verbose, machine, auto.");
         }
         if (context.invokerRequest.ciInfo().isPresent()
                 && !context.options().forceInteractive().orElse(false)) {
