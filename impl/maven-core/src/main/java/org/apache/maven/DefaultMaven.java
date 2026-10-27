@@ -658,7 +658,6 @@ public class DefaultMaven implements Maven {
             }
             // Pipe structured problem directly to DiagnosticCollector so that
             // source location and severity are preserved in the build report.
-            // The SLF4J hook excludes this logger to avoid double-counting.
             diagnosticCollector.report(BuilderProblems.fromModelProblem(problem));
         }
 

@@ -89,9 +89,7 @@ public class DefaultProjectsSelector implements ProjectsSelector {
                 }
 
                 // Pipe structured problems directly to DiagnosticCollector so that
-                // source location and severity are preserved in the build report
-                // (instead of being lost to plain-text logging). The SLF4J hook
-                // excludes this logger to avoid double-counting.
+                // source location and severity are preserved in the build report.
                 for (ModelProblem problem : result.getProblems()) {
                     diagnosticCollector.report(BuilderProblems.fromModelProblem(problem));
                 }
