@@ -26,6 +26,7 @@ import org.apache.maven.execution.BuildResumptionAnalyzer;
 import org.apache.maven.execution.BuildResumptionDataRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.graph.GraphBuilder;
+import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.lifecycle.internal.ExecutionEventCatapult;
 import org.apache.maven.model.Model;
@@ -67,7 +68,8 @@ class DefaultMavenProfileValidationTest {
                 mock(BuildResumptionDataRepository.class),
                 superPomProvider,
                 mock(DefaultSessionFactory.class),
-                null);
+                null,
+                new DefaultDiagnosticCollector());
 
         assertEquals(Set.of("parent-profile"), maven.getAllProfiles(session));
     }

@@ -56,6 +56,7 @@ import org.apache.maven.api.Project;
 import org.apache.maven.api.Service;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.plugin.descriptor.Resolution;
+import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.api.services.DependencyResolver;
 import org.apache.maven.api.services.DependencyResolverResult;
 import org.apache.maven.api.services.PathScopeRegistry;
@@ -769,7 +770,13 @@ public class DefaultMavenPluginManager implements MavenPluginManager {
                     session,
                     mojoDescriptor,
                     mojo.getClass(),
-                    "Mojo implements `Contextualizable` interface from Plexus Container, which is EOL.");
+                    BuilderProblem.builder()
+                            .message(
+                                    "Mojo implements `Contextualizable` interface from Plexus Container, which is EOL.")
+                            .severity(BuilderProblem.Severity.WARNING)
+                            .key("plugin-validation:contextualizable")
+                            .suggestion("Migrate from Contextualizable to javax.inject dependency injection")
+                            .build());
         }
 
         XmlNode dom = mojoExecution.getConfiguration() != null

@@ -523,6 +523,14 @@ under the License.
               <exclude>org.apache.maven.plugin.DefaultExtensionRealmCache#put(org.apache.maven.plugin.ExtensionRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,org.apache.maven.project.ExtensionDescriptor,java.util.List):METHOD_REMOVED</exclude>
               <exclude>org.apache.maven.plugin.DefaultPluginRealmCache#put(org.apache.maven.plugin.PluginRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,java.util.List):METHOD_REMOVED</exclude>
               <exclude>org.apache.maven.project.DefaultProjectRealmCache#put(org.apache.maven.project.ProjectRealmCache$Key,org.codehaus.plexus.classworlds.realm.ClassRealm,org.eclipse.aether.graph.DependencyFilter):METHOD_REMOVED</exclude>
+              <!-- PluginValidationManager: new BuilderProblem-based abstract methods added in 4.1.0 -->
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.eclipse.aether.RepositorySystemSession,org.eclipse.aether.artifact.Artifact,org.apache.maven.api.services.BuilderProblem):METHOD_NEW_DEFAULT</exclude>
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.apache.maven.execution.MavenSession,org.apache.maven.plugin.descriptor.MojoDescriptor,org.apache.maven.api.services.BuilderProblem):METHOD_ADDED_TO_INTERFACE</exclude>
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginMojoValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.apache.maven.execution.MavenSession,org.apache.maven.plugin.descriptor.MojoDescriptor,java.lang.Class,org.apache.maven.api.services.BuilderProblem):METHOD_ADDED_TO_INTERFACE</exclude>
+              <!-- PluginValidationManager: String-based overloads promoted to default in 4.1.0 -->
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.eclipse.aether.RepositorySystemSession,org.eclipse.aether.artifact.Artifact,java.lang.String):METHOD_NEW_DEFAULT</exclude>
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.apache.maven.execution.MavenSession,org.apache.maven.plugin.descriptor.MojoDescriptor,java.lang.String):METHOD_NEW_DEFAULT</exclude>
+              <exclude>org.apache.maven.plugin.PluginValidationManager#reportPluginMojoValidationIssue(org.apache.maven.plugin.PluginValidationManager$IssueLocality,org.apache.maven.execution.MavenSession,org.apache.maven.plugin.descriptor.MojoDescriptor,java.lang.Class,java.lang.String):METHOD_NEW_DEFAULT</exclude>
             </excludes>
           </parameter>
         </configuration>

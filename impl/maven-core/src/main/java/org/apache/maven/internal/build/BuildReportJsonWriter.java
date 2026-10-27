@@ -39,9 +39,8 @@ import org.apache.maven.api.services.BuilderProblem;
  * stable across Maven versions — field order is fixed, and new fields are
  * appended at the end of each object.
  * <p>
- * Use {@link #write(Writer, BuildReport)} to write directly to any {@link Writer}
- * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}) without retaining
- * the JSON string after the write completes. The {@link #toJson(BuildReport)} convenience
+ * Use {@link #write(Writer, BuildReport)} to write to any {@link Writer}
+ * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}). The {@link #toJson(BuildReport)} convenience
  * method is provided for testing and in-process consumers that need the string.
  */
 final class BuildReportJsonWriter {

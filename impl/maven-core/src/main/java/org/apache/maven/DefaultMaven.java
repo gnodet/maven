@@ -43,6 +43,7 @@ import org.apache.maven.api.Session;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Prerequisites;
 import org.apache.maven.api.model.Profile;
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.LookupException;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -59,6 +60,7 @@ import org.apache.maven.execution.ProjectActivation;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.graph.GraphBuilder;
 import org.apache.maven.graph.ProjectSelector;
+import org.apache.maven.internal.build.BuilderProblems;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.internal.impl.InternalMavenSession;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
@@ -112,6 +114,8 @@ public class DefaultMaven implements Maven {
 
     private final ProjectSelector projectSelector;
 
+    private final DiagnosticReporter diagnosticCollector;
+
     @Inject
     @SuppressWarnings("checkstyle:ParameterNumber")
     public DefaultMaven(
@@ -125,7 +129,8 @@ public class DefaultMaven implements Maven {
             BuildResumptionDataRepository buildResumptionDataRepository,
             SuperPomProvider superPomProvider,
             DefaultSessionFactory defaultSessionFactory,
-            @Nullable @Named("ide") WorkspaceReader ideWorkspaceReader) {
+            @Nullable @Named("ide") WorkspaceReader ideWorkspaceReader,
+            DiagnosticReporter diagnosticCollector) {
         this.lookup = lookup;
         this.eventCatapult = eventCatapult;
         this.legacySupport = legacySupport;
@@ -137,6 +142,7 @@ public class DefaultMaven implements Maven {
         this.superPomProvider = superPomProvider;
         this.ideWorkspaceReader = ideWorkspaceReader;
         this.defaultSessionFactory = defaultSessionFactory;
+        this.diagnosticCollector = diagnosticCollector;
         this.projectSelector = new ProjectSelector(); // if necessary switch to DI
     }
 
@@ -650,6 +656,9 @@ public class DefaultMaven implements Maven {
             } else {
                 logger.error(problem.getMessage());
             }
+            // Pipe structured problem directly to DiagnosticCollector so that
+            // source location and severity are preserved in the build report.
+            diagnosticCollector.report(BuilderProblems.fromModelProblem(problem));
         }
 
         if (!graphResult.hasErrors()) {

@@ -26,7 +26,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.api.services.DiagnosticReporter;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.internal.build.BuilderProblems;
 import org.apache.maven.model.building.ModelProblem;
 import org.apache.maven.model.building.ModelProblemUtils;
 import org.apache.maven.project.MavenProject;
@@ -45,10 +47,12 @@ import org.slf4j.LoggerFactory;
 public class DefaultProjectsSelector implements ProjectsSelector {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultProjectsSelector.class);
     private final ProjectBuilder projectBuilder;
+    private final DiagnosticReporter diagnosticCollector;
 
     @Inject
-    public DefaultProjectsSelector(ProjectBuilder projectBuilder) {
+    public DefaultProjectsSelector(ProjectBuilder projectBuilder, DiagnosticReporter diagnosticCollector) {
         this.projectBuilder = projectBuilder;
+        this.diagnosticCollector = diagnosticCollector;
     }
 
     @Override
@@ -82,6 +86,12 @@ public class DefaultProjectsSelector implements ProjectsSelector {
                         String loc = ModelProblemUtils.formatLocation(problem, result.getProjectId());
                         LOGGER.warn("{}{}", problem.getMessage(), ((loc != null && !loc.isEmpty()) ? " @ " + loc : ""));
                     }
+                }
+
+                // Pipe structured problems directly to DiagnosticCollector so that
+                // source location and severity are preserved in the build report.
+                for (ModelProblem problem : result.getProblems()) {
+                    diagnosticCollector.report(BuilderProblems.fromModelProblem(problem));
                 }
             }
         }

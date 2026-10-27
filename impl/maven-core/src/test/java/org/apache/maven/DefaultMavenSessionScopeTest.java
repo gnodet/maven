@@ -27,6 +27,7 @@ import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.graph.GraphBuilder;
+import org.apache.maven.internal.build.DefaultDiagnosticCollector;
 import org.apache.maven.internal.impl.DefaultSessionFactory;
 import org.apache.maven.lifecycle.internal.ExecutionEventCatapult;
 import org.apache.maven.plugin.LegacySupport;
@@ -77,7 +78,8 @@ class DefaultMavenSessionScopeTest {
                 mock(BuildResumptionDataRepository.class),
                 null,
                 mock(DefaultSessionFactory.class),
-                null);
+                null,
+                new DefaultDiagnosticCollector());
 
         MavenExecutionResult result = defaultMaven.execute(request);
 

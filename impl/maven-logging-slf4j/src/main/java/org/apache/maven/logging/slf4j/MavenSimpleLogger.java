@@ -87,11 +87,11 @@ public class MavenSimpleLogger extends MavenBaseLogger {
         if (t == null) {
             return;
         }
-        MessageBuilder builder = builder().failure(t.getClass().getName());
+        MessageBuilder b = builder().failure(t.getClass().getName());
         if (t.getMessage() != null) {
-            builder.a(": ").failure(t.getMessage());
+            b.a(": ").failure(t.getMessage());
         }
-        stream.accept(builder.toString());
+        stream.accept(b.toString());
 
         printStackTrace(t, stream, "", 0);
     }
