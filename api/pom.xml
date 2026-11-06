@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-api</artifactId>
@@ -40,6 +40,7 @@
     <module>maven-api-settings</module>
     <module>maven-api-toolchain</module>
     <module>maven-api-metadata</module>
+    <module>maven-api-log</module>
     <module>maven-api-core</module>
     <module>maven-api-spi</module>
     <module>maven-api-cli</module>

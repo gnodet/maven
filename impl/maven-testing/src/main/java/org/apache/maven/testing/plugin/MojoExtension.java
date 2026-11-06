@@ -52,6 +52,8 @@ import org.apache.maven.api.di.Named;
 import org.apache.maven.api.di.Priority;
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.di.Singleton;
+import org.apache.maven.api.logging.Logger;
+import org.apache.maven.api.logging.LoggerManager;
 import org.apache.maven.api.model.Build;
 import org.apache.maven.api.model.ConfigurationContainer;
 import org.apache.maven.api.model.Model;
@@ -74,19 +76,17 @@ import org.apache.maven.api.services.VersionParser;
 import org.apache.maven.api.services.xml.ModelXmlFactory;
 import org.apache.maven.api.xml.XmlNode;
 import org.apache.maven.api.xml.XmlService;
-import org.apache.maven.configuration.internal.EnhancedComponentConfigurator;
 import org.apache.maven.di.Injector;
 import org.apache.maven.di.Key;
 import org.apache.maven.di.impl.DIException;
 import org.apache.maven.impl.InternalSession;
 import org.apache.maven.impl.model.DefaultModelPathTranslator;
-import org.apache.maven.internal.impl.DefaultLog;
-import org.apache.maven.internal.xml.XmlPlexusConfiguration;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.model.v4.MavenMerger;
 import org.apache.maven.model.v4.MavenStaxReader;
 import org.apache.maven.plugin.PluginParameterExpressionEvaluatorV4;
 import org.apache.maven.plugin.descriptor.io.PluginDescriptorStaxReader;
+import org.apache.maven.plugin.internal.V4MojoConfigurator;
 import org.apache.maven.testing.di.MavenDIExtension;
 import org.apache.maven.testing.plugin.stubs.MojoExecutionStub;
 import org.apache.maven.testing.plugin.stubs.PluginStub;
@@ -108,7 +108,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
-import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
 
@@ -311,9 +310,11 @@ public class MojoExtension extends MavenDIExtension implements ParameterResolver
             ExpressionEvaluator evaluator = new WrapEvaluator(
                     getInjector(), new PluginParameterExpressionEvaluatorV4(session, project, mojoExecution));
 
-            EnhancedComponentConfigurator configurator = new EnhancedComponentConfigurator();
-            configurator.configureComponent(
-                    mojo, new XmlPlexusConfiguration(pluginConfiguration), evaluator, null, null);
+            new V4MojoConfigurator(
+                            (TypeAwareExpressionEvaluator) evaluator,
+                            mojo.getClass().getClassLoader(),
+                            null)
+                    .configure(mojo, pluginConfiguration);
             return mojo;
         } catch (Exception e) {
             throw new ParameterResolutionException("Unable to resolve mojo", e);
@@ -352,7 +353,6 @@ public class MojoExtension extends MavenDIExtension implements ParameterResolver
         /*
            binder.install(ProviderMethodsModule.forObject(context.getRequiredTestInstance()));
            binder.requestInjection(context.getRequiredTestInstance());
-           binder.bind(Log.class).toInstance(new DefaultLog(LoggerFactory.getLogger("anonymous")));
            binder.bind(ExtensionContext.class).toInstance(context);
            // Load maven 4 api Services interfaces and try to bind them to the (possible) mock instances
            // returned by the (possibly) mock InternalSession
@@ -517,7 +517,13 @@ public class MojoExtension extends MavenDIExtension implements ParameterResolver
                             mes.setDescriptor(md);
                         }
                     }
-                    requireNonNull(mes.descriptor());
+                    if (mes.descriptor() == null) {
+                        throw new IllegalStateException("No mojo with goal '" + goal + "' in plugin "
+                                + pluginDescriptor.getId() + "; available goals: "
+                                + pluginDescriptor.getMojos().stream()
+                                        .map(MojoDescriptor::getGoal)
+                                        .collect(Collectors.toList()));
+                    }
                 }
                 PluginStub plugin = new PluginStub();
                 plugin.setDescriptor(pluginDescriptor);
@@ -528,8 +534,22 @@ public class MojoExtension extends MavenDIExtension implements ParameterResolver
             @Provides
             @Singleton
             @Priority(-10)
-            private Log createLog() {
-                return new DefaultLog(LoggerFactory.getLogger("anonymous"));
+            private Logger createLogger() {
+                return LoggerManager.get().getLogger("anonymous");
+            }
+
+            @Provides
+            @Singleton
+            @Priority(-10)
+            @SuppressWarnings("deprecation")
+            private Log createLog(Logger logger) {
+                // DefaultLogger implements both Logger and Log; cast is safe here
+                if (logger instanceof Log log) {
+                    return log;
+                }
+                throw new IllegalStateException(
+                        "Logger implementation does not implement the deprecated Log interface: "
+                                + logger.getClass().getName());
             }
 
             @Provides

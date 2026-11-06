@@ -20,12 +20,14 @@ package org.apache.maven.cli;
 
 import javax.xml.stream.XMLStreamException;
 
+import java.io.BufferedReader;
 import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -62,6 +64,8 @@ import org.apache.maven.Maven;
 import org.apache.maven.api.Constants;
 import org.apache.maven.api.cli.extensions.CoreExtension;
 import org.apache.maven.api.cli.extensions.InputSource;
+import org.apache.maven.api.logging.LogLevel;
+import org.apache.maven.api.logging.LoggerManager;
 import org.apache.maven.api.services.MessageBuilder;
 import org.apache.maven.api.services.MessageBuilderFactory;
 import org.apache.maven.building.FileSource;
@@ -79,9 +83,7 @@ import org.apache.maven.cli.transfer.QuietMavenTransferListener;
 import org.apache.maven.cli.transfer.SimplexTransferListener;
 import org.apache.maven.cli.transfer.Slf4jMavenTransferListener;
 import org.apache.maven.cling.internal.extension.io.CoreExtensionsStaxReader;
-import org.apache.maven.cling.logging.Slf4jConfiguration;
-import org.apache.maven.cling.logging.Slf4jConfigurationFactory;
-import org.apache.maven.cling.logging.Slf4jLoggerManager;
+import org.apache.maven.cling.logging.LogApiLoggerManager;
 import org.apache.maven.di.Injector;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.exception.DefaultExceptionHandler;
@@ -102,7 +104,6 @@ import org.apache.maven.extension.internal.CoreExtensionEntry;
 import org.apache.maven.jline.JLineMessageBuilderFactory;
 import org.apache.maven.jline.MessageUtils;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
-import org.apache.maven.logging.api.LogLevelRecorder;
 import org.apache.maven.model.building.ModelProcessor;
 import org.apache.maven.model.root.RootLocator;
 import org.apache.maven.project.MavenProject;
@@ -123,7 +124,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.secdispatcher.SecDispatcher;
-import org.codehaus.plexus.logging.LoggerManager;
 import org.eclipse.aether.DefaultRepositoryCache;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.transfer.TransferListener;
@@ -184,7 +184,7 @@ public class MavenCli {
 
     private ClassWorld classWorld;
 
-    private LoggerManager plexusLoggerManager;
+    private org.codehaus.plexus.logging.LoggerManager plexusLoggerManager;
 
     private ILoggerFactory slf4jLoggerFactory;
 
@@ -586,14 +586,13 @@ public class MavenCli {
         }
 
         slf4jLoggerFactory = LoggerFactory.getILoggerFactory();
-        Slf4jConfiguration slf4jConfiguration = Slf4jConfigurationFactory.getConfiguration(slf4jLoggerFactory);
 
         if (cliRequest.verbose) {
             cliRequest.request.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
-            slf4jConfiguration.setRootLoggerLevel(Slf4jConfiguration.Level.DEBUG);
+            LoggerManager.get().setRootLoggerLevel(LogLevel.DEBUG);
         } else if (cliRequest.quiet) {
             cliRequest.request.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_ERROR);
-            slf4jConfiguration.setRootLoggerLevel(Slf4jConfiguration.Level.ERROR);
+            LoggerManager.get().setRootLoggerLevel(LogLevel.ERROR);
         }
         // else fall back to default log level specified in conf
         // see https://issues.apache.org/jira/browse/MNG-2570
@@ -615,33 +614,22 @@ public class MavenCli {
             }
         }
 
-        slf4jConfiguration.activate();
+        LoggerManager.get().reconfigure();
 
-        plexusLoggerManager = new Slf4jLoggerManager();
+        plexusLoggerManager = new LogApiLoggerManager();
         slf4jLogger = slf4jLoggerFactory.getLogger(this.getClass().getName());
 
         if (commandLine.hasOption(CLIManager.FAIL_ON_SEVERITY)) {
             String logLevelThreshold = commandLine.getOptionValue(CLIManager.FAIL_ON_SEVERITY);
 
-            if (slf4jLoggerFactory instanceof LogLevelRecorder recorder) {
-                LogLevelRecorder.Level level =
-                        switch (logLevelThreshold.toLowerCase(Locale.ENGLISH)) {
-                            case "warn", "warning" -> LogLevelRecorder.Level.WARN;
-                            case "error" -> LogLevelRecorder.Level.ERROR;
-                            default ->
-                                throw new IllegalArgumentException(
-                                        logLevelThreshold
-                                                + " is not a valid log severity threshold. Valid severities are WARN/WARNING and ERROR.");
-                        };
-                recorder.setMaxLevelAllowed(level);
-                slf4jLogger.info("Enabled to break the build on log level {}.", logLevelThreshold);
-            } else {
-                slf4jLogger.warn(
-                        "Expected LoggerFactory to be of type '{}', but found '{}' instead. "
-                                + "The --fail-on-severity flag will not take effect.",
-                        LogLevelRecorder.class.getName(),
-                        slf4jLoggerFactory.getClass().getName());
-            }
+            String threshold = logLevelThreshold.toLowerCase(Locale.ENGLISH);
+            cliRequest.failOnSeverity = switch (threshold) {
+                case "warn", "warning", "error" -> threshold;
+                default ->
+                    throw new IllegalArgumentException(logLevelThreshold
+                            + " is not a valid log severity threshold. Valid severities are WARN/WARNING and ERROR.");
+            };
+            slf4jLogger.info("Enabled to break the build on log level {}.", logLevelThreshold);
         }
 
         // check for presence of deprecated options and print warning
@@ -971,7 +959,7 @@ public class MavenCli {
 
             for (CoreExtensionEntry entry : reverse(extensions)) {
                 Set<String> exportedPackages = entry.getExportedPackages();
-                ClassRealm realm = entry.getClassRealm();
+                ClassRealm realm = (ClassRealm) entry.getClassRealm();
                 for (String exportedPackage : exportedPackages) {
                     extRealm.importFrom(realm, exportedPackage);
                 }
@@ -1021,6 +1009,40 @@ public class MavenCli {
         return jars;
     }
 
+    /**
+     * Reads a password from the console and, when there is none because the streams are redirected, from the first
+     * line of the given input.
+     *
+     * @param console the console, or {@code null} if the streams are redirected
+     * @param in the input to read the first line from when there is no console
+     * @param prompt the prompt shown by the console; it is not shown when the password is read from the input, as
+     *               the caller is then not interactive and the prompt would only pollute its output
+     * @return the password, never empty
+     * @throws IOException if the input cannot be read
+     * @throws IllegalStateException if no password could be read, so that an empty one is not encrypted
+     */
+    static String readPassword(Console console, InputStream in, String prompt) throws IOException {
+        String password;
+        if (console != null) {
+            char[] chars = console.readPassword(prompt);
+            password = (chars == null) ? null : String.copyValueOf(chars);
+
+            if (chars != null) {
+                // Sun/Oracle advises to empty the char array
+                java.util.Arrays.fill(chars, ' ');
+            }
+        } else {
+            // do not close the reader, that would close the standard input
+            password = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)).readLine();
+        }
+
+        if (password == null || password.isEmpty()) {
+            throw new IllegalStateException("No password was provided");
+        }
+
+        return password;
+    }
+
     //
     // This should probably be a separate tool and not be baked into Maven.
     //
@@ -1032,15 +1054,7 @@ public class MavenCli {
             String passwd = cliRequest.commandLine.getOptionValue(CLIManager.ENCRYPT_PASSWORD);
 
             if (passwd == null) {
-                Console cons = System.console();
-                char[] password = (cons == null) ? null : cons.readPassword("Password: ");
-                if (password != null) {
-                    // Cipher uses Strings
-                    passwd = String.copyValueOf(password);
-
-                    // Sun/Oracle advises to empty the char array
-                    java.util.Arrays.fill(password, ' ');
-                }
+                passwd = readPassword(System.console(), System.in, "Password: ");
             }
             System.out.println(dispatcher.encrypt(passwd, null));
             throw new ExitException(0);
@@ -1058,6 +1072,20 @@ public class MavenCli {
         eventSpyDispatcher.onEvent(request);
 
         MavenExecutionResult result = maven.execute(request);
+
+        if (cliRequest.failOnSeverity != null) {
+            LogLevel level =
+                    switch (cliRequest.failOnSeverity) {
+                        case "warn", "warning" -> LogLevel.WARN;
+                        case "error" -> LogLevel.ERROR;
+                        default -> null;
+                    };
+            if (level != null && LoggerManager.get().hasReached(level)) {
+                result.addException(
+                        new Exception("Build failed due to log statements with a higher severity than allowed. "
+                                + "Fix the logged issues or remove flag --fail-on-severity (-fos)."));
+            }
+        }
 
         eventSpyDispatcher.onEvent(result);
 
@@ -1423,7 +1451,7 @@ public class MavenCli {
         request.setTopDirectory(cliRequest.topDirectory);
         request.setPom(determinePom(commandLine, workingDirectory, baseDirectory));
         request.setTransferListener(determineTransferListener(quiet, verbose, commandLine, request));
-        request.setExecutionListener(determineExecutionListener());
+        request.setExecutionListener(determineExecutionListener(cliRequest));
 
         if ((request.getPom() != null) && (request.getPom().getParentFile() != null)) {
             request.setBaseDirectory(request.getPom().getParentFile());
@@ -1602,8 +1630,9 @@ public class MavenCli {
         }
     }
 
-    private ExecutionListener determineExecutionListener() {
-        ExecutionListener executionListener = new ExecutionEventLogger(messageBuilderFactory);
+    private ExecutionListener determineExecutionListener(CliRequest cliRequest) {
+        ExecutionListener executionListener = new ExecutionEventLogger(
+                messageBuilderFactory, org.slf4j.LoggerFactory.getLogger(ExecutionEventLogger.class), -1);
         if (eventSpyDispatcher != null) {
             return eventSpyDispatcher.chainListener(executionListener);
         } else {

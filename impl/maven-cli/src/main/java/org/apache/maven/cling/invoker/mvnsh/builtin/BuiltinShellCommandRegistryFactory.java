@@ -48,7 +48,7 @@ import org.apache.maven.cling.invoker.mvnup.UpgradeInvoker;
 import org.apache.maven.cling.invoker.mvnup.UpgradeParser;
 import org.apache.maven.cling.invoker.mvnval.ValidateInvoker;
 import org.apache.maven.cling.invoker.mvnval.ValidateParser;
-import org.apache.maven.impl.util.Os;
+import org.apache.maven.utils.Os;
 import org.jline.builtins.Completers;
 import org.jline.console.CmdDesc;
 import org.jline.console.CommandInput;
@@ -105,7 +105,7 @@ public class BuiltinShellCommandRegistryFactory implements ShellCommandRegistryF
             return result -> {
                 result.logger = shellContext.logger;
                 result.loggerFactory = shellContext.loggerFactory;
-                result.slf4jConfiguration = shellContext.slf4jConfiguration;
+                result.failOnSeverity = shellContext.failOnSeverity;
                 result.loggerLevel = shellContext.loggerLevel;
                 result.coloredOutput = shellContext.coloredOutput;
                 result.terminal = shellContext.terminal;

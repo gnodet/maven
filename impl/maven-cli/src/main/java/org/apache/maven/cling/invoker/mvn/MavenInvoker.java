@@ -22,10 +22,13 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,8 +41,8 @@ import org.apache.maven.api.MonotonicClock;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.cli.InvokerException;
 import org.apache.maven.api.cli.InvokerRequest;
-import org.apache.maven.api.cli.Logger;
 import org.apache.maven.api.cli.mvn.MavenOptions;
+import org.apache.maven.api.logging.Logger;
 import org.apache.maven.api.services.BuilderProblem;
 import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.Sources;
@@ -72,6 +75,8 @@ import org.apache.maven.logging.MavenTransferListener;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.model.ToolchainModel;
 import org.eclipse.aether.DefaultRepositoryCache;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.transfer.ArtifactFilteredOutException;
 import org.eclipse.aether.transfer.TransferListener;
 
 import static java.util.Comparator.comparing;
@@ -269,8 +274,9 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
             }
         }
 
-        request.setTransferListener(determineTransferListener(
-                context, context.options().noTransferProgress().orElse(false)));
+        boolean noTransferProgress = context.options().noTransferProgress().orElse(false);
+        request.setNoTransferProgress(noTransferProgress);
+        request.setTransferListener(determineTransferListener(context, noTransferProgress));
         request.setExecutionListener(determineExecutionListener(context));
 
         request.setResumeFrom(context.options().resumeFrom().orElse(null));
@@ -355,7 +361,11 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
     }
 
     protected ExecutionListener determineExecutionListener(MavenContext context) {
-        ExecutionListener listener = new ExecutionEventLogger(context.invokerRequest.messageBuilderFactory());
+        ExecutionListener listener = new ExecutionEventLogger(
+                context.invokerRequest.messageBuilderFactory(),
+                org.slf4j.LoggerFactory.getLogger(ExecutionEventLogger.class),
+                -1,
+                context.failOnSeverity);
         if (context.eventSpyDispatcher != null) {
             listener = context.eventSpyDispatcher.chainListener(listener);
         }
@@ -472,6 +482,7 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
             Map<String, String> references = new LinkedHashMap<>();
             List<MavenProject> failedProjects = new ArrayList<>();
 
+            Set<String> hintedArtifacts = new HashSet<>();
             for (Throwable exception : result.getExceptions()) {
                 ExceptionSummary summary = handler.handleException(exception);
                 logSummary(context, summary, references, "");
@@ -479,6 +490,8 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
                 if (exception instanceof LifecycleExecutionException lifecycleExecutionException) {
                     failedProjects.add(lifecycleExecutionException.getProject());
                 }
+
+                logFilteredOutHint(context, exception, result, hintedArtifacts);
             }
 
             context.logger.error("");
@@ -533,6 +546,68 @@ public class MavenInvoker extends LookupInvoker<MavenContext> {
         context.logger.error("After correcting the problems, you can resume the build with the command");
         context.logger.error(
                 MessageUtils.builder().a("  ").strong(resumeBuildHint).toString());
+    }
+
+    /**
+     * When an {@link ArtifactFilteredOutException} is found in the exception chain, log a reactor-aware hint
+     * that precisely identifies whether the artifact is an unselected project or an already-selected project.
+     * External (non-reactor) artifacts are handled by {@link org.apache.maven.exception.DefaultExceptionHandler}.
+     */
+    protected void logFilteredOutHint(
+            MavenContext context, Throwable exception, MavenExecutionResult result, Set<String> alreadyHinted) {
+        ArtifactFilteredOutException filteredOut = findCause(exception, ArtifactFilteredOutException.class);
+        if (filteredOut == null) {
+            return;
+        }
+
+        Artifact artifact = filteredOut.getArtifact();
+        if (artifact == null) {
+            return;
+        }
+
+        String groupId = artifact.getGroupId();
+        String artifactId = artifact.getArtifactId();
+        String version = artifact.getVersion();
+        String coords = groupId + ":" + artifactId + ":" + version;
+
+        if (!alreadyHinted.add(coords)) {
+            return;
+        }
+
+        List<MavenProject> allProjects = result.getAllProjects();
+        List<MavenProject> selectedProjects = result.getTopologicallySortedProjects();
+
+        boolean inAll = allProjects.stream()
+                .anyMatch(p -> p.getGroupId().equals(groupId)
+                        && p.getArtifactId().equals(artifactId)
+                        && p.getVersion().equals(version));
+        boolean inSelected = selectedProjects.stream()
+                .anyMatch(p -> p.getGroupId().equals(groupId)
+                        && p.getArtifactId().equals(artifactId)
+                        && p.getVersion().equals(version));
+
+        if (inAll && !inSelected) {
+            context.logger.error("");
+            context.logger.error(coords
+                    + " is a project of this build but was not selected."
+                    + " Add -am to also build its dependencies, or run the full reactor.");
+        } else if (inAll) {
+            context.logger.error("");
+            context.logger.error(coords
+                    + " is part of this build but has not been built yet."
+                    + " Build it first or reorder the reactor.");
+        }
+        // external artifact: DefaultExceptionHandler already emits the repo-filter hint
+    }
+
+    private static <T extends Throwable> T findCause(Throwable exception, Class<T> type) {
+        IdentityHashMap<Throwable, Boolean> seen = new IdentityHashMap<>();
+        for (Throwable t = exception; t != null && seen.put(t, Boolean.TRUE) == null; t = t.getCause()) {
+            if (type.isInstance(t)) {
+                return type.cast(t);
+            }
+        }
+        return null;
     }
 
     /**
