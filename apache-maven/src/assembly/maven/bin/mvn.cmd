@@ -390,7 +390,7 @@ goto processArgs
 :endHandleArgs
 call :processArgs %*
 
-for %%i in ("%MAVEN_HOME%"\boot\plexus-classworlds-*) do set LAUNCHER_JAR="%%i"
+set "BOOT_CLASSPATH=%MAVEN_HOME%\boot\*"
 set LAUNCHER_CLASS=org.codehaus.plexus.classworlds.launcher.Launcher
 if "%MAVEN_MAIN_CLASS%"=="" @set MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenCling
 
@@ -400,7 +400,7 @@ if not "%MAVEN_MAIN_CLASS%"=="org.apache.maven.cling.MavenCling" set "MAVEN_ARGS
 
 if defined MAVEN_DEBUG_SCRIPT (
   echo [DEBUG] Launching JVM with command:
-  echo [DEBUG]   "%JAVACMD%" %INTERNAL_MAVEN_OPTS% %MAVEN_OPTS% %JVM_CONFIG_ARGFILE_ARG% %MAVEN_DEBUG_OPTS% --enable-native-access=ALL-UNNAMED -classpath %LAUNCHER_JAR% "-Dclassworlds.conf=%CLASSWORLDS_CONF%" "-Dmaven.home=%MAVEN_HOME%" "-Dmaven.mainClass=%MAVEN_MAIN_CLASS%" "-Dlibrary.jline.path=%MAVEN_HOME%\lib\jline-native" "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" %MAVEN_VERSION_PRINTED% %LAUNCHER_CLASS% %MAVEN_ARGS% %*
+  echo [DEBUG]   "%JAVACMD%" %INTERNAL_MAVEN_OPTS% %MAVEN_OPTS% %JVM_CONFIG_ARGFILE_ARG% %MAVEN_DEBUG_OPTS% --enable-native-access=ALL-UNNAMED -classpath "%BOOT_CLASSPATH%" "-Dclassworlds.conf=%CLASSWORLDS_CONF%" "-Dmaven.home=%MAVEN_HOME%" "-Dmaven.mainClass=%MAVEN_MAIN_CLASS%" "-Dlibrary.jline.path=%MAVEN_HOME%\lib\jline-native" "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" %MAVEN_VERSION_PRINTED% %LAUNCHER_CLASS% %MAVEN_ARGS% %*
 )
 
 "%JAVACMD%" ^
@@ -409,7 +409,7 @@ if defined MAVEN_DEBUG_SCRIPT (
   %JVM_CONFIG_ARGFILE_ARG% ^
   %MAVEN_DEBUG_OPTS% ^
   --enable-native-access=ALL-UNNAMED ^
-  -classpath %LAUNCHER_JAR% ^
+  -classpath "%BOOT_CLASSPATH%" ^
   "-Dclassworlds.conf=%CLASSWORLDS_CONF%" ^
   "-Dmaven.home=%MAVEN_HOME%" ^
   "-Dmaven.mainClass=%MAVEN_MAIN_CLASS%" ^
