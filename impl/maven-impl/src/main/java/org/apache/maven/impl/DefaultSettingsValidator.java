@@ -113,6 +113,19 @@ public class DefaultSettingsValidator {
             }
         }
 
+        if (!isProjectSettings) {
+            // User / installation settings: <phases> are only meaningful in project settings.
+            if (settings.getPhases() != null && !settings.getPhases().isEmpty()) {
+                addViolation(
+                        problems,
+                        BuilderProblem.Severity.WARNING,
+                        "phases",
+                        null,
+                        "is not supported on user or installation settings. "
+                                + "Move <phases> to your project's .mvn/settings.xml.");
+            }
+        }
+
         List<Server> servers = settings.getServers();
 
         if (servers != null) {
