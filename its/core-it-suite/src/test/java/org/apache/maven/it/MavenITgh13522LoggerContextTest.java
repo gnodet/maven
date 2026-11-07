@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * IT for <a href="https://github.com/apache/maven/issues/13522">gh-13522</a>.
  *
- * <p>Verifies that when a DI-injected {@code Logger} is used inside a mojo,
+ * <p>Verifies that when the DI-injected {@code Log} is used inside an API mojo,
  * the {@link org.apache.maven.api.logging.LogEvent} it emits carries the
- * correct {@code projectId} and {@code mojoId} as set by
- * {@code DefaultBuildPluginManager}.</p>
+ * correct {@code loggerName}, {@code projectId}, and {@code mojoId} fields
+ * as stamped by {@code DefaultBuildPluginManager} at injection time.</p>
  */
 class MavenITgh13522LoggerContextTest extends AbstractMavenIntegrationTestCase {
 
@@ -68,28 +68,22 @@ class MavenITgh13522LoggerContextTest extends AbstractMavenIntegrationTestCase {
             props.load(is);
         }
 
-        // projectId: LoggingExecutionListener.setMdc() sets only the artifactId
-        assertEquals(
-                "simple-project",
-                props.getProperty("projectId", ""),
-                "projectId must match the consumer project artifactId");
-
-        // mojoId: fullGoalName@executionId — e.g. "logger-context:check-context@check-logger-context"
-        String mojoId = props.getProperty("mojoId", "");
-        assertTrue(mojoId.contains("check-context"), "mojoId must contain the goal name: " + mojoId);
-        assertTrue(mojoId.contains("check-logger-context"), "mojoId must contain the execution id: " + mojoId);
-
-        // loggerName: the mojo implementation class (name used to construct the DefaultLogger)
+        // loggerName: the mojo implementation class (from MojoDescriptor.getImplementation())
         assertEquals(
                 "org.apache.maven.its.gh13522.CheckContextMojo",
                 props.getProperty("loggerName", ""),
                 "loggerName must be the mojo implementation class name");
 
-        // pluginId: not yet set by DefaultBuildPluginManager (3-arg DefaultLogger constructor)
-        // This assertion documents the current state; once pluginId wiring is added it should flip.
+        // projectId: set by DefaultBuildPluginManager from ProjectBuildLogAppender.getProjectId()
+        // which stores only the artifactId (set by LoggingExecutionListener.setMdc())
         assertEquals(
-                "",
-                props.getProperty("pluginId", ""),
-                "pluginId is currently not wired by DefaultBuildPluginManager — expected empty");
+                "simple-project",
+                props.getProperty("projectId", ""),
+                "projectId must be the consumer project artifactId");
+
+        // mojoId: fullGoalName@executionId — e.g. "logger-context:check-context@check-logger-context"
+        String mojoId = props.getProperty("mojoId", "");
+        assertTrue(mojoId.contains("check-context"), "mojoId must contain the goal name: " + mojoId);
+        assertTrue(mojoId.contains("check-logger-context"), "mojoId must contain the execution id: " + mojoId);
     }
 }

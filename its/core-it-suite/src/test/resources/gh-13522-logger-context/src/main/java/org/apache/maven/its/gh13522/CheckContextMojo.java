@@ -26,24 +26,26 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.maven.api.di.Inject;
 import org.apache.maven.api.logging.LogEvent;
+import org.apache.maven.api.logging.LogSink;
 import org.apache.maven.api.logging.LoggerManager;
+import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
-import org.apache.maven.logging.ProjectBuildLogAppender;
 
 /**
- * Verifies that the {@link ProjectBuildLogAppender} ThreadLocal context
- * ({@code projectId}, {@code mojoId}) is correctly populated during mojo
- * execution, and that an intercepted {@link LogEvent} carries the expected
- * enriched fields after passing through {@link ProjectBuildLogAppender}.
+ * Verifies that a {@link LogEvent} emitted from a DI-injected {@link Log}
+ * carries the correct {@code loggerName}, {@code projectId}, and {@code mojoId}
+ * fields as stamped by {@code DefaultBuildPluginManager} before mojo execution.
  *
- * <p>The mojo reads the context values directly from
- * {@link ProjectBuildLogAppender#getProjectId()} and
- * {@link ProjectBuildLogAppender#getMojoId()} (the authoritative ThreadLocal
- * source), and also intercepts one event to capture {@code pluginId} and
- * {@code loggerName}. Results are written to
- * {@code target/log-context.properties} for the IT verifier.</p>
+ * <p>The injected {@code Log} is a pre-constructed logger whose {@code projectId}
+ * and {@code mojoId} are set at injection time from the execution context, so they
+ * are already present on every event without requiring any implementation-layer
+ * class (such as {@code ProjectBuildLogAppender}).</p>
+ *
+ * <p>Results are written to {@code target/log-context.properties} for the
+ * IT verifier.</p>
  */
 @Mojo(name = "check-context", defaultPhase = org.apache.maven.api.Lifecycle.Phase.VALIDATE)
 public class CheckContextMojo implements org.apache.maven.api.plugin.Mojo {
@@ -51,20 +53,17 @@ public class CheckContextMojo implements org.apache.maven.api.plugin.Mojo {
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     private String buildDirectory;
 
+    @Inject
+    private Log log;
+
     @Override
     public void execute() {
-        // Read projectId/mojoId directly from ProjectBuildLogAppender's ThreadLocals —
-        // the authoritative source stamped onto every LogEvent during mojo execution.
-        // We do NOT intercept events for these: by the time the custom sink sees a raw
-        // event, projectId/mojoId have not yet been enriched (enrichment happens inside
-        // ProjectBuildLogAppender.Sink.accept(), which is the previous sink we wrap).
-        String projectId = ProjectBuildLogAppender.getProjectId();
-        String mojoId = ProjectBuildLogAppender.getMojoId();
-
-        // Intercept one event (via the existing sink) to capture pluginId/loggerName.
+        // Intercept one log event emitted through the injected Log.
+        // DefaultBuildPluginManager pre-stamps the logger with projectId and mojoId
+        // at injection time, so those fields are already on the raw event.
         AtomicReference<LogEvent> captured = new AtomicReference<>();
         LoggerManager mgr = LoggerManager.get();
-        org.apache.maven.api.logging.LogSink previousSink = mgr.getLogSink();
+        LogSink previousSink = mgr.getLogSink();
         mgr.setLogSink(event -> {
             captured.compareAndSet(null, event);
             if (previousSink != null) {
@@ -73,23 +72,20 @@ public class CheckContextMojo implements org.apache.maven.api.plugin.Mojo {
         });
 
         try {
-            // Use SLF4J so the event travels through MavenSimpleLogger and gets
-            // enriched by ProjectBuildLogAppender before reaching our wrapper.
-            org.slf4j.LoggerFactory.getLogger(getClass())
-                    .info("gh-13522: checking logger context fields");
+            log.info("gh-13522: checking logger context fields");
         } finally {
             mgr.setLogSink(previousSink);
         }
 
         LogEvent event = captured.get();
-        String pluginId = event != null ? nvl(event.pluginId()) : "";
         String loggerName = event != null ? nvl(event.loggerName()) : "";
+        String projectId = event != null ? nvl(event.projectId()) : "";
+        String mojoId = event != null ? nvl(event.mojoId()) : "";
 
         Properties props = new Properties();
-        props.setProperty("projectId", nvl(projectId));
-        props.setProperty("mojoId", nvl(mojoId));
-        props.setProperty("pluginId", pluginId);
         props.setProperty("loggerName", loggerName);
+        props.setProperty("projectId", projectId);
+        props.setProperty("mojoId", mojoId);
 
         Path out = Paths.get(buildDirectory).resolve("log-context.properties");
         try {
@@ -101,8 +97,7 @@ public class CheckContextMojo implements org.apache.maven.api.plugin.Mojo {
             throw new RuntimeException("Failed to write log-context.properties", e);
         }
 
-        org.slf4j.LoggerFactory.getLogger(getClass())
-                .info("gh-13522: projectId={}, mojoId={}, pluginId={}", projectId, mojoId, pluginId);
+        log.info("gh-13522: loggerName=" + loggerName + ", projectId=" + projectId + ", mojoId=" + mojoId);
     }
 
     private static String nvl(String s) {
