@@ -68,11 +68,11 @@ class MavenITgh13522LoggerContextTest extends AbstractMavenIntegrationTestCase {
             props.load(is);
         }
 
-        // projectId: groupId:artifactId:version of the consumer project
+        // projectId: LoggingExecutionListener.setMdc() sets only the artifactId
         assertEquals(
-                "org.apache.maven.its.gh13522.consumer:simple-project:1.0-SNAPSHOT",
+                "simple-project",
                 props.getProperty("projectId", ""),
-                "projectId must match the consumer project coordinates");
+                "projectId must match the consumer project artifactId");
 
         // mojoId: fullGoalName@executionId — e.g. "logger-context:check-context@check-logger-context"
         String mojoId = props.getProperty("mojoId", "");
