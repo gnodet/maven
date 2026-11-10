@@ -18,8 +18,18 @@
  */
 package org.apache.maven.logging.slf4j;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.apache.maven.api.logging.LogSink;
 import org.apache.maven.api.logging.LoggerManager;
@@ -106,20 +116,27 @@ public class MavenSimpleLogger extends MavenBaseLogger {
     }
 
     protected void printStackTrace(Throwable t, Consumer<String> stream, String prefix) {
-        MessageBuilder builder = builder();
-        for (StackTraceElement e : t.getStackTrace()) {
-            builder.a(prefix);
-            builder.a("    ");
-            builder.strong("at");
-            builder.a(" ");
-            builder.a(e.getClassName());
-            builder.a(".");
-            builder.a(e.getMethodName());
-            builder.a("(");
-            builder.strong(getLocation(e));
-            builder.a(")");
-            stream.accept(builder.toString());
-            builder.setLength(0);
+        StackTraceElement[] frames = t.getStackTrace();
+        int i = 0;
+        boolean firstFrame = true;
+        while (i < frames.length) {
+            StackTraceElement e = frames[i];
+            if (isFrameworkFrame(e)) {
+                int start = i;
+                while (i < frames.length && isFrameworkFrame(frames[i])) {
+                    i++;
+                }
+                int collapsed = i - start;
+                MessageBuilder builder = builder();
+                builder.a(prefix);
+                builder.a("    ");
+                builder.style(STYLE_FAINT, "... " + collapsed + " framework frame" + (collapsed > 1 ? "s" : ""));
+                stream.accept(builder.toString());
+            } else {
+                writeFrame(e, stream, prefix, firstFrame);
+                firstFrame = false;
+                i++;
+            }
         }
         for (Throwable se : t.getSuppressed()) {
             writeThrowable(se, stream, "Suppressed", prefix + "    ");
@@ -130,15 +147,171 @@ public class MavenSimpleLogger extends MavenBaseLogger {
         }
     }
 
+    protected void writeFrame(StackTraceElement e, Consumer<String> stream, String prefix, boolean linkSource) {
+        MessageBuilder builder = builder();
+        builder.a(prefix);
+        builder.a("    ");
+        builder.style(STYLE_FAINT, "at ");
+        String className = e.getClassName();
+        int dot = className.lastIndexOf('.');
+        if (dot >= 0) {
+            builder.style(STYLE_FAINT, className.substring(0, dot + 1));
+            builder.a(className.substring(dot + 1));
+        } else {
+            builder.a(className);
+        }
+        builder.a(".");
+        builder.strong(e.getMethodName());
+        builder.a("(");
+        String sourceUrl = linkSource ? resolveSourceUrl(e) : null;
+        if (sourceUrl != null) {
+            builder.a(OSC_LINK_START + sourceUrl + BEL);
+            builder.strong(getLocation(e));
+            builder.a(OSC_LINK_END);
+        } else {
+            builder.strong(getLocation(e));
+        }
+        builder.a(")");
+        stream.accept(builder.toString());
+    }
+
     protected void writeThrowable(Throwable t, Consumer<String> stream, String caption, String prefix) {
-        MessageBuilder builder =
-                builder().a(prefix).strong(caption).a(": ").a(t.getClass().getName());
+        MessageBuilder builder = builder()
+                .a(prefix)
+                .warning(caption)
+                .a(": ")
+                .failure(t.getClass().getName());
         if (t.getMessage() != null) {
             builder.a(": ").failure(t.getMessage());
         }
         stream.accept(builder.toString());
 
         printStackTrace(t, stream, prefix);
+    }
+
+    private static final String STYLE_FAINT = "faint";
+
+    private static final String OSC_LINK_START = "\033]8;;";
+    private static final String OSC_LINK_END = "\033]8;;\007";
+    private static final String BEL = "\007";
+
+    private static final String MAVEN_GITHUB_BASE = "https://github.com/apache/maven";
+    private static final String MAVEN_GROUP_ID = "org.apache.maven";
+
+    private static final Map<URL, String[]> GAV_CACHE = new ConcurrentHashMap<>();
+
+    static String resolveSourceUrl(StackTraceElement e) {
+        if (e.getFileName() == null || e.getLineNumber() < 0) {
+            return null;
+        }
+        try {
+            Class<?> cls = Class.forName(e.getClassName(), false, MavenSimpleLogger.class.getClassLoader());
+            if (cls.getProtectionDomain() == null
+                    || cls.getProtectionDomain().getCodeSource() == null
+                    || cls.getProtectionDomain().getCodeSource().getLocation() == null) {
+                return null;
+            }
+            URL jarUrl = cls.getProtectionDomain().getCodeSource().getLocation();
+            String[] gav = GAV_CACHE.computeIfAbsent(jarUrl, MavenSimpleLogger::readGav);
+            if (gav == null || !MAVEN_GROUP_ID.equals(gav[0])) {
+                return null;
+            }
+            String artifactId = gav[1];
+            String version = gav[2];
+            String ref = version.endsWith("-SNAPSHOT") ? "master" : "maven-" + version;
+            String moduleParent = moduleParent(artifactId);
+            String sourcePath = e.getClassName().replace('.', '/');
+            int lastSlash = sourcePath.lastIndexOf('/');
+            if (lastSlash >= 0) {
+                sourcePath = sourcePath.substring(0, lastSlash + 1) + e.getFileName();
+            } else {
+                sourcePath = e.getFileName();
+            }
+            return MAVEN_GITHUB_BASE + "/blob/" + ref + "/" + moduleParent + artifactId + "/src/main/java/" + sourcePath
+                    + "#L" + e.getLineNumber();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static final Set<String> COMPAT_ARTIFACTS = Set.of(
+            "maven-plugin-api",
+            "maven-builder-support",
+            "maven-model",
+            "maven-model-builder",
+            "maven-settings",
+            "maven-settings-builder",
+            "maven-artifact",
+            "maven-resolver-provider",
+            "maven-repository-metadata",
+            "maven-embedder",
+            "maven-compat",
+            "maven-toolchain-model",
+            "maven-toolchain-builder");
+
+    static String moduleParent(String artifactId) {
+        if (artifactId.startsWith("maven-api-")) {
+            return "api/";
+        } else if (COMPAT_ARTIFACTS.contains(artifactId)) {
+            return "compat/";
+        } else {
+            return "impl/";
+        }
+    }
+
+    private static String[] readGav(URL jarUrl) {
+        String path = jarUrl.getPath();
+        if (!path.endsWith(".jar")) {
+            return null;
+        }
+        try (JarFile jar = new JarFile(path)) {
+            for (var entries = jar.entries(); entries.hasMoreElements(); ) {
+                ZipEntry entry = entries.nextElement();
+                if (entry.getName().endsWith("/pom.properties")
+                        && entry.getName().startsWith("META-INF/maven/")) {
+                    Properties props = new Properties();
+                    try (InputStream is = jar.getInputStream(entry)) {
+                        props.load(is);
+                    }
+                    String groupId = props.getProperty("groupId");
+                    String artifactId = props.getProperty("artifactId");
+                    String version = props.getProperty("version");
+                    if (groupId != null && artifactId != null && version != null) {
+                        return new String[] {groupId, artifactId, version};
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            // fall through
+        }
+        return null;
+    }
+
+    private static final Set<String> FRAMEWORK_PREFIXES = Set.of(
+            "java.lang.reflect.",
+            "java.lang.invoke.",
+            "jdk.internal.",
+            "sun.reflect.",
+            "com.google.inject.",
+            "org.codehaus.plexus.",
+            "org.eclipse.sisu.",
+            "com.google.common.");
+
+    private static final List<String> FRAMEWORK_CONTAINS = List.of("$$", "$Proxy", "GeneratedMethodAccessor");
+
+    static boolean isFrameworkFrame(StackTraceElement e) {
+        String cls = e.getClassName();
+        for (String prefix : FRAMEWORK_PREFIXES) {
+            if (cls.startsWith(prefix)) {
+                return true;
+            }
+        }
+        for (String marker : FRAMEWORK_CONTAINS) {
+            if (cls.contains(marker)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected String getLocation(final StackTraceElement e) {
