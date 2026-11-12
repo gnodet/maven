@@ -1638,7 +1638,7 @@ public class MavenCli {
 
     private ExecutionListener determineExecutionListener(CliRequest cliRequest) {
         ExecutionListener executionListener = new ExecutionEventLogger(
-                messageBuilderFactory, org.slf4j.LoggerFactory.getLogger(ExecutionEventLogger.class));
+                messageBuilderFactory, org.slf4j.LoggerFactory.getLogger(ExecutionEventLogger.class), -1);
         if (eventSpyDispatcher != null) {
             return eventSpyDispatcher.chainListener(executionListener);
         } else {
