@@ -65,13 +65,38 @@ public class MavenJulHandler extends Handler {
     }
 
     /**
-     * Installs this handler on the JUL root logger, removing any
-     * previously installed handlers.
+     * System property that controls whether existing JUL root-logger handlers are
+     * removed before {@link MavenJulHandler} is added.
+     * <p>
+     * When set to {@code false}, Maven's handler is added alongside any handlers
+     * already installed on the root logger.  This is useful for embedders (IDE
+     * plug-ins, build tools running Maven in-process) that have already configured
+     * their own JUL handler chain and do not want it replaced for the duration of
+     * the Maven invocation.
+     * <p>
+     * The default value is {@code true}, which preserves the classic Maven
+     * behaviour of removing the JDK's default {@code ConsoleHandler} to avoid
+     * duplicate log output on the console.
+     *
+     * @since 4.2.0
+     */
+    public static final String REPLACE_HANDLERS_PROPERTY = "maven.logging.jul.replaceHandlers";
+
+    /**
+     * Installs this handler on the JUL root logger.
+     * <p>
+     * By default, any previously installed handlers are removed first so that
+     * Maven's structured pipeline is the sole destination for JUL events (and the
+     * JDK's default {@code ConsoleHandler} does not produce duplicate output).
+     * Set the system property {@value #REPLACE_HANDLERS_PROPERTY} to {@code false}
+     * to add this handler alongside existing ones instead.
      */
     public static void install() {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
-        for (Handler handler : rootLogger.getHandlers()) {
-            rootLogger.removeHandler(handler);
+        if (Boolean.parseBoolean(System.getProperty(REPLACE_HANDLERS_PROPERTY, "true"))) {
+            for (Handler handler : rootLogger.getHandlers()) {
+                rootLogger.removeHandler(handler);
+            }
         }
         rootLogger.addHandler(new MavenJulHandler());
     }

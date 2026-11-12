@@ -71,6 +71,21 @@ public interface LoggerManager {
 
     /**
      * Installs or removes the active log sink.
+     * <p>
+     * <strong>Embedder note:</strong> install the sink <em>before</em> calling
+     * {@link #set(LoggerManager)}, or call {@code setLogSink} immediately after.
+     * Bootstrap log events accumulated in the buffering manager while Maven
+     * initialises are drained into the new sink when {@link #set(LoggerManager)}
+     * is called — but only if a sink is already installed on the new manager at
+     * that point.  If no sink is present when {@code set()} runs, the buffered
+     * events are discarded (a warning is emitted to {@code System.err}).
+     * <p>
+     * Recommended embedder sequence:
+     * <pre>{@code
+     * MyLoggerManager mgr = new MyLoggerManager();
+     * mgr.setLogSink(myLogSink);   // sink first
+     * LoggerManager.set(mgr);      // then install — bootstrap events drained here
+     * }</pre>
      *
      * @since 4.2.0
      */

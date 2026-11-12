@@ -18,10 +18,14 @@
  */
 package org.apache.maven.logging.jul;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import org.apache.maven.api.logging.LogEvent;
 import org.apache.maven.api.logging.LogLevel;
@@ -35,8 +39,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(10)
 class MavenJulHandlerTest {
@@ -189,5 +195,57 @@ class MavenJulHandlerTest {
         assertEquals("plain message", event.messageTemplate());
         assertNull(event.messageArgs());
         assertEquals("plain message", event.message());
+    }
+
+    @Test
+    void installDefaultReplacesExistingHandlers() {
+        Logger rootLogger = LogManager.getLogManager().getLogger("");
+        // Snapshot handlers before install (the test BeforeEach may have already
+        // added a MavenJulHandler; we just verify the replace-on-default behaviour).
+        Handler sentinel = new java.util.logging.MemoryHandler(new java.util.logging.ConsoleHandler(), 1, Level.OFF);
+        rootLogger.addHandler(sentinel);
+        List<Handler> before = Arrays.asList(rootLogger.getHandlers());
+        assertTrue(before.contains(sentinel), "sentinel must be present before install");
+
+        // Default behaviour: existing handlers are removed.
+        System.clearProperty(MavenJulHandler.REPLACE_HANDLERS_PROPERTY);
+        MavenJulHandler.install();
+
+        List<Handler> after = Arrays.asList(rootLogger.getHandlers());
+        assertFalse(after.contains(sentinel), "sentinel must be removed by default install()");
+        assertTrue(
+                after.stream().anyMatch(h -> h instanceof MavenJulHandler),
+                "MavenJulHandler must be present after install()");
+
+        // Cleanup: remove the handler we just added so the AfterEach state is clean.
+        rootLogger.removeHandler(after.stream()
+                .filter(h -> h instanceof MavenJulHandler)
+                .findFirst()
+                .orElseThrow());
+    }
+
+    @Test
+    void installWithReplaceHandlersFalseKeepsExistingHandlers() {
+        Logger rootLogger = LogManager.getLogManager().getLogger("");
+        Handler sentinel = new java.util.logging.MemoryHandler(new java.util.logging.ConsoleHandler(), 1, Level.OFF);
+        rootLogger.addHandler(sentinel);
+
+        System.setProperty(MavenJulHandler.REPLACE_HANDLERS_PROPERTY, "false");
+        try {
+            MavenJulHandler.install();
+
+            List<Handler> after = Arrays.asList(rootLogger.getHandlers());
+            assertTrue(after.contains(sentinel), "sentinel must survive install() when replaceHandlers=false");
+            assertTrue(
+                    after.stream().anyMatch(h -> h instanceof MavenJulHandler),
+                    "MavenJulHandler must be present after install()");
+        } finally {
+            System.clearProperty(MavenJulHandler.REPLACE_HANDLERS_PROPERTY);
+            // Remove both the sentinel and the extra MavenJulHandler we added.
+            rootLogger.removeHandler(sentinel);
+            Arrays.stream(rootLogger.getHandlers())
+                    .filter(h -> h instanceof MavenJulHandler)
+                    .forEach(rootLogger::removeHandler);
+        }
     }
 }
