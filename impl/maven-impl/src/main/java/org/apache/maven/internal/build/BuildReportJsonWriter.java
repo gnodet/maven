@@ -39,6 +39,13 @@ import org.apache.maven.api.services.BuilderProblem;
  * stable across Maven versions — field order is fixed, and new fields are
  * appended at the end of each object.
  * <p>
+ * <strong>Note on duplication:</strong> This class (along with {@code DefaultBuildReport},
+ * {@code DefaultFailureReport}, {@code DefaultMojoReport}, and {@code DefaultSubprojectReport})
+ * is intentionally duplicated verbatim in both {@code maven-core} and {@code maven-impl}.
+ * The JPMS module split requires each module to carry its own copy — {@code maven-core}
+ * is loaded by the embedder/IDE classloader while {@code maven-impl} is loaded by the
+ * Maven runtime. Any change to these files must be applied to both copies.
+ * <p>
  * Use {@link #write(Writer, BuildReport, int)} to write directly to any {@link Writer}
  * (e.g. a {@code BufferedWriter} wrapping an {@code OutputStream}); the JSON string is
  * built internally and discarded after writing so the caller does not need to retain a

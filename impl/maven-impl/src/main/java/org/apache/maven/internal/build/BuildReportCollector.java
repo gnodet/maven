@@ -174,7 +174,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
         if (session == null) {
             return;
         }
-        long threadId = Thread.currentThread().getId();
+        long threadId = Thread.currentThread().threadId();
         // 1. Mojo-level
         String mKey = currentMojoByThread.get(threadId);
         if (mKey != null) {
@@ -242,7 +242,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
             projectTraceContexts.put(key, currentTraceContext());
             mojoTimings.putIfAbsent(key, new ConcurrentLinkedQueue<>());
             subprojectLogBuffers.put(key, new ArrayBlockingQueue<>(maxLogEventsPerScope));
-            currentProjectByThread.put(Thread.currentThread().getId(), key);
+            currentProjectByThread.put(Thread.currentThread().threadId(), key);
         });
     }
 
@@ -257,7 +257,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
                 projectDurations.put(key, Duration.between(start, now));
             }
         });
-        currentProjectByThread.remove(Thread.currentThread().getId());
+        currentProjectByThread.remove(Thread.currentThread().threadId());
     }
 
     @Override
@@ -272,7 +272,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
             }
             event.exception().ifPresent(ex -> projectFailures.put(key, ex));
         });
-        currentProjectByThread.remove(Thread.currentThread().getId());
+        currentProjectByThread.remove(Thread.currentThread().threadId());
     }
 
     @Override
@@ -281,7 +281,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
             String key = projectKey(project);
             projectStatuses.put(key, BuildStatus.SKIPPED);
         });
-        currentProjectByThread.remove(Thread.currentThread().getId());
+        currentProjectByThread.remove(Thread.currentThread().threadId());
     }
 
     @Override
@@ -292,7 +292,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
                     mojoStartTimes.put(mKey, MonotonicClock.now());
                     mojoTraceContexts.put(mKey, currentTraceContext());
 
-                    currentMojoByThread.put(Thread.currentThread().getId(), mKey);
+                    currentMojoByThread.put(Thread.currentThread().threadId(), mKey);
                     mojoLogBuffers.put(mKey, new ArrayBlockingQueue<>(maxLogEventsPerScope));
                 }));
     }
@@ -342,7 +342,7 @@ public final class BuildReportCollector implements ExecutionListener, LogSink, S
                     String pKey = projectKey(project);
 
                     // Unregister the mojo from this thread
-                    currentMojoByThread.remove(Thread.currentThread().getId());
+                    currentMojoByThread.remove(Thread.currentThread().threadId());
 
                     Instant now = MonotonicClock.now();
                     Instant startInstant = mojoStartTimes.remove(mKey);
