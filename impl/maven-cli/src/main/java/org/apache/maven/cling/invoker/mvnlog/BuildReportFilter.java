@@ -92,7 +92,7 @@ final class BuildReportFilter {
         Map<String, Object> result = new LinkedHashMap<>(report);
 
         // Filter modules
-        Object modulesObj = result.get("modules");
+        Object modulesObj = result.get("subprojects");
         if (modulesObj instanceof List) {
             List<Map<String, Object>> modules = (List<Map<String, Object>>) modulesObj;
             List<Map<String, Object>> filtered = new ArrayList<>();
@@ -144,7 +144,7 @@ final class BuildReportFilter {
                 filtered.add(filteredModule);
             }
 
-            result.put("modules", filtered);
+            result.put("subprojects", filtered);
         }
 
         // Apply log filters to build-level output
@@ -178,7 +178,7 @@ final class BuildReportFilter {
         }
 
         // Module and mojo-level log events
-        Object modulesObj = report.get("modules");
+        Object modulesObj = report.get("subprojects");
         if (modulesObj instanceof List) {
             for (Map<String, Object> module : (List<Map<String, Object>>) modulesObj) {
                 String artifactId = getString(module, "artifactId");

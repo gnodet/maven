@@ -63,13 +63,13 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
 
         // Verify JSON structure
         String json = Files.readString(reportFile);
-        assertTrue(json.contains("\"formatVersion\""), "Should contain formatVersion");
+        assertTrue(json.contains("\"reportVersion\""), "Should contain reportVersion");
         assertTrue(json.contains("\"status\""), "Should contain status");
         assertTrue(json.contains("\"SUCCESS\""), "Status should be SUCCESS");
         assertTrue(json.contains("\"duration\""), "Should contain duration");
         assertTrue(json.contains("\"mavenVersion\""), "Should contain mavenVersion");
         assertTrue(json.contains("\"javaVersion\""), "Should contain javaVersion");
-        assertTrue(json.contains("\"modules\""), "Should contain modules array");
+        assertTrue(json.contains("\"subprojects\""), "Should contain subprojects array");
         assertTrue(json.contains("\"problems\""), "Should contain problems array");
         assertTrue(json.contains("\"failures\""), "Should contain failures array");
         assertTrue(json.contains("\"build-report-test\""), "Should contain artifactId");
@@ -96,7 +96,7 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
         assertTrue(json.contains("\"module-a\""), "Should contain module-a");
         assertTrue(json.contains("\"module-b\""), "Should contain module-b");
         assertTrue(json.contains("\"multi-module-parent\""), "Should contain parent");
-        assertTrue(json.contains("\"multiModule\""), "Should contain multiModule flag");
+        assertTrue(json.contains("\"multiSubproject\""), "Should contain multiSubproject flag");
     }
 
     // -------------------------------------------------------------------------
@@ -113,6 +113,7 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
 
         Verifier verifier = newVerifier(basedir);
         verifier.setLogFileName("plain.txt");
+        verifier.setForkJvm(true);
         verifier.addCliArgument("--console=plain");
         verifier.addCliArgument("validate");
         verifier.execute();
@@ -138,6 +139,7 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
 
         Verifier verifier = newVerifier(basedir);
         verifier.setLogFileName("machine.txt");
+        verifier.setForkJvm(true);
         verifier.addCliArgument("--console=machine");
         verifier.addCliArgument("validate");
         verifier.execute();
@@ -192,6 +194,7 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
 
         Verifier verifier = newVerifier(basedir);
         verifier.setLogFileName("auto-ci.txt");
+        verifier.setForkJvm(true);
         verifier.setEnvironmentVariable("CI", "true");
         verifier.addCliArgument("--console=auto");
         verifier.addCliArgument("validate");
@@ -415,9 +418,9 @@ class MavenITgh12571BuildReportTest extends AbstractMavenIntegrationTestCase {
         logVerifier.execute();
 
         // Output should be valid JSON with expected fields
-        logVerifier.verifyTextInLog("\"formatVersion\"");
+        logVerifier.verifyTextInLog("\"reportVersion\"");
         logVerifier.verifyTextInLog("\"status\"");
-        logVerifier.verifyTextInLog("\"modules\"");
+        logVerifier.verifyTextInLog("\"subprojects\"");
         logVerifier.verifyTextInLog("\"mavenVersion\"");
     }
 }

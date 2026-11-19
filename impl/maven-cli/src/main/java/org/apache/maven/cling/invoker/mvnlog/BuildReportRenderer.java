@@ -60,7 +60,7 @@ public class BuildReportRenderer {
         renderHeader(report);
 
         // Module summary
-        List<Map<String, Object>> modules = getList(report, "modules");
+        List<Map<String, Object>> modules = getList(report, "subprojects");
         if (!modules.isEmpty()) {
             for (Map<String, Object> module : modules) {
                 renderModuleLine(module);
@@ -80,7 +80,7 @@ public class BuildReportRenderer {
                 }
             }
             StringBuilder stats = new StringBuilder();
-            stats.append(modules.size()).append(" modules");
+            stats.append(modules.size()).append(" subprojects");
             stats.append(" | ").append(passed).append(" passed");
             if (failed > 0) {
                 stats.append(" | ").append(failed).append(" failed");
@@ -202,7 +202,7 @@ public class BuildReportRenderer {
         output.accept("Failures (" + failures.size() + "):");
         for (Map<String, Object> failure : failures) {
             output.accept("");
-            String module = getString(failure, "module");
+            String module = getString(failure, "subproject");
             String mojo = getString(failure, "mojo");
             MessageBuilder mb = messageBuilderFactory.builder();
             mb.failure("  [FAIL] ").a(module);
@@ -238,7 +238,7 @@ public class BuildReportRenderer {
     public void renderFull(Map<String, Object> report) {
         renderHeader(report);
 
-        List<Map<String, Object>> modules = getList(report, "modules");
+        List<Map<String, Object>> modules = getList(report, "subprojects");
         if (modules.isEmpty()) {
             output.accept("No modules recorded.");
             return;
