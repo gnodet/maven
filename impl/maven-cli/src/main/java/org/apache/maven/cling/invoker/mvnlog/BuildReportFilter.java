@@ -29,7 +29,7 @@ import java.util.Map;
  * <p>
  * Filters are applied in order:
  * <ol>
- *   <li>{@code --module}: keep only modules whose {@code artifactId} contains the pattern</li>
+ *   <li>{@code --module}: keep only subprojects whose {@code artifactId} contains the pattern</li>
  *   <li>{@code --mojo}: within each module, keep only mojos whose {@code goal} contains the pattern</li>
  *   <li>{@code --level}: within each mojo and module, keep only log events at or above the level</li>
  *   <li>{@code --grep}: within each mojo and module, keep only log events whose message matches</li>

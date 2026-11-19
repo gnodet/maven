@@ -240,7 +240,7 @@ public class BuildReportRenderer {
 
         List<Map<String, Object>> modules = getList(report, "subprojects");
         if (modules.isEmpty()) {
-            output.accept("No modules recorded.");
+            output.accept("No subprojects recorded.");
             return;
         }
 
