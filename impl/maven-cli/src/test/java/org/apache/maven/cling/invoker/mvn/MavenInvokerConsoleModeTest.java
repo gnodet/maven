@@ -28,11 +28,13 @@ import org.apache.maven.api.cli.ParserRequest;
 import org.apache.maven.api.cli.cisupport.CIInfo;
 import org.apache.maven.api.cli.mvn.MavenOptions;
 import org.apache.maven.cling.invoker.ProtoLookup;
+import org.jline.terminal.Terminal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -140,5 +142,46 @@ class MavenInvokerConsoleModeTest {
         // null console → defaults to "auto" internally; no CI, no TTY → verbose
         String result = invoker().determineConsoleMode(context(null));
         assertEquals("verbose", result, "absent --console with no CI/TTY should resolve to 'verbose'");
+    }
+
+    @Test
+    void autoModeInteractiveTtyReturnsRich() {
+        // auto + interactive=true + terminal != null + not embedded → "rich"
+        MavenContext ctx = context("auto", /* ci= */ false, /* interactive= */ true);
+        ctx.terminal = mock(Terminal.class);
+        String result = invoker().determineConsoleMode(ctx);
+        assertEquals("rich", result, "--console=auto on interactive TTY should resolve to 'rich'");
+    }
+
+    @Test
+    void autoModeForceInteractiveOverridesCi() {
+        // CI present but forceInteractive=true → CI check is skipped → should NOT return "plain"
+        MavenOptions options = mock(MavenOptions.class);
+        when(options.console()).thenReturn(Optional.of("auto"));
+        when(options.forceInteractive()).thenReturn(Optional.of(true));
+
+        ParserRequest parserRequest = mock(ParserRequest.class);
+        when(parserRequest.embedded()).thenReturn(false);
+
+        InvokerRequest request = mock(InvokerRequest.class);
+        when(request.parserRequest()).thenReturn(parserRequest);
+        when(request.cwd()).thenReturn(Path.of("."));
+        when(request.installationDirectory()).thenReturn(Path.of("."));
+        when(request.userHomeDirectory()).thenReturn(Path.of(System.getProperty("user.home")));
+        when(request.topDirectory()).thenReturn(Path.of("."));
+        when(request.rootDirectory()).thenReturn(Optional.empty());
+        when(request.userProperties()).thenReturn(Map.of());
+        when(request.systemProperties()).thenReturn(Map.of());
+        when(request.ciInfo()).thenReturn(Optional.of(mock(CIInfo.class)));
+
+        MavenContext ctx = new MavenContext(request, false, options);
+        ctx.interactive = true;
+        ctx.terminal = mock(Terminal.class);
+
+        String result = invoker().determineConsoleMode(ctx);
+        // CI is present but forceInteractive overrides it → "plain" must NOT be returned
+        assertNotEquals("plain", result, "forceInteractive=true should override CI and not return 'plain'");
+        // With interactive=true + terminal set → should return "rich"
+        assertEquals("rich", result, "forceInteractive=true with interactive TTY should resolve to 'rich'");
     }
 }
