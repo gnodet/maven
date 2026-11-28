@@ -604,6 +604,182 @@ class ToolchainPluginStrategyTest {
     }
 
     @Nested
+    @DisplayName("Reactor-wide minimum source level (#14166)")
+    class ReactorMinSourceLevelTests {
+
+        private static final Path ROOT_POM = Paths.get("/project/pom.xml");
+        private static final Path CHILD_POM = Paths.get("/project/child/pom.xml");
+
+        private ToolchainPluginStrategy strategy;
+
+        @BeforeEach
+        void setUp() {
+            strategy = new ToolchainPluginStrategy();
+        }
+
+        @Test
+        @DisplayName("should add toolchain to root POM when child module declares a retired source level")
+        void addsToolchainToRootWhenChildHasRetiredLevel() {
+            // Root POM: source=8 (not retired) — without reactor-wide check the root would be skipped
+            String rootPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <groupId>com.example</groupId>
+                        <artifactId>parent</artifactId>
+                        <version>1.0</version>
+                        <packaging>pom</packaging>
+                        <modules>
+                            <module>child</module>
+                        </modules>
+                        <properties>
+                            <maven.compiler.source>1.8</maven.compiler.source>
+                            <maven.compiler.target>1.8</maven.compiler.target>
+                        </properties>
+                    </project>
+                    """;
+            // Child POM: source=5 (retired, requires JDK <= 8)
+            String childPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <parent>
+                            <groupId>com.example</groupId>
+                            <artifactId>parent</artifactId>
+                            <version>1.0</version>
+                        </parent>
+                        <artifactId>child</artifactId>
+                        <properties>
+                            <maven.compiler.source>1.5</maven.compiler.source>
+                            <maven.compiler.target>1.5</maven.compiler.target>
+                        </properties>
+                    </project>
+                    """;
+            Document rootDoc = Document.of(rootPomXml);
+            Document childDoc = Document.of(childPomXml);
+            UpgradeContext context = TestUtils.createMockContext();
+
+            Map<Path, Document> pomMap = new java.util.LinkedHashMap<>();
+            pomMap.put(ROOT_POM, rootDoc);
+            pomMap.put(CHILD_POM, childDoc);
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            // Both root and child should have toolchain plugin injected
+            assertEquals(2, result.modifiedPoms().size(), "Both root and child POMs should be modified");
+            assertTrue(
+                    strategy.hasToolchainsPluginWithSelectGoal(rootDoc),
+                    "Root POM must receive the toolchain plugin (reactor-wide min is source=5)");
+            assertTrue(
+                    strategy.hasToolchainsPluginWithSelectGoal(childDoc),
+                    "Child POM must receive the toolchain plugin (source=5 is retired)");
+            // Both must use the reactor-wide minimum JDK bound (source=5 → JDK <= 8)
+            String rootOutput = rootDoc.toXml();
+            String childOutput = childDoc.toXml();
+            assertTrue(
+                    rootOutput.contains("<version>(,8]</version>"),
+                    "Root POM version constraint must be (,8] for source=5: " + rootOutput);
+            assertTrue(
+                    childOutput.contains("<version>(,8]</version>"),
+                    "Child POM version constraint must be (,8] for source=5: " + childOutput);
+        }
+
+        @Test
+        @DisplayName("should not add toolchain to root POM when only it declares a non-retired source level")
+        void noToolchainWhenOnlyRootHasNonRetiredLevel() {
+            String rootPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <groupId>com.example</groupId>
+                        <artifactId>parent</artifactId>
+                        <version>1.0</version>
+                        <packaging>pom</packaging>
+                        <properties>
+                            <maven.compiler.source>1.8</maven.compiler.source>
+                        </properties>
+                    </project>
+                    """;
+            String childPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <parent>
+                            <groupId>com.example</groupId>
+                            <artifactId>parent</artifactId>
+                            <version>1.0</version>
+                        </parent>
+                        <artifactId>child</artifactId>
+                    </project>
+                    """;
+            Document rootDoc = Document.of(rootPomXml);
+            Document childDoc = Document.of(childPomXml);
+            UpgradeContext context = TestUtils.createMockContext();
+
+            Map<Path, Document> pomMap = new java.util.LinkedHashMap<>();
+            pomMap.put(ROOT_POM, rootDoc);
+            pomMap.put(CHILD_POM, childDoc);
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertEquals(0, result.modifiedPoms().size(), "No POM should be modified when no retired source level");
+        }
+
+        @Test
+        @DisplayName("should use reactor minimum JDK bound when root has higher retired level than a child")
+        void usesReactorMinimumWhenRootHasHigherRetiredLevel() {
+            // Root: source=7 (retired, JDK <= 20), Child: source=5 (more restrictive, JDK <= 8)
+            // Both get the toolchain, but with the child's stricter JDK bound (source=5 → JDK <= 8)
+            String rootPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <groupId>com.example</groupId>
+                        <artifactId>parent</artifactId>
+                        <version>1.0</version>
+                        <packaging>pom</packaging>
+                        <properties>
+                            <maven.compiler.source>7</maven.compiler.source>
+                        </properties>
+                    </project>
+                    """;
+            String childPomXml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                        <modelVersion>4.0.0</modelVersion>
+                        <parent>
+                            <groupId>com.example</groupId>
+                            <artifactId>parent</artifactId>
+                            <version>1.0</version>
+                        </parent>
+                        <artifactId>child</artifactId>
+                        <properties>
+                            <maven.compiler.source>5</maven.compiler.source>
+                        </properties>
+                    </project>
+                    """;
+            Document rootDoc = Document.of(rootPomXml);
+            Document childDoc = Document.of(childPomXml);
+            UpgradeContext context = TestUtils.createMockContext();
+
+            Map<Path, Document> pomMap = new java.util.LinkedHashMap<>();
+            pomMap.put(ROOT_POM, rootDoc);
+            pomMap.put(CHILD_POM, childDoc);
+            UpgradeResult result = strategy.doApply(context, pomMap);
+
+            assertEquals(2, result.modifiedPoms().size());
+            // Root has own retired level 7, but reactor min is 5 — root should use min
+            String rootOutput = rootDoc.toXml();
+            assertTrue(
+                    rootOutput.contains("<version>(,8]</version>"),
+                    "Root POM must use reactor minimum JDK bound (source=5 → JDK <= 8): " + rootOutput);
+            // Child's own retired level is 5
+            String childOutput = childDoc.toXml();
+            assertTrue(
+                    childOutput.contains("<version>(,8]</version>"),
+                    "Child POM must use JDK <= 8 for source=5: " + childOutput);
+        }
+    }
+
+    @Nested
     @DisplayName("Effective model source level detection")
     class EffectiveModelSourceLevelTests {
 

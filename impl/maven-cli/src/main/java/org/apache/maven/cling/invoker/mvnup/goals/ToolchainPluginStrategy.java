@@ -19,6 +19,7 @@
 package org.apache.maven.cling.invoker.mvnup.goals;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,13 @@ import static eu.maveniverse.domtrip.maven.MavenPomElements.Elements.PROPERTIES;
  *   <li>{@code maven.compiler.source} property</li>
  *   <li>Compiler plugin {@code <configuration><release>} or {@code <source>}</li>
  * </ol>
+ *
+ * <p>For multi-module projects, the strategy first collects the source level from every
+ * POM in the reactor and computes the <em>reactor-wide minimum</em>.  A module that
+ * declares {@code --source 8} (not retired) but belongs to a reactor where another
+ * module declares {@code --source 5} (retired) will also receive the toolchain plugin,
+ * configured with the most restrictive constraint in the reactor.  This prevents the
+ * root POM from being silently skipped when only child modules use a retired source level.
  *
  * <p>If the declared source level is retired (i.e. no longer accepted by the latest JDK)
  * and the {@code maven-toolchains-plugin} is not already configured with the
@@ -136,31 +144,92 @@ public class ToolchainPluginStrategy extends AbstractUpgradeStrategy {
         Set<Path> modifiedPoms = new HashSet<>();
         Set<Path> errorPoms = new HashSet<>();
 
+        // Pass 1 — collect the source level declared (locally or via effective model)
+        // for every POM in the reactor. We must look at the full reactor because a child
+        // module may declare a retired source level (e.g. --source 5) while the root POM
+        // declares a non-retired level (e.g. --source 8).  Treating each POM in isolation
+        // would skip the root and leave the child with no toolchain anchor.
+        Map<Path, Integer> sourceLevelByPom = new HashMap<>();
         for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
             Path pomPath = entry.getKey();
             Document pomDocument = entry.getValue();
             processedPoms.add(pomPath);
 
+            int sourceLevel = detectSourceLevel(pomDocument);
+            if (sourceLevel <= 0) {
+                // Local POM doesn't declare a source level — check inherited config
+                // from parent POMs (e.g. org.apache.sling:sling-parent setting --source 6)
+                sourceLevel = detectSourceLevelFromEffectiveModel(context, pomPath);
+            }
+            if (sourceLevel > 0) {
+                sourceLevelByPom.put(pomPath, sourceLevel);
+            }
+        }
+
+        // Pass 2 — compute the reactor-wide minimum source level.
+        // If any module in the reactor uses a retired source level, the minimum governs
+        // which JDK version the toolchain must select, regardless of what the root POM
+        // or other modules declare.
+        int minSourceLevel = sourceLevelByPom.values().stream()
+                .mapToInt(Integer::intValue)
+                .min()
+                .orElse(-1);
+
+        int globalLatestJdk = minSourceLevel > 0 ? JdkSourceLevelSupport.latestJdkForSourceLevel(minSourceLevel) : -1;
+
+        // Pass 3 — apply toolchain plugin to each POM that needs it.
+        // A POM needs the toolchain if:
+        //   (a) its own declared source level is retired, OR
+        //   (b) any module in the reactor has a retired source level (globalLatestJdk > 0)
+        //       AND this POM itself declares a source level (even a non-retired one) —
+        //       this ensures the root POM gets the toolchain even when it declares --source 8
+        //       but a child module declares --source 5.
+        for (Map.Entry<Path, Document> entry : pomMap.entrySet()) {
+            Path pomPath = entry.getKey();
+            Document pomDocument = entry.getValue();
+
             context.info(pomPath + " (checking JDK source level compatibility)");
             context.indent();
 
             try {
-                int sourceLevel = detectSourceLevel(pomDocument);
-                if (sourceLevel <= 0) {
-                    // Local POM doesn't declare a source level — check inherited config
-                    // from parent POMs (e.g. org.apache.sling:sling-parent setting --source 6)
-                    sourceLevel = detectSourceLevelFromEffectiveModel(context, pomPath);
-                }
-                if (sourceLevel <= 0) {
-                    context.success("No source level configured");
-                    continue;
-                }
+                int pomSourceLevel = sourceLevelByPom.getOrDefault(pomPath, -1);
 
-                int latestJdk = JdkSourceLevelSupport.latestJdkForSourceLevel(sourceLevel);
-                if (latestJdk <= 0) {
-                    // Source level 8+ is not retired: all current JDKs still accept it.
-                    // Nothing to do — the project does not need a toolchain for this.
-                    context.success("--source " + sourceLevel + " is supported by all current JDKs");
+                // Determine which source level and JDK bound to use for this POM.
+                // Per-POM level takes precedence; fall back to reactor minimum when
+                // the reactor has a retired level that this POM would otherwise miss.
+                int effectiveLevel;
+                int latestJdk;
+
+                if (pomSourceLevel > 0) {
+                    int pomLatestJdk = JdkSourceLevelSupport.latestJdkForSourceLevel(pomSourceLevel);
+                    if (pomLatestJdk > 0) {
+                        // This POM's own source level is retired.  Still check whether the
+                        // reactor minimum is even more restrictive (lower source level = older JDK).
+                        if (globalLatestJdk > 0 && minSourceLevel < pomSourceLevel) {
+                            effectiveLevel = minSourceLevel;
+                            latestJdk = globalLatestJdk;
+                        } else {
+                            effectiveLevel = pomSourceLevel;
+                            latestJdk = pomLatestJdk;
+                        }
+                    } else if (globalLatestJdk > 0) {
+                        // This POM's own level is not retired, but a child module has a
+                        // retired level.  Use the reactor minimum so that this POM (which
+                        // is likely the root or an aggregator) gets a toolchain that
+                        // covers the most restrictive child.
+                        effectiveLevel = minSourceLevel;
+                        latestJdk = globalLatestJdk;
+                    } else {
+                        // Source level 8+ is not retired: all current JDKs still accept it.
+                        // Nothing to do — the project does not need a toolchain for this.
+                        context.success("--source " + pomSourceLevel + " is supported by all current JDKs");
+                        continue;
+                    }
+                } else {
+                    // This POM does not declare a source level (not locally, not via
+                    // effective model) — skip it even if the reactor has a retired level.
+                    // Only POMs that declare a source level are eligible for toolchain injection.
+                    context.success("No source level configured");
                     continue;
                 }
 
@@ -174,8 +243,8 @@ public class ToolchainPluginStrategy extends AbstractUpgradeStrategy {
                 modifiedPoms.add(pomPath);
                 logChange(
                         context,
-                        "Added maven-toolchains-plugin with " + SELECT_JDK_TOOLCHAIN_GOAL + " goal (--source "
-                                + sourceLevel + " requires JDK <= " + latestJdk + ")");
+                        "maven-toolchains-plugin addition with " + SELECT_JDK_TOOLCHAIN_GOAL + " goal (--source "
+                                + effectiveLevel + " requires JDK <= " + latestJdk + ")");
                 context.warning("A JDK <= " + latestJdk
                         + " must be installed and discoverable by the toolchains plugin"
                         + " for the build to succeed. If no matching JDK is found,"
