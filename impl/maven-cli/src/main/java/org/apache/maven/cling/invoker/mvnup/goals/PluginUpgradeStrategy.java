@@ -446,6 +446,20 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
             }
         }
 
+        // For maven-bundle-plugin, check for a large version gap that crosses bndlib major versions.
+        // Upgrading from < 3.0 (bndlib 2.x) to 5.1.1 (bndlib 7.x) skips multiple major bndlib
+        // versions, each of which introduced stricter OSGi header validation. Projects with
+        // edge-case OSGi headers that were accepted by bndlib 2.x may be rejected by bndlib 7.x
+        // (FELIX-6259 fix requires at least bndlib 3.x/4.x, but the stricter parser requires
+        // careful testing). Skip the upgrade and warn the user to do it incrementally.
+        if (isBundlePlugin(upgrade.groupId, upgrade.artifactId)) {
+            String resolvedVersion =
+                    isProperty ? resolvePropertyValue(pomDocument.root(), currentVersion) : currentVersion;
+            if (isBundlePluginLargeVersionGap(context, resolvedVersion, upgrade)) {
+                return false;
+            }
+        }
+
         // For Quarkus plugins, check the platform version before upgrading.
         // Upgrading quarkus-maven-plugin to 3.x when the project uses Quarkus 2.x
         // causes NoSuchMethodError and build failures.
@@ -817,6 +831,7 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
         Map<Path, Set<String>> directOverrideResult = new HashMap<>();
         Map<String, PluginUpgrade> basePluginUpgrades = getPluginUpgradesAsMap();
         String shadePluginKey = DEFAULT_MAVEN_PLUGIN_GROUP_ID + ":maven-shade-plugin";
+        String bundlePluginKey = "org.apache.felix:maven-bundle-plugin";
 
         // Detect the project JDK version, preferring the root POM (shortest path depth).
         // In multi-module projects, child modules may declare a different JDK level,
@@ -845,6 +860,24 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
                     pluginUpgrades.remove(shadePluginKey);
                     context.warning("Skipping maven-shade-plugin in effective-model analysis for " + originalPomPath
                             + ": custom ResourceTransformer(s) found in project POMs");
+                }
+
+                // Per-module check: if the effective maven-bundle-plugin version is below 3.0.0
+                // (bndlib 2.x), exclude it from upgrades for this module to avoid injecting a
+                // pluginManagement override that jumps directly to bndlib 7.x.
+                // The direct-POM upgrade path has the same guard in upgradePluginVersion().
+                String effectiveBundleVersion = detectEffectiveBundlePluginVersion(context, originalPomPath);
+                if (effectiveBundleVersion != null
+                        && isVersionBelow(context, effectiveBundleVersion, BUNDLE_PLUGIN_MIN_BNDLIB3_VERSION)) {
+                    if (pluginUpgrades == basePluginUpgrades) {
+                        pluginUpgrades = new HashMap<>(basePluginUpgrades);
+                    }
+                    pluginUpgrades.remove(bundlePluginKey);
+                    context.warning("Skipping org.apache.felix:maven-bundle-plugin in effective-model analysis for "
+                            + originalPomPath
+                            + ": effective version " + effectiveBundleVersion
+                            + " is below 3.0.0 (bndlib 2.x). Upgrade incrementally: first to 3.x,"
+                            + " verify the build, then upgrade to 5.1.1.");
                 }
 
                 // Build effective model using Maven 4 API
@@ -1317,6 +1350,101 @@ public class PluginUpgradeStrategy extends AbstractUpgradeStrategy {
 
     private record PluginAnalysisResults(
             Map<Path, Set<String>> pluginsNeedingManagement, Map<Path, Set<String>> pluginsNeedingDirectOverride) {}
+
+    /**
+     * Detects the effective version of {@code org.apache.felix:maven-bundle-plugin} for the given
+     * POM by building its effective model. Returns the version string, or {@code null} if the
+     * plugin is not present in the effective model or the model cannot be built.
+     *
+     * @param context the upgrade context for model building
+     * @param pomPath the path to the POM to inspect
+     * @return the effective plugin version, or {@code null} if not detectable
+     */
+    private String detectEffectiveBundlePluginVersion(UpgradeContext context, Path pomPath) {
+        try {
+            Model effectiveModel = buildEffectiveModel(context, pomPath);
+            Build build = effectiveModel.getBuild();
+            if (build == null) {
+                return null;
+            }
+            // Check build/plugins
+            for (Plugin plugin : build.getPlugins()) {
+                if (isBundlePlugin(plugin.getGroupId(), plugin.getArtifactId())) {
+                    return plugin.getVersion();
+                }
+            }
+            // Check build/pluginManagement
+            PluginManagement pm = build.getPluginManagement();
+            if (pm != null) {
+                for (Plugin plugin : pm.getPlugins()) {
+                    if (isBundlePlugin(plugin.getGroupId(), plugin.getArtifactId())) {
+                        return plugin.getVersion();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Cannot build effective model — skip the bundle-plugin check
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the given plugin is the maven-bundle-plugin.
+     */
+    private boolean isBundlePlugin(String groupId, String artifactId) {
+        return "maven-bundle-plugin".equals(artifactId) && "org.apache.felix".equals(groupId);
+    }
+
+    /**
+     * The minimum maven-bundle-plugin version that uses bndlib 3.x or later.
+     * Versions below this threshold use bndlib 2.x, which has significantly more lenient OSGi
+     * header parsing. Upgrading directly from bndlib 2.x to 7.x (maven-bundle-plugin 5.1.1) skips
+     * multiple breaking changes in header validation.
+     */
+    private static final String BUNDLE_PLUGIN_MIN_BNDLIB3_VERSION = "3.0.0";
+
+    /**
+     * Checks whether upgrading maven-bundle-plugin would cross a large bndlib major version gap
+     * (from bndlib 2.x to 7.x) that may break OSGi header parsing in legacy projects.
+     * When the current version is below 3.0.0, the upgrade to 5.1.1 jumps from bndlib 2.x to
+     * bndlib 7.x, which introduced stricter OSGi header validation. Projects with custom or
+     * non-standard OSGi headers (e.g. empty {@code Bundle-NativeCode}) that bndlib 2.x accepted
+     * may now fail with {@code Cannot parse name from bundle native code header}.
+     *
+     * <p>When the gap is detected, a warning is emitted and the upgrade is skipped so the user
+     * can verify OSGi header compatibility before upgrading incrementally (e.g. first to 3.x,
+     * then to 5.x).</p>
+     *
+     * @param context the upgrade context for logging
+     * @param currentVersion the currently declared version of maven-bundle-plugin
+     * @param upgrade the upgrade target information
+     * @return {@code true} if the upgrade should be skipped due to the large version gap,
+     *         {@code false} otherwise
+     */
+    private boolean isBundlePluginLargeVersionGap(
+            UpgradeContext context, String currentVersion, PluginUpgradeInfo upgrade) {
+        if (currentVersion == null) {
+            return false;
+        }
+        // If the current version is below 3.0.0 (bndlib 2.x era), skip the direct upgrade
+        // to 5.1.1 (bndlib 7.x) to avoid OSGi header parsing regressions.
+        if (isVersionBelow(context, currentVersion, BUNDLE_PLUGIN_MIN_BNDLIB3_VERSION)) {
+            context.warning("Skipping "
+                    + upgrade.groupId
+                    + ":"
+                    + upgrade.artifactId
+                    + " upgrade from "
+                    + currentVersion
+                    + " to "
+                    + upgrade.minVersion
+                    + ": upgrading directly from bndlib 2.x to bndlib 7.x may break projects"
+                    + " that use OSGi headers accepted by bndlib 2.x but rejected by bndlib 7.x"
+                    + " (e.g. empty Bundle-NativeCode). Upgrade incrementally: first to 3.x,"
+                    + " verify the build, then upgrade to " + upgrade.minVersion + ".");
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Checks if the given plugin is the maven-shade-plugin.

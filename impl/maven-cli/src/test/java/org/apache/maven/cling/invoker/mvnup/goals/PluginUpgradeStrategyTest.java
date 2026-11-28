@@ -576,6 +576,129 @@ class PluginUpgradeStrategyTest {
         }
 
         @Test
+        @DisplayName("should skip maven-bundle-plugin upgrade from 2.x and warn about large bndlib version gap")
+        void shouldSkipBundlePluginUpgradeFromBndlib2x() throws Exception {
+            // maven-bundle-plugin 2.3.7 uses bndlib 2.x. Upgrading directly to 5.1.1 (bndlib 7.x)
+            // may break projects with legacy OSGi headers (e.g. empty Bundle-NativeCode).
+            Document doc = PomBuilder.create()
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "2.3.7")
+                    .buildDocument();
+            UpgradeContext context = createMockContext();
+            UpgradeResult result = strategy.doApply(context, Map.of(Paths.get("pom.xml"), doc));
+
+            assertTrue(result.success(), "Strategy should succeed even when skipping bundle-plugin upgrade");
+
+            // Version must NOT be upgraded — user must do it manually
+            String version = new Editor(doc)
+                    .root()
+                    .path("build", "plugins", "plugin", "version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals("2.3.7", version, "maven-bundle-plugin 2.3.7 should NOT be upgraded to 5.1.1 directly");
+
+            // A warning explaining the large version gap must have been emitted
+            verify(context.logger, atLeastOnce())
+                    .warn(argThat((String msg) -> msg.contains("maven-bundle-plugin")
+                            && msg.contains("bndlib 2.x")
+                            && msg.contains("incrementally")));
+        }
+
+        @Test
+        @DisplayName("should skip maven-bundle-plugin upgrade from 2.4.0 and warn about large bndlib version gap")
+        void shouldSkipBundlePluginUpgradeFromBndlib2xVariant() throws Exception {
+            // 2.4.0 is also bndlib 2.x — same guard applies
+            Document doc = PomBuilder.create()
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "2.4.0")
+                    .buildDocument();
+            UpgradeContext context = createMockContext();
+            strategy.doApply(context, Map.of(Paths.get("pom.xml"), doc));
+
+            String version = new Editor(doc)
+                    .root()
+                    .path("build", "plugins", "plugin", "version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals("2.4.0", version, "maven-bundle-plugin 2.4.0 should NOT be upgraded to 5.1.1 directly");
+        }
+
+        @Test
+        @DisplayName("should upgrade maven-bundle-plugin normally from 3.x (bndlib 3.x) to 5.1.1")
+        void shouldUpgradeBundlePluginFrom3xNormally() throws Exception {
+            // 3.x uses bndlib 3.x — the stricter parser is already in effect, safe to upgrade to 5.1.1
+            Document doc = PomBuilder.create()
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "3.5.0")
+                    .buildDocument();
+            UpgradeResult result = strategy.doApply(createMockContext(), Map.of(Paths.get("pom.xml"), doc));
+
+            assertTrue(result.success() && result.modifiedCount() > 0, "Should have upgraded maven-bundle-plugin 3.x");
+            String version = new Editor(doc)
+                    .root()
+                    .path("build", "plugins", "plugin", "version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals("5.1.1", version, "maven-bundle-plugin 3.5.0 should be upgraded to 5.1.1");
+        }
+
+        @Test
+        @DisplayName("should upgrade maven-bundle-plugin from exactly 3.0.0 (boundary value, NOT bndlib 2.x)")
+        void shouldUpgradeBundlePluginFromExact3_0_0() throws Exception {
+            // 3.0.0 is the exact boundary — it must NOT trigger the gap guard (3.0.0 is NOT below 3.0.0)
+            Document doc = PomBuilder.create()
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "3.0.0")
+                    .buildDocument();
+            UpgradeResult result = strategy.doApply(createMockContext(), Map.of(Paths.get("pom.xml"), doc));
+
+            assertTrue(
+                    result.success() && result.modifiedCount() > 0, "Should have upgraded maven-bundle-plugin 3.0.0");
+            String version = new Editor(doc)
+                    .root()
+                    .path("build", "plugins", "plugin", "version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals("5.1.1", version, "maven-bundle-plugin 3.0.0 should be upgraded to 5.1.1 (not bndlib 2.x)");
+        }
+
+        @Test
+        @DisplayName("should upgrade maven-bundle-plugin normally from 4.x (bndlib 5.x) to 5.1.1")
+        void shouldUpgradeBundlePluginFrom4xNormally() throws Exception {
+            // 4.x uses bndlib 5.x — already past the strict-header inflection point
+            Document doc = PomBuilder.create()
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "4.2.1")
+                    .buildDocument();
+            UpgradeResult result = strategy.doApply(createMockContext(), Map.of(Paths.get("pom.xml"), doc));
+
+            assertTrue(result.success() && result.modifiedCount() > 0, "Should have upgraded maven-bundle-plugin 4.x");
+            String version = new Editor(doc)
+                    .root()
+                    .path("build", "plugins", "plugin", "version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals("5.1.1", version, "maven-bundle-plugin 4.2.1 should be upgraded to 5.1.1");
+        }
+
+        @Test
+        @DisplayName("should skip maven-bundle-plugin upgrade when version is a 2.x property reference")
+        void shouldSkipBundlePluginUpgradeFromPropertyWhenBndlib2x() throws Exception {
+            // Property resolves to 2.3.7 (bndlib 2.x) — gap check must still apply
+            Document doc = PomBuilder.create()
+                    .property("bundle.plugin.version", "2.3.7")
+                    .plugin("org.apache.felix", "maven-bundle-plugin", "${bundle.plugin.version}")
+                    .buildDocument();
+            UpgradeContext context = createMockContext();
+            strategy.doApply(context, Map.of(Paths.get("pom.xml"), doc));
+
+            String propertyValue = new Editor(doc)
+                    .root()
+                    .path("properties", "bundle.plugin.version")
+                    .map(Element::textContentTrimmed)
+                    .orElse(null);
+            assertEquals(
+                    "2.3.7",
+                    propertyValue,
+                    "Property holding maven-bundle-plugin 2.3.7 should NOT be upgraded to 5.1.1 directly");
+        }
+
+        @Test
         @DisplayName("should not upgrade when version is already higher")
         void shouldNotUpgradeWhenVersionAlreadyHigher() throws Exception {
             String pomXml = """
